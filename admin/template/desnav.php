@@ -1,4 +1,43 @@
-ඩල  තීරණය බලයට ගෙන  අත්හිටු වීම් කරන ලදී.', '2020-11-25', '', 3, 0, 0, 26, '2020-11-25');
-INSERT INTO `tbl_suspension_details` VALUES (4467, 7960, 5520, 4, '2019.07.18 සිට 2019.08.28 දක්වා සිදුකල විගණනයේ දී නිරීක්‍ෂණය වු අයදුම්පත් වලට අදාලව ගිණුම්,183 වන කළමණාකරන මණ්ඩල  තීරණය බලයට ගෙන  අත්හිටු වීම් කරන ලදී.', '2020-11-25', '', 3, 0, 0, 38, '2020-11-25');
-INSERT INTO `tbl_suspension_details` VALUES (4468, 4817, 3455, 4, '2019.07.18 සිට 2019.08.28 දක්වා සිදුකල විගණනයේ දී නිරීක්‍ෂණය වු අයදුම්පත් වලට අදාලව ගිණුම්,183 වන කළමණාකරන මණ්ඩල  තීරණය බලයට ගෙන  අත්හිටු වීම් කරන ලදී.', '2020-11-25', '', 3, 0, 0, 26, '2020-11-25');
-INSERT INTO `tbl_suspension_details` VALUES (4469, 9322, 6379, 4, '2019.07.18 සිට 2019.08.28 දක්වා සිදුකල විගණනයේ දී නිරීක්‍ෂණය වු අයදුම්පත් වලට අදාලව ගිණුම්,183 වන කළමණාකරන මණ්ඩල  තීරණය බලයට ගෙන  අත්හිටු වීම් කරන ලදී.', '2020-11-25'
+	<div class="deznav">
+			<div class="deznav-scroll">
+				<ul class="metismenu" id="menu">
+					<li><a  href=".\dashboard.php" aria-expanded="false">
+							<i class="flaticon-381-networking"></i>
+							<span class="nav-text">Dashboard</span>
+						</a>
+						<!-- <ul aria-expanded="false">
+							<li><a href="index.php.html">Dashboard</a></li>
+							<li><a href="index-2.php.html">Dashboard Dark</a></li>
+							<li><a href="workout-statistic.php.html">Workout Statistic</a></li>
+							<li><a href="workout-plan.php.html">Workout Plan</a></li>
+							<li><a href="distance-map.php.html">Distance Map</a></li>
+							<li><a href="food-menu.php.html">Diet Food Menu</a></li>
+							<li><a href="personal-record.php.html">Personal Record</a></li>
+						</ul> -->
+					</li>
+					<li><a  href="services-docs.php" aria-expanded="false">
+							<i class="flaticon-381-briefcase"></i>
+							<span class="nav-text">Services</span>
+						</a>
+					</li>
+					<li><a  href="publications-docs.php" aria-expanded="false">
+							<i class="flaticon-381-newspaper"></i>
+							<span class="nav-text">Publication</span>
+						</a>
+					</li>
+					<li><a  href="training-docs.php" aria-expanded="false">
+							<i class="flaticon-381-networking"></i>
+							<span class="nav-text">Training</span>
+						</a>
+					</li>
+					<li><a  href="productivity-docs.php" aria-expanded="false">
+							<i class="flaticon-381-networking"></i>
+							<span class="nav-text">Productivity</span>
+						</a>
+					</li>
+					
+					
+				</ul>
+
+			</div>
+		</div>
