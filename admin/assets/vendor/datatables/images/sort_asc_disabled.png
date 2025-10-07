@@ -1,0 +1,8 @@
+-23 15:47:36');
+INSERT INTO `tbl_approved` VALUES (13419, 41505, 2, 37, ' Recommended ', 3, 1, '2021-02-23', '2021-02-23 15:50:25');
+INSERT INTO `tbl_approved` VALUES (13420, 41506, 2, 37, ' Recommended ', 3, 1, '2021-02-23', '2021-02-23 15:54:53');
+INSERT INTO `tbl_approved` VALUES (13421, 36156, 1, 40, 'පියාගේ තොරතුරු නිවැරදිව දත්ත පද්ධතිය වෙත ඇතුලත් කර ඇත.', 2, 2, '2021-03-01', '2021-03-01 12:14:07');
+INSERT INTO `tbl_approved` VALUES (13422, 3409, 1, 40, 'මවගේ තොරතුරු නිවැරදිව දත්ත පද්ධතිය වෙත ඇතුලත් කර ඇත.', 2, 2, '2021-03-01', '2021-03-01 12:21:13');
+INSERT INTO `tbl_approved` VALUES (13423, 36156, 2, 37, ' Recommended', 3, 1, '2021-03-02', '2021-03-02 11:21:08');
+INSERT INTO `tbl_approved` VALUES (13424, 3409, 2, 37, 'Recommended ', 3, 1, '2021-03-02', '2021-03-02 11:22:09');
+INSERT INTO `tbl_approved` VALUES (13425, 1673

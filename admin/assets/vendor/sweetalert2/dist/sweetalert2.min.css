@@ -1,0 +1,217 @@
+SERT INTO `tbl_slip_approve` VALUES (291, 78, 1, 40, '', 1, '2022-04-05 00:00:00', '2022-04-04 20:29:39');
+INSERT INTO `tbl_slip_approve` VALUES (292, 78, 1, 42, '', 2, '2022-04-05 00:00:00', '2022-04-04 21:13:10');
+INSERT INTO `tbl_slip_approve` VALUES (293, 78, 2, 37, 'Recommended', 3, '2022-04-06 00:00:00', '2022-04-05 19:39:20');
+INSERT INTO `tbl_slip_approve` VALUES (294, 78, 3, 29, 'Recommended', 4, '2022-04-06 00:00:00', '2022-04-05 20:01:29');
+INSERT INTO `tbl_slip_approve` VALUES (295, 78, 5, 28, 'Approved ', 6, '2022-04-06 00:00:00', '2022-04-05 20:07:28');
+INSERT INTO `tbl_slip_approve` VALUES (296, 79, 1, 42, '', 1, '2022-05-09 00:00:00', '2022-05-08 20:32:43');
+INSERT INTO `tbl_slip_approve` VALUES (297, 79, 1, 42, '', 2, '2022-05-09 00:00:00', '2022-05-08 20:35:51');
+INSERT INTO `tbl_slip_approve` VALUES (298, 79, 2, 37, 'Recommended', 3, '2022-05-09 00:00:00', '2022-05-08 20:40:00');
+INSERT INTO `tbl_slip_approve` VALUES (299, 79, 3, 29, 'Recommended  ', 4, '2022-05-09 00:00:00', '2022-05-08 21:17:17');
+INSERT INTO `tbl_slip_approve` VALUES (300, 79, 5, 28, 'Approved  ', 6, '2022-05-09 00:00:00', '2022-05-08 21:24:30');
+INSERT INTO `tbl_slip_approve` VALUES (301, 80, 1, 42, '', 1, '2022-06-07 00:00:00', '2022-06-06 23:23:22');
+INSERT INTO `tbl_slip_approve` VALUES (302, 80, 1, 40, '', 2, '2022-06-08 00:00:00', '2022-06-07 19:24:02');
+INSERT INTO `tbl_slip_approve` VALUES (303, 80, 2, 37, 'Recommended ', 3, '2022-06-08 00:00:00', '2022-06-07 19:32:02');
+INSERT INTO `tbl_slip_approve` VALUES (304, 80, 3, 29, 'Recommended ', 4, '2022-06-08 00:00:00', '2022-06-07 23:55:19');
+INSERT INTO `tbl_slip_approve` VALUES (305, 80, 5, 28, 'Approved      ', 6, '2022-06-16 00:00:00', '2022-06-16 02:14:53');
+INSERT INTO `tbl_slip_approve` VALUES (306, 80, 5, 28, 'Approved      ', 6, '2022-06-16 00:00:00', '2022-06-16 02:15:04');
+INSERT INTO `tbl_slip_approve` VALUES (310, 84, 1, 40, '', 1, '2022-08-01 00:00:00', '2022-07-31 20:24:18');
+INSERT INTO `tbl_slip_approve` VALUES (311, 84, 1, 42, '', 2, '2022-08-01 00:00:00', '2022-08-01 00:28:29');
+INSERT INTO `tbl_slip_approve` VALUES (312, 84, 2, 37, 'Recommended', 3, '2022-08-01 00:00:00', '2022-08-01 00:32:41');
+INSERT INTO `tbl_slip_approve` VALUES (313, 84, 3, 29, ' Recommended', 4, '2022-08-01 00:00:00', '2022-08-01 00:37:22');
+INSERT INTO `tbl_slip_approve` VALUES (314, 84, 5, 28, ' Approved ', 6, '2022-08-01 00:00:00', '2022-08-01 01:03:29');
+INSERT INTO `tbl_slip_approve` VALUES (315, 85, 1, 40, '', 1, '2022-08-08 00:00:00', '2022-08-07 21:39:12');
+INSERT INTO `tbl_slip_approve` VALUES (316, 85, 1, 42, '', 2, '2022-08-08 00:00:00', '2022-08-07 21:48:23');
+INSERT INTO `tbl_slip_approve` VALUES (317, 85, 2, 37, 'Recommended', 3, '2022-08-08 00:00:00', '2022-08-07 21:52:44');
+INSERT INTO `tbl_slip_approve` VALUES (318, 85, 3, 29, ' Recommended  ', 4, '2022-08-08 00:00:00', '2022-08-07 21:57:14');
+INSERT INTO `tbl_slip_approve` VALUES (319, 85, 5, 28, 'Approved ', 6, '2022-08-08 00:00:00', '2022-08-07 22:41:20');
+INSERT INTO `tbl_slip_approve` VALUES (320, 86, 1, 40, '', 1, '2022-08-26 00:00:00', '2022-08-26 01:34:50');
+INSERT INTO `tbl_slip_approve` VALUES (321, 86, 1, 42, '', 2, '2022-08-26 00:00:00', '2022-08-26 01:45:27');
+INSERT INTO `tbl_slip_approve` VALUES (322, 86, 2, 37, 'Recommended ', 3, '2022-08-29 00:00:00', '2022-08-29 09:13:23');
+INSERT INTO `tbl_slip_approve` VALUES (323, 86, 3, 29, 'Recommended  ', 4, '2022-08-29 00:00:00', '2022-08-29 09:21:05');
+INSERT INTO `tbl_slip_approve` VALUES (324, 86, 5, 28, 'Approved   ', 6, '2022-08-29 00:00:00', '2022-08-29 09:47:14');
+INSERT INTO `tbl_slip_approve` VALUES (325, 87, 1, 40, '', 1, '2022-10-03 00:00:00', '2022-10-03 12:13:13');
+INSERT INTO `tbl_slip_approve` VALUES (326, 87, 1, 42, '', 2, '2022-10-03 00:00:00', '2022-10-03 12:21:30');
+INSERT INTO `tbl_slip_approve` VALUES (327, 87, 2, 37, 'Recommended', 3, '2022-10-03 00:00:00', '2022-10-03 12:28:50');
+INSERT INTO `tbl_slip_approve` VALUES (328, 87, 3, 29, ' Recommended  ', 4, '2022-10-03 00:00:00', '2022-10-03 12:34:30');
+INSERT INTO `tbl_slip_approve` VALUES (329, 87, 5, 28, 'Approved', 6, '2022-10-03 00:00:00', '2022-10-03 12:40:08');
+INSERT INTO `tbl_slip_approve` VALUES (330, 88, 1, 40, '', 1, '2022-11-04 00:00:00', '2022-11-04 10:48:46');
+INSERT INTO `tbl_slip_approve` VALUES (331, 88, 1, 42, '', 2, '2022-11-04 00:00:00', '2022-11-04 11:25:04');
+INSERT INTO `tbl_slip_approve` VALUES (332, 88, 2, 37, 'Recommended', 3, '2022-11-08 00:00:00', '2022-11-08 08:51:11');
+INSERT INTO `tbl_slip_approve` VALUES (333, 88, 3, 29, 'Recommended ', 4, '2022-11-08 00:00:00', '2022-11-08 08:54:36');
+INSERT INTO `tbl_slip_approve` VALUES (334, 88, 5, 28, 'Approved', 6, '2022-11-08 00:00:00', '2022-11-08 09:01:15');
+INSERT INTO `tbl_slip_approve` VALUES (335, 89, 1, 40, '', 1, '2022-11-29 00:00:00', '2022-11-29 09:33:31');
+INSERT INTO `tbl_slip_approve` VALUES (336, 89, 1, 42, '', 2, '2022-11-29 00:00:00', '2022-11-29 09:44:57');
+INSERT INTO `tbl_slip_approve` VALUES (337, 89, 2, 37, 'Recommended ', 3, '2022-11-29 00:00:00', '2022-11-29 14:24:04');
+INSERT INTO `tbl_slip_approve` VALUES (338, 89, 3, 29, 'Recommended ', 4, '2022-11-29 00:00:00', '2022-11-29 14:43:41');
+INSERT INTO `tbl_slip_approve` VALUES (339, 89, 5, 28, 'Approved', 6, '2022-11-30 00:00:00', '2022-11-30 09:59:40');
+INSERT INTO `tbl_slip_approve` VALUES (347, 93, 2, 43, 'Recommended  ', 3, '2022-12-27 00:00:00', '2022-12-27 12:54:06');
+INSERT INTO `tbl_slip_approve` VALUES (346, 93, 1, 42, '', 2, '2022-12-27 00:00:00', '2022-12-27 12:41:00');
+INSERT INTO `tbl_slip_approve` VALUES (345, 93, 1, 40, '', 1, '2022-12-27 00:00:00', '2022-12-27 12:32:50');
+INSERT INTO `tbl_slip_approve` VALUES (348, 93, 3, 29, 'Recommended', 4, '2022-12-27 00:00:00', '2022-12-27 15:18:48');
+INSERT INTO `tbl_slip_approve` VALUES (349, 93, 5, 28, 'Approved', 6, '2022-12-29 00:00:00', '2022-12-29 13:21:02');
+INSERT INTO `tbl_slip_approve` VALUES (357, 96, 2, 43, 'Recommended', 3, '2023-02-03 00:00:00', '2023-02-03 11:11:34');
+INSERT INTO `tbl_slip_approve` VALUES (356, 96, 1, 42, '', 2, '2023-02-03 00:00:00', '2023-02-03 11:03:05');
+INSERT INTO `tbl_slip_approve` VALUES (355, 96, 1, 40, '', 1, '2023-02-03 00:00:00', '2023-02-03 10:56:57');
+INSERT INTO `tbl_slip_approve` VALUES (358, 96, 3, 29, 'Recommended ', 4, '2023-02-03 00:00:00', '2023-02-03 11:57:42');
+INSERT INTO `tbl_slip_approve` VALUES (359, 96, 5, 28, '\r\nApproved', 6, '2023-02-03 00:00:00', '2023-02-03 13:00:54');
+INSERT INTO `tbl_slip_approve` VALUES (360, 97, 1, 40, '', 1, '2023-02-27 00:00:00', '2023-02-27 14:37:38');
+INSERT INTO `tbl_slip_approve` VALUES (361, 97, 1, 42, '', 2, '2023-02-27 00:00:00', '2023-02-27 15:15:57');
+INSERT INTO `tbl_slip_approve` VALUES (362, 97, 2, 43, 'Recommended', 3, '2023-02-27 00:00:00', '2023-02-27 15:23:22');
+INSERT INTO `tbl_slip_approve` VALUES (363, 97, 3, 29, 'Recommended', 4, '2023-02-27 00:00:00', '2023-02-27 15:31:45');
+INSERT INTO `tbl_slip_approve` VALUES (364, 97, 5, 28, 'Approved', 6, '2023-02-28 00:00:00', '2023-02-28 14:39:55');
+INSERT INTO `tbl_slip_approve` VALUES (365, 98, 1, 40, '', 1, '2023-03-29 00:00:00', '2023-03-29 10:08:50');
+INSERT INTO `tbl_slip_approve` VALUES (366, 98, 1, 42, '', 2, '2023-03-29 00:00:00', '2023-03-29 10:17:52');
+INSERT INTO `tbl_slip_approve` VALUES (367, 98, 2, 43, 'Recommended', 3, '2023-03-29 00:00:00', '2023-03-29 10:21:56');
+INSERT INTO `tbl_slip_approve` VALUES (368, 98, 3, 29, 'Recommended ', 4, '2023-03-29 00:00:00', '2023-03-29 10:58:10');
+INSERT INTO `tbl_slip_approve` VALUES (369, 98, 5, 28, ' Approved ', 6, '2023-03-30 00:00:00', '2023-03-30 08:33:25');
+INSERT INTO `tbl_slip_approve` VALUES (370, 99, 1, 40, '', 1, '2023-05-02 00:00:00', '2023-05-02 11:43:08');
+INSERT INTO `tbl_slip_approve` VALUES (371, 99, 1, 42, '', 2, '2023-05-02 00:00:00', '2023-05-02 11:53:00');
+INSERT INTO `tbl_slip_approve` VALUES (372, 99, 2, 43, 'Recommended ', 3, '2023-05-02 00:00:00', '2023-05-02 11:59:14');
+INSERT INTO `tbl_slip_approve` VALUES (373, 99, 3, 29, 'Recommended  ', 4, '2023-05-03 00:00:00', '2023-05-03 08:48:42');
+INSERT INTO `tbl_slip_approve` VALUES (374, 99, 5, 28, 'Approved  ', 6, '2023-05-03 00:00:00', '2023-05-03 09:18:56');
+INSERT INTO `tbl_slip_approve` VALUES (375, 100, 1, 40, '', 1, '2023-05-30 00:00:00', '2023-05-30 13:07:02');
+INSERT INTO `tbl_slip_approve` VALUES (376, 100, 1, 42, '', 2, '2023-05-30 00:00:00', '2023-05-30 13:13:21');
+INSERT INTO `tbl_slip_approve` VALUES (377, 100, 2, 43, 'Recommended  ', 3, '2023-05-30 00:00:00', '2023-05-30 13:15:23');
+INSERT INTO `tbl_slip_approve` VALUES (378, 100, 3, 29, 'Recommended  ', 4, '2023-05-30 00:00:00', '2023-05-30 13:17:51');
+INSERT INTO `tbl_slip_approve` VALUES (379, 100, 5, 28, 'Approved  ', 6, '2023-05-30 00:00:00', '2023-05-30 14:50:43');
+INSERT INTO `tbl_slip_approve` VALUES (382, 103, 1, 40, '', 1, '2023-06-28 00:00:00', '2023-06-28 11:06:10');
+INSERT INTO `tbl_slip_approve` VALUES (383, 103, 1, 42, '', 2, '2023-06-28 00:00:00', '2023-06-28 11:11:43');
+INSERT INTO `tbl_slip_approve` VALUES (384, 103, 2, 43, 'Recommended ', 3, '2023-06-28 00:00:00', '2023-06-28 11:17:20');
+INSERT INTO `tbl_slip_approve` VALUES (385, 103, 3, 29, ' Recommended ', 4, '2023-06-28 00:00:00', '2023-06-28 14:43:02');
+INSERT INTO `tbl_slip_approve` VALUES (386, 103, 5, 28, 'Approved ', 6, '2023-06-28 00:00:00', '2023-06-28 14:52:55');
+INSERT INTO `tbl_slip_approve` VALUES (387, 104, 1, 40, '', 1, '2023-08-03 00:00:00', '2023-08-03 08:43:15');
+INSERT INTO `tbl_slip_approve` VALUES (388, 104, 1, 42, '', 2, '2023-08-03 00:00:00', '2023-08-03 08:47:51');
+INSERT INTO `tbl_slip_approve` VALUES (389, 104, 2, 43, 'Recommended ', 3, '2023-08-03 00:00:00', '2023-08-03 08:58:42');
+INSERT INTO `tbl_slip_approve` VALUES (390, 104, 3, 29, ' Recommended ', 4, '2023-08-03 00:00:00', '2023-08-03 09:50:32');
+INSERT INTO `tbl_slip_approve` VALUES (391, 104, 5, 28, ' Approved  ', 6, '2023-08-03 00:00:00', '2023-08-03 11:56:58');
+INSERT INTO `tbl_slip_approve` VALUES (398, 106, 2, 43, 'Recommended  ', 3, '2023-09-04 00:00:00', '2023-09-04 13:41:36');
+INSERT INTO `tbl_slip_approve` VALUES (397, 106, 1, 42, '', 2, '2023-09-04 00:00:00', '2023-09-04 13:38:39');
+INSERT INTO `tbl_slip_approve` VALUES (396, 106, 1, 40, '', 1, '2023-09-04 00:00:00', '2023-09-04 13:34:25');
+INSERT INTO `tbl_slip_approve` VALUES (399, 106, 3, 29, 'Recommended   ', 4, '2023-09-04 00:00:00', '2023-09-04 13:44:03');
+INSERT INTO `tbl_slip_approve` VALUES (400, 106, 5, 28, ' Approved', 6, '2023-09-05 00:00:00', '2023-09-05 08:57:16');
+INSERT INTO `tbl_slip_approve` VALUES (401, 107, 1, 40, '', 1, '2023-10-02 00:00:00', '2023-10-02 14:05:40');
+INSERT INTO `tbl_slip_approve` VALUES (402, 107, 1, 42, '', 2, '2023-10-02 00:00:00', '2023-10-02 14:16:14');
+INSERT INTO `tbl_slip_approve` VALUES (403, 107, 2, 43, 'Recommended  ', 3, '2023-10-02 00:00:00', '2023-10-02 14:19:28');
+INSERT INTO `tbl_slip_approve` VALUES (404, 107, 3, 29, 'Recommended', 4, '2023-10-02 00:00:00', '2023-10-02 14:36:15');
+INSERT INTO `tbl_slip_approve` VALUES (405, 107, 5, 28, ' Approved ', 6, '2023-10-02 00:00:00', '2023-10-02 15:45:55');
+INSERT INTO `tbl_slip_approve` VALUES (406, 108, 1, 40, '', 1, '2023-11-14 00:00:00', '2023-11-14 09:51:45');
+INSERT INTO `tbl_slip_approve` VALUES (407, 108, 1, 42, '', 2, '2023-11-14 00:00:00', '2023-11-14 10:04:25');
+INSERT INTO `tbl_slip_approve` VALUES (408, 108, 2, 43, 'Recommended ', 3, '2023-11-14 00:00:00', '2023-11-14 10:06:36');
+INSERT INTO `tbl_slip_approve` VALUES (409, 108, 3, 29, 'Recommended ', 4, '2023-11-14 00:00:00', '2023-11-14 15:06:29');
+INSERT INTO `tbl_slip_approve` VALUES (410, 108, 5, 28, 'Approved', 6, '2023-11-14 00:00:00', '2023-11-14 15:46:30');
+INSERT INTO `tbl_slip_approve` VALUES (417, 110, 2, 43, 'Recommended ', 3, '2023-12-19 00:00:00', '2023-12-19 10:05:23');
+INSERT INTO `tbl_slip_approve` VALUES (416, 110, 1, 42, '', 2, '2023-12-19 00:00:00', '2023-12-19 10:02:33');
+INSERT INTO `tbl_slip_approve` VALUES (415, 110, 1, 54, '', 1, '2023-12-19 00:00:00', '2023-12-19 09:51:03');
+INSERT INTO `tbl_slip_approve` VALUES (418, 110, 3, 55, 'Recommended ', 4, '2023-12-19 00:00:00', '2023-12-19 10:07:27');
+INSERT INTO `tbl_slip_approve` VALUES (419, 110, 5, 28, 'Approved ', 6, '2023-12-19 00:00:00', '2023-12-19 13:23:01');
+INSERT INTO `tbl_slip_approve` VALUES (420, 111, 1, 54, '', 1, '2023-12-28 00:00:00', '2023-12-28 13:52:22');
+INSERT INTO `tbl_slip_approve` VALUES (421, 111, 1, 42, '', 2, '2023-12-28 00:00:00', '2023-12-28 14:09:07');
+INSERT INTO `tbl_slip_approve` VALUES (422, 111, 2, 43, 'Recommended ', 3, '2023-12-28 00:00:00', '2023-12-28 14:27:02');
+INSERT INTO `tbl_slip_approve` VALUES (423, 111, 3, 55, 'Recommended', 4, '2023-12-28 00:00:00', '2023-12-28 14:32:17');
+INSERT INTO `tbl_slip_approve` VALUES (424, 111, 5, 28, 'Approved', 6, '2023-12-28 00:00:00', '2023-12-28 15:33:52');
+INSERT INTO `tbl_slip_approve` VALUES (425, 112, 1, 54, '', 1, '2024-03-07 00:00:00', '2024-03-07 15:18:08');
+INSERT INTO `tbl_slip_approve` VALUES (426, 112, 1, 56, '', 2, '2024-03-07 00:00:00', '2024-03-07 15:24:37');
+INSERT INTO `tbl_slip_approve` VALUES (427, 112, 2, 43, 'Recommended  ', 3, '2024-03-07 00:00:00', '2024-03-07 15:33:57');
+INSERT INTO `tbl_slip_approve` VALUES (428, 112, 3, 57, ' Recommended   ', 4, '2024-03-07 00:00:00', '2024-03-07 15:36:41');
+INSERT INTO `tbl_slip_approve` VALUES (429, 112, 5, 28, ' Approved ', 6, '2024-03-07 00:00:00', '2024-03-07 15:40:49');
+INSERT INTO `tbl_slip_approve` VALUES (430, 113, 1, 54, '', 1, '2024-03-18 00:00:00', '2024-03-18 12:04:37');
+INSERT INTO `tbl_slip_approve` VALUES (431, 113, 1, 56, '', 2, '2024-03-18 00:00:00', '2024-03-18 12:32:19');
+INSERT INTO `tbl_slip_approve` VALUES (432, 113, 2, 43, 'Recommended ', 3, '2024-03-18 00:00:00', '2024-03-18 12:38:07');
+INSERT INTO `tbl_slip_approve` VALUES (433, 113, 3, 57, ' Recommended ', 4, '2024-03-18 00:00:00', '2024-03-18 12:43:29');
+INSERT INTO `tbl_slip_approve` VALUES (434, 113, 5, 28, ' Approved', 6, '2024-03-18 00:00:00', '2024-03-18 14:07:58');
+INSERT INTO `tbl_slip_approve` VALUES (435, 114, 1, 54, '', 1, '2024-04-03 00:00:00', '2024-04-03 10:25:48');
+INSERT INTO `tbl_slip_approve` VALUES (436, 114, 1, 56, '', 2, '2024-04-03 00:00:00', '2024-04-03 10:32:58');
+INSERT INTO `tbl_slip_approve` VALUES (437, 114, 2, 43, 'Recommended', 3, '2024-04-03 00:00:00', '2024-04-03 10:36:44');
+INSERT INTO `tbl_slip_approve` VALUES (438, 114, 3, 57, ' Recommended', 4, '2024-04-03 00:00:00', '2024-04-03 10:40:58');
+INSERT INTO `tbl_slip_approve` VALUES (439, 114, 5, 28, 'Approved   ', 6, '2024-04-03 00:00:00', '2024-04-03 10:57:01');
+INSERT INTO `tbl_slip_approve` VALUES (440, 115, 1, 54, '', 1, '2024-05-02 00:00:00', '2024-05-02 08:59:41');
+INSERT INTO `tbl_slip_approve` VALUES (441, 115, 1, 56, '', 2, '2024-05-02 00:00:00', '2024-05-02 09:09:01');
+INSERT INTO `tbl_slip_approve` VALUES (442, 115, 2, 58, 'Recommended  ', 3, '2024-05-02 00:00:00', '2024-05-02 09:13:13');
+INSERT INTO `tbl_slip_approve` VALUES (443, 115, 3, 57, 'Recommended  ', 4, '2024-05-02 00:00:00', '2024-05-02 09:15:55');
+INSERT INTO `tbl_slip_approve` VALUES (444, 115, 5, 28, 'Approved', 6, '2024-05-02 00:00:00', '2024-05-02 09:52:56');
+INSERT INTO `tbl_slip_approve` VALUES (445, 116, 1, 54, '', 1, '2024-05-31 00:00:00', '2024-05-31 09:24:09');
+INSERT INTO `tbl_slip_approve` VALUES (446, 116, 1, 56, '', 2, '2024-05-31 00:00:00', '2024-05-31 09:34:34');
+INSERT INTO `tbl_slip_approve` VALUES (447, 116, 2, 58, 'Recommended ', 3, '2024-05-31 00:00:00', '2024-05-31 09:37:26');
+INSERT INTO `tbl_slip_approve` VALUES (448, 116, 3, 57, 'Recommended ', 4, '2024-05-31 00:00:00', '2024-05-31 09:39:49');
+INSERT INTO `tbl_slip_approve` VALUES (449, 116, 5, 28, 'Approved', 6, '2024-05-31 00:00:00', '2024-05-31 09:43:09');
+INSERT INTO `tbl_slip_approve` VALUES (450, 117, 1, 54, '', 1, '2024-07-04 00:00:00', '2024-07-04 09:11:19');
+INSERT INTO `tbl_slip_approve` VALUES (451, 117, 1, 56, '', 2, '2024-07-04 00:00:00', '2024-07-04 09:16:28');
+INSERT INTO `tbl_slip_approve` VALUES (452, 117, 2, 58, 'Recommended', 3, '2024-07-04 00:00:00', '2024-07-04 09:18:42');
+INSERT INTO `tbl_slip_approve` VALUES (453, 117, 3, 57, ' Recommended ', 4, '2024-07-04 00:00:00', '2024-07-04 09:24:28');
+INSERT INTO `tbl_slip_approve` VALUES (454, 117, 5, 28, 'Approved', 6, '2024-07-04 00:00:00', '2024-07-04 09:29:26');
+INSERT INTO `tbl_slip_approve` VALUES (455, 118, 1, 54, '', 1, '2024-07-04 00:00:00', '2024-07-04 17:00:32');
+INSERT INTO `tbl_slip_approve` VALUES (456, 118, 1, 56, '', 2, '2024-07-04 00:00:00', '2024-07-04 17:04:41');
+INSERT INTO `tbl_slip_approve` VALUES (457, 118, 2, 58, 'Recommended  ', 3, '2024-07-04 00:00:00', '2024-07-04 17:08:56');
+INSERT INTO `tbl_slip_approve` VALUES (458, 118, 3, 57, 'Recommended  ', 4, '2024-07-04 00:00:00', '2024-07-04 17:11:30');
+INSERT INTO `tbl_slip_approve` VALUES (459, 118, 5, 28, 'Approved', 6, '2024-07-04 00:00:00', '2024-07-04 17:13:59');
+INSERT INTO `tbl_slip_approve` VALUES (460, 119, 1, 54, '', 1, '2024-07-04 00:00:00', '2024-07-04 18:28:44');
+INSERT INTO `tbl_slip_approve` VALUES (461, 119, 1, 56, '', 2, '2024-07-04 00:00:00', '2024-07-04 18:32:53');
+INSERT INTO `tbl_slip_approve` VALUES (462, 119, 2, 58, 'Recommended', 3, '2024-07-04 00:00:00', '2024-07-04 18:35:24');
+INSERT INTO `tbl_slip_approve` VALUES (463, 119, 3, 57, 'Recommended', 4, '2024-07-04 00:00:00', '2024-07-04 18:37:52');
+INSERT INTO `tbl_slip_approve` VALUES (464, 119, 5, 28, 'Approved ', 6, '2024-07-04 00:00:00', '2024-07-04 18:41:00');
+INSERT INTO `tbl_slip_approve` VALUES (465, 120, 1, 54, '', 1, '2024-10-03 00:00:00', '2024-10-03 16:18:58');
+INSERT INTO `tbl_slip_approve` VALUES (466, 120, 1, 56, '', 2, '2024-10-03 00:00:00', '2024-10-03 16:25:08');
+INSERT INTO `tbl_slip_approve` VALUES (467, 120, 2, 43, 'Recommended  ', 3, '2024-10-03 00:00:00', '2024-10-03 16:27:26');
+INSERT INTO `tbl_slip_approve` VALUES (468, 120, 3, 57, 'Recommended ', 4, '2024-10-03 00:00:00', '2024-10-03 16:36:58');
+INSERT INTO `tbl_slip_approve` VALUES (469, 120, 5, 28, 'Approved ', 6, '2024-10-04 00:00:00', '2024-10-04 08:46:39');
+INSERT INTO `tbl_slip_approve` VALUES (470, 121, 1, 54, '', 1, '2024-10-07 00:00:00', '2024-10-07 09:47:00');
+INSERT INTO `tbl_slip_approve` VALUES (471, 121, 1, 56, '', 2, '2024-10-07 00:00:00', '2024-10-07 09:56:25');
+INSERT INTO `tbl_slip_approve` VALUES (472, 121, 2, 43, 'Recommended  ', 3, '2024-10-07 00:00:00', '2024-10-07 10:05:34');
+INSERT INTO `tbl_slip_approve` VALUES (473, 121, 3, 57, 'Recommended  ', 4, '2024-10-07 00:00:00', '2024-10-07 10:11:18');
+INSERT INTO `tbl_slip_approve` VALUES (474, 121, 5, 28, ' Approved', 6, '2024-10-07 00:00:00', '2024-10-07 10:26:39');
+INSERT INTO `tbl_slip_approve` VALUES (475, 122, 1, 59, '', 1, '2024-12-11 00:00:00', '2024-12-11 16:24:02');
+INSERT INTO `tbl_slip_approve` VALUES (476, 123, 1, 59, '', 1, '2024-12-12 00:00:00', '2024-12-12 14:11:00');
+INSERT INTO `tbl_slip_approve` VALUES (477, 124, 1, 59, '', 1, '2024-12-12 00:00:00', '2024-12-12 14:15:24');
+
+-- ----------------------------
+-- Table structure for tbl_slip_gen
+-- ----------------------------
+DROP TABLE IF EXISTS `tbl_slip_gen`;
+CREATE TABLE `tbl_slip_gen`  (
+  `slip_gen_id` int NOT NULL AUTO_INCREMENT,
+  `slip_year` int NULL DEFAULT NULL,
+  `slip_month` int NULL DEFAULT NULL,
+  `slip_date` date NULL DEFAULT NULL,
+  `bank_acc` int NULL DEFAULT NULL,
+  `paid_strength` varchar(255) CHARACTER SET latin1 COLLATE latin1_swedish_ci NULL DEFAULT NULL,
+  `paid_amount` varchar(255) CHARACTER SET latin1 COLLATE latin1_swedish_ci NULL DEFAULT NULL,
+  `approval_status` int NULL DEFAULT NULL,
+  `create_date` datetime(0) NULL DEFAULT NULL,
+  `create_user` int NULL DEFAULT NULL,
+  PRIMARY KEY (`slip_gen_id`) USING BTREE
+) ENGINE = MyISAM AUTO_INCREMENT = 126 CHARACTER SET = latin1 COLLATE = latin1_swedish_ci ROW_FORMAT = DYNAMIC;
+
+-- ----------------------------
+-- Records of tbl_slip_gen
+-- ----------------------------
+INSERT INTO `tbl_slip_gen` VALUES (1, 2018, 1, '2018-02-01', 0, '35446', '26584500', 4, '2018-02-28 00:00:00', 3);
+INSERT INTO `tbl_slip_gen` VALUES (2, 2018, 2, '2018-03-08', 0, '35304', '26478000', 4, '2018-03-08 00:00:00', 3);
+INSERT INTO `tbl_slip_gen` VALUES (4, 2018, 3, '2018-03-26', 0, '35504', '26628000', 4, '2018-03-26 00:00:00', 3);
+INSERT INTO `tbl_slip_gen` VALUES (5, 2018, 4, '2018-04-09', 0, '35516', '26637000', 4, '2018-04-09 00:00:00', 3);
+INSERT INTO `tbl_slip_gen` VALUES (6, 2018, 5, '2018-05-23', 0, '35578', '26683500', 4, '2018-05-23 00:00:00', 4);
+INSERT INTO `tbl_slip_gen` VALUES (7, 2018, 6, '2018-06-22', 0, '35663', '26747250', 4, '2018-06-22 00:00:00', 4);
+INSERT INTO `tbl_slip_gen` VALUES (9, 2018, 7, '2018-07-24', 0, '35660', '26745750', 4, '2018-07-24 00:00:00', 4);
+INSERT INTO `tbl_slip_gen` VALUES (10, 2018, 8, '2018-08-27', 0, '35547', '26,660,250.00', 4, '2018-08-27 00:00:00', 4);
+INSERT INTO `tbl_slip_gen` VALUES (11, 2018, 9, '2018-09-26', 0, '35584', '26,688,000.00', 4, '2018-09-26 00:00:00', 4);
+INSERT INTO `tbl_slip_gen` VALUES (12, 2018, 10, '2018-11-12', 0, '35669', '26,751,750.00', 4, '2018-11-08 00:00:00', 4);
+INSERT INTO `tbl_slip_gen` VALUES (13, 2018, 11, '2018-12-04', 0, '35773', '26,829,750.00', 4, '2018-12-04 00:00:00', 4);
+INSERT INTO `tbl_slip_gen` VALUES (14, 2018, 12, '2018-12-31', 0, '35842', '26,881,500.00', 4, '2018-12-31 00:00:00', 5);
+INSERT INTO `tbl_slip_gen` VALUES (15, 2019, 1, '2019-01-29', 0, '35861', '26,895,750.00', 4, '2019-01-29 00:00:00', 4);
+INSERT INTO `tbl_slip_gen` VALUES (16, 2019, 2, '2019-03-19', 0, '35943', '26,957,250.00', 4, '2019-03-19 00:00:00', 4);
+INSERT INTO `tbl_slip_gen` VALUES (17, 2019, 3, '2019-04-16', 0, '35992', '26,994,000.00', 4, '2019-04-16 00:00:00', 5);
+INSERT INTO `tbl_slip_gen` VALUES (18, 2019, 4, '2019-05-28', 0, '36041', '27,030,750.00', 4, '2019-05-28 00:00:00', 4);
+INSERT INTO `tbl_slip_gen` VALUES (20, 2019, 5, '2019-06-25', 0, '36051', '27,038,250.00', 4, '2019-06-13 00:00:00', 4);
+INSERT INTO `tbl_slip_gen` VALUES (22, 2019, 6, '2019-07-30', 0, '36083', '27,062,250.00', 4, '2019-07-30 00:00:00', 5);
+INSERT INTO `tbl_slip_gen` VALUES (23, 2019, 7, '2019-08-26', 0, '36131', '27,098,250.00', 4, '2019-08-26 00:00:00', 17);
+INSERT INTO `tbl_slip_gen` VALUES (24, 2019, 8, '2019-10-04', 0, '36198', '27,148,500.00', 4, '2019-10-04 00:00:00', 4);
+INSERT INTO `tbl_slip_gen` VALUES (25, 2019, 9, '2019-10-22', 0, '36216', '27,162,000.00', 4, '2019-10-22 00:00:00', 4);
+INSERT INTO `tbl_slip_gen` VALUES (26, 2019, 10, '2019-11-06', 0, '36228', '27,171,000.00', 4, '2019-11-06 00:00:00', 5);
+INSERT INTO `tbl_slip_gen` VALUES (30, 2019, 11, '2019-12-18', 0, '36243', '27,182,250.00', 4, '2019-12-18 00:00:00', 3);
+INSERT INTO `tbl_slip_gen` VALUES (31, 2019, 12, '2019-12-31', 0, '36268', '27,201,000.00', 4, '2019-12-31 00:00:00', 4);
+INSERT INTO `tbl_slip_gen` VALUES (32, 2020, 1, '2020-01-31', 0, '36286', '27,214,500.00', 4, '2020-01-31 00:00:00', 3);
+INSERT INTO `tbl_slip_gen` VALUES (33, 2020, 2, '2020-03-12', 0, '36324', '27,243,000.00', 4, '2020-03-12 00:00:00', 4);
+INSERT INTO `tbl_slip_gen` VALUES (34, 2020, 3, '2020-03-30', 0, '36324', '27,243,000.00', 4, '2020-03-30 00:00:00', 17);
+INSERT INTO `tbl_slip_gen` VALUES (35, 2020, 4, '2020-05-26', 0, '36324', '27,243,000.00', 4, '2020-05-26 00:00:00', 4);
+INSERT INTO `tbl_slip_gen` VALUES (36, 2020, 5, '2020-06-19', 0, '36328', '27,246,000.00', 4, '2020-06-19 00:00:00', 4);
+INSERT INTO `tbl_slip_gen` VALUES (37, 2020, 6, '2020-07-22', 0, '36291', '27,218,250.00', 4, '2020-07-22 00:00:00', 4);
+INSERT INTO `tbl_slip_gen` VALUES (38, 2020, 7, '2

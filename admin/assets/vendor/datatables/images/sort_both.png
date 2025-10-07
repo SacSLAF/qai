@@ -1,0 +1,10 @@
+'2021-03-02', '2021-03-02 13:00:37');
+INSERT INTO `tbl_approved` VALUES (13452, 41447, 2, 37, ' Recommended', 3, 1, '2021-03-02', '2021-03-02 13:24:17');
+INSERT INTO `tbl_approved` VALUES (13453, 41476, 2, 37, ' Recommended', 3, 1, '2021-03-02', '2021-03-02 13:25:32');
+INSERT INTO `tbl_approved` VALUES (13454, 41473, 2, 37, ' Recommended', 3, 1, '2021-03-02', '2021-03-02 13:29:52');
+INSERT INTO `tbl_approved` VALUES (13455, 27551, 2, 37, ' Recommended', 3, 1, '2021-03-02', '2021-03-02 13:33:53');
+INSERT INTO `tbl_approved` VALUES (13456, 41423, 2, 37, ' Recommended', 3, 1, '2021-03-02', '2021-03-02 13:35:36');
+INSERT INTO `tbl_approved` VALUES (13457, 41472, 2, 37, ' Recommended', 3, 1, '2021-03-02', '2021-03-02 13:38:52');
+INSERT INTO `tbl_approved` VALUES (13458, 41471, 2, 37, ' Recommended', 3, 1, '2021-03-02', '2021-03-02 13:41:17');
+INSERT INTO `tbl_approved` VALUES (13459, 41470, 2, 37, ' Recommended', 3, 1, '2021-03-02', '2021-03-02 13:43:45');
+INSERT INTO `tbl_approved` VALUES (13460, 41479, 2, 37, ' Recommended', 3, 1, '2021-03-02', '2021-03-02 13:45:35

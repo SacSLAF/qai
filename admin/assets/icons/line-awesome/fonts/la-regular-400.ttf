@@ -1,0 +1,339 @@
+310, 'ARMY HQ', '25', 1, '2011-09-01 16:44:15');
+INSERT INTO `sup_tbl_units` VALUES (311, 'SLMA', '26', 1, '2011-09-02 09:03:11');
+INSERT INTO `sup_tbl_units` VALUES (312, 'NCC', '27', 1, '2011-09-02 09:37:34');
+INSERT INTO `sup_tbl_units` VALUES (313, 'SLAVF', '29', 1, '2011-09-02 09:47:51');
+INSERT INTO `sup_tbl_units` VALUES (314, '1 MEC INF', '12', 1, '2011-09-02 10:00:57');
+INSERT INTO `sup_tbl_units` VALUES (315, 'RHQ MEC INF', '12', 1, '2011-09-02 10:01:18');
+INSERT INTO `sup_tbl_units` VALUES (316, '2 MEC INF', '12', 1, '2011-09-02 10:01:39');
+INSERT INTO `sup_tbl_units` VALUES (317, '3 MEC INF', '12', 1, '2011-09-02 10:01:59');
+INSERT INTO `sup_tbl_units` VALUES (318, '4 MEC INF', '12', 1, '2011-09-02 10:02:21');
+INSERT INTO `sup_tbl_units` VALUES (319, '5 (V)  MEC INF', '12', 1, '2011-09-02 10:02:41');
+INSERT INTO `sup_tbl_units` VALUES (320, '4 RFT BN SLSR', '12', 1, '2011-09-02 10:18:51');
+INSERT INTO `sup_tbl_units` VALUES (321, '1 SLLI', '5', 1, '2011-09-02 10:44:36');
+INSERT INTO `sup_tbl_units` VALUES (322, '15 (V) GW', '8', 1, '2011-09-21 15:44:55');
+INSERT INTO `sup_tbl_units` VALUES (323, '21 (V) GW', '8', 1, '2011-09-21 15:45:08');
+INSERT INTO `sup_tbl_units` VALUES (324, '5 GW', '8', 1, '2011-09-21 15:47:19');
+INSERT INTO `sup_tbl_units` VALUES (325, '17 GW', '8', 1, '2011-09-21 15:47:49');
+INSERT INTO `sup_tbl_units` VALUES (326, '18 GW', '8', 1, '2011-09-21 15:48:07');
+INSERT INTO `sup_tbl_units` VALUES (327, '19 GW', '8', 1, '2011-09-21 15:48:22');
+INSERT INTO `sup_tbl_units` VALUES (328, '26 GW', '8', 1, '2011-09-21 15:48:39');
+INSERT INTO `sup_tbl_units` VALUES (329, '27 GW', '8', 1, '2011-09-21 15:48:59');
+INSERT INTO `sup_tbl_units` VALUES (330, 'RFT Bn GW', '8', 1, '2011-09-21 15:49:55');
+INSERT INTO `sup_tbl_units` VALUES (331, '22 SLSR', '6', 1, '2011-09-27 09:56:07');
+INSERT INTO `sup_tbl_units` VALUES (332, '6 (V) SLAGSC', '20', 1, '2011-09-28 11:28:42');
+INSERT INTO `sup_tbl_units` VALUES (333, '10SLSC', '4', 1, '2012-04-18 07:45:25');
+INSERT INTO `sup_tbl_units` VALUES (334, 'KDU', '30', 1, '2012-05-11 10:50:45');
+INSERT INTO `sup_tbl_units` VALUES (335, '11 ESR', '14', 1, '2012-06-05 12:04:53');
+INSERT INTO `sup_tbl_units` VALUES (336, '7 SLASC', '15', 1, '2012-06-07 11:41:01');
+INSERT INTO `sup_tbl_units` VALUES (337, '1 SLEME', '18', 1, '2012-06-18 07:39:36');
+INSERT INTO `sup_tbl_units` VALUES (338, '3 SLEME', '18', 1, '2012-06-18 07:39:47');
+INSERT INTO `sup_tbl_units` VALUES (339, '4 SLEME', '18', 1, '2012-06-18 07:40:48');
+INSERT INTO `sup_tbl_units` VALUES (340, '6 SLEME', '18', 1, '2012-06-18 07:40:57');
+INSERT INTO `sup_tbl_units` VALUES (341, '7 SLEME', '18', 1, '2012-06-18 07:41:08');
+INSERT INTO `sup_tbl_units` VALUES (342, 'sleme_bwksp_cbo', '18', 1, '2012-06-18 10:49:03');
+INSERT INTO `sup_tbl_units` VALUES (343, 'sleme_bwksp_ktb', '18', 1, '2012-06-18 10:49:29');
+INSERT INTO `sup_tbl_units` VALUES (344, 'sleme_bwksp_udw', '18', 1, '2012-06-18 10:49:44');
+INSERT INTO `sup_tbl_units` VALUES (345, 'eme_arty_wksp', '18', 1, '2012-06-18 10:50:08');
+INSERT INTO `sup_tbl_units` VALUES (346, 'eme_sch', '18', 1, '2012-06-18 10:50:28');
+INSERT INTO `sup_tbl_units` VALUES (347, '7 MIC', '13', 1, '2012-11-05 16:03:37');
+INSERT INTO `sup_tbl_units` VALUES (348, 'AHQ', '8', 1, '2012-12-17 14:46:04');
+INSERT INTO `sup_tbl_units` VALUES (349, 'RHQ GW', '8', 1, '2012-12-17 14:58:14');
+INSERT INTO `sup_tbl_units` VALUES (350, 'Regt HQ bn', '5', 1, '2013-02-22 09:27:08');
+INSERT INTO `sup_tbl_units` VALUES (351, 'Regt HQ bn', '6', 1, '2013-02-22 09:27:21');
+INSERT INTO `sup_tbl_units` VALUES (352, 'Regt HQ bn', '8', 1, '2013-02-22 09:27:34');
+INSERT INTO `sup_tbl_units` VALUES (353, 'Regt HQ bn', '7', 1, '2013-02-22 09:27:43');
+INSERT INTO `sup_tbl_units` VALUES (354, 'Regt HQ bn', '9', 1, '2013-02-22 09:27:55');
+INSERT INTO `sup_tbl_units` VALUES (355, 'Regt HQ bn', '10', 1, '2013-02-22 09:28:05');
+INSERT INTO `sup_tbl_units` VALUES (356, 'Regt HQ bn', '11', 1, '2013-02-22 09:28:13');
+INSERT INTO `sup_tbl_units` VALUES (357, 'Regt HQ bn', '22', 1, '2013-02-22 09:28:39');
+INSERT INTO `sup_tbl_units` VALUES (358, '6 SLCMP', '19', 1, '2013-03-06 11:27:15');
+INSERT INTO `sup_tbl_units` VALUES (359, '7 SLAGSC', '20', 1, '2013-03-13 17:29:02');
+INSERT INTO `sup_tbl_units` VALUES (360, 'RFT Sqn', '1', 1, '2013-07-15 09:08:02');
+INSERT INTO `sup_tbl_units` VALUES (361, 'DOS', '17', 1, '2013-11-07 11:03:38');
+INSERT INTO `sup_tbl_units` VALUES (362, 'BOD', '17', 1, '2013-11-07 11:04:47');
+INSERT INTO `sup_tbl_units` VALUES (363, 'CAAD', '17', 1, '2013-11-07 11:05:11');
+INSERT INTO `sup_tbl_units` VALUES (364, 'SCHOOL', '17', 1, '2013-11-07 11:05:41');
+INSERT INTO `sup_tbl_units` VALUES (365, 'ACD', '17', 1, '2013-11-07 11:06:39');
+INSERT INTO `sup_tbl_units` VALUES (366, '5 SLAOC', '17', 1, '2013-11-07 11:08:52');
+INSERT INTO `sup_tbl_units` VALUES (367, '6 SLAOC', '17', 1, '2013-11-07 11:09:41');
+INSERT INTO `sup_tbl_units` VALUES (368, '7 SLAOC', '17', 1, '2013-11-07 11:10:24');
+INSERT INTO `sup_tbl_units` VALUES (369, '2 SLAOC', '17', 1, '2013-11-09 13:01:25');
+INSERT INTO `sup_tbl_units` VALUES (370, '16 ESR', '14', 1, '2013-11-11 10:04:07');
+INSERT INTO `sup_tbl_units` VALUES (371, '15(V) SLE', '3', 1, '2015-04-02 15:58:20');
+INSERT INTO `sup_tbl_units` VALUES (372, '17 ESR', '14', 1, '2015-06-10 11:46:23');
+INSERT INTO `sup_tbl_units` VALUES (373, '8 SLASC', '15', 1, '2015-06-15 15:05:16');
+INSERT INTO `sup_tbl_units` VALUES (374, '7 SLCMP', '19', 1, '2016-03-17 11:42:59');
+INSERT INTO `sup_tbl_units` VALUES (375, 'Army Industrial Workshop (EME)', '18', 1, '2016-06-09 15:59:00');
+INSERT INTO `sup_tbl_units` VALUES (376, '2 SLAPC', '23', 1, '2017-04-24 14:33:24');
+INSERT INTO `sup_tbl_units` VALUES (377, 'RHQ SLAPC', '23', 1, '2017-04-24 14:57:03');
+INSERT INTO `sup_tbl_units` VALUES (378, '3 SLLI', '5', 1, '2018-07-10 15:13:34');
+INSERT INTO `sup_tbl_units` VALUES (379, '22 SLLI', '5', 1, '2019-01-02 15:25:47');
+
+-- ----------------------------
+-- Table structure for sup_tbl_user_levels
+-- ----------------------------
+DROP TABLE IF EXISTS `sup_tbl_user_levels`;
+CREATE TABLE `sup_tbl_user_levels`  (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `user_level` varchar(100) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL,
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 6 CHARACTER SET = latin1 COLLATE = latin1_swedish_ci ROW_FORMAT = DYNAMIC;
+
+-- ----------------------------
+-- Records of sup_tbl_user_levels
+-- ----------------------------
+INSERT INTO `sup_tbl_user_levels` VALUES (1, 'Operator');
+INSERT INTO `sup_tbl_user_levels` VALUES (2, 'Section Head');
+INSERT INTO `sup_tbl_user_levels` VALUES (3, 'Chairperson');
+INSERT INTO `sup_tbl_user_levels` VALUES (4, 'admin');
+INSERT INTO `sup_tbl_user_levels` VALUES (5, 'Accountant');
+
+-- ----------------------------
+-- Table structure for sup_tbl_user_log
+-- ----------------------------
+DROP TABLE IF EXISTS `sup_tbl_user_log`;
+CREATE TABLE `sup_tbl_user_log`  (
+  `log_id` int NOT NULL AUTO_INCREMENT,
+  `user_id` int NOT NULL,
+  `log_time` datetime(0) NOT NULL,
+  `log_out_time` datetime(0) NOT NULL,
+  PRIMARY KEY (`log_id`) USING BTREE
+) ENGINE = MyISAM AUTO_INCREMENT = 11333 CHARACTER SET = latin1 COLLATE = latin1_swedish_ci ROW_FORMAT = FIXED;
+
+-- ----------------------------
+-- Records of sup_tbl_user_log
+-- ----------------------------
+INSERT INTO `sup_tbl_user_log` VALUES (1, 20, '2018-12-14 04:45:12', '0000-00-00 00:00:00');
+INSERT INTO `sup_tbl_user_log` VALUES (2, 21, '2018-12-14 04:50:27', '2018-12-14 05:43:54');
+INSERT INTO `sup_tbl_user_log` VALUES (3, 4, '2018-12-14 05:07:47', '0000-00-00 00:00:00');
+INSERT INTO `sup_tbl_user_log` VALUES (4, 22, '2018-12-14 05:44:44', '0000-00-00 00:00:00');
+INSERT INTO `sup_tbl_user_log` VALUES (5, 17, '2018-12-14 06:02:47', '2018-12-14 07:00:00');
+INSERT INTO `sup_tbl_user_log` VALUES (6, 21, '2018-12-14 06:12:10', '2018-12-14 06:20:37');
+INSERT INTO `sup_tbl_user_log` VALUES (7, 22, '2018-12-14 06:21:59', '0000-00-00 00:00:00');
+INSERT INTO `sup_tbl_user_log` VALUES (8, 17, '2018-12-14 06:58:43', '2018-12-14 07:38:09');
+INSERT INTO `sup_tbl_user_log` VALUES (9, 4, '2018-12-14 07:00:16', '2018-12-14 07:37:55');
+INSERT INTO `sup_tbl_user_log` VALUES (10, 17, '2018-12-14 07:38:01', '0000-00-00 00:00:00');
+INSERT INTO `sup_tbl_user_log` VALUES (11, 21, '2018-12-14 09:43:26', '2018-12-14 11:35:32');
+INSERT INTO `sup_tbl_user_log` VALUES (12, 5, '2018-12-17 04:02:39', '0000-00-00 00:00:00');
+INSERT INTO `sup_tbl_user_log` VALUES (13, 17, '2018-12-17 04:17:25', '0000-00-00 00:00:00');
+INSERT INTO `sup_tbl_user_log` VALUES (14, 5, '2018-12-17 05:43:46', '0000-00-00 00:00:00');
+INSERT INTO `sup_tbl_user_log` VALUES (15, 4, '2018-12-17 05:56:05', '0000-00-00 00:00:00');
+INSERT INTO `sup_tbl_user_log` VALUES (16, 5, '2018-12-17 08:06:52', '2018-12-17 11:34:33');
+INSERT INTO `sup_tbl_user_log` VALUES (17, 17, '2018-12-17 08:11:18', '0000-00-00 00:00:00');
+INSERT INTO `sup_tbl_user_log` VALUES (18, 17, '2018-12-17 11:00:54', '0000-00-00 00:00:00');
+INSERT INTO `sup_tbl_user_log` VALUES (19, 5, '2018-12-17 11:36:14', '0000-00-00 00:00:00');
+INSERT INTO `sup_tbl_user_log` VALUES (20, 17, '2018-12-18 04:00:48', '2018-12-18 08:41:43');
+INSERT INTO `sup_tbl_user_log` VALUES (21, 5, '2018-12-18 04:05:38', '2018-12-18 11:45:24');
+INSERT INTO `sup_tbl_user_log` VALUES (22, 20, '2018-12-18 04:30:43', '0000-00-00 00:00:00');
+INSERT INTO `sup_tbl_user_log` VALUES (23, 21, '2018-12-18 04:40:54', '0000-00-00 00:00:00');
+INSERT INTO `sup_tbl_user_log` VALUES (24, 4, '2018-12-18 06:17:23', '0000-00-00 00:00:00');
+INSERT INTO `sup_tbl_user_log` VALUES (25, 21, '2018-12-18 07:26:11', '0000-00-00 00:00:00');
+INSERT INTO `sup_tbl_user_log` VALUES (26, 17, '2018-12-18 09:03:47', '0000-00-00 00:00:00');
+INSERT INTO `sup_tbl_user_log` VALUES (27, 4, '2018-12-18 09:36:48', '0000-00-00 00:00:00');
+INSERT INTO `sup_tbl_user_log` VALUES (28, 21, '2018-12-18 11:40:12', '2018-12-18 11:44:27');
+INSERT INTO `sup_tbl_user_log` VALUES (29, 5, '2018-12-19 03:56:05', '2018-12-19 11:33:46');
+INSERT INTO `sup_tbl_user_log` VALUES (30, 21, '2018-12-19 03:58:07', '0000-00-00 00:00:00');
+INSERT INTO `sup_tbl_user_log` VALUES (31, 17, '2018-12-19 03:59:10', '0000-00-00 00:00:00');
+INSERT INTO `sup_tbl_user_log` VALUES (32, 20, '2018-12-19 04:18:02', '0000-00-00 00:00:00');
+INSERT INTO `sup_tbl_user_log` VALUES (33, 4, '2018-12-19 04:27:08', '0000-00-00 00:00:00');
+INSERT INTO `sup_tbl_user_log` VALUES (34, 21, '2018-12-19 08:48:33', '2018-12-19 11:37:39');
+INSERT INTO `sup_tbl_user_log` VALUES (35, 4, '2018-12-19 09:15:17', '0000-00-00 00:00:00');
+INSERT INTO `sup_tbl_user_log` VALUES (36, 5, '2018-12-20 04:14:13', '2018-12-20 08:48:22');
+INSERT INTO `sup_tbl_user_log` VALUES (37, 20, '2018-12-20 04:20:32', '0000-00-00 00:00:00');
+INSERT INTO `sup_tbl_user_log` VALUES (38, 21, '2018-12-20 05:29:05', '0000-00-00 00:00:00');
+INSERT INTO `sup_tbl_user_log` VALUES (39, 4, '2018-12-20 07:07:14', '0000-00-00 00:00:00');
+INSERT INTO `sup_tbl_user_log` VALUES (40, 21, '2018-12-20 07:50:08', '0000-00-00 00:00:00');
+INSERT INTO `sup_tbl_user_log` VALUES (41, 5, '2018-12-20 08:50:00', '0000-00-00 00:00:00');
+INSERT INTO `sup_tbl_user_log` VALUES (42, 21, '2018-12-20 10:24:15', '2018-12-20 10:38:51');
+INSERT INTO `sup_tbl_user_log` VALUES (43, 21, '2018-12-20 11:02:01', '2018-12-20 11:37:57');
+INSERT INTO `sup_tbl_user_log` VALUES (44, 22, '2018-12-20 11:38:21', '2018-12-20 11:58:25');
+INSERT INTO `sup_tbl_user_log` VALUES (45, 20, '2018-12-21 04:02:47', '0000-00-00 00:00:00');
+INSERT INTO `sup_tbl_user_log` VALUES (46, 17, '2018-12-21 04:15:26', '0000-00-00 00:00:00');
+INSERT INTO `sup_tbl_user_log` VALUES (47, 4, '2018-12-21 04:46:08', '0000-00-00 00:00:00');
+INSERT INTO `sup_tbl_user_log` VALUES (48, 17, '2018-12-21 06:23:23', '0000-00-00 00:00:00');
+INSERT INTO `sup_tbl_user_log` VALUES (49, 4, '2018-12-21 10:14:53', '0000-00-00 00:00:00');
+INSERT INTO `sup_tbl_user_log` VALUES (50, 5, '2018-12-24 04:07:34', '0000-00-00 00:00:00');
+INSERT INTO `sup_tbl_user_log` VALUES (51, 20, '2018-12-24 04:59:53', '0000-00-00 00:00:00');
+INSERT INTO `sup_tbl_user_log` VALUES (52, 17, '2018-12-24 05:24:58', '0000-00-00 00:00:00');
+INSERT INTO `sup_tbl_user_log` VALUES (53, 5, '2018-12-24 09:49:52', '0000-00-00 00:00:00');
+INSERT INTO `sup_tbl_user_log` VALUES (54, 5, '2018-12-24 10:27:20', '2018-12-24 11:12:18');
+INSERT INTO `sup_tbl_user_log` VALUES (55, 4, '2018-12-26 04:03:47', '0000-00-00 00:00:00');
+INSERT INTO `sup_tbl_user_log` VALUES (56, 17, '2018-12-26 04:05:05', '2018-12-26 07:57:33');
+INSERT INTO `sup_tbl_user_log` VALUES (57, 21, '2018-12-26 05:20:34', '2018-12-26 11:50:05');
+INSERT INTO `sup_tbl_user_log` VALUES (58, 4, '2018-12-26 10:51:51', '2018-12-26 11:29:03');
+INSERT INTO `sup_tbl_user_log` VALUES (59, 5, '2018-12-27 04:15:45', '0000-00-00 00:00:00');
+INSERT INTO `sup_tbl_user_log` VALUES (60, 17, '2018-12-27 04:23:31', '0000-00-00 00:00:00');
+INSERT INTO `sup_tbl_user_log` VALUES (61, 5, '2018-12-27 05:24:48', '0000-00-00 00:00:00');
+INSERT INTO `sup_tbl_user_log` VALUES (62, 5, '2018-12-27 05:53:52', '0000-00-00 00:00:00');
+INSERT INTO `sup_tbl_user_log` VALUES (63, 17, '2018-12-27 05:55:16', '0000-00-00 00:00:00');
+INSERT INTO `sup_tbl_user_log` VALUES (64, 17, '2018-12-27 05:58:38', '0000-00-00 00:00:00');
+INSERT INTO `sup_tbl_user_log` VALUES (65, 21, '2018-12-27 06:25:36', '2018-12-27 07:05:05');
+INSERT INTO `sup_tbl_user_log` VALUES (66, 4, '2018-12-27 06:26:09', '0000-00-00 00:00:00');
+INSERT INTO `sup_tbl_user_log` VALUES (67, 1, '2018-12-27 07:05:15', '2018-12-27 07:05:29');
+INSERT INTO `sup_tbl_user_log` VALUES (68, 5, '2018-12-27 07:28:22', '2018-12-27 11:49:11');
+INSERT INTO `sup_tbl_user_log` VALUES (69, 21, '2018-12-27 07:50:09', '0000-00-00 00:00:00');
+INSERT INTO `sup_tbl_user_log` VALUES (70, 17, '2018-12-28 04:05:23', '0000-00-00 00:00:00');
+INSERT INTO `sup_tbl_user_log` VALUES (71, 4, '2018-12-28 04:30:57', '0000-00-00 00:00:00');
+INSERT INTO `sup_tbl_user_log` VALUES (72, 21, '2018-12-28 04:35:40', '0000-00-00 00:00:00');
+INSERT INTO `sup_tbl_user_log` VALUES (73, 17, '2018-12-28 05:04:06', '0000-00-00 00:00:00');
+INSERT INTO `sup_tbl_user_log` VALUES (74, 4, '2018-12-28 05:24:15', '0000-00-00 00:00:00');
+INSERT INTO `sup_tbl_user_log` VALUES (75, 17, '2018-12-28 06:51:13', '0000-00-00 00:00:00');
+INSERT INTO `sup_tbl_user_log` VALUES (76, 21, '2018-12-28 07:53:29', '0000-00-00 00:00:00');
+INSERT INTO `sup_tbl_user_log` VALUES (77, 19, '2018-12-28 08:02:30', '0000-00-00 00:00:00');
+INSERT INTO `sup_tbl_user_log` VALUES (78, 5, '2018-12-31 03:59:30', '0000-00-00 00:00:00');
+INSERT INTO `sup_tbl_user_log` VALUES (79, 21, '2018-12-31 04:02:05', '0000-00-00 00:00:00');
+INSERT INTO `sup_tbl_user_log` VALUES (80, 21, '2018-12-31 04:27:11', '0000-00-00 00:00:00');
+INSERT INTO `sup_tbl_user_log` VALUES (81, 5, '2018-12-31 04:36:23', '0000-00-00 00:00:00');
+INSERT INTO `sup_tbl_user_log` VALUES (82, 5, '2018-12-31 04:37:30', '0000-00-00 00:00:00');
+INSERT INTO `sup_tbl_user_log` VALUES (83, 5, '2018-12-31 04:51:48', '0000-00-00 00:00:00');
+INSERT INTO `sup_tbl_user_log` VALUES (84, 5, '2018-12-31 05:00:09', '0000-00-00 00:00:00');
+INSERT INTO `sup_tbl_user_log` VALUES (85, 21, '2018-12-31 05:16:27', '0000-00-00 00:00:00');
+INSERT INTO `sup_tbl_user_log` VALUES (86, 5, '2018-12-31 06:10:52', '2018-12-31 06:22:38');
+INSERT INTO `sup_tbl_user_log` VALUES (87, 17, '2018-12-31 06:22:54', '0000-00-00 00:00:00');
+INSERT INTO `sup_tbl_user_log` VALUES (88, 21, '2018-12-31 06:29:45', '0000-00-00 00:00:00');
+INSERT INTO `sup_tbl_user_log` VALUES (89, 5, '2018-12-31 06:35:35', '0000-00-00 00:00:00');
+INSERT INTO `sup_tbl_user_log` VALUES (90, 19, '2018-12-31 06:36:56', '0000-00-00 00:00:00');
+INSERT INTO `sup_tbl_user_log` VALUES (91, 17, '2018-12-31 06:47:10', '0000-00-00 00:00:00');
+INSERT INTO `sup_tbl_user_log` VALUES (92, 17, '2018-12-31 08:32:59', '2018-12-31 08:55:14');
+INSERT INTO `sup_tbl_user_log` VALUES (93, 5, '2018-12-31 08:55:19', '0000-00-00 00:00:00');
+INSERT INTO `sup_tbl_user_log` VALUES (94, 17, '2018-12-31 10:09:47', '0000-00-00 00:00:00');
+INSERT INTO `sup_tbl_user_log` VALUES (95, 22, '2018-12-31 10:13:02', '2018-12-31 10:17:46');
+INSERT INTO `sup_tbl_user_log` VALUES (96, 21, '2018-12-31 10:20:33', '2018-12-31 11:48:09');
+INSERT INTO `sup_tbl_user_log` VALUES (97, 17, '2018-12-31 10:35:07', '0000-00-00 00:00:00');
+INSERT INTO `sup_tbl_user_log` VALUES (98, 21, '2019-01-01 05:42:25', '2019-01-01 05:42:53');
+INSERT INTO `sup_tbl_user_log` VALUES (99, 16, '2019-01-01 05:43:38', '2019-01-01 06:02:52');
+INSERT INTO `sup_tbl_user_log` VALUES (100, 16, '2019-01-01 06:03:35', '2019-01-01 06:08:09');
+INSERT INTO `sup_tbl_user_log` VALUES (101, 21, '2019-01-01 06:08:58', '2019-01-01 06:09:40');
+INSERT INTO `sup_tbl_user_log` VALUES (102, 4, '2019-01-01 07:03:00', '0000-00-00 00:00:00');
+INSERT INTO `sup_tbl_user_log` VALUES (103, 21, '2019-01-01 08:00:26', '0000-00-00 00:00:00');
+INSERT INTO `sup_tbl_user_log` VALUES (104, 5, '2019-01-02 03:53:49', '0000-00-00 00:00:00');
+INSERT INTO `sup_tbl_user_log` VALUES (105, 20, '2019-01-02 04:10:33', '0000-00-00 00:00:00');
+INSERT INTO `sup_tbl_user_log` VALUES (106, 4, '2019-01-02 04:44:55', '0000-00-00 00:00:00');
+INSERT INTO `sup_tbl_user_log` VALUES (107, 17, '2019-01-02 04:44:58', '2019-01-02 07:22:18');
+INSERT INTO `sup_tbl_user_log` VALUES (108, 21, '2019-01-02 05:05:13', '2019-01-02 07:52:33');
+INSERT INTO `sup_tbl_user_log` VALUES (109, 21, '2019-01-02 08:05:19', '2019-01-02 08:27:34');
+INSERT INTO `sup_tbl_user_log` VALUES (110, 5, '2019-01-02 10:22:27', '2019-01-02 11:42:50');
+INSERT INTO `sup_tbl_user_log` VALUES (111, 5, '2019-01-03 04:12:52', '0000-00-00 00:00:00');
+INSERT INTO `sup_tbl_user_log` VALUES (112, 17, '2019-01-03 04:20:33', '0000-00-00 00:00:00');
+INSERT INTO `sup_tbl_user_log` VALUES (113, 4, '2019-01-03 04:26:02', '0000-00-00 00:00:00');
+INSERT INTO `sup_tbl_user_log` VALUES (114, 20, '2019-01-03 04:29:36', '0000-00-00 00:00:00');
+INSERT INTO `sup_tbl_user_log` VALUES (115, 21, '2019-01-03 04:40:09', '0000-00-00 00:00:00');
+INSERT INTO `sup_tbl_user_log` VALUES (116, 5, '2019-01-03 05:34:56', '0000-00-00 00:00:00');
+INSERT INTO `sup_tbl_user_log` VALUES (117, 5, '2019-01-03 06:37:11', '0000-00-00 00:00:00');
+INSERT INTO `sup_tbl_user_log` VALUES (118, 5, '2019-01-03 07:03:44', '0000-00-00 00:00:00');
+INSERT INTO `sup_tbl_user_log` VALUES (119, 20, '2019-01-03 07:04:51', '0000-00-00 00:00:00');
+INSERT INTO `sup_tbl_user_log` VALUES (120, 4, '2019-01-03 07:27:36', '0000-00-00 00:00:00');
+INSERT INTO `sup_tbl_user_log` VALUES (121, 20, '2019-01-03 07:57:07', '0000-00-00 00:00:00');
+INSERT INTO `sup_tbl_user_log` VALUES (122, 5, '2019-01-03 07:58:19', '0000-00-00 00:00:00');
+INSERT INTO `sup_tbl_user_log` VALUES (123, 21, '2019-01-03 08:00:27', '2019-01-03 11:28:34');
+INSERT INTO `sup_tbl_user_log` VALUES (124, 17, '2019-01-03 08:04:50', '0000-00-00 00:00:00');
+INSERT INTO `sup_tbl_user_log` VALUES (125, 20, '2019-01-03 08:43:18', '0000-00-00 00:00:00');
+INSERT INTO `sup_tbl_user_log` VALUES (126, 20, '2019-01-03 08:49:28', '0000-00-00 00:00:00');
+INSERT INTO `sup_tbl_user_log` VALUES (127, 4, '2019-01-03 08:49:41', '2019-01-03 10:09:37');
+INSERT INTO `sup_tbl_user_log` VALUES (128, 5, '2019-01-03 10:09:44', '2019-01-03 11:45:21');
+INSERT INTO `sup_tbl_user_log` VALUES (129, 20, '2019-01-03 10:10:06', '0000-00-00 00:00:00');
+INSERT INTO `sup_tbl_user_log` VALUES (130, 5, '2019-01-04 04:09:27', '0000-00-00 00:00:00');
+INSERT INTO `sup_tbl_user_log` VALUES (131, 20, '2019-01-04 04:19:38', '0000-00-00 00:00:00');
+INSERT INTO `sup_tbl_user_log` VALUES (132, 5, '2019-01-04 04:26:40', '2019-01-04 11:28:24');
+INSERT INTO `sup_tbl_user_log` VALUES (133, 20, '2019-01-04 04:36:49', '0000-00-00 00:00:00');
+INSERT INTO `sup_tbl_user_log` VALUES (134, 17, '2019-01-04 04:51:06', '0000-00-00 00:00:00');
+INSERT INTO `sup_tbl_user_log` VALUES (135, 21, '2019-01-04 06:00:19', '2019-01-04 06:39:12');
+INSERT INTO `sup_tbl_user_log` VALUES (136, 4, '2019-01-04 06:49:21', '0000-00-00 00:00:00');
+INSERT INTO `sup_tbl_user_log` VALUES (137, 21, '2019-01-04 06:55:51', '0000-00-00 00:00:00');
+INSERT INTO `sup_tbl_user_log` VALUES (138, 4, '2019-01-07 03:48:28', '0000-00-00 00:00:00');
+INSERT INTO `sup_tbl_user_log` VALUES (139, 21, '2019-01-07 03:58:39', '0000-00-00 00:00:00');
+INSERT INTO `sup_tbl_user_log` VALUES (140, 17, '2019-01-07 04:07:36', '0000-00-00 00:00:00');
+INSERT INTO `sup_tbl_user_log` VALUES (141, 5, '2019-01-07 04:12:53', '2019-01-07 11:44:24');
+INSERT INTO `sup_tbl_user_log` VALUES (142, 20, '2019-01-07 04:46:45', '0000-00-00 00:00:00');
+INSERT INTO `sup_tbl_user_log` VALUES (143, 17, '2019-01-07 05:09:34', '0000-00-00 00:00:00');
+INSERT INTO `sup_tbl_user_log` VALUES (144, 21, '2019-01-07 07:59:03', '2019-01-07 09:03:37');
+INSERT INTO `sup_tbl_user_log` VALUES (145, 21, '2019-01-07 11:10:21', '0000-00-00 00:00:00');
+INSERT INTO `sup_tbl_user_log` VALUES (146, 5, '2019-01-08 04:16:55', '0000-00-00 00:00:00');
+INSERT INTO `sup_tbl_user_log` VALUES (147, 4, '2019-01-08 04:17:01', '0000-00-00 00:00:00');
+INSERT INTO `sup_tbl_user_log` VALUES (148, 17, '2019-01-08 04:17:17', '0000-00-00 00:00:00');
+INSERT INTO `sup_tbl_user_log` VALUES (149, 20, '2019-01-08 04:21:50', '0000-00-00 00:00:00');
+INSERT INTO `sup_tbl_user_log` VALUES (150, 21, '2019-01-08 04:30:58', '0000-00-00 00:00:00');
+INSERT INTO `sup_tbl_user_log` VALUES (151, 17, '2019-01-08 08:04:18', '0000-00-00 00:00:00');
+INSERT INTO `sup_tbl_user_log` VALUES (152, 21, '2019-01-08 08:07:23', '2019-01-08 11:37:22');
+INSERT INTO `sup_tbl_user_log` VALUES (153, 17, '2019-01-08 10:13:23', '0000-00-00 00:00:00');
+INSERT INTO `sup_tbl_user_log` VALUES (154, 20, '2019-01-09 04:09:12', '0000-00-00 00:00:00');
+INSERT INTO `sup_tbl_user_log` VALUES (155, 21, '2019-01-09 04:15:00', '0000-00-00 00:00:00');
+INSERT INTO `sup_tbl_user_log` VALUES (156, 4, '2019-01-09 05:03:23', '0000-00-00 00:00:00');
+INSERT INTO `sup_tbl_user_log` VALUES (157, 17, '2019-01-09 05:34:00', '0000-00-00 00:00:00');
+INSERT INTO `sup_tbl_user_log` VALUES (158, 20, '2019-01-09 06:11:09', '0000-00-00 00:00:00');
+INSERT INTO `sup_tbl_user_log` VALUES (159, 20, '2019-01-09 07:04:31', '0000-00-00 00:00:00');
+INSERT INTO `sup_tbl_user_log` VALUES (160, 21, '2019-01-09 07:58:17', '2019-01-09 11:47:57');
+INSERT INTO `sup_tbl_user_log` VALUES (161, 4, '2019-01-09 11:09:03', '2019-01-09 11:20:43');
+INSERT INTO `sup_tbl_user_log` VALUES (162, 17, '2019-01-09 11:23:11', '0000-00-00 00:00:00');
+INSERT INTO `sup_tbl_user_log` VALUES (163, 17, '2019-01-10 03:59:11', '0000-00-00 00:00:00');
+INSERT INTO `sup_tbl_user_log` VALUES (164, 4, '2019-01-10 04:08:28', '0000-00-00 00:00:00');
+INSERT INTO `sup_tbl_user_log` VALUES (165, 5, '2019-01-10 04:19:46', '2019-01-10 11:41:42');
+INSERT INTO `sup_tbl_user_log` VALUES (166, 21, '2019-01-10 04:27:53', '2019-01-10 06:25:43');
+INSERT INTO `sup_tbl_user_log` VALUES (167, 21, '2019-01-10 07:12:52', '2019-01-10 11:46:33');
+INSERT INTO `sup_tbl_user_log` VALUES (168, 17, '2019-01-10 07:17:46', '0000-00-00 00:00:00');
+INSERT INTO `sup_tbl_user_log` VALUES (169, 20, '2019-01-11 04:07:40', '0000-00-00 00:00:00');
+INSERT INTO `sup_tbl_user_log` VALUES (170, 21, '2019-01-11 04:20:03', '2019-01-11 06:46:56');
+INSERT INTO `sup_tbl_user_log` VALUES (171, 17, '2019-01-11 04:22:10', '2019-01-11 11:27:20');
+INSERT INTO `sup_tbl_user_log` VALUES (172, 20, '2019-01-11 05:24:35', '0000-00-00 00:00:00');
+INSERT INTO `sup_tbl_user_log` VALUES (173, 20, '2019-01-11 05:56:30', '0000-00-00 00:00:00');
+INSERT INTO `sup_tbl_user_log` VALUES (174, 5, '2019-01-11 06:54:55', '2019-01-11 08:43:15');
+INSERT INTO `sup_tbl_user_log` VALUES (175, 5, '2019-01-11 09:09:32', '2019-01-11 09:26:48');
+INSERT INTO `sup_tbl_user_log` VALUES (176, 20, '2019-01-11 10:34:55', '0000-00-00 00:00:00');
+INSERT INTO `sup_tbl_user_log` VALUES (177, 21, '2019-01-11 11:02:25', '2019-01-11 11:37:13');
+INSERT INTO `sup_tbl_user_log` VALUES (178, 20, '2019-01-11 11:12:39', '0000-00-00 00:00:00');
+INSERT INTO `sup_tbl_user_log` VALUES (179, 4, '2019-01-14 03:47:05', '0000-00-00 00:00:00');
+INSERT INTO `sup_tbl_user_log` VALUES (180, 17, '2019-01-14 04:21:18', '0000-00-00 00:00:00'/OS10Q//Q0,LL,0Q//Q0,LL,44<44>44<44˛˛((˛‹  97^a‚a^7997^a‚a^79@0/OSæSO/00/OSæSO/0`/Q`Q/(##(/Q`Q/(##(@4<44<44<44<4@((((˛‡@@   
+    Å   % - : C K S [ c  "276764'&'&2&"56#>%#.'2".4>3#&4%3#643.%35>27"' hZW2552WZ–ZW3443WZhU#6goKph6#`,I++IXI++I˛Ó`aaa˝Óh6#KpÂhpK#6Ÿ 52WZ–ZW3443WZ–ZW25@aah6#KppK#6*+IXI++IXI+Äk#6hpKKph6Za     `‡     !!!?'†¿˝Ä@˝¿Á.©©.¿‡˝@¿@˝¿˜.©©.¿      ˇ‡°   ) > S s  "276764'&'&2"'&'&47676"767627#&'&!"767627#&'&27>7>7'"&'.'. qa^7997^a‚a^7997^aq_SO/00/OSæSO/00/OSA(
+&'('
+&'(˛ë7!#"*K7I-+	 97^a‚a^7997^a‚a^79@0/OSæSO/00/OSæSO/0‡
+
+22
+
+
+22
+‡ 	& &2      @¿    !!!¿Ä˝¿ ˛ ¿˝ÄÄ@˛        Å  ) E I  "276764'&'&2"'&'&47676"3462357>54.35 hZW2552WZ–ZW3443WZhWKH*,,*HKÆKH*,,*HKW#:#@%6%@%.#:C@ 52WZ–ZW3443WZ–ZW25@,*HKÆKH*,,*HKÆKH*,Ä#:#%%"))@'#:#˛¿@@        ÎÄ * ? H P X  "276767676?/&'&'&'&2"'1.547#6"264&&'6%654 KMA@42#!-0<<GF(FG<<0-!#24@AMK]c 4\77\4d^(88P88˛¿,TG4sC4GT,Ä&'%$$%'&@-5>9b>>b9>4.@8P88P8" SF1H5--5H1FS     ˇ‡@    W c m {  !!!"767676?>7276735654'&'&'&#'&'&'&'67676'.#"767#1"'105#'767¿Ä˝¿ ˛ Ì
+
+	
+		x
+◊	 ¸¿@@˝@
+ )		 
+
+
+&Ì	9
+1	
+       Å  ) 2 ; J  "276764'&'&2"'&'&47676"264&!"264&">27&'& hZW2552WZ–ZW3443WZhWKH*,,*HKÆKH*,,*HK9((§?75$4Q^Q4$57 52WZ–ZW3443WZ–ZW25@,*HKÆKH*,,*HKÆKH*,¿((((¿1%%++%%1      `‡     !!!7!5†¿˝Ä@˝¿@¿‡˝@¿@˝¿†@@     ˇ‡°   ) 8 @  "276764'&'&2"'&'&476763533'>54.#32+ qa^7997^a‚a^7997^aq`RO/00/OR¿RO/00/OR @m3@6&0";#ÄÄ##Ä 97^a‚a^7997^a‚a^79@0/OR¿RO/00/OR¿RO/0†˛ÄÄÄàB)#;"@#:#      ˇ˝†‡     (  37!!!5#"264&3"264&3"264&`†À’˝ ¿˛Uu††%%6%%•%%6%%•%%6%%‡˝¿¢¢@@˛@]] %6%%6%%6%%6%%6%%6%     ˇ‡°   ) 2 6 J  "276764'&'&2"'&'&47676"264&3526=>7'"& qa^7997^a‚a^7997^aq_SO/00/OSæSO/00/OS1(º†˛ô2>&&4&&>1ITI 97^a‚a^7997^a‚a^79@0/OSæSO/00/OSæSO/0‡(( @@ã*#	'&&'	#*    	  ˇ‡°    2 ; ? C H L P  "276764'&'&2'67#"/#&'?'637/'%6#'3%3& qa^7997^a‚a^7997^aq88 nsÜN63t+©4&S*3ß*s47’íF‚Fí%	9˝•8	Rl)Ü)H*4˛hF4 97^a‚a^7997^a‚a^79@((Tb ?üUTG°	
+üFVTû@gj◊◊j1<)BB);N˛Î+DC     `‡ 
+    35#!35!!!†Ä@†@˛Ä ˛ †˛`‡ ˛ @†@Ä† ˛  @˛`        ¿Ú  "  !";5#".4>3!7%!!!7Ì-Ö˛À0Q//Q0446Ü.“¸‡¿@˝¿[@Ú-Ö/Q`Q/@4<4Ö-“¿˝@@@¿@@     ˇ‡°   ) C  "276764'&'&2"'&'&47676"3267'".4>27. qa^7997^a‚a^7997^aq`RO/00/OR¿RO/00/OR]4X44X48^:=J:"":J=:^ 97^a‚a^7997^a‚a^79@0/OR¿RO/00/OR¿RO/0†4XhX4=2"(":H:"("2=      ˇ‡@  & 8 A  "+32654'35#"&54.'74&2;!654>2"&46 %7X2 Ê9N9Ê 1X8%)3V1˛t/R? %Hg;˛‡@'99'@;kL%Ä7\4˛È 2U5˝ƒ     ˇ¿`@ ' U  "&#"'&";2>54&#"54&#".2346235462+"/&462462346 !3'9P8Ÿ$(,î=g<9'9'3!@@+I,î81⁄
+
+â@@)9'˛®8PŸ<g=Ä'9&'9)@˛¿ ˇ Ä˛Ä,I+1ÿ
+
+äÛˇ @        ¿® * A s Ä î  &3!676'676'3264&+7>.&'&'&'&!2+'&#'%62'&/.?7#".=46?6:/62+"/.676m QFX<g==3 }'99'1&%G&˛Ú$¨	€”T˛O
+	(5 £,I+?2P…w
+
+wU
+	Y
+
+°
+vJ©=g<!#% %&9N9GL%SA
+B$!ÉT
+	–õ	y'8+I,©5T˛Ë0
+/e"	$         ‡  	  %!'‡  ˛ ¿‡‡‡˝ ÿÿ‡@˝‡®®     ˇ‡°   ) 2 ; G O S [  "276764'&'&2"'&'&47676"264&!"264&"3!264&#3#"&46;#732+ qa^7997^a‚a^7997^aq_SO/00/OSæSO/00/OS1((˛‹(88( (88(ˇ   m@@Ä   97^a‚a^7997^a‚a^79@0/OSæSO/00/OSæSO/0‡((((†8P88P8@@@@   ˇ‡°  , 4  "2767654'"'&'&47676327.'7 qa^7997^a‚a^794
+0.PR¿RP.00.PR`G@=/-8ï˛óâ.†Ä 97^a‚a^7997^aqJ93((`RP.00.PR¿RP.0/-8>â˛óâ.†Ä    ˇ˚¿° * I x  "&'&#"+7676?6?#"'.'&#232#&/'"'&/76767623?''/56?63j!,,)KR M”6+"LI	{\ PM)
+6	 +ASJc	úoî«’
+ !*"@v*4)*+4)◊4T@1°˛Ã&Î42">7?Ã2¿Z
+{± 	
+5ë+9&7:&7		Óœ      ˇ‡°! + ; ? C  "2767654'"'&'&476763267&32654'&'35335 qa^7997^a‚a^79+0/OSæSO/00/OS_?<J£
+/B/(˛0†Ä† 97^a‚a^7997^aq`W!=A_SO/00/OSæSO/0,!. -- O("˛†@@@@           2 ;  "#!#4&#3+3353!"346234&'>54.2"&46‡&¿@¿&@@@¿Ä¿Ä˛@‡#:#!&@8P8@&!#:#%%6%% &˝ ‡&@@@@˝†‡#:#/F)(88()F/#:#@%6%%6%       @¿ " Q  "&#";2>54&#".".23546235462+"&/.?34623546‡+'9C!L X0©=g<9'+1+@@+I,©#>L@@¿9'uV(e&V$(<g= '9@`@@ ˛‡,I+W5" @`   ˇ‡°   ) 6 C S c g  "276764'&'&2"'&'&47676"2>4.!"2>4.3267"&546%"&547326!5 qa^7997^a‚a^7997^aq_SO/00/OSæSO/00/OSA#;"";F;"";#;"";F;"";˛~&4&ç&4&˛Ω  97^a‚a^7997^a‚a^79@0/OSæSO/00/OSæSO/0†";F;"";F;"";F;"";F;"I"&&&&"‚@@      `   % ) - 1  "#33!26535#54&#3#!#!"&533333‡$¿ 9'Ä'9 ¿$ÄÄÄ†¿˛Ä@@@@@@ $ @˛ '99' @ $@ @˛ †˛†`˛†`˛†`       ﬁ                                  &        4        B        M      
+ + [        Ü  	   " ô  	   ª  	   ◊  	   Â  	    	    	  3  	 
+ VO  	  &•Created by Icons8la-regular-400Regularla-regular-400la-regular-400Version 1.0la-regular-400Generated by svg2ttf from Fontello project.http://fontello.com C r e a t e d   b y   I c o n s 8 l a - r e g u l a r - 4 0 0 R e g u l a r l a - r e g u l a r - 4 0 0 l a - r e g u l a r - 4 0 0 V e r s i o n   1 . 0 l a - r e g u l a r - 4 0 0 G e n e r a t e d   b y   s v g 2 t t f   f r o m   F o n t e l l o   p r o j e c t . h t t p : / / f o n t e l l o . c o m           
+                       í	
+ !"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz{|}~ÄÅÇÉÑÖÜáàâäãåçéèêëíì buildingmapneutral-face	eye-slashcaret-square-upcopy
+dot-circlegrinning-face-with-big-eyessaveface-with-tears-of-joy	star-halfsmiling-facegrinning-face-with-smiling-eyes
+audio-filewindow-maximizeloudly-crying-facesticky-note
+angry-facewindow-restorestaraddress-cardcommentobject-ungroupwinking-facewindow-close
+video-filehushed-faceenvelopeface-with-tonguecaret-square-downpause-circlefolder-openfolderflaghand-pointing-rightminus-squarealternate-arrow-circle-down
+excel-filecaret-square-leftpointer--hand-	snowflakestar-struckstop-circlecommentsclosed-captioningthumbs-downimagescompass	code-filesquinting-face-with-tongue	clipboard	newspaperhand-pointing-leftobject-groupimagekeyboardgrinning-squinting-facehand-pointing-downgemkissing-face-with-smiling-eyesaddress-bookface-without-mouthpaper-planealternate-arrow-circle-upplay-circle
+image-file
+dizzy-facelaughing-winking-facealternate-money-billcalendar-timesrolling-on-the-floor-laughingtimes-circlecalendar-pluscrying-facepowerpoint-filehdd	hourglasscredit-card
+bell-slashlemonalternate-grinning-facealternate-arrow-circle-rightarchive-filelizard--hand-	thumbs-uphospitalkissing-faceface-blowing-a-kiss	bar-chartheartalternate-commentplus-squarealternate-listsmiling-face-with-heart-eyesalternate-arrow-circle-left
+tired-facepeace--hand-calendar-minus	lightbulbcheck-squareuserspock--hand-identification-cardcalendar-checkmooncalendarfileclocksunhand-pointing-upuser-circleenvelope-openeditcircle	word-filealternate-fileflushed-face	life-ringcaret-square-rightbeaming-face-with-smiling-eyessquarequestion-circleeyepdf-filefrowning-facewindow-minimizeregistered-trademarkcomment-dotswinking-face-with-tonguefutbolcloneshare-square	copyrightbellpaper--hand-scissors--hand-bookmarkgrimacing-facecheck-circle	handshakegrinning-face-with-sweatidentification-badgerock--hand-face-with-rolling-eyesalternate-trash    

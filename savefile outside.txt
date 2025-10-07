@@ -1,0 +1,30 @@
+ // Max file size check (optional, e.g., 5MB)
+        $max_size = 5 * 1024 * 1024;
+        if ($file_size > $max_size) {
+            die("File size exceeds 5MB limit.");
+        }
+
+        // Save file to uploads/ folder
+        $target_dir = "../../uploads/";
+
+        $unique_name = uniqid() . '_' . basename($file_name);
+        $target_path = $target_dir . $unique_name;
+
+if (move_uploaded_file($file_tmp, $target_path)) {
+            
+    
+            // Insert into database
+            $stmt = $db->prepare("INSERT INTO documents (title, description, category_id, file_path, uploaded_by,is_active) VALUES (?, ?, ?, ?, ?,?)");
+            $stmt->bind_param("ssisii", $title, $description, $category_id, $target_path, $uploaded_by, $is_active);
+
+            if ($stmt->execute()) {
+                echo "<div class='alert alert-success'>Document uploaded successfully.</div>";
+
+            } else {
+                echo "<div class='alert alert-danger'>Database error: " . $stmt->error . "</div>";
+            }
+
+            $stmt->close();
+        } else {
+            echo "<div class='alert alert-danger'>Failed to move uploaded file.</div>";
+        }

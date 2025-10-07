@@ -1,0 +1,10 @@
+ර ඇත', 2, 2, '2021-03-09', '2021-03-09 12:31:22');
+INSERT INTO `tbl_approved` VALUES (13520, 41525, 2, 37, ' Recommended ', 3, 1, '2021-03-09', '2021-03-09 12:34:16');
+INSERT INTO `tbl_approved` VALUES (13521, 3409, 3, 41, 'Approved   ', 4, NULL, '2021-03-09', '2021-03-09 15:59:42');
+INSERT INTO `tbl_approved` VALUES (13522, 10758, 3, 41, 'Approved   ', 4, NULL, '2021-03-09', '2021-03-09 15:59:43');
+INSERT INTO `tbl_approved` VALUES (13523, 12400, 3, 41, 'Approved   ', 4, NULL, '2021-03-09', '2021-03-09 15:59:46');
+INSERT INTO `tbl_approved` VALUES (13524, 16735, 3, 41, 'Approved   ', 4, NULL, '2021-03-09', '2021-03-09 15:59:47');
+INSERT INTO `tbl_approved` VALUES (13525, 21030, 3, 41, 'Approved   ', 4, NULL, '2021-03-09', '2021-03-09 15:59:49');
+INSERT INTO `tbl_approved` VALUES (13526, 24250, 3, 41, 'Approved   ', 4, NULL, '2021-03-09', '2021-03-09 15:59:51');
+INSERT INTO `tbl_approved` VALUES (13527, 24783, 3, 41, 'Approved   ', 4, NULL, '2021-03-09', '2021-03-09 15:59:52');
+INSERT INTO `tb
