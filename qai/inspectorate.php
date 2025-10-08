@@ -309,7 +309,7 @@
     <?php include '../template/header.php'; ?>
 
     <!-- Main Content -->
-    <main class="container my-3 pt-3">
+    <main class="container-fluid my-3 pt-3">
        <!-- <div class="page-header mb-4">
             <h3 class="colour-defult">The Inspectorate <i class="fa fa-bullhorn"></i>
                 <div class="float-end">

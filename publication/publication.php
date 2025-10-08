@@ -154,7 +154,7 @@ include '../template/head.php';
     <?php include '../template/header.php'; ?>
 
     <!-- Main Content -->
-    <main class="container my-3 pt-3">
+    <main class="container-fluid my-3 pt-3">
         <div class="main-container">
             <!-- Navigation Tabs -->
             <div class="nav-column">
