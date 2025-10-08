@@ -26,7 +26,7 @@
     <main>
       <div class="slider-wrapper">
         <div class="swiper-slide">
-          <img src="assets/img/slider/background.jpg" alt="Quality Inspection">
+          <img src="assets/img/slider/bk-01.jpg" alt="Quality Inspection">
         </div>
       </div>
     </main>

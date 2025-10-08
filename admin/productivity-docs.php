@@ -1,21 +1,185 @@
- '2020-11-25');
-INSERT INTO `tbl_suspension_details` VALUES (4553, 17213, 11697, 4, '2019.07.18 සිට 2019.08.28 දක්වා සිදුකල විගණනයේ දී නිරීක්‍ෂණය වු අයදුම්පත් වලට අදාලව ගිණුම්,183 වන කළමණාකරන මණ්ඩල  තීරණය බලයට ගෙන  අත්හිටු වීම් කරන ලදී.', '2020-11-25', '', 3, 0, 0, 35, '2020-11-25');
-INSERT INTO `tbl_suspension_details` VALUES (4554, 2335, 1720, 4, '2019.07.18 සිට 2019.08.28 දක්වා සිදුකල විගණනයේ දී නිරීක්‍ෂණය වු අයදුම්පත් වලට අදාලව ගිණුම්,183 වන කළමණාකරන මණ්ඩල  තීරණය බලයට ගෙන  අත්හිටු වීම් කරන ලදී.', '2020-11-25', '', 3, 0, 0, 20, '2020-11-25');
-INSERT INTO `tbl_suspension_details` VALUES (4555, 11870, 7997, 4, '2019.07.18 සිට 2019.08.28 දක්වා සිදුකල විගණනයේ දී නිරීක්‍ෂණය වු අයදුම්පත් වලට අදාලව ගිණුම්,183 වන කළමණාකරන මණ්ඩල  තීරණය බලයට ගෙන  අත්හිටු වීම් කරන ලදී.', '2020-11-25', '', 3, 0, 0, 34, '2020-11-25');
-INSERT INTO `tbl_suspension_details` VALUES (4556, 20274, 13805, 4, '2019.07.18 සිට 2019.08.28 දක්වා සිදුකල විගණනයේ දී නිරීක්‍ෂණය වු අයදුම්පත් වලට අදාලව ගිණුම්,183 වන කළමණාකරන මණ්ඩල  තීරණය බලයට ගෙන  අත්හිටු වීම් කරන ලදී.', '2020-11-25', '', 3, 0, 1, 36, '2020-11-25');
-INSERT INTO `tbl_suspension_details` VALUES (4557, 10590, 7166, 4, '2019.07.18 සිට 2019.08.28 දක්වා සිදුකල විගණනයේ දී නිරීක්‍ෂණය වු අයදුම්පත් වලට අදාලව ගිණුම්,183 වන කළමණාකරන මණ්ඩල  තීරණය බලයට ගෙන  අත්හිටු වීම් කරන ලදී.', '2020-11-25', '', 3, 0, 0, 26, '2020-11-25');
-INSERT INTO `tbl_suspension_details` VALUES (4558, 6580, 4654, 4, '2019.07.18 සිට 2019.08.28 දක්වා සිදුකල විගණනයේ දී නිරීක්‍ෂණය වු අයදුම්පත් වලට අදාලව ගිණුම්,183 වන කළමණාකරන මණ්ඩල  තීරණය බලයට ගෙන  අත්හිටු වීම් කරන ලදී.', '0000-00-00', '', 3, 0, 1, 33, '2020-11-25');
-INSERT INTO `tbl_suspension_details` VALUES (4559, 19006, 12931, 4, '2019.07.18 සිට 2019.08.28 දක්වා සිදුකල විගණනයේ දී නිරීක්‍ෂණය වු අයදුම්පත් වලට අදාලව ගිණුම්,183 වන කළමණාකරන මණ්ඩල  තීරණය බලයට ගෙන  අත්හිටු වීම් කරන ලදී.', '2020-11-25', '', 3, 0, 0, 35, '2020-11-25');
-INSERT INTO `tbl_suspension_details` VALUES (4560, 4264, 3076, 4, '2019.07.18 සිට 2019.08.28 දක්වා සිදුකල විගණනයේ දී නිරීක්‍ෂණය වු අයදුම්පත් වලට අදාලව ගිණුම්,183 වන කළමණාකරන මණ්ඩල  තීරණය බලයට ගෙන  අත්හිටු වීම් කරන ලදී.', '2020-11-25', '', 3, 0, 0, 38, '2020-11-25');
-INSERT INTO `tbl_suspension_details` VALUES (4561, 1329, 985, 4, '2019.07.18 සිට 2019.08.28 දක්වා සිදුකල විගණනයේ දී නිරීක්‍ෂණය වු අයදුම්පත් වලට අදාලව ගිණුම්,183 වන කළමණාකරන මණ්ඩල  තීරණය බලයට ගෙන  අත්හිටු වීම් කරන ලදී.', '2020-11-25', '', 3, 0, 1, 26, '2020-11-25');
-INSERT INTO `tbl_suspension_details` VALUES (4562, 11749, 7915, 4, '2019.07.18 සිට 2019.08.28 දක්වා සිදුකල විගණනයේ දී නිරීක්‍ෂණය වු අයදුම්පත් වලට අදාලව ගිණුම්,183 වන කළමණාකරන මණ්ඩල  තීරණය බලයට ගෙන  අත්හිටු වීම් කරන ලදී.', '2020-11-25', '', 3, 0, 1, 20, '2020-11-25');
-INSERT INTO `tbl_suspension_details` VALUES (4563, 18171, 12361, 4, '2019.07.18 සිට 2019.08.28 දක්වා සිදුකල විගණනයේ දී නිරීක්‍ෂණය වු අයදුම්පත් වලට අදාලව ගිණුම්,183 වන කළමණාකරන මණ්ඩල  තීරණය බලයට ගෙන  අත්හිටු වීම් කරන ලදී.', '2020-11-25', '', 3, 0, 1, 35, '2020-11-25');
-INSERT INTO `tbl_suspension_details` VALUES (4564, 1885, 1392, 4, '2019.07.18 සිට 2019.08.28 දක්වා සිදුකල විගණනයේ දී නිරීක්‍ෂණය වු අයදුම්පත් වලට අදාලව ගිණුම්,183 වන කළමණාකරන මණ්ඩල  තීරණය බලයට ගෙන  අත්හිටු වීම් කරන ලදී.', '2020-11-25', '', 3, 0, 1, 34, '2020-11-25');
-INSERT INTO `tbl_suspension_details` VALUES (4565, 20376, 13873, 4, '2019.07.18 සිට 2019.08.28 දක්වා සිදුකල විගණනයේ දී නිරීක්‍ෂණය වු අයදුම්පත් වලට අදාලව ගිණුම්,183 වන කළමණාකරන මණ්ඩල  තීරණය බලයට ගෙන  අත්හිටු වීම් කරන ලදී.', '2020-11-25', '', 3, 0, 1, 36, '2020-11-25');
-INSERT INTO `tbl_suspension_details` VALUES (4566, 7811, 5426, 4, '2019.07.18 සිට 2019.08.28 දක්වා සිදුකල විගණනයේ දී නිරීක්‍ෂණය වු අයදුම්පත් වලට අදාලව ගිණුම්,183 වන කළමණාකරන මණ්ඩල  තීරණය බලයට ගෙන  අත්හිටු වීම් කරන ලදී.', '0000-00-00', '', 3, 0, 1, 33, '2020-11-25');
-INSERT INTO `tbl_suspension_details` VALUES (4567, 9849, 6711, 4, '2019.07.18 සිට 2019.08.28 දක්වා සිදුකල විගණනයේ දී නිරීක්‍ෂණය වු අයදුම්පත් වලට අදාලව ගිණුම්,183 වන කළමණාකරන මණ්ඩල  තීරණය බලයට ගෙන  අත්හිටු වීම් කරන ලදී.', '2020-11-25', '', 3, 0, 0, 38, '2020-11-25');
-INSERT INTO `tbl_suspension_details` VALUES (4568, 12536, 8455, 4, '2019.07.18 සිට 2019.08.28 දක්වා සිදුකල විගණනයේ දී නිරීක්‍ෂණය වු අයදුම්පත් වලට අදාලව ගිණුම්,183 වන කළමණාකරන මණ්ඩල  තීරණය බලයට ගෙන  අත්හිටු වීම් කරන ලදී.', '2020-11-25', '', 3, 0, 0, 35, '2020-11-25');
-INSERT INTO `tbl_suspension_details` VALUES (4569, 13472, 9094, 4, '2019.07.18 සිට 2019.08.28 දක්වා සිදුකල විගණනයේ දී නිරීක්‍ෂණය වු අයදුම්පත් වලට අදාලව ගිණුම්,183 වන කළමණාකරන මණ්ඩල  තීරණය බලයට ගෙන  අත්හිටු වීම් කරන ලදී.', '2020-11-25', '', 3, 0, 0, 20, '2020-11-25');
-INSERT INTO `tbl_suspension_details` VALUES (4570, 17899, 12159, 4, '2019.07.18 සිට 2019.08.28 දක්වා සිදුකල විගණනයේ දී නිරීක්‍ෂණය වු අයදුම්පත් වලට අදාලව ගිණුම්,183 වන කළමණාකරන මණ්ඩල  තීරණය බලයට ගෙන  අත්හිටු වීම් කරන ලදී.', '2020-11-25', '', 3, 0, 1, 26, '2020-11-25');
-INSERT INTO `tbl_suspension_details` VALUES (4571, 12537, 8455, 4, '2019.07.18 සිට 2019.08.28 දක්වා සිදුකල විගණනයේ දී නිරීක්‍ෂණය වු අයදුම්පත් වලට අදාලව ගිණුම්,183 වන කළමණාකරන මණ්ඩල  තීරණය බලයට ගෙන  අත්හිටු වීම් කරන ලදී.', '2020-11-25', '', 3, 0, 0, 35, '2020-11-25');
-INSERT INTO `tbl_suspension_details` VALUES (4572, 2776, 2031, 4, '2019.07.18 සිට 2019.08.28 දක්වා සිදුකල විගණනයේ දී නිරීක්‍ෂණය වු අයදුම්පත් වලට අදාලව ගිණුම්,183 වන කළ�
+<!DOCTYPE html>
+<html lang="en">
+
+<?php
+// Enable error reporting
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
+require_once '../includes/config.php';
+// Fixed SQL query - added d.id, d.file_path and fixed the JOIN conditions
+$documents = $db->query("SELECT d.id, d.title, d.file_path, d.uploaded_at, 
+                         c.name AS category_name, 
+                         b.name AS branch_name, 
+                         a.username AS uploaded_by_name
+    FROM productivity_documents d
+    LEFT JOIN productivity_categories c ON d.productivity_category_id = c.id
+    LEFT JOIN branches b ON d.branch_id = b.id
+    LEFT JOIN admins a ON d.uploaded_by = a.id
+    ORDER BY d.uploaded_at DESC")->fetch_all(MYSQLI_ASSOC);
+
+include "template/head.php";
+?>
+
+<body>
+
+    <?php
+    include "template/preloader.php";
+    ?>
+
+    <div id="main-wrapper">
+
+        <?php
+    include "template/nav.php";
+    include "template/header.php";
+    ?>
+
+        <?php
+    include "template/desnav.php";
+    ?>
+
+        <div class="content-body">
+            <div class="container-fluid">
+
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <h4 class="card-title">Document List</h4>
+                                <div class="col-md-3">
+                                    <a href="productivity-docs-upload.php" class="btn btn-sm btn-outline-primary">
+                                        <i class="fas fa-plus"></i> Upload Document
+                                    </a>
+                                </div>
+                                
+                            </div>
+                            <?php if (isset($_GET['success'])): ?>
+                                <?php if($_GET['success'] == 1): ?>
+                                <div class="alert alert-primary mx-5">
+                                    Document uploaded successfully!
+                                </div>
+                                <?php elseif($_GET['success'] == 2): ?>
+                                <div class="alert alert-success mx-5">
+                                    Document deleted successfully!
+                                </div>
+                                <?php endif; ?>
+                            <?php endif; ?>
+                            <?php if (isset($_GET['error'])): ?>
+                                <div class="alert alert-danger mx-5">
+                                    <?php
+                                    $error_codes = [
+                                        1 => 'Error deleting document from database.',
+                                        2 => 'Document not found.',
+                                        3 => 'An exception occurred during deletion.',
+                                        4 => 'Invalid request.'
+                                    ];
+                                    echo $error_codes[$_GET['error']] ?? 'Error occurred while processing your request.';
+                                    ?>
+                                </div>
+                            <?php endif; ?>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table id="documentTable" class="display min-w850 table table-striped table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th>Title</th>
+                                                <th>Category</th>
+                                                <th>Branch</th>
+                                                <th>Uploaded By</th>
+                                                <th>Date</th>
+                                                <th>Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <?php if (empty($documents)): ?>
+                                                <tr>
+                                                    <td colspan="6" class="text-center py-4">No documents found</td>
+                                                </tr>
+                                            <?php else: ?>
+                                                <?php foreach ($documents as $doc): ?>
+                                                    <tr>
+                                                        <td><?= htmlspecialchars($doc['title']) ?></td>
+                                                        <td><?= htmlspecialchars($doc['category_name'] ?? 'N/A') ?></td>
+                                                        <td><?= htmlspecialchars($doc['branch_name'] ?? 'N/A') ?></td>
+                                                        <td><?= htmlspecialchars($doc['uploaded_by_name'] ?? 'Unknown') ?></td>
+                                                        <td><?= date('M j, Y', strtotime($doc['uploaded_at'])) ?></td>
+                                                        <td>
+                                                            <?php 
+                                                            // Get file extension for proper viewing
+                                                            $file_path = $doc['file_path'] ?? '';
+                                                            $file_ext = pathinfo($file_path, PATHINFO_EXTENSION);
+                                                            ?>
+                                                                <a href="../view_document.php?file=<?= urlencode($doc['file_path']) ?>"  class="btn btn-sm btn-outline-primary">
+                                                                    <i class="fas fa-eye"></i> 
+                                                                </a>
+
+                                                            <a href="edit.php?id=<?= $doc['id'] ?>" class="btn btn-sm btn-outline-secondary">
+                                                                <i class="fas fa-edit"></i>
+                                                            </a>
+                                                            <form action="delete.php" method="post" class="d-inline delete-form">
+                                                                <input type="hidden" name="id" value="<?= $doc['id'] ?>">
+                                                                <button type="submit" class="btn btn-sm btn-outline-danger">
+                                                                    <i class="fas fa-trash"></i>
+                                                                </button>
+                                                            </form>
+                                                        </td>
+                                                    </tr>
+                                                <?php endforeach; ?>
+                                            <?php endif; ?>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="footer">
+            <div class="copyright">
+                <p>Copyright © Designed &amp; Developed by <a href="http://dexignzone.com/" target="_blank">DexignZone</a> 2025</p>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Required vendors -->
+    <script>
+        var enableSupportButton = '1'
+    </script>
+    <script>
+        var asset_url = 'assets/productivity/'
+    </script>
+
+    <script src="assets/vendor/global/global.min.js" type="text/javascript"></script>
+    <script src="assets/vendor/bootstrap-select/dist/js/bootstrap-select.min.js" type="text/javascript"></script>
+    <script src="assets/vendor/datatables/js/jquery.dataTables.min.js" type="text/javascript"></script>
+    <script src="assets/vendor/datatables/responsive/responsive.js" type="text/javascript"></script>
+    <script src="assets/js/plugins-init/datatables.init.js" type="text/javascript"></script>
+    <script src="assets/js/custom.min.js" type="text/javascript"></script>
+    <script src="assets/js/deznav-init.js" type="text/javascript"></script>
+    
+    <!-- Delete confirmation script -->
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Add event listener to all delete forms
+        const deleteForms = document.querySelectorAll('.delete-form');
+        
+        deleteForms.forEach(form => {
+            form.addEventListener('submit', function(e) {
+                e.preventDefault(); // Prevent immediate submission
+                
+                // Show confirmation dialog
+                if (confirm('Are you sure you want to delete this document? This action cannot be undone.')) {
+                    this.submit(); // Submit if confirmed
+                }
+            });
+        });
+    });
+    </script>
+</body>
+
+</html>

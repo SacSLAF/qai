@@ -1,25 +1,207 @@
-UES (4294, 5625, 4012, 4, '2019.07.18 සිට 2019.08.28 දක්වා සිදුකල විගණනයේ දී නිරීක්‍ෂණය වු අයදුම්පත් වලට අදාලව ගිණුම්,183 වන කළමණාකරන මණ්ඩල  තීරණය බලයට ගෙන  අත්හිටු වීම් කරන ලදී.', '2020-11-25', '', 3, 0, 1, 38, '2020-11-25');
-INSERT INTO `tbl_suspension_details` VALUES (4295, 2001, 1473, 4, '2019.07.18 සිට 2019.08.28 දක්වා සිදුකල විගණනයේ දී නිරීක්‍ෂණය වු අයදුම්පත් වලට අදාලව ගිණුම්,183 වන කළමණාකරන මණ්ඩල  තීරණය බලයට ගෙන  අත්හිටු වීම් කරන ලදී.', '2020-11-25', '', 3, 0, 1, 34, '2020-11-25');
-INSERT INTO `tbl_suspension_details` VALUES (4296, 11239, 7585, 4, '2019.07.18 සිට 2019.08.28 දක්වා සිදුකල විගණනයේ දී නිරීක්‍ෂණය වු අයදුම්පත් වලට අදාලව ගිණුම්,183 වන කළමණාකරන මණ්ඩල  තීරණය බලයට ගෙන  අත්හිටු වීම් කරන ලදී.', '2020-11-25', '', 3, 0, 1, 33, '2020-11-25');
-INSERT INTO `tbl_suspension_details` VALUES (4297, 12631, 8516, 4, '2019.07.18 සිට 2019.08.28 දක්වා සිදුකල විගණනයේ දී නිරීක්‍ෂණය වු අයදුම්පත් වලට අදාලව ගිණුම්,183 වන කළමණාකරන මණ්ඩල  තීරණය බලයට ගෙන  අත්හිටු වීම් කරන ලදී.', '2020-11-25', '', 3, 0, 0, 20, '2020-11-25');
-INSERT INTO `tbl_suspension_details` VALUES (6215, 145859, 35117, 1, 'Death Certificate', '2021-03-29', '', 3, 0, 1, 40, '2021-10-14');
-INSERT INTO `tbl_suspension_details` VALUES (6216, 47312, 20506, 1, 'Death Certificate', '2021-04-07', '', 3, 0, 1, 40, '2021-10-14');
-INSERT INTO `tbl_suspension_details` VALUES (6217, 23192, 15869, 1, 'Death Certificate', '2020-11-23', '', 3, 0, 1, 40, '2021-10-14');
-INSERT INTO `tbl_suspension_details` VALUES (6218, 144398, 39157, 1, 'Death Certificate', '2021-02-13', '', 3, 0, 1, 40, '2021-10-14');
-INSERT INTO `tbl_suspension_details` VALUES (6219, 5142, 3679, 1, 'Death Certificate', '2021-05-25', '', 3, 0, 1, 40, '2021-10-14');
-INSERT INTO `tbl_suspension_details` VALUES (4299, 20051, 13656, 4, '2019.07.18 සිට 2019.08.28 දක්වා සිදුකල විගණනයේ දී නිරීක්‍ෂණය වු අයදුම්පත් වලට අදාලව ගිණුම්,183 වන කළමණාකරන මණ්ඩල  තීරණය බලයට ගෙන  අත්හිටු වීම් කරන ලදී.', '2020-11-25', '', 3, 0, 1, 35, '2020-11-25');
-INSERT INTO `tbl_suspension_details` VALUES (4300, 7997, 5543, 4, '2019.07.18 සිට 2019.08.28 දක්වා සිදුකල විගණනයේ දී නිරීක්‍ෂණය වු අයදුම්පත් වලට අදාලව ගිණුම්,183 වන කළමණාකරන මණ්ඩල  තීරණය බලයට ගෙන  අත්හිටු වීම් කරන ලදී.', '2020-11-25', '', 3, 0, 0, 36, '2020-11-25');
-INSERT INTO `tbl_suspension_details` VALUES (4301, 1793, 1323, 4, '2019.07.18 සිට 2019.08.28 දක්වා සිදුකල විගණනයේ දී නිරීක්‍ෂණය වු අයදුම්පත් වලට අදාලව ගිණුම්,183 වන කළමණාකරන මණ්ඩල  තීරණය බලයට ගෙන  අත්හිටු වීම් කරන ලදී.', '2020-11-25', '', 3, 0, 0, 26, '2020-11-25');
-INSERT INTO `tbl_suspension_details` VALUES (4302, 1794, 1323, 4, '2019.07.18 සිට 2019.08.28 දක්වා සිදුකල විගණනයේ දී නිරීක්‍ෂණය වු අයදුම්පත් වලට අදාලව ගිණුම්,183 වන කළමණාකරන මණ්ඩල  තීරණය බලයට ගෙන  අත්හිටු වීම් කරන ලදී.', '2020-11-25', '', 3, 0, 0, 26, '2020-11-25');
-INSERT INTO `tbl_suspension_details` VALUES (4303, 16814, 11425, 4, '2019.07.18 සිට 2019.08.28 දක්වා සිදුකල විගණනයේ දී නිරීක්‍ෂණය වු අයදුම්පත් වලට අදාලව ගිණුම්,183 වන කළමණාකරන මණ්ඩල  තීරණය බලයට ගෙන  අත්හිටු වීම් කරන ලදී.', '2020-11-25', '', 3, 0, 0, 20, '2020-11-25');
-INSERT INTO `tbl_suspension_details` VALUES (4304, 16686, 11341, 4, '2019.07.18 සිට 2019.08.28 දක්වා සිදුකල විගණනයේ දී නිරීක්‍ෂණය වු අයදුම්පත් වලට අදාලව ගිණුම්,183 වන කළමණාකරන මණ්ඩල  තීරණය බලයට ගෙන  අත්හිටු වීම් කරන ලදී.', '2020-11-25', '', 3, 0, 0, 36, '2020-11-25');
-INSERT INTO `tbl_suspension_details` VALUES (4305, 4718, 3387, 4, '2019.07.18 සිට 2019.08.28 දක්වා සිදුකල විගණනයේ දී නිරීක්‍ෂණය වු අයදුම්පත් වලට අදාලව ගිණුම්,183 වන කළමණාකරන මණ්ඩල  තීරණය බලයට ගෙන  අත්හිටු වීම් කරන ලදී.', '2020-11-25', '', 3, 0, 1, 26, '2020-11-25');
-INSERT INTO `tbl_suspension_details` VALUES (4306, 2614, 1913, 4, '2019.07.18 සිට 2019.08.28 දක්වා සිදුකල විගණනයේ දී නිරීක්‍ෂණය වු අයදුම්පත් වලට අදාලව ගිණුම්,183 වන කළමණාකරන මණ්ඩල  තීරණය බලයට ගෙන  අත්හිටු වීම් කරන ලදී.', '2020-11-25', '', 3, 0, 1, 34, '2020-11-25');
-INSERT INTO `tbl_suspension_details` VALUES (4307, 2670, 1955, 4, '2019.07.18 සිට 2019.08.28 දක්වා සිදුකල විගණනයේ දී නිරීක්‍ෂණය වු අයදුම්පත් වලට අදාලව ගිණුම්,183 වන කළමණාකරන මණ්ඩල  තීරණය බලයට ගෙන  අත්හිටු වීම් කරන ලදී.', '2020-11-25', '', 3, 0, 1, 33, '2020-11-25');
-INSERT INTO `tbl_suspension_details` VALUES (4308, 16826, 11434, 4, '2019.07.18 සිට 2019.08.28 දක්වා සිදුකල විගණනයේ දී නිරීක්‍ෂණය වු අයදුම්පත් වලට අදාලව ගිණුම්,183 වන කළමණාකරන මණ්ඩල  තීරණය බලයට ගෙන  අත්හිටු වීම් කරන ලදී.', '2020-11-25', '', 3, 0, 0, 20, '2020-11-25');
-INSERT INTO `tbl_suspension_details` VALUES (4309, 12012, 8092, 4, '2019.07.18 සිට 2019.08.28 දක්වා සිදුකල විගණනයේ දී නිරීක්‍ෂණය වු අයදුම්පත් වලට අදාලව ගිණුම්,183 වන කළමණාකරන මණ්ඩල  තීරණය බලයට ගෙන  අත්හිටු වීම් කරන ලදී.', '2020-11-25', '', 3, 0, 0, 35, '2020-11-25');
-INSERT INTO `tbl_suspension_details` VALUES (4310, 2032, 1495, 4, '2019.07.18 සිට 2019.08.28 දක්වා සිදුකල විගණනයේ දී නිරීක්‍ෂණය වු අයදුම්පත් වලට අදාලව ගිණුම්,183 වන කළමණාකරන මණ්ඩල  තීරණය බලයට ගෙන  අත්හිටු වීම් කරන ලදී.', '2020-11-25', '', 3, 0, 0, 26, '2020-11-25');
-INSERT INTO `tbl_suspension_details` VALUES (4311, 2031, 1495, 4, '2019.07.18 සිට 2019.08.28 දක්වා සිදුකල විගණනයේ දී නිරීක්‍ෂණය වු අයදුම්පත් වලට අදාලව ගිණුම්,183 වන කළමණාකරන මණ්ඩල  තීරණය බලයට ගෙන  අත්හිටු වීම් කරන ලදී.', '2020-11-25', '', 3, 0, 0, 26, '2020-11-25');
-INSERT INTO `tbl_suspension_details` VALUES (4312, 16687, 11341, 4, '2019.07.18 සිට 2019.08.28 දක්වා සිදුකල විගණනයේ දී නිරීක්‍ෂණය වු අයදුම්පත් වලට අදාලව ගිණුම්,183 වන කළමණාකරන මණ්ඩල  තීරණය බලයට ගෙන  අත්හිටු වීම් කරන ලදී.', '2020-11-25', '', 3, 0, 0, 36, '2020-11-25');
-INSERT INTO `tbl_suspension_details` VALUES (4313, 1403, 1038, 4, '2019.07.18 සිට 2019.08.28 දක්වා සිදුකල විගණනයේ දී නිරීක්‍ෂණය වු අයදුම්පත් වලට අදාලව ගිණුම්,183 වන කළමණාකරන මණ්ඩල  තීරණය බලයට ගෙන  අත්හිටු වීම් කරන ලදී.', '2020-11-25', '', 3, 0, 1, 26, '2020-11-25');
-INSERT INTO `tbl_suspension_details` VALUES (4314, 5393, 3852, 4, '2019.07.18 සිට 2019.08.28 දක්වා සිදුකල වි�
+<!DOCTYPE html>
+<html lang="en">
+
+<?php
+include "template/head.php";
+require_once '../includes/config.php';
+
+$productivity_categories = $db->query("SELECT id, name FROM productivity_categories ORDER BY name")->fetch_all(MYSQLI_ASSOC);
+$osh_categories = $db->query("SELECT id, name FROM osh_categories ORDER BY name")->fetch_all(MYSQLI_ASSOC);
+$environment_categories = $db->query("SELECT id, name FROM environment_categories ORDER BY name")->fetch_all(MYSQLI_ASSOC);
+$branches = $db->query("SELECT id, name FROM branches ORDER BY name")->fetch_all(MYSQLI_ASSOC);
+?>
+
+<body>
+
+    <?php
+    include "template/preloader.php";
+    ?>
+
+
+
+    <div id="main-wrapper">
+
+
+        <?php
+        include "template/nav.php";
+        // include "template/chatbox.php";
+        include "template/header.php";
+        ?>
+
+
+        <?php
+        include "template/desnav.php";
+        ?>
+
+
+        <div class="content-body">
+            <!-- row -->
+            <div class="container-fluid">
+                <div class="row">
+                    <?php
+                    //include "section/mainbox.php";
+                    ?>
+
+                    <form method="post" enctype="multipart/form-data" action="action/productivity-process.php">
+                        <!-- Title -->
+                         
+                        <div class="form-group">
+                            <label for="title">Title*</label>
+                            <input type="text" class="form-control input-default" id="title" name="title" required
+                                value="">
+                        </div>
+
+                        <!-- Description -->
+                        <div class="form-group">
+                            <label for="description">Description</label>
+                            <textarea class="form-control input-rounded" id="description" name="description" rows="3"></textarea>
+                        </div>
+     <input type="hidden" id="main" name="main" value="productivity">
+                        <!-- Category Dropdown -->
+                        <div class="form-group">
+                            <label for="category_id">Productivity Category*</label>
+                            <select name="category_id" class="form-control input-default" id="category_id" required onchange="toggleSubCategories()">
+                                <option value="">Select a category</option>
+                                <?php foreach ($productivity_categories as $pro_cat): ?>
+                                    <option value="<?= $pro_cat['id'] ?>" <?=
+                                                                        (isset($_POST['category_id']) && $_POST['category_id'] == $pro_cat['id']) ? 'selected' : ''
+                                                                        ?>>
+                                        <?= htmlspecialchars($pro_cat['name']) ?>
+                                    </option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
+                        
+                        <!-- OSH Category Dropdown (Initially Hidden) -->
+                        <div class="form-group" id="osh_category_container" style="display: none;">
+                            <label for="osh_category_id">OSH Category*</label>
+                            <select name="osh_category_id" class="form-control input-default" id="osh_category_id">
+                                <option value="">Select an OSH category</option>
+                                <?php foreach ($osh_categories as $osh_cat): ?>
+                                    <option value="<?= $osh_cat['id'] ?>">
+                                        <?= htmlspecialchars($osh_cat['name']) ?>
+                                    </option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
+                        
+                        <!-- Environment Category Dropdown (Initially Hidden) -->
+                        <div class="form-group" id="environment_category_container" style="display: none;">
+                            <label for="environment_category_id">Environment Category*</label>
+                            <select name="environment_category_id" class="form-control input-default" id="environment_category_id">
+                                <option value="">Select an Environment category</option>
+                                <?php foreach ($environment_categories as $env_cat): ?>
+                                    <option value="<?= $env_cat['id'] ?>">
+                                        <?= htmlspecialchars($env_cat['name']) ?>
+                                    </option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
+                        
+                        <!-- Branch Dropdown (Initially Hidden) -->
+                        <div class="form-group" id="branch_container" style="display: none;">
+                            <label for="branch_id">Branch</label>
+                            <select name="branch_id" class="form-control input-default" id="branch_id">
+                                <option value="">Select a branch</option>
+                                <?php foreach ($branches as $branch): ?>
+                                    <option value="<?= $branch['id'] ?>" <?=
+                                                                        (isset($_POST['branch_id']) && $_POST['branch_id'] == $branch['id']) ? 'selected' : ''
+                                                                        ?>>
+                                        <?= htmlspecialchars($branch['name']) ?>
+                                    </option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
+                        
+                        <!-- Document File Upload -->
+                        <div class="form-group">
+                            <label for="document">Document File*</label>
+                            <input type="file" class="form-control input-default" id="document" name="document"
+                                accept=".pdf,.docx,.xlsx" required>
+                            <small class="text-muted">
+                                Max file size: MB. Allowed types: PDF, DOCX, XLSX
+                            </small>
+                        </div>
+
+                        <!-- Checkbox Row (Example Usage) -->
+                        <div class="row">
+                            <div class="col-xl-4 col-xxl-6 col-6">
+                                <!-- <div class="form-check custom-checkbox mb-3">
+                                    <input type="checkbox" class="form-check-input" id="confirmUpload" required>
+                                    <label class="form-check-label" for="confirmUpload">Confirm Upload</label>
+                                </div> -->
+                            </div>
+                            <!-- You can add more checkboxes here if needed -->
+                        </div>
+                        <br>
+
+                        <!-- Submit Button -->
+                        <div>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-upload"></i> Upload Document
+                            </button>
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+
+        <?php
+        include "template/footer.php";
+        ?>
+
+
+
+    </div>
+
+
+    <?php
+    include "template/foot.php";
+    ?>
+
+    <script>
+    function toggleSubCategories() {
+        const productivityCategory = document.getElementById('category_id');
+        const oshContainer = document.getElementById('osh_category_container');
+        const environmentContainer = document.getElementById('environment_category_container');
+        const branchContainer = document.getElementById('branch_container');
+        const oshSelect = document.getElementById('osh_category_id');
+        const environmentSelect = document.getElementById('environment_category_id');
+        const branchSelect = document.getElementById('branch_id');
+        
+        // Hide all containers first
+        oshContainer.style.display = 'none';
+        environmentContainer.style.display = 'none';
+        branchContainer.style.display = 'none';
+        oshSelect.removeAttribute('required');
+        environmentSelect.removeAttribute('required');
+        branchSelect.removeAttribute('required');
+        oshSelect.value = '';
+        environmentSelect.value = '';
+        branchSelect.value = '';
+        
+        // Show appropriate containers based on selection
+        if (productivityCategory.value == '1') { // Occupational Health & Safety
+            oshContainer.style.display = 'block';
+            branchContainer.style.display = 'block';
+            oshSelect.setAttribute('required', 'required');
+            branchSelect.setAttribute('required', 'required');
+        } else if (productivityCategory.value == '2') { // Environment
+            environmentContainer.style.display = 'block';
+            branchContainer.style.display = 'block';
+            environmentSelect.setAttribute('required', 'required');
+            branchSelect.setAttribute('required', 'required');
+        }
+        // For other categories (Quality Control Circle, Awards), no additional fields are shown
+    }
+    
+    // Initialize on page load
+    document.addEventListener('DOMContentLoaded', function() {
+        toggleSubCategories();
+    });
+    </script>
+
+</body>
+
+</html>

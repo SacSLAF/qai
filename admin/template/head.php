@@ -2,7 +2,7 @@
 
 <head>
    <!-- PAGE TITLE HERE -->
-	<title>QAI</title>
+	<title>CQAI</title>
 	<meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
