@@ -1,6 +1,6 @@
 <style> 
     footer {
-      height:60px;
+      height:40px;
       background-color: #184274;
       color: white;
       display: flex;
