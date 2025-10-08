@@ -2,6 +2,7 @@
 <html lang="en">
 
 <?php
+session_start();
 include "template/head.php";
 ?>
 
@@ -17,6 +18,7 @@ include "template/head.php";
 
 
 		<?php
+		
 		include "template/nav.php";
 		// include "template/chatbox.php";
 		include "template/header.php";
@@ -33,6 +35,7 @@ include "template/head.php";
 			<div class="container-fluid">
 				<div class="row">
 					<?php
+					// var_dump($_SESSION['admin_id']);
 					include "section/mainbox.php";
 					?>
 

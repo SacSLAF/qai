@@ -1,5 +1,5 @@
 <script>
-		var enableSupportButton = '0'
+		var enableSupportButton = '1'
 	</script>
 	<script>
 		var asset_url = 'assets/'

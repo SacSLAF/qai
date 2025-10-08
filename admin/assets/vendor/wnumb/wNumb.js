@@ -1,357 +1,56 @@
-(function (factory) {
-
-    if ( typeof define === 'function' && define.amd ) {
-
-        // AMD. Register as an anonymous module.
-        define([], factory);
-
-    } else if ( typeof exports === 'object' ) {
-
-        // Node/CommonJS
-        module.exports = factory();
-
-    } else {
-
-        // Browser globals
-        window.wNumb = factory();
-    }
-
-}(function(){
-
-	'use strict';
-
-var FormatOptions = [
-	'decimals',
-	'thousand',
-	'mark',
-	'prefix',
-	'suffix',
-	'encoder',
-	'decoder',
-	'negativeBefore',
-	'negative',
-	'edit',
-	'undo'
-];
-
-// General
-
-	// Reverse a string
-	function strReverse ( a ) {
-		return a.split('').reverse().join('');
-	}
-
-	// Check if a string starts with a specified prefix.
-	function strStartsWith ( input, match ) {
-		return input.substring(0, match.length) === match;
-	}
-
-	// Check is a string ends in a specified suffix.
-	function strEndsWith ( input, match ) {
-		return input.slice(-1 * match.length) === match;
-	}
-
-	// Throw an error if formatting options are incompatible.
-	function throwEqualError( F, a, b ) {
-		if ( (F[a] || F[b]) && (F[a] === F[b]) ) {
-			throw new Error(a);
-		}
-	}
-
-	// Check if a number is finite and not NaN
-	function isValidNumber ( input ) {
-		return typeof input === 'number' && isFinite( input );
-	}
-
-	// Provide rounding-accurate toFixed method.
-	// Borrowed: http://stackoverflow.com/a/21323330/775265
-	function toFixed ( value, exp ) {
-		value = value.toString().split('e');
-		value = Math.round(+(value[0] + 'e' + (value[1] ? (+value[1] + exp) : exp)));
-		value = value.toString().split('e');
-		return (+(value[0] + 'e' + (value[1] ? (+value[1] - exp) : -exp))).toFixed(exp);
-	}
-
-
-// Formatting
-
-	// Accept a number as input, output formatted string.
-	function formatTo ( decimals, thousand, mark, prefix, suffix, encoder, decoder, negativeBefore, negative, edit, undo, input ) {
-
-		var originalInput = input, inputIsNegative, inputPieces, inputBase, inputDecimals = '', output = '';
-
-		// Apply user encoder to the input.
-		// Expected outcome: number.
-		if ( encoder ) {
-			input = encoder(input);
-		}
-
-		// Stop if no valid number was provided, the number is infinite or NaN.
-		if ( !isValidNumber(input) ) {
-			return false;
-		}
-
-		// Rounding away decimals might cause a value of -0
-		// when using very small ranges. Remove those cases.
-		if ( decimals !== false && parseFloat(input.toFixed(decimals)) === 0 ) {
-			input = 0;
-		}
-
-		// Formatting is done on absolute numbers,
-		// decorated by an optional negative symbol.
-		if ( input < 0 ) {
-			inputIsNegative = true;
-			input = Math.abs(input);
-		}
-
-		// Reduce the number of decimals to the specified option.
-		if ( decimals !== false ) {
-			input = toFixed( input, decimals );
-		}
-
-		// Transform the number into a string, so it can be split.
-		input = input.toString();
-
-		// Break the number on the decimal separator.
-		if ( input.indexOf('.') !== -1 ) {
-			inputPieces = input.split('.');
-
-			inputBase = inputPieces[0];
-
-			if ( mark ) {
-				inputDecimals = mark + inputPieces[1];
-			}
-
-		} else {
-
-		// If it isn't split, the entire number will do.
-			inputBase = input;
-		}
-
-		// Group numbers in sets of three.
-		if ( thousand ) {
-			inputBase = strReverse(inputBase).match(/.{1,3}/g);
-			inputBase = strReverse(inputBase.join( strReverse( thousand ) ));
-		}
-
-		// If the number is negative, prefix with negation symbol.
-		if ( inputIsNegative && negativeBefore ) {
-			output += negativeBefore;
-		}
-
-		// Prefix the number
-		if ( prefix ) {
-			output += prefix;
-		}
-
-		// Normal negative option comes after the prefix. Defaults to '-'.
-		if ( inputIsNegative && negative ) {
-			output += negative;
-		}
-
-		// Append the actual number.
-		output += inputBase;
-		output += inputDecimals;
-
-		// Apply the suffix.
-		if ( suffix ) {
-			output += suffix;
-		}
-
-		// Run the output through a user-specified post-formatter.
-		if ( edit ) {
-			output = edit ( output, originalInput );
-		}
-
-		// All done.
-		return output;
-	}
-
-	// Accept a sting as input, output decoded number.
-	function formatFrom ( decimals, thousand, mark, prefix, suffix, encoder, decoder, negativeBefore, negative, edit, undo, input ) {
-
-		var originalInput = input, inputIsNegative, output = '';
-
-		// User defined pre-decoder. Result must be a non empty string.
-		if ( undo ) {
-			input = undo(input);
-		}
-
-		// Test the input. Can't be empty.
-		if ( !input || typeof input !== 'string' ) {
-			return false;
-		}
-
-		// If the string starts with the negativeBefore value: remove it.
-		// Remember is was there, the number is negative.
-		if ( negativeBefore && strStartsWith(input, negativeBefore) ) {
-			input = input.replace(negativeBefore, '');
-			inputIsNegative = true;
-		}
-
-		// Repeat the same procedure for the prefix.
-		if ( prefix && strStartsWith(input, prefix) ) {
-			input = input.replace(prefix, '');
-		}
-
-		// And again for negative.
-		if ( negative && strStartsWith(input, negative) ) {
-			input = input.replace(negative, '');
-			inputIsNegative = true;
-		}
-
-		// Remove the suffix.
-		// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/slice
-		if ( suffix && strEndsWith(input, suffix) ) {
-			input = input.slice(0, -1 * suffix.length);
-		}
-
-		// Remove the thousand grouping.
-		if ( thousand ) {
-			input = input.split(thousand).join('');
-		}
-
-		// Set the decimal separator back to period.
-		if ( mark ) {
-			input = input.replace(mark, '.');
-		}
-
-		// Prepend the negative symbol.
-		if ( inputIsNegative ) {
-			output += '-';
-		}
-
-		// Add the number
-		output += input;
-
-		// Trim all non-numeric characters (allow '.' and '-');
-		output = output.replace(/[^0-9\.\-.]/g, '');
-
-		// The value contains no parse-able number.
-		if ( output === '' ) {
-			return false;
-		}
-
-		// Covert to number.
-		output = Number(output);
-
-		// Run the user-specified post-decoder.
-		if ( decoder ) {
-			output = decoder(output);
-		}
-
-		// Check is the output is valid, otherwise: return false.
-		if ( !isValidNumber(output) ) {
-			return false;
-		}
-
-		return output;
-	}
-
-
-// Framework
-
-	// Validate formatting options
-	function validate ( inputOptions ) {
-
-		var i, optionName, optionValue,
-			filteredOptions = {};
-
-		if ( inputOptions['suffix'] === undefined ) {
-			inputOptions['suffix'] = inputOptions['postfix'];
-		}
-
-		for ( i = 0; i < FormatOptions.length; i+=1 ) {
-
-			optionName = FormatOptions[i];
-			optionValue = inputOptions[optionName];
-
-			if ( optionValue === undefined ) {
-
-				// Only default if negativeBefore isn't set.
-				if ( optionName === 'negative' && !filteredOptions.negativeBefore ) {
-					filteredOptions[optionName] = '-';
-				// Don't set a default for mark when 'thousand' is set.
-				} else if ( optionName === 'mark' && filteredOptions.thousand !== '.' ) {
-					filteredOptions[optionName] = '.';
-				} else {
-					filteredOptions[optionName] = false;
-				}
-
-			// Floating points in JS are stable up to 7 decimals.
-			} else if ( optionName === 'decimals' ) {
-				if ( optionValue >= 0 && optionValue < 8 ) {
-					filteredOptions[optionName] = optionValue;
-				} else {
-					throw new Error(optionName);
-				}
-
-			// These options, when provided, must be functions.
-			} else if ( optionName === 'encoder' || optionName === 'decoder' || optionName === 'edit' || optionName === 'undo' ) {
-				if ( typeof optionValue === 'function' ) {
-					filteredOptions[optionName] = optionValue;
-				} else {
-					throw new Error(optionName);
-				}
-
-			// Other options are strings.
-			} else {
-
-				if ( typeof optionValue === 'string' ) {
-					filteredOptions[optionName] = optionValue;
-				} else {
-					throw new Error(optionName);
-				}
-			}
-		}
-
-		// Some values can't be extracted from a
-		// string if certain combinations are present.
-		throwEqualError(filteredOptions, 'mark', 'thousand');
-		throwEqualError(filteredOptions, 'prefix', 'negative');
-		throwEqualError(filteredOptions, 'prefix', 'negativeBefore');
-
-		return filteredOptions;
-	}
-
-	// Pass all options as function arguments
-	function passAll ( options, method, input ) {
-		var i, args = [];
-
-		// Add all options in order of FormatOptions
-		for ( i = 0; i < FormatOptions.length; i+=1 ) {
-			args.push(options[FormatOptions[i]]);
-		}
-
-		// Append the input, then call the method, presenting all
-		// options as arguments.
-		args.push(input);
-		return method.apply('', args);
-	}
-
-	function wNumb ( options ) {
-
-		if ( !(this instanceof wNumb) ) {
-			return new wNumb ( options );
-		}
-
-		if ( typeof options !== "object" ) {
-			return;
-		}
-
-		options = validate(options);
-
-		// Call 'formatTo' with proper arguments.
-		this.to = function ( input ) {
-			return passAll(options, formatTo, input);
-		};
-
-		// Call 'formatFrom' with proper arguments.
-		this.from = function ( input ) {
-			return passAll(options, formatFrom, input);
-		};
-	}
-
-	return wNumb;
-
-}));
+8-16', '2023-08-16 14:48:26');
+INSERT INTO `tbl_approved` VALUES (19119, 42202, 1, 42, '', 1, 1, '2023-08-16', '2023-08-16 15:00:24');
+INSERT INTO `tbl_approved` VALUES (19120, 33144, 1, 42, 'Operator Updated', 2, NULL, '2023-08-16', '2023-08-16 15:14:05');
+INSERT INTO `tbl_approved` VALUES (19121, 42203, 1, 42, '', 1, 1, '2023-08-16', '2023-08-16 15:24:46');
+INSERT INTO `tbl_approved` VALUES (19122, 42204, 1, 42, '', 1, 1, '2023-08-16', '2023-08-16 15:33:02');
+INSERT INTO `tbl_approved` VALUES (19123, 42205, 1, 42, '', 1, 1, '2023-08-16', '2023-08-16 15:44:42');
+INSERT INTO `tbl_approved` VALUES (19124, 42206, 1, 42, '', 1, 1, '2023-08-18', '2023-08-18 09:15:59');
+INSERT INTO `tbl_approved` VALUES (19125, 42207, 1, 42, '', 1, 1, '2023-08-18', '2023-08-18 09:50:36');
+INSERT INTO `tbl_approved` VALUES (19126, 42208, 1, 42, '', 1, 1, '2023-08-18', '2023-08-18 10:15:52');
+INSERT INTO `tbl_approved` VALUES (19127, 42209, 1, 42, '', 1, 1, '2023-08-18', '2023-08-18 10:49:08');
+INSERT INTO `tbl_approved` VALUES (19128, 42210, 1, 42, '', 1, 1, '2023-08-18', '2023-08-18 11:12:18');
+INSERT INTO `tbl_approved` VALUES (19129, 42211, 1, 42, '', 1, 1, '2023-08-18', '2023-08-18 11:37:49');
+INSERT INTO `tbl_approved` VALUES (19130, 42212, 1, 42, '', 1, 1, '2023-08-18', '2023-08-18 13:32:37');
+INSERT INTO `tbl_approved` VALUES (19131, 42213, 1, 42, '', 1, 1, '2023-08-18', '2023-08-18 14:00:11');
+INSERT INTO `tbl_approved` VALUES (19132, 42214, 1, 42, '', 1, 1, '2023-08-18', '2023-08-18 14:41:24');
+INSERT INTO `tbl_approved` VALUES (19133, 42215, 1, 42, '', 1, 1, '2023-08-22', '2023-08-22 09:01:57');
+INSERT INTO `tbl_approved` VALUES (19134, 42215, 1, 40, 'මවගේ සහ පියාගේ විස්තර නිවැරදිව දත්ත පද්ධතිය වෙත ඇතුලත්කර ඇත.', 2, 2, '2023-08-24', '2023-08-24 09:15:22');
+INSERT INTO `tbl_approved` VALUES (19135, 42206, 1, 40, 'මවගේ විස්තර නිවැරදිව දත්ත පද්ධතිය වෙත ඇතුලත්කර ඇත.', 2, 2, '2023-08-25', '2023-08-25 08:32:19');
+INSERT INTO `tbl_approved` VALUES (19136, 42208, 1, 40, 'මවගේ විස්තර නිවැරදිව දත්ත පද්ධතිය වෙත ඇතුලත්කර ඇත.', 2, 2, '2023-08-25', '2023-08-25 08:59:52');
+INSERT INTO `tbl_approved` VALUES (19137, 42209, 1, 40, 'මවගේ සහ පියාගේ විස්තර නිවැරදිව දත්ත පද්ධතිය වෙත ඇතුලත්කර ඇත.', 2, 2, '2023-08-25', '2023-08-25 10:37:57');
+INSERT INTO `tbl_approved` VALUES (19138, 42210, 1, 40, 'මවගේ සහ පියාගේ විස්තර නිවැරදිව දත්ත පද්ධතිය වෙත ඇතුලත්කර ඇත.', 2, 2, '2023-08-25', '2023-08-25 11:16:56');
+INSERT INTO `tbl_approved` VALUES (19139, 42211, 1, 40, 'මවගේ විස්තර නිවැරදිව දත්ත පද්ධතිය වෙත ඇතුලත්කර ඇත.', 2, 2, '2023-08-25', '2023-08-25 11:30:31');
+INSERT INTO `tbl_approved` VALUES (19140, 42212, 1, 40, 'මවගේ විස්තර නිවැරදිව දත්ත පද්ධතිය වෙත ඇතුලත්කර ඇත.', 2, 2, '2023-08-25', '2023-08-25 11:51:07');
+INSERT INTO `tbl_approved` VALUES (19141, 42213, 1, 40, 'පියාගේ විස්තර නිවැරදිව දත්ත පද්ධතිය වෙත ඇතුලත්කර ඇත.', 2, 2, '2023-08-25', '2023-08-25 12:23:50');
+INSERT INTO `tbl_approved` VALUES (19142, 42214, 1, 40, 'මවගේ සහ පියාගේ විස්තර නිවැරදිව දත්ත පද්ධතිය වෙත ඇතුලත්කර ඇත.', 2, 2, '2023-08-25', '2023-08-25 12:30:49');
+INSERT INTO `tbl_approved` VALUES (19143, 42199, 1, 40, 'මවගේ විස්තර නිවැරදිව දත්ත පද්ධතිය වෙත ඇතුලත්කර ඇත.', 2, 2, '2023-08-25', '2023-08-25 12:37:07');
+INSERT INTO `tbl_approved` VALUES (19144, 42198, 1, 40, 'මවගේ විස්තර නිවැරදිව දත්ත පද්ධතිය වෙත ඇතුලත්කර ඇත.', 2, 2, '2023-08-25', '2023-08-25 14:11:15');
+INSERT INTO `tbl_approved` VALUES (19145, 42207, 1, 40, '', 11, NULL, '2023-08-28', '2023-08-28 08:48:36');
+INSERT INTO `tbl_approved` VALUES (19146, 42207, 1, 40, 'මවගේ සහ පියාගේ විස්තර නිවැරදිව දත්ත පද්ධතිය වෙත ඇතුලත්කර ඇත.', 2, 2, '2023-08-28', '2023-08-28 08:48:59');
+INSERT INTO `tbl_approved` VALUES (19147, 42200, 1, 40, 'මවගේ සහ පියාගේ විස්තර නිවැරදිව දත්ත පද්ධතිය වෙත ඇතුලත්කර ඇත.', 2, 2, '2023-08-28', '2023-08-28 09:51:20');
+INSERT INTO `tbl_approved` VALUES (19148, 42201, 1, 40, 'මවගේ සහ පියාගේ විස්තර නිවැරදිව දත්ත පද්ධතිය වෙත ඇතුලත්කර ඇත.', 2, 2, '2023-08-28', '2023-08-28 10:20:38');
+INSERT INTO `tbl_approved` VALUES (19149, 42202, 1, 40, 'මවගේ සහ පියාගේ විස්තර නිවැරදිව දත්ත පද්ධතිය වෙත ඇතුලත්කර ඇත.', 2, 2, '2023-08-28', '2023-08-28 11:02:08');
+INSERT INTO `tbl_approved` VALUES (19150, 33144, 1, 40, 'මවගේ විස්තර නිවැරදිව දත්ත පද්ධතිය වෙත ඇතුලත්කර ඇත.', 2, 2, '2023-08-28', '2023-08-28 11:57:41');
+INSERT INTO `tbl_approved` VALUES (19151, 42203, 1, 40, 'මවගේ විස්තර නිවැරදිව දත්ත පද්ධතිය වෙත ඇතුලත්කර ඇත.', 2, 2, '2023-08-28', '2023-08-28 12:17:29');
+INSERT INTO `tbl_approved` VALUES (19152, 42204, 1, 40, 'මවගේ විස්තර නිවැරදිව දත්ත පද්ධතිය වෙත ඇතුලත්කර ඇත.', 2, 2, '2023-08-28', '2023-08-28 12:23:22');
+INSERT INTO `tbl_approved` VALUES (19153, 42205, 1, 40, '', 11, NULL, '2023-08-28', '2023-08-28 14:03:18');
+INSERT INTO `tbl_approved` VALUES (19154, 42205, 1, 40, 'මවගේ සහ පියාගේ විස්තර නිවැරදිව දත්ත පද්ධතිය වෙත ඇතුලත්කර ඇත.', 2, 2, '2023-08-28', '2023-08-28 14:03:32');
+INSERT INTO `tbl_approved` VALUES (19155, 42207, 2, 43, 'Recommended', 3, 1, '2023-08-29', '2023-08-29 09:01:30');
+INSERT INTO `tbl_approved` VALUES (19156, 42215, 2, 43, 'Recommended', 3, 1, '2023-08-29', '2023-08-29 09:05:23');
+INSERT INTO `tbl_approved` VALUES (19157, 42206, 2, 43, 'Recommended', 3, 1, '2023-08-29', '2023-08-29 09:07:40');
+INSERT INTO `tbl_approved` VALUES (19158, 42208, 2, 43, 'Recommended', 3, 1, '2023-08-29', '2023-08-29 09:14:18');
+INSERT INTO `tbl_approved` VALUES (19159, 42214, 2, 43, 'Recommended', 3, 1, '2023-08-29', '2023-08-29 09:27:37');
+INSERT INTO `tbl_approved` VALUES (19160, 42199, 2, 43, 'Recommended', 3, 1, '2023-08-29', '2023-08-29 09:30:37');
+INSERT INTO `tbl_approved` VALUES (19161, 86, 1, 40, 'Operator Updated', 2, NULL, '2023-08-29', '2023-08-29 09:35:28');
+INSERT INTO `tbl_approved` VALUES (19162, 42198, 2, 43, 'Recommended', 3, 1, '2023-08-29', '2023-08-29 09:40:46');
+INSERT INTO `tbl_approved` VALUES (19163, 42213, 2, 43, 'Recommended', 3, 1, '2023-08-29', '2023-08-29 09:43:22');
+INSERT INTO `tbl_approved` VALUES (19164, 42200, 2, 43, 'Recommended', 3, 1, '2023-08-29', '2023-08-29 09:47:01');
+INSERT INTO `tbl_approved` VALUES (19165, 4720, 1, 40, 'Operator Updated', 2, NULL, '2023-08-29', '2023-08-29 09:57:05');
+INSERT INTO `tbl_approved` VALUES (19166, 42201, 2, 43, 'Recommended', 3, 1, '2023-08-29', '2023-08-29 09:59:51');
+INSERT INTO `tbl_approved` VALUES (19167, 42202, 2, 43, 'Recommended', 3, 1, '2023-08-29', '2023-08-29 10:02:43');
+INSERT INTO `tbl_approved` VALUES (19168, 33144, 2, 43, 'Recommended', 3, 1, '2023-08-29', '2023-08-29 10:05:02');
+INSERT INTO `tbl_approved` VALUES (19169, 42203, 2, 43, 'Recommended', 3, 1, '2023-08-29', '2023-08-29 10:08:53');
+INSERT INTO `tbl_approved` VALUES (19170, 42204, 2, 43, 'Recommended', 3, 1, '2023-08-29', '2023-08-29 10:10:55');
+INSERT INTO `tbl_approved` VALUES (19171, 42210, 2, 43, 'Recommended', 3, 1, '2023-08-29', '2023-08-29 10:22:50');
+INSERT INTO `tbl_approved` VALUES (19172, 42211, 2, 43, 'Recommended', 3, 1, '2023-08-29', '2023-08-29 10:25:16');
+INSERT INTO `tbl_approved` VALUES (19173, 42212, 2, 43, 'Rec

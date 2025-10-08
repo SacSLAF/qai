@@ -1,1295 +1,427 @@
-(function ($, moment)
-{
-   var pluginName = "bootstrapMaterialDatePicker";
-   var pluginDataName = "plugin_" + pluginName;
-
-   moment.locale('en');
-
-   function Plugin(element, options)
-   {
-      this.currentView = 0;
-
-      this.minDate;
-      this.maxDate;
-
-      this._attachedEvents = [];
-
-      this.element = element;
-      this.$element = $(element);
-
-
-      this.params = {date: true, time: true, format: 'YYYY-MM-DD', minDate: null, maxDate: null, currentDate: null, lang: 'en', weekStart: 0, disabledDays: [], shortTime: false, clearButton: false, nowButton: false, cancelText: 'Cancel', okText: 'OK', clearText: 'Clear', nowText: 'Now', switchOnClick: false, triggerEvent: 'focus', monthPicker: false, year:true};
-      this.params = $.fn.extend(this.params, options);
-
-      this.name = "dtp_" + this.setName();
-      this.$element.attr("data-dtp", this.name);
-
-      moment.locale(this.params.lang);
-
-      this.init();
-   }
-
-   $.fn[pluginName] = function (options, p)
-   {
-      this.each(function ()
-      {
-         if (!$.data(this, pluginDataName))
-         {
-            $.data(this, pluginDataName, new Plugin(this, options));
-         } else
-         {
-            if (typeof ($.data(this, pluginDataName)[options]) === 'function')
-            {
-               $.data(this, pluginDataName)[options](p);
-            }
-            if (options === 'destroy')
-            {
-               delete $.data(this, pluginDataName);
-            }
-         }
-      });
-      return this;
-   };
-
-   Plugin.prototype =
-           {
-              init: function ()
-              {
-                 this.initDays();
-                 this.initDates();
-
-                 this.initTemplate();
-
-                 this.initButtons();
-
-                 this._attachEvent($(window), 'resize', this._centerBox.bind(this));
-                 this._attachEvent(this.$dtpElement.find('.dtp-content'), 'click', this._onElementClick.bind(this));
-                 this._attachEvent(this.$dtpElement, 'click', this._onBackgroundClick.bind(this));
-                 this._attachEvent(this.$dtpElement.find('.dtp-close > a'), 'click', this._onCloseClick.bind(this));
-                 this._attachEvent(this.$element, this.params.triggerEvent, this._fireCalendar.bind(this));
-              },
-              initDays: function ()
-              {
-                 this.days = [];
-                 for (var i = this.params.weekStart; this.days.length < 7; i++)
-                 {
-                    if (i > 6)
-                    {
-                       i = 0;
-                    }
-                    this.days.push(i.toString());
-                 }
-              },
-              initDates: function ()
-              {
-                 if (this.$element.val().length > 0)
-                 {
-                    if (typeof (this.params.format) !== 'undefined' && this.params.format !== null)
-                    {
-                       this.currentDate = moment(this.$element.val(), this.params.format).locale(this.params.lang);
-                    } else
-                    {
-                       this.currentDate = moment(this.$element.val()).locale(this.params.lang);
-                    }
-                 } else
-                 {
-                    if (typeof (this.$element.attr('value')) !== 'undefined' && this.$element.attr('value') !== null && this.$element.attr('value') !== "")
-                    {
-                       if (typeof (this.$element.attr('value')) === 'string')
-                       {
-                          if (typeof (this.params.format) !== 'undefined' && this.params.format !== null)
-                          {
-                             this.currentDate = moment(this.$element.attr('value'), this.params.format).locale(this.params.lang);
-                          } else
-                          {
-                             this.currentDate = moment(this.$element.attr('value')).locale(this.params.lang);
-                          }
-                       }
-                    } else
-                    {
-                       if (typeof (this.params.currentDate) !== 'undefined' && this.params.currentDate !== null)
-                       {
-                          if (typeof (this.params.currentDate) === 'string')
-                          {
-                             if (typeof (this.params.format) !== 'undefined' && this.params.format !== null)
-                             {
-                                this.currentDate = moment(this.params.currentDate, this.params.format).locale(this.params.lang);
-                             } else
-                             {
-                                this.currentDate = moment(this.params.currentDate).locale(this.params.lang);
-                             }
-                          } else
-                          {
-                             if (typeof (this.params.currentDate.isValid) === 'undefined' || typeof (this.params.currentDate.isValid) !== 'function')
-                             {
-                                var x = this.params.currentDate.getTime();
-                                this.currentDate = moment(x, "x").locale(this.params.lang);
-                             } else
-                             {
-                                this.currentDate = this.params.currentDate;
-                             }
-                          }
-                          this.$element.val(this.currentDate.format(this.params.format));
-                       } else
-                          this.currentDate = moment();
-                    }
-                 }
-
-                 if (typeof (this.params.minDate) !== 'undefined' && this.params.minDate !== null)
-                 {
-                    if (typeof (this.params.minDate) === 'string')
-                    {
-                       if (typeof (this.params.format) !== 'undefined' && this.params.format !== null)
-                       {
-                          this.minDate = moment(this.params.minDate, this.params.format).locale(this.params.lang);
-                       } else
-                       {
-                          this.minDate = moment(this.params.minDate).locale(this.params.lang);
-                       }
-                    } else
-                    {
-                       if (typeof (this.params.minDate.isValid) === 'undefined' || typeof (this.params.minDate.isValid) !== 'function')
-                       {
-                          var x = this.params.minDate.getTime();
-                          this.minDate = moment(x, "x").locale(this.params.lang);
-                       } else
-                       {
-                          this.minDate = this.params.minDate;
-                       }
-                    }
-                 } else if (this.params.minDate === null)
-                 {
-                    this.minDate = null;
-                 }
-
-                 if (typeof (this.params.maxDate) !== 'undefined' && this.params.maxDate !== null)
-                 {
-                    if (typeof (this.params.maxDate) === 'string')
-                    {
-                       if (typeof (this.params.format) !== 'undefined' && this.params.format !== null)
-                       {
-                          this.maxDate = moment(this.params.maxDate, this.params.format).locale(this.params.lang);
-                       } else
-                       {
-                          this.maxDate = moment(this.params.maxDate).locale(this.params.lang);
-                       }
-                    } else
-                    {
-                       if (typeof (this.params.maxDate.isValid) === 'undefined' || typeof (this.params.maxDate.isValid) !== 'function')
-                       {
-                          var x = this.params.maxDate.getTime();
-                          this.maxDate = moment(x, "x").locale(this.params.lang);
-                       } else
-                       {
-                          this.maxDate = this.params.maxDate;
-                       }
-                    }
-                 } else if (this.params.maxDate === null)
-                 {
-                    this.maxDate = null;
-                 }
-
-                 if (!this.isAfterMinDate(this.currentDate))
-                 {
-                    this.currentDate = moment(this.minDate);
-                 }
-                 if (!this.isBeforeMaxDate(this.currentDate))
-                 {
-                    this.currentDate = moment(this.maxDate);
-                 }
-              },
-              initTemplate: function ()
-              {
-                  var yearPicker = "";
-                  var y =this.currentDate.year();
-                  for (var i = y-3; i < y + 4; i++) {
-                      yearPicker += '<div class="year-picker-item" data-year="' + i + '">' + i + '</div>';
-                  }
-                  this.midYear=y;
-                  var yearHtml =
-                      '<div class="dtp-picker-year hidden" >' +
-                      '<div><a href="javascript:void(0);" class="btn btn-default dtp-select-year-range before" style="margin: 0;"><i class="material-icons">keyboard_arrow_up</i></a></div>' +
-                      yearPicker +
-                      '<div><a href="javascript:void(0);" class="btn btn-default dtp-select-year-range after" style="margin: 0;"><i class="material-icons">keyboard_arrow_down</i></a></div>' +
-                      '</div>';
-
-                 this.template = '<div class="dtp hidden" id="' + this.name + '">' +
-                         '<div class="dtp-content">' +
-                         '<div class="dtp-date-view">' +
-                         '<header class="dtp-header">' +
-                         '<div class="dtp-actual-day">Lundi</div>' +
-                         '<div class="dtp-close"><a href="javascript:void(0);"><i class="material-icons">clear</i></a></div>' +
-                         '</header>' +
-                         '<div class="dtp-date hidden">' +
-                         '<div>' +
-                         '<div class="left center p10">' +
-                         '<a href="javascript:void(0);" class="dtp-select-month-before"><i class="material-icons">chevron_left</i></a>' +
-                         '</div>' +
-                         '<div class="dtp-actual-month p80">MAR</div>' +
-                         '<div class="right center p10">' +
-                         '<a href="javascript:void(0);" class="dtp-select-month-after"><i class="material-icons">chevron_right</i></a>' +
-                         '</div>' +
-                         '<div class="clearfix"></div>' +
-                         '</div>' +
-                         '<div class="dtp-actual-num">13</div>' +
-                         '<div>' +
-                         '<div class="left center p10">' +
-                         '<a href="javascript:void(0);" class="dtp-select-year-before"><i class="material-icons">chevron_left</i></a>' +
-                         '</div>' +
-                         '<div class="dtp-actual-year p80'+(this.params.year?"":" disabled")+'">2014</div>' +
-                         '<div class="right center p10">' +
-                         '<a href="javascript:void(0);" class="dtp-select-year-after"><i class="material-icons">chevron_right</i></a>' +
-                         '</div>' +
-                         '<div class="clearfix"></div>' +
-                         '</div>' +
-                         '</div>' +
-                         '<div class="dtp-time hidden">' +
-                         '<div class="dtp-actual-maxtime">23:55</div>' +
-                         '</div>' +
-                         '<div class="dtp-picker">' +
-                         '<div class="dtp-picker-calendar"></div>' +
-                         '<div class="dtp-picker-datetime hidden">' +
-                         '<div class="dtp-actual-meridien">' +
-                         '<div class="left p20">' +
-                         '<a class="dtp-meridien-am" href="javascript:void(0);">AM</a>' +
-                         '</div>' +
-                         '<div class="dtp-actual-time p60"></div>' +
-                         '<div class="right p20">' +
-                         '<a class="dtp-meridien-pm" href="javascript:void(0);">PM</a>' +
-                         '</div>' +
-                         '<div class="clearfix"></div>' +
-                         '</div>' +
-                         '<div id="dtp-svg-clock">' +
-                         '</div>' +
-                         '</div>' +
-                         yearHtml+
-                         '</div>' +
-                         '</div>' +
-                         '<div class="dtp-buttons">' +
-                         '<button class="dtp-btn-now btn btn-flat hidden">' + this.params.nowText + '</button>' +
-                         '<button class="dtp-btn-clear btn btn-flat hidden">' + this.params.clearText + '</button>' +
-                         '<button class="dtp-btn-cancel btn btn-flat">' + this.params.cancelText + '</button>' +
-                         '<button class="dtp-btn-ok btn btn-flat">' + this.params.okText + '</button>' +
-                         '<div class="clearfix"></div>' +
-                         '</div>' +
-                         '</div>' +
-                         '</div>';
-
-                 if ($('body').find("#" + this.name).length <= 0)
-                 {
-                    $('body').append(this.template);
-
-                    if (this)
-                       this.dtpElement = $('body').find("#" + this.name);
-                    this.$dtpElement = $(this.dtpElement);
-                 }
-              },
-              initButtons: function ()
-              {
-                 this._attachEvent(this.$dtpElement.find('.dtp-btn-cancel'), 'click', this._onCancelClick.bind(this));
-                 this._attachEvent(this.$dtpElement.find('.dtp-btn-ok'), 'click', this._onOKClick.bind(this));
-                 this._attachEvent(this.$dtpElement.find('a.dtp-select-month-before'), 'click', this._onMonthBeforeClick.bind(this));
-                 this._attachEvent(this.$dtpElement.find('a.dtp-select-month-after'), 'click', this._onMonthAfterClick.bind(this));
-                 this._attachEvent(this.$dtpElement.find('a.dtp-select-year-before'), 'click', this._onYearBeforeClick.bind(this));
-                 this._attachEvent(this.$dtpElement.find('a.dtp-select-year-after'), 'click', this._onYearAfterClick.bind(this));
-                 this._attachEvent(this.$dtpElement.find('.dtp-actual-year'), 'click', this._onActualYearClick.bind(this));
-                 this._attachEvent(this.$dtpElement.find('a.dtp-select-year-range.before'), 'click', this._onYearRangeBeforeClick.bind(this));
-                 this._attachEvent(this.$dtpElement.find('a.dtp-select-year-range.after'), 'click', this._onYearRangeAfterClick.bind(this));
-                 this._attachEvent(this.$dtpElement.find('div.year-picker-item'), 'click', this._onYearItemClick.bind(this));
-
-                 if (this.params.clearButton === true)
-                 {
-                    this._attachEvent(this.$dtpElement.find('.dtp-btn-clear'), 'click', this._onClearClick.bind(this));
-                    this.$dtpElement.find('.dtp-btn-clear').removeClass('hidden');
-                 }
-
-                 if (this.params.nowButton === true)
-                 {
-                    this._attachEvent(this.$dtpElement.find('.dtp-btn-now'), 'click', this._onNowClick.bind(this));
-                    this.$dtpElement.find('.dtp-btn-now').removeClass('hidden');
-                 }
-
-                 if ((this.params.nowButton === true) && (this.params.clearButton === true))
-                 {
-                    this.$dtpElement.find('.dtp-btn-clear, .dtp-btn-now, .dtp-btn-cancel, .dtp-btn-ok').addClass('btn-xs');
-                 } else if ((this.params.nowButton === true) || (this.params.clearButton === true))
-                 {
-                    this.$dtpElement.find('.dtp-btn-clear, .dtp-btn-now, .dtp-btn-cancel, .dtp-btn-ok').addClass('btn-sm');
-                 }
-              },
-              initMeridienButtons: function ()
-              {
-                 this.$dtpElement.find('a.dtp-meridien-am').off('click').on('click', this._onSelectAM.bind(this));
-                 this.$dtpElement.find('a.dtp-meridien-pm').off('click').on('click', this._onSelectPM.bind(this));
-              },
-              initDate: function (d)
-              {
-                 this.currentView = 0;
-
-                 if (this.params.monthPicker === false)
-                 {
-                    this.$dtpElement.find('.dtp-picker-calendar').removeClass('hidden');
-                 }
-                 this.$dtpElement.find('.dtp-picker-datetime').addClass('hidden');
-                 this.$dtpElement.find('.dtp-picker-year').addClass('hidden');
-
-                 var _date = ((typeof (this.currentDate) !== 'undefined' && this.currentDate !== null) ? this.currentDate : null);
-                 var _calendar = this.generateCalendar(this.currentDate);
-
-                 if (typeof (_calendar.week) !== 'undefined' && typeof (_calendar.days) !== 'undefined')
-                 {
-                    var _template = this.constructHTMLCalendar(_date, _calendar);
-
-                    this.$dtpElement.find('a.dtp-select-day').off('click');
-                    this.$dtpElement.find('.dtp-picker-calendar').html(_template);
-
-                    this.$dtpElement.find('a.dtp-select-day').on('click', this._onSelectDate.bind(this));
-
-                    this.toggleButtons(_date);
-                 }
-
-                 this._centerBox();
-                 this.showDate(_date);
-              },
-              initHours: function ()
-              {
-                 this.currentView = 1;
-
-                 this.showTime(this.currentDate);
-                 this.initMeridienButtons();
-
-                 if (this.currentDate.hour() < 12)
-                 {
-                    this.$dtpElement.find('a.dtp-meridien-am').click();
-                 } else
-                 {
-                    this.$dtpElement.find('a.dtp-meridien-pm').click();
-                 }
-
-                 var hFormat = ((this.params.shortTime) ? 'h' : 'H');
-
-                 this.$dtpElement.find('.dtp-picker-datetime').removeClass('hidden');
-                 this.$dtpElement.find('.dtp-picker-calendar').addClass('hidden');
-                 this.$dtpElement.find('.dtp-picker-year').addClass('hidden');
-
-                 var svgClockElement = this.createSVGClock(true);
-
-                 for (var i = 0; i < 12; i++)
-                 {
-                    var x = -(162 * (Math.sin(-Math.PI * 2 * (i / 12))));
-                    var y = -(162 * (Math.cos(-Math.PI * 2 * (i / 12))));
-
-                    var fill = ((this.currentDate.format(hFormat) == i) ? "#8BC34A" : 'transparent');
-                    var color = ((this.currentDate.format(hFormat) == i) ? "#fff" : '#000');
-
-                    var svgHourCircle = this.createSVGElement("circle", {'id': 'h-' + i, 'class': 'dtp-select-hour', 'style': 'cursor:pointer', r: '30', cx: x, cy: y, fill: fill, 'data-hour': i});
-
-                    var svgHourText = this.createSVGElement("text", {'id': 'th-' + i, 'class': 'dtp-select-hour-text', 'text-anchor': 'middle', 'style': 'cursor:pointer', 'font-weight': 'bold', 'font-size': '20', x: x, y: y + 7, fill: color, 'data-hour': i});
-                    svgHourText.textContent = ((i === 0) ? ((this.params.shortTime) ? 12 : i) : i);
-
-                    if (!this.toggleTime(i, true))
-                    {
-                       svgHourCircle.className += " disabled";
-                       svgHourText.className += " disabled";
-                       svgHourText.setAttribute('fill', '#bdbdbd');
-                    } else
-                    {
-                       svgHourCircle.addEventListener('click', this._onSelectHour.bind(this));
-                       svgHourText.addEventListener('click', this._onSelectHour.bind(this));
-                    }
-
-                    svgClockElement.appendChild(svgHourCircle)
-                    svgClockElement.appendChild(svgHourText)
-                 }
-
-                 if (!this.params.shortTime)
-                 {
-                    for (var i = 0; i < 12; i++)
-                    {
-                       var x = -(110 * (Math.sin(-Math.PI * 2 * (i / 12))));
-                       var y = -(110 * (Math.cos(-Math.PI * 2 * (i / 12))));
-
-                       var fill = ((this.currentDate.format(hFormat) == (i + 12)) ? "#8BC34A" : 'transparent');
-                       var color = ((this.currentDate.format(hFormat) == (i + 12)) ? "#fff" : '#000');
-
-                       var svgHourCircle = this.createSVGElement("circle", {'id': 'h-' + (i + 12), 'class': 'dtp-select-hour', 'style': 'cursor:pointer', r: '30', cx: x, cy: y, fill: fill, 'data-hour': (i + 12)});
-
-                       var svgHourText = this.createSVGElement("text", {'id': 'th-' + (i + 12), 'class': 'dtp-select-hour-text', 'text-anchor': 'middle', 'style': 'cursor:pointer', 'font-weight': 'bold', 'font-size': '22', x: x, y: y + 7, fill: color, 'data-hour': (i + 12)});
-                       svgHourText.textContent = i + 12;
-
-                       if (!this.toggleTime(i + 12, true))
-                       {
-                          svgHourCircle.className += " disabled";
-                          svgHourText.className += " disabled";
-                          svgHourText.setAttribute('fill', '#bdbdbd');
-                       } else
-                       {
-                          svgHourCircle.addEventListener('click', this._onSelectHour.bind(this));
-                          svgHourText.addEventListener('click', this._onSelectHour.bind(this));
-                       }
-
-                       svgClockElement.appendChild(svgHourCircle)
-                       svgClockElement.appendChild(svgHourText)
-                    }
-
-                    this.$dtpElement.find('a.dtp-meridien-am').addClass('hidden');
-                    this.$dtpElement.find('a.dtp-meridien-pm').addClass('hidden');
-                 }
-
-                 this._centerBox();
-              },
-              initMinutes: function ()
-              {
-                 this.currentView = 2;
-
-                 this.showTime(this.currentDate);
-
-                 this.initMeridienButtons();
-
-                 if (this.currentDate.hour() < 12)
-                 {
-                    this.$dtpElement.find('a.dtp-meridien-am').click();
-                 } else
-                 {
-                    this.$dtpElement.find('a.dtp-meridien-pm').click();
-                 }
-
-                 this.$dtpElement.find('.dtp-picker-year').addClass('hidden');
-                 this.$dtpElement.find('.dtp-picker-calendar').addClass('hidden');
-                 this.$dtpElement.find('.dtp-picker-datetime').removeClass('hidden');
-
-                 var svgClockElement = this.createSVGClock(false);
-
-                 for (var i = 0; i < 60; i++)
-                 {
-                    var s = ((i % 5 === 0) ? 162 : 158);
-                    var r = ((i % 5 === 0) ? 30 : 20);
-
-                    var x = -(s * (Math.sin(-Math.PI * 2 * (i / 60))));
-                    var y = -(s * (Math.cos(-Math.PI * 2 * (i / 60))));
-
-                    var color = ((this.currentDate.format("m") == i) ? "#8BC34A" : 'transparent');
-
-                    var svgMinuteCircle = this.createSVGElement("circle", {'id': 'm-' + i, 'class': 'dtp-select-minute', 'style': 'cursor:pointer', r: r, cx: x, cy: y, fill: color, 'data-minute': i});
-
-                    if (!this.toggleTime(i, false))
-                    {
-                       svgMinuteCircle.className += " disabled";
-                    } else
-                    {
-                       svgMinuteCircle.addEventListener('click', this._onSelectMinute.bind(this));
-                    }
-
-                    svgClockElement.appendChild(svgMinuteCircle)
-                 }
-
-                 for (var i = 0; i < 60; i++)
-                 {
-                    if ((i % 5) === 0)
-                    {
-                       var x = -(162 * (Math.sin(-Math.PI * 2 * (i / 60))));
-                       var y = -(162 * (Math.cos(-Math.PI * 2 * (i / 60))));
-
-                       var color = ((this.currentDate.format("m") == i) ? "#fff" : '#000');
-
-                       var svgMinuteText = this.createSVGElement("text", {'id': 'tm-' + i, 'class': 'dtp-select-minute-text', 'text-anchor': 'middle', 'style': 'cursor:pointer', 'font-weight': 'bold', 'font-size': '20', x: x, y: y + 7, fill: color, 'data-minute': i});
-                       svgMinuteText.textContent = i;
-
-                       if (!this.toggleTime(i, false))
-                       {
-                          svgMinuteText.className += " disabled";
-                          svgMinuteText.setAttribute('fill', '#bdbdbd');
-                       } else
-                       {
-                          svgMinuteText.addEventListener('click', this._onSelectMinute.bind(this));
-                       }
-
-                       svgClockElement.appendChild(svgMinuteText)
-                    }
-                 }
-
-                 this._centerBox();
-              },
-              animateHands: function ()
-              {
-                 var H = this.currentDate.hour();
-                 var M = this.currentDate.minute();
-
-                 var hh = this.$dtpElement.find('.hour-hand');
-                 hh[0].setAttribute('transform', "rotate(" + 360 * H / 12 + ")");
-
-                 var mh = this.$dtpElement.find('.minute-hand');
-                 mh[0].setAttribute('transform', "rotate(" + 360 * M / 60 + ")");
-              },
-              createSVGClock: function (isHour)
-              {
-                 var hl = ((this.params.shortTime) ? -120 : -90);
-
-                 var svgElement = this.createSVGElement("svg", {class: 'svg-clock', viewBox: '0,0,400,400'});
-                 var svgGElement = this.createSVGElement("g", {transform: 'translate(200,200) '});
-                 var svgClockFace = this.createSVGElement("circle", {r: '192', fill: '#eee', stroke: '#bdbdbd', 'stroke-width': 2});
-                 var svgClockCenter = this.createSVGElement("circle", {r: '15', fill: '#757575'});
-
-                 svgGElement.appendChild(svgClockFace)
-
-                 if (isHour)
-                 {
-                    var svgMinuteHand = this.createSVGElement("line", {class: 'minute-hand', x1: 0, y1: 0, x2: 0, y2: -150, stroke: '#bdbdbd', 'stroke-width': 2});
-                    var svgHourHand = this.createSVGElement("line", {class: 'hour-hand', x1: 0, y1: 0, x2: 0, y2: hl, stroke: '#8BC34A', 'stroke-width': 8});
-
-                    svgGElement.appendChild(svgMinuteHand);
-                    svgGElement.appendChild(svgHourHand);
-                 } else
-                 {
-                    var svgMinuteHand = this.createSVGElement("line", {class: 'minute-hand', x1: 0, y1: 0, x2: 0, y2: -150, stroke: '#8BC34A', 'stroke-width': 2});
-                    var svgHourHand = this.createSVGElement("line", {class: 'hour-hand', x1: 0, y1: 0, x2: 0, y2: hl, stroke: '#bdbdbd', 'stroke-width': 8});
-
-                    svgGElement.appendChild(svgHourHand);
-                    svgGElement.appendChild(svgMinuteHand);
-                 }
-
-                 svgGElement.appendChild(svgClockCenter)
-
-                 svgElement.appendChild(svgGElement)
-
-                 this.$dtpElement.find("#dtp-svg-clock").empty();
-                 this.$dtpElement.find("#dtp-svg-clock")[0].appendChild(svgElement);
-
-                 this.animateHands();
-
-                 return svgGElement;
-              },
-              createSVGElement: function (tag, attrs)
-              {
-                 var el = document.createElementNS('http://www.w3.org/2000/svg', tag);
-                 for (var k in attrs)
-                 {
-                    el.setAttribute(k, attrs[k]);
-                 }
-                 return el;
-              },
-              isAfterMinDate: function (date, checkHour, checkMinute)
-              {
-                 var _return = true;
-
-                 if (typeof (this.minDate) !== 'undefined' && this.minDate !== null)
-                 {
-                    var _minDate = moment(this.minDate);
-                    var _date = moment(date);
-
-                    if (!checkHour && !checkMinute)
-                    {
-                       _minDate.hour(0);
-                       _minDate.minute(0);
-
-                       _date.hour(0);
-                       _date.minute(0);
-                    }
-
-                    _minDate.second(0);
-                    _date.second(0);
-                    _minDate.millisecond(0);
-                    _date.millisecond(0);
-
-                    if (!checkMinute)
-                    {
-                       _date.minute(0);
-                       _minDate.minute(0);
-
-                       _return = (parseInt(_date.format("X")) >= parseInt(_minDate.format("X")));
-                    } else
-                    {
-                       _return = (parseInt(_date.format("X")) >= parseInt(_minDate.format("X")));
-                    }
-                 }
-
-                 return _return;
-              },
-              isBeforeMaxDate: function (date, checkTime, checkMinute)
-              {
-                 var _return = true;
-
-                 if (typeof (this.maxDate) !== 'undefined' && this.maxDate !== null)
-                 {
-                    var _maxDate = moment(this.maxDate);
-                    var _date = moment(date);
-
-                    if (!checkTime && !checkMinute)
-                    {
-                       _maxDate.hour(0);
-                       _maxDate.minute(0);
-
-                       _date.hour(0);
-                       _date.minute(0);
-                    }
-
-                    _maxDate.second(0);
-                    _date.second(0);
-                    _maxDate.millisecond(0);
-                    _date.millisecond(0);
-
-                    if (!checkMinute)
-                    {
-                       _date.minute(0);
-                       _maxDate.minute(0);
-
-                       _return = (parseInt(_date.format("X")) <= parseInt(_maxDate.format("X")));
-                    } else
-                    {
-                       _return = (parseInt(_date.format("X")) <= parseInt(_maxDate.format("X")));
-                    }
-                 }
-
-                 return _return;
-              },
-              rotateElement: function (el, deg)
-              {
-                 $(el).css
-                         ({
-                            WebkitTransform: 'rotate(' + deg + 'deg)',
-                            '-moz-transform': 'rotate(' + deg + 'deg)'
-                         });
-              },
-              showDate: function (date)
-              {
-                 if (date)
-                 {
-                    this.$dtpElement.find('.dtp-actual-day').html(date.locale(this.params.lang).format('dddd'));
-                    this.$dtpElement.find('.dtp-actual-month').html(date.locale(this.params.lang).format('MMM').toUpperCase());
-                    this.$dtpElement.find('.dtp-actual-num').html(date.locale(this.params.lang).format('DD'));
-                    this.$dtpElement.find('.dtp-actual-year').html(date.locale(this.params.lang).format('YYYY'));
-                 }
-              },
-              showTime: function (date)
-              {
-                 if (date)
-                 {
-                    var minutes = date.minute();
-                    var content = ((this.params.shortTime) ? date.format('hh') : date.format('HH')) + ':' + ((minutes.toString().length == 2) ? minutes : '0' + minutes) + ((this.params.shortTime) ? ' ' + date.format('A') : '');
-
-                    if (this.params.date)
-                       this.$dtpElement.find('.dtp-actual-time').html(content);
-                    else
-                    {
-                       if (this.params.shortTime)
-                          this.$dtpElement.find('.dtp-actual-day').html(date.format('A'));
-                       else
-                          this.$dtpElement.find('.dtp-actual-day').html('&nbsp;');
-
-                       this.$dtpElement.find('.dtp-actual-maxtime').html(content);
-                    }
-                 }
-              },
-              selectDate: function (date)
-              {
-                 if (date)
-                 {
-                    this.currentDate.date(date);
-
-                    this.showDate(this.currentDate);
-                    this.$element.trigger('dateSelected', this.currentDate);
-                 }
-              },
-              generateCalendar: function (date)
-              {
-                 var _calendar = {};
-
-                 if (date !== null)
-                 {
-                    var startOfMonth = moment(date).locale(this.params.lang).startOf('month');
-                    var endOfMonth = moment(date).locale(this.params.lang).endOf('month');
-
-                    var iNumDay = startOfMonth.format('d');
-
-                    _calendar.week = this.days;
-                    _calendar.days = [];
-
-                    for (var i = startOfMonth.date(); i <= endOfMonth.date(); i++)
-                    {
-                       if (i === startOfMonth.date())
-                       {
-                          var iWeek = _calendar.week.indexOf(iNumDay.toString());
-                          if (iWeek > 0)
-                          {
-                             for (var x = 0; x < iWeek; x++)
-                             {
-                                _calendar.days.push(0);
-                             }
-                          }
-                       }
-                       _calendar.days.push(moment(startOfMonth).locale(this.params.lang).date(i));
-                    }
-                 }
-
-                 return _calendar;
-              },
-              constructHTMLCalendar: function (date, calendar)
-              {
-                 var _template = "";
-
-                 _template += '<div class="dtp-picker-month">' + date.locale(this.params.lang).format('MMMM YYYY') + '</div>';
-                 _template += '<table class="table dtp-picker-days"><thead>';
-                 for (var i = 0; i < calendar.week.length; i++)
-                 {
-                    _template += '<th>' + moment(parseInt(calendar.week[i]), "d").locale(this.params.lang).format("dd").substring(0, 1) + '</th>';
-                 }
-
-                 _template += '</thead>';
-                 _template += '<tbody><tr>';
-
-                 for (var i = 0; i < calendar.days.length; i++)
-                 {
-                    if (i % 7 == 0)
-                       _template += '</tr><tr>';
-                    _template += '<td data-date="' + moment(calendar.days[i]).locale(this.params.lang).format("D") + '">';
-                    if (calendar.days[i] != 0)
-                    {
-                        if (this.isBeforeMaxDate(moment(calendar.days[i]), false, false) === false
-                            || this.isAfterMinDate(moment(calendar.days[i]), false, false) === false
-                            || this.params.disabledDays.indexOf(calendar.days[i].isoWeekday()) !== -1)
-                        {
-                            _template += '<span class="dtp-select-day">' + moment(calendar.days[i]).locale(this.params.lang).format("DD") + '</span>';
-                        } else
-                        {
-                            if (moment(calendar.days[i]).locale(this.params.lang).format("DD") === moment(this.currentDate).locale(this.params.lang).format("DD"))
-                            {
-                                _template += '<a href="javascript:void(0);" class="dtp-select-day selected">' + moment(calendar.days[i]).locale(this.params.lang).format("DD") + '</a>';
-                            } else
-                            {
-                                _template += '<a href="javascript:void(0);" class="dtp-select-day">' + moment(calendar.days[i]).locale(this.params.lang).format("DD") + '</a>';
-                            }
-                        }
-
-                        _template += '</td>';
-                    }
-                 }
-                 _template += '</tr></tbody></table>';
-
-                 return _template;
-              },
-              setName: function ()
-              {
-                 var text = "";
-                 var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-
-                 for (var i = 0; i < 5; i++)
-                 {
-                    text += possible.charAt(Math.floor(Math.random() * possible.length));
-                 }
-
-                 return text;
-              },
-              isPM: function ()
-              {
-                 return this.$dtpElement.find('a.dtp-meridien-pm').hasClass('selected');
-              },
-              setElementValue: function ()
-              {
-                 this.$element.trigger('beforeChange', this.currentDate);
-                 if (typeof ($.material) !== 'undefined')
-                 {
-                    this.$element.removeClass('empty');
-                 }
-                 this.$element.val(moment(this.currentDate).locale(this.params.lang).format(this.params.format));
-                 this.$element.trigger('change', this.currentDate);
-              },
-              toggleButtons: function (date)
-              {
-                 if (date && date.isValid())
-                 {
-                    var startOfMonth = moment(date).locale(this.params.lang).startOf('month');
-                    var endOfMonth = moment(date).locale(this.params.lang).endOf('month');
-
-                    if (!this.isAfterMinDate(startOfMonth, false, false))
-                    {
-                       this.$dtpElement.find('a.dtp-select-month-before').addClass('invisible');
-                    } else
-                    {
-                       this.$dtpElement.find('a.dtp-select-month-before').removeClass('invisible');
-                    }
-
-                    if (!this.isBeforeMaxDate(endOfMonth, false, false))
-                    {
-                       this.$dtpElement.find('a.dtp-select-month-after').addClass('invisible');
-                    } else
-                    {
-                       this.$dtpElement.find('a.dtp-select-month-after').removeClass('invisible');
-                    }
-
-                    var startOfYear = moment(date).locale(this.params.lang).startOf('year');
-                    var endOfYear = moment(date).locale(this.params.lang).endOf('year');
-
-                    if (!this.isAfterMinDate(startOfYear, false, false))
-                    {
-                       this.$dtpElement.find('a.dtp-select-year-before').addClass('invisible');
-                    } else
-                    {
-                       this.$dtpElement.find('a.dtp-select-year-before').removeClass('invisible');
-                    }
-
-                    if (!this.isBeforeMaxDate(endOfYear, false, false))
-                    {
-                       this.$dtpElement.find('a.dtp-select-year-after').addClass('invisible');
-                    } else
-                    {
-                       this.$dtpElement.find('a.dtp-select-year-after').removeClass('invisible');
-                    }
-                 }
-              },
-              toggleTime: function (value, isHours)
-              {
-                 var result = false;
-
-                 if (isHours)
-                 {
-                    var _date = moment(this.currentDate);
-                    _date.hour(this.convertHours(value)).minute(0).second(0);
-
-                    result = !(this.isAfterMinDate(_date, true, false) === false || this.isBeforeMaxDate(_date, true, false) === false);
-                 } else
-                 {
-                    var _date = moment(this.currentDate);
-                    _date.minute(value).second(0);
-
-                    result = !(this.isAfterMinDate(_date, true, true) === false || this.isBeforeMaxDate(_date, true, true) === false);
-                 }
-
-                 return result;
-              },
-              _attachEvent: function (el, ev, fn)
-              {
-                 el.on(ev, null, null, fn);
-                 this._attachedEvents.push([el, ev, fn]);
-              },
-              _detachEvents: function ()
-              {
-                 for (var i = this._attachedEvents.length - 1; i >= 0; i--)
-                 {
-                    this._attachedEvents[i][0].off(this._attachedEvents[i][1], this._attachedEvents[i][2]);
-                    this._attachedEvents.splice(i, 1);
-                 }
-              },
-              _fireCalendar: function ()
-              {
-                 this.currentView = 0;
-                 this.$element.blur();
-
-                 this.initDates();
-
-                 this.show();
-
-                 if (this.params.date)
-                 {
-                    this.$dtpElement.find('.dtp-date').removeClass('hidden');
-                    this.initDate();
-                 } else
-                 {
-                    if (this.params.time)
-                    {
-                       this.$dtpElement.find('.dtp-time').removeClass('hidden');
-                       this.initHours();
-                    }
-                 }
-              },
-              _onBackgroundClick: function (e)
-              {
-                 e.stopPropagation();
-                 this.hide();
-              },
-              _onElementClick: function (e)
-              {
-                 e.stopPropagation();
-              },
-              _onKeydown: function (e)
-              {
-                 if (e.which === 27)
-                 {
-                    this.hide();
-                 }
-              },
-              _onCloseClick: function ()
-              {
-                 this.hide();
-              },
-              _onClearClick: function ()
-              {
-                 this.currentDate = null;
-                 this.$element.trigger('beforeChange', this.currentDate);
-                 this.hide();
-                 if (typeof ($.material) !== 'undefined')
-                 {
-                    this.$element.addClass('empty');
-                 }
-                 this.$element.val('');
-                 this.$element.trigger('change', this.currentDate);
-              },
-              _onNowClick: function ()
-              {
-                 this.currentDate = moment();
-
-                 if (this.params.date === true)
-                 {
-                    this.showDate(this.currentDate);
-
-                    if (this.currentView === 0)
-                    {
-                       this.initDate();
-                    }
-                 }
-
-                 if (this.params.time === true)
-                 {
-                    this.showTime(this.currentDate);
-
-                    switch (this.currentView)
-                    {
-                       case 1 :
-                          this.initHours();
-                          break;
-                       case 2 :
-                          this.initMinutes();
-                          break;
-                    }
-
-                    this.animateHands();
-                 }
-              },
-              _onOKClick: function ()
-              {
-                 switch (this.currentView)
-                 {
-                    case 0:
-                       if (this.params.time === true)
-                       {
-                          this.initHours();
-                       } else
-                       {
-                          this.setElementValue();
-                          this.hide();
-                       }
-                       break;
-                    case 1:
-                       this.initMinutes();
-                       break;
-                    case 2:
-                       this.setElementValue();
-                       this.hide();
-                       break;
-                 }
-              },
-              _onCancelClick: function ()
-              {
-                 if (this.params.time)
-                 {
-                    switch (this.currentView)
-                    {
-                       case 0:
-                          this.hide();
-                          break;
-                       case 1:
-                          if (this.params.date)
-                          {
-                             this.initDate();
-                          } else
-                          {
-                             this.hide();
-                          }
-                          break;
-                       case 2:
-                          this.initHours();
-                          break;
-                    }
-                 } else
-                 {
-                    this.hide();
-                 }
-              },
-              _onMonthBeforeClick: function ()
-              {
-                 this.currentDate.subtract(1, 'months');
-                 this.initDate(this.currentDate);
-                  this._closeYearPicker();
-              },
-              _onMonthAfterClick: function ()
-              {
-                 this.currentDate.add(1, 'months');
-                 this.initDate(this.currentDate);
-                  this._closeYearPicker();
-              },
-              _onYearBeforeClick: function ()
-              {
-                 this.currentDate.subtract(1, 'years');
-                 this.initDate(this.currentDate);
-                  this._closeYearPicker();
-              },
-              _onYearAfterClick: function ()
-              {
-                 this.currentDate.add(1, 'years');
-                 this.initDate(this.currentDate);
-                  this._closeYearPicker();
-              },
-               refreshYearItems:function () {
-                  var curYear=this.currentDate.year(),midYear=this.midYear;
-                   var minYear=1850;
-                   if (typeof (this.minDate) !== 'undefined' && this.minDate !== null){
-                       minYear=moment(this.minDate).year();
-                   }
-
-                   var maxYear=2200;
-                   if (typeof (this.maxDate) !== 'undefined' && this.maxDate !== null){
-                       maxYear=moment(this.maxDate).year();
-                   }
-
-                   this.$dtpElement.find(".dtp-picker-year .invisible").removeClass("invisible");
-                   this.$dtpElement.find(".year-picker-item").each(function (i, el) {
-                       var newYear = midYear - 3 + i;
-                       $(el).attr("data-year", newYear).text(newYear).data("year", newYear);
-                       if (curYear == newYear) {
-                           $(el).addClass("active");
-                       } else {
-                           $(el).removeClass("active");
-                       }
-                       if(newYear<minYear || newYear>maxYear){
-                           $(el).addClass("invisible")
-                       }
-                   });
-                   if(minYear>=midYear-3){
-                       this.$dtpElement.find(".dtp-select-year-range.before").addClass('invisible');
-                   }
-                   if(maxYear<=midYear+3){
-                       this.$dtpElement.find(".dtp-select-year-range.after").addClass('invisible');
-                   }
-
-                   this.$dtpElement.find(".dtp-select-year-range").data("mid", midYear);
-               },
-               _onActualYearClick:function(){
-                  if(this.params.year){
-                      if(this.$dtpElement.find('.dtp-picker-year.hidden').length>0) {
-                          this.$dtpElement.find('.dtp-picker-datetime').addClass("hidden");
-                          this.$dtpElement.find('.dtp-picker-calendar').addClass("hidden");
-                          this.$dtpElement.find('.dtp-picker-year').removeClass("hidden");
-                          this.midYear = this.currentDate.year();
-                          this.refreshYearItems();
-                      }else{
-                          this._closeYearPicker();
-                      }
-                  }
-               },
-               _onYearRangeBeforeClick:function(){
-                   this.midYear-=7;
-                   this.refreshYearItems();
-               },
-               _onYearRangeAfterClick:function(){
-                   this.midYear+=7;
-                   this.refreshYearItems();
-               },
-               _onYearItemClick:function (e) {
-                   var newYear = $(e.currentTarget).data('year');
-                   var oldYear = this.currentDate.year();
-                   var diff = newYear - oldYear;
-                   this.currentDate.add(diff, 'years');
-                   this.initDate(this.currentDate);
-
-                   this._closeYearPicker();
-                   this.$element.trigger("yearSelected",this.currentDate);
-               },
-               _closeYearPicker:function(){
-                   this.$dtpElement.find('.dtp-picker-calendar').removeClass("hidden");
-                   this.$dtpElement.find('.dtp-picker-year').addClass("hidden");
-               },
-               enableYearPicker:function () {
-                    this.params.year=true;
-                    this.$dtpElement.find(".dtp-actual-year").reomveClass("disabled");
-               },
-               disableYearPicker:function () {
-                   this.params.year=false;
-                   this.$dtpElement.find(".dtp-actual-year").addClass("disabled");
-                   this._closeYearPicker();
-               },
-              _onSelectDate: function (e)
-              {
-                 this.$dtpElement.find('a.dtp-select-day').removeClass('selected');
-                 $(e.currentTarget).addClass('selected');
-
-                 this.selectDate($(e.currentTarget).parent().data("date"));
-
-                 if (this.params.switchOnClick === true && this.params.time === true)
-                    setTimeout(this.initHours.bind(this), 200);
-
-                 if(this.params.switchOnClick === true && this.params.time === false) {
-                    setTimeout(this._onOKClick.bind(this), 200);
-                 }
-
-              },
-              _onSelectHour: function (e)
-              {
-                 if (!$(e.target).hasClass('disabled'))
-                 {
-                    var value = $(e.target).data('hour');
-                    var parent = $(e.target).parent();
-
-                    var h = parent.find('.dtp-select-hour');
-                    for (var i = 0; i < h.length; i++)
-                    {
-                       $(h[i]).attr('fill', 'transparent');
-                    }
-                    var th = parent.find('.dtp-select-hour-text');
-                    for (var i = 0; i < th.length; i++)
-                    {
-                       $(th[i]).attr('fill', '#000');
-                    }
-
-                    $(parent.find('#h-' + value)).attr('fill', '#8BC34A');
-                    $(parent.find('#th-' + value)).attr('fill', '#fff');
-
-                    this.currentDate.hour(parseInt(value));
-
-                    if (this.params.shortTime === true && this.isPM())
-                    {
-                       this.currentDate.add(12, 'hours');
-                    }
-
-                    this.showTime(this.currentDate);
-
-                    this.animateHands();
-
-                    if (this.params.switchOnClick === true)
-                       setTimeout(this.initMinutes.bind(this), 200);
-                 }
-              },
-              _onSelectMinute: function (e)
-              {
-                 if (!$(e.target).hasClass('disabled'))
-                 {
-                    var value = $(e.target).data('minute');
-                    var parent = $(e.target).parent();
-
-                    var m = parent.find('.dtp-select-minute');
-                    for (var i = 0; i < m.length; i++)
-                    {
-                       $(m[i]).attr('fill', 'transparent');
-                    }
-                    var tm = parent.find('.dtp-select-minute-text');
-                    for (var i = 0; i < tm.length; i++)
-                    {
-                       $(tm[i]).attr('fill', '#000');
-                    }
-
-                    $(parent.find('#m-' + value)).attr('fill', '#8BC34A');
-                    $(parent.find('#tm-' + value)).attr('fill', '#fff');
-
-                    this.currentDate.minute(parseInt(value));
-                    this.showTime(this.currentDate);
-
-                    this.animateHands();
-
-                    if (this.params.switchOnClick === true)
-                       setTimeout(function ()
-                       {
-                          this.setElementValue();
-                          this.hide();
-                       }.bind(this), 200);
-                 }
-              },
-              _onSelectAM: function (e)
-              {
-                 $('.dtp-actual-meridien').find('a').removeClass('selected');
-                 $(e.currentTarget).addClass('selected');
-
-                 if (this.currentDate.hour() >= 12)
-                 {
-                    if (this.currentDate.subtract(12, 'hours'))
-                       this.showTime(this.currentDate);
-                 }
-                 this.toggleTime((this.currentView === 1));
-              },
-              _onSelectPM: function (e)
-              {
-                 $('.dtp-actual-meridien').find('a').removeClass('selected');
-                 $(e.currentTarget).addClass('selected');
-
-                 if (this.currentDate.hour() < 12)
-                 {
-                    if (this.currentDate.add(12, 'hours'))
-                       this.showTime(this.currentDate);
-                 }
-                 this.toggleTime((this.currentView === 1));
-              },
-              _hideCalendar: function() {
-                 this.$dtpElement.find('.dtp-picker-calendar').addClass('hidden');
-              },
-              convertHours: function (h)
-              {
-                 var _return = h;
-
-                 if (this.params.shortTime === true)
-                 {
-                    if ((h < 12) && this.isPM())
-                    {
-                       _return += 12;
-                    }
-                 }
-
-                 return _return;
-              },
-              setDate: function (date)
-              {
-                 this.params.currentDate = date;
-                 this.initDates();
-              },
-              setMinDate: function (date)
-              {
-                 this.params.minDate = date;
-                 this.initDates();
-              },
-              setMaxDate: function (date)
-              {
-                 this.params.maxDate = date;
-                 this.initDates();
-              },
-              destroy: function ()
-              {
-                 this._detachEvents();
-                 this.$dtpElement.remove();
-              },
-              show: function ()
-              {
-                 this.$dtpElement.removeClass('hidden');
-                 this._attachEvent($(window), 'keydown', this._onKeydown.bind(this));
-                 this._centerBox();
-                 this.$element.trigger('open');
-                 if (this.params.monthPicker === true)
-                 {
-                    this._hideCalendar();
-                 }
-              },
-              hide: function ()
-              {
-                 $(window).off('keydown', null, null, this._onKeydown.bind(this));
-                 this.$dtpElement.addClass('hidden');
-                 this.$element.trigger('close');
-              },
-              _centerBox: function ()
-              {
-                 var h = (this.$dtpElement.height() - this.$dtpElement.find('.dtp-content').height()) / 2;
-                 this.$dtpElement.find('.dtp-content').css('marginLeft', -(this.$dtpElement.find('.dtp-content').width() / 2) + 'px');
-                 this.$dtpElement.find('.dtp-content').css('top', h + 'px');
-              },
-              enableDays: function ()
-              {
-                 var enableDays = this.params.enableDays;
-                 if (enableDays) {
-                    $(".dtp-picker-days tbody tr td").each(function () {
-                       if (!(($.inArray($(this).index(), enableDays)) >= 0)) {
-                          $(this).find('a').css({
-                             "background": "#e3e3e3",
-                             "cursor": "no-drop",
-                             "opacity": "0.5"
-                          }).off("click");
-                       }
-                    });
-                 }
-              }
-
-           };
-})(jQuery, moment);
+);
+INSERT INTO `tbl_account_activation_approval` VALUES (5243, 1798, 1, 40, '', 1, '2022-10-17', '2022-10-17 09:03:05', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5244, 1796, 2, 37, ' Recommended', 2, '2022-10-17', '2022-10-17 09:03:13', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5245, 1799, 1, 40, '', 1, '2022-10-17', '2022-10-17 09:04:47', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5246, 1794, 2, 37, ' Recommended', 2, '2022-10-17', '2022-10-17 09:05:31', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5247, 1800, 1, 40, '', 1, '2022-10-17', '2022-10-17 09:05:41', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5248, 1801, 1, 40, '', 1, '2022-10-17', '2022-10-17 09:06:39', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5249, 1792, 2, 37, ' Recommended', 2, '2022-10-17', '2022-10-17 09:08:15', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5250, 1793, 2, 37, ' Recommended', 2, '2022-10-17', '2022-10-17 09:09:03', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5251, 1791, 2, 37, ' Recommended', 2, '2022-10-17', '2022-10-17 09:10:35', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5252, 1789, 2, 37, ' Recommended', 2, '2022-10-17', '2022-10-17 09:12:33', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5253, 1790, 2, 37, ' Recommended', 2, '2022-10-17', '2022-10-17 09:15:39', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5254, 1802, 1, 40, '', 1, '2022-10-17', '2022-10-17 09:15:56', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5255, 1803, 1, 40, '', 1, '2022-10-17', '2022-10-17 09:16:53', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5256, 1785, 2, 37, ' Recommended', 2, '2022-10-17', '2022-10-17 09:16:57', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5257, 1804, 1, 40, '', 1, '2022-10-17', '2022-10-17 09:17:46', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5258, 1786, 2, 37, ' Recommended', 2, '2022-10-17', '2022-10-17 09:18:12', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5259, 1805, 1, 40, '', 1, '2022-10-17', '2022-10-17 09:18:57', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5260, 1787, 2, 37, ' Recommended', 2, '2022-10-17', '2022-10-17 09:19:16', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5261, 1788, 2, 37, ' Recommended', 2, '2022-10-17', '2022-10-17 09:20:18', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5262, 1806, 1, 40, '', 1, '2022-10-17', '2022-10-17 09:20:52', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5263, 1739, 2, 37, ' Recommended      ', 2, '2022-10-17', '2022-10-17 11:18:16', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5264, 1740, 2, 37, ' Recommended      ', 2, '2022-10-17', '2022-10-17 11:19:19', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5265, 1741, 2, 37, ' Recommended      ', 2, '2022-10-17', '2022-10-17 11:20:21', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5266, 1742, 2, 37, ' Recommended      ', 2, '2022-10-17', '2022-10-17 11:21:20', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5267, 1743, 2, 37, ' Recommended      ', 2, '2022-10-17', '2022-10-17 11:22:11', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5268, 1744, 2, 37, ' Recommended      ', 2, '2022-10-17', '2022-10-17 11:23:37', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5269, 1745, 2, 37, ' Recommended      ', 2, '2022-10-17', '2022-10-17 11:24:49', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5270, 1746, 2, 37, ' Recommended      ', 2, '2022-10-17', '2022-10-17 11:25:44', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5271, 1747, 2, 37, ' Recommended      ', 2, '2022-10-17', '2022-10-17 11:26:54', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5272, 1748, 2, 37, ' Recommended      ', 2, '2022-10-17', '2022-10-17 11:33:39', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5273, 1749, 2, 37, ' Recommended      ', 2, '2022-10-17', '2022-10-17 11:34:42', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5274, 1750, 2, 37, ' Recommended      ', 2, '2022-10-17', '2022-10-17 11:45:34', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5275, 1751, 2, 37, ' Recommended      ', 2, '2022-10-17', '2022-10-17 11:46:38', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5276, 1752, 2, 37, ' Recommended      ', 2, '2022-10-17', '2022-10-17 11:47:35', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5277, 1753, 2, 37, ' Recommended      ', 2, '2022-10-17', '2022-10-17 11:49:25', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5278, 1754, 2, 37, ' Recommended      ', 2, '2022-10-17', '2022-10-17 11:50:19', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5279, 1755, 2, 37, ' Recommended      ', 2, '2022-10-17', '2022-10-17 11:51:20', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5280, 1756, 2, 37, ' Recommended      ', 2, '2022-10-17', '2022-10-17 11:52:27', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5281, 1757, 2, 37, ' Recommended      ', 2, '2022-10-17', '2022-10-17 11:53:41', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5282, 1758, 2, 37, ' Recommended      ', 2, '2022-10-17', '2022-10-17 11:54:29', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5283, 1759, 2, 37, ' Recommended      ', 2, '2022-10-17', '2022-10-17 11:57:14', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5284, 1760, 2, 37, ' Recommended      ', 2, '2022-10-17', '2022-10-17 11:58:41', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5285, 1761, 2, 37, ' Recommended      ', 2, '2022-10-17', '2022-10-17 11:59:39', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5286, 1762, 2, 37, ' Recommended      ', 2, '2022-10-17', '2022-10-17 12:01:03', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5287, 1763, 2, 37, ' Recommended      ', 2, '2022-10-17', '2022-10-17 12:01:52', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5288, 1764, 2, 37, ' Recommended      ', 2, '2022-10-17', '2022-10-17 12:03:12', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5289, 1765, 2, 37, ' Recommended      ', 2, '2022-10-17', '2022-10-17 12:04:48', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5290, 1766, 2, 37, ' Recommended      ', 2, '2022-10-17', '2022-10-17 12:06:09', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5291, 1767, 2, 37, ' Recommended      ', 2, '2022-10-17', '2022-10-17 12:06:58', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5292, 1768, 2, 37, ' Recommended      ', 2, '2022-10-17', '2022-10-17 12:07:59', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5293, 1769, 2, 37, ' Recommended      ', 2, '2022-10-17', '2022-10-17 12:09:35', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5294, 1770, 2, 37, ' Recommended      ', 2, '2022-10-17', '2022-10-17 12:11:27', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5295, 1771, 2, 37, ' Recommended      ', 2, '2022-10-17', '2022-10-17 12:14:48', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5296, 1772, 2, 37, ' Recommended      ', 2, '2022-10-17', '2022-10-17 12:15:59', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5297, 1773, 2, 37, ' Recommended      ', 2, '2022-10-17', '2022-10-17 12:19:06', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5298, 1775, 2, 37, ' Recommended      ', 2, '2022-10-17', '2022-10-17 12:21:43', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5299, 1776, 2, 37, ' Recommended      ', 2, '2022-10-17', '2022-10-17 12:24:25', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5300, 1777, 2, 37, ' Recommended      ', 2, '2022-10-17', '2022-10-17 12:25:14', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5301, 1778, 2, 37, ' Recommended      ', 2, '2022-10-17', '2022-10-17 12:26:24', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5302, 1779, 2, 37, ' Recommended      ', 2, '2022-10-17', '2022-10-17 12:27:22', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5303, 1780, 2, 37, ' Recommended      ', 2, '2022-10-17', '2022-10-17 12:28:27', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5304, 1781, 2, 37, ' Recommended      ', 2, '2022-10-17', '2022-10-17 12:29:26', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5305, 1782, 2, 37, ' Recommended      ', 2, '2022-10-17', '2022-10-17 12:30:18', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5306, 1783, 2, 37, ' Recommended      ', 2, '2022-10-17', '2022-10-17 12:31:16', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5307, 1784, 2, 37, ' Recommended      ', 2, '2022-10-17', '2022-10-17 12:32:05', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5308, 1774, 2, 37, ' Recommended      ', 2, '2022-10-18', '2022-10-18 09:50:40', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5309, 1797, 2, 37, ' Recommended      ', 2, '2022-10-18', '2022-10-18 09:54:19', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5310, 1798, 2, 37, ' Recommended      ', 2, '2022-10-18', '2022-10-18 10:00:21', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5311, 1799, 2, 37, ' Recommended      ', 2, '2022-10-18', '2022-10-18 10:01:46', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5312, 1801, 2, 37, ' Recommended      ', 2, '2022-10-18', '2022-10-18 10:03:51', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5313, 1800, 2, 37, ' Recommended      ', 2, '2022-10-18', '2022-10-18 10:05:45', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5314, 1802, 2, 37, ' Recommended      ', 2, '2022-10-18', '2022-10-18 10:10:15', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5315, 1803, 2, 37, ' Recommended      ', 2, '2022-10-18', '2022-10-18 10:12:58', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5316, 1804, 2, 37, ' Recommended      ', 2, '2022-10-18', '2022-10-18 10:17:38', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5317, 1805, 2, 37, ' Recommended      ', 2, '2022-10-18', '2022-10-18 10:18:31', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5318, 1806, 2, 37, ' Recommended      ', 2, '2022-10-18', '2022-10-18 10:19:25', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5319, 1739, 3, 29, 'Approved', 3, '2022-10-28', '2022-10-28 13:14:56', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5320, 1740, 3, 29, 'Approved', 3, '2022-10-28', '2022-10-28 13:15:48', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5321, 1741, 3, 29, 'Approved', 3, '2022-10-28', '2022-10-28 13:16:15', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5322, 1742, 3, 29, 'Approved', 3, '2022-10-28', '2022-10-28 13:16:57', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5323, 1743, 3, 29, 'Approved', 3, '2022-10-28', '2022-10-28 13:17:13', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5324, 1744, 3, 29, 'Approved', 3, '2022-10-28', '2022-10-28 13:17:30', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5325, 1745, 3, 29, 'Approved', 3, '2022-10-28', '2022-10-28 13:17:47', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5326, 1746, 3, 29, 'Approved', 3, '2022-10-28', '2022-10-28 13:18:13', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5327, 1747, 3, 29, 'Approved', 3, '2022-10-28', '2022-10-28 13:18:17', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5328, 1748, 3, 29, 'Approved', 3, '2022-10-28', '2022-10-28 13:18:40', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5329, 1749, 3, 29, 'Approved', 3, '2022-10-28', '2022-10-28 13:18:44', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5330, 1750, 3, 29, 'Approved', 3, '2022-10-28', '2022-10-28 13:19:09', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5331, 1751, 3, 29, 'Approved', 3, '2022-10-28', '2022-10-28 13:19:27', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5332, 1752, 3, 29, 'Approved', 3, '2022-10-28', '2022-10-28 13:19:30', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5333, 1753, 3, 29, 'Approved', 3, '2022-10-28', '2022-10-28 13:19:49', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5334, 1754, 3, 29, 'Approved', 3, '2022-10-28', '2022-10-28 13:19:54', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5335, 1755, 3, 29, 'Approved', 3, '2022-10-28', '2022-10-28 13:20:13', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5336, 1756, 3, 29, 'Approved', 3, '2022-10-28', '2022-10-28 13:20:32', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5337, 1757, 3, 29, 'Approved', 3, '2022-10-28', '2022-10-28 13:20:52', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5338, 1758, 3, 29, 'Approved', 3, '2022-10-28', '2022-10-28 13:20:56', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5339, 1759, 3, 29, 'Approved', 3, '2022-10-28', '2022-10-28 13:21:14', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5340, 1760, 3, 29, 'Approved', 3, '2022-10-28', '2022-10-28 13:21:45', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5341, 1761, 3, 29, 'Approved', 3, '2022-10-28', '2022-10-28 13:21:51', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5342, 1774, 3, 29, 'Approved ', 3, '2022-11-03', '2022-11-03 15:33:57', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5343, 1797, 3, 29, ' Approved ', 3, '2022-11-04', '2022-11-04 08:46:36', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5344, 1798, 3, 29, 'Approved ', 3, '2022-11-04', '2022-11-04 08:46:58', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5345, 1802, 3, 29, ' Approved  ', 3, '2022-11-04', '2022-11-04 08:47:36', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5346, 1799, 3, 29, ' Approved  ', 3, '2022-11-04', '2022-11-04 08:48:00', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5347, 1803, 3, 29, 'Approved  ', 3, '2022-11-04', '2022-11-04 08:48:35', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5348, 1801, 3, 29, ' Approved  ', 3, '2022-11-04', '2022-11-04 08:49:14', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5349, 1804, 3, 29, ' Approved ', 3, '2022-11-04', '2022-11-04 08:50:35', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5350, 1805, 3, 29, 'Approved ', 3, '2022-11-04', '2022-11-04 08:50:59', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5351, 1806, 3, 29, 'Approved  ', 3, '2022-11-04', '2022-11-04 08:53:11', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5352, 1800, 3, 29, 'Approved  ', 3, '2022-11-04', '2022-11-04 08:53:30', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5353, 1762, 3, 29, 'Approved', 3, '2022-11-04', '2022-11-04 09:07:58', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5354, 1763, 3, 29, 'Approved   ', 3, '2022-11-04', '2022-11-04 09:08:20', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5355, 1764, 3, 29, 'Approved ', 3, '2022-11-04', '2022-11-04 09:09:18', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5356, 1765, 3, 29, 'Approved    ', 3, '2022-11-04', '2022-11-04 09:09:43', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5357, 1766, 3, 29, 'Approved  ', 3, '2022-11-04', '2022-11-04 09:10:17', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5358, 1767, 3, 29, 'Approved', 3, '2022-11-04', '2022-11-04 09:10:38', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5359, 1768, 3, 29, 'Approved   ', 3, '2022-11-04', '2022-11-04 09:10:58', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5360, 1769, 3, 29, 'Approved', 3, '2022-11-04', '2022-11-04 09:11:25', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5361, 1770, 3, 29, 'Approved  ', 3, '2022-11-04', '2022-11-04 09:11:50', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5362, 1771, 3, 29, 'Approved ', 3, '2022-11-04', '2022-11-04 09:12:45', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5363, 1772, 3, 29, 'Approved ', 3, '2022-11-04', '2022-11-04 09:13:16', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5364, 1773, 3, 29, 'Approved ', 3, '2022-11-04', '2022-11-04 09:13:38', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5365, 1775, 3, 29, 'Approved ', 3, '2022-11-04', '2022-11-04 09:14:16', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5366, 1776, 3, 29, 'Approved  ', 3, '2022-11-04', '2022-11-04 09:14:39', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5367, 1777, 3, 29, 'Approved ', 3, '2022-11-04', '2022-11-04 09:14:59', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5368, 1778, 3, 29, 'Approved ', 3, '2022-11-04', '2022-11-04 09:15:23', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5369, 1779, 3, 29, ' Approved ', 3, '2022-11-04', '2022-11-04 09:15:42', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5370, 1780, 3, 29, 'Approved', 3, '2022-11-04', '2022-11-04 09:16:01', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5371, 1781, 3, 29, ' Approved  ', 3, '2022-11-04', '2022-11-04 09:16:23', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5372, 1782, 3, 29, 'Approved', 3, '2022-11-04', '2022-11-04 09:16:40', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5373, 1783, 3, 29, 'Approved  ', 3, '2022-11-04', '2022-11-04 09:17:04', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5374, 1784, 3, 29, ' Approved', 3, '2022-11-04', '2022-11-04 09:17:26', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5375, 1795, 3, 29, 'Approved  ', 3, '2022-11-04', '2022-11-04 09:17:43', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5376, 1796, 3, 29, 'Approved ', 3, '2022-11-04', '2022-11-04 09:18:03', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5377, 1794, 3, 29, ' Approved ', 3, '2022-11-04', '2022-11-04 09:18:21', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5378, 1792, 3, 29, 'Approved ', 3, '2022-11-04', '2022-11-04 09:18:42', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5379, 1793, 3, 29, 'Approved ', 3, '2022-11-04', '2022-11-04 09:19:00', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5380, 1791, 3, 29, 'Approved', 3, '2022-11-04', '2022-11-04 09:19:22', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5381, 1789, 3, 29, 'Approved', 3, '2022-11-04', '2022-11-04 09:19:43', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5382, 1790, 3, 29, 'Approved  ', 3, '2022-11-04', '2022-11-04 09:20:03', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5383, 1785, 3, 29, 'Approved   ', 3, '2022-11-04', '2022-11-04 09:20:22', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5384, 1786, 3, 29, ' Approved ', 3, '2022-11-04', '2022-11-04 09:20:41', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5385, 1787, 3, 29, 'Approved  ', 3, '2022-11-04', '2022-11-04 09:20:59', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5386, 1788, 3, 29, 'Approved   ', 3, '2022-11-04', '2022-11-04 09:21:20', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5387, 1807, 1, 40, '', 1, '2022-11-15', '2022-11-15 13:31:27', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5388, 1808, 1, 40, '', 1, '2022-11-15', '2022-11-15 13:32:39', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5389, 1809, 1, 40, '', 1, '2022-11-15', '2022-11-15 13:33:09', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5390, 1810, 1, 40, '', 1, '2022-11-15', '2022-11-15 13:34:18', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5391, 1811, 1, 40, '', 1, '2022-11-15', '2022-11-15 13:35:12', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5392, 1812, 1, 40, '', 1, '2022-11-15', '2022-11-15 13:36:13', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5393, 1813, 1, 40, '', 1, '2022-11-15', '2022-11-15 13:37:01', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5394, 1814, 1, 40, '', 1, '2022-11-15', '2022-11-15 13:37:53', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5395, 1815, 1, 40, '', 1, '2022-11-15', '2022-11-15 13:38:32', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5396, 1816, 1, 40, '', 1, '2022-11-15', '2022-11-15 13:39:56', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5397, 1817, 1, 40, '', 1, '2022-11-15', '2022-11-15 13:41:04', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5398, 1818, 1, 40, '', 1, '2022-11-15', '2022-11-15 13:41:58', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5399, 1819, 1, 40, '', 1, '2022-11-15', '2022-11-15 13:43:36', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5400, 1820, 1, 40, '', 1, '2022-11-15', '2022-11-15 13:44:13', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5401, 1821, 1, 40, '', 1, '2022-11-15', '2022-11-15 13:45:58', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5402, 1822, 1, 40, '', 1, '2022-11-15', '2022-11-15 13:46:48', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5403, 1823, 1, 40, '', 1, '2022-11-15', '2022-11-15 13:47:34', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5404, 1824, 1, 40, '', 1, '2022-11-15', '2022-11-15 13:48:49', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5405, 1825, 1, 40, '', 1, '2022-11-15', '2022-11-15 13:49:38', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5406, 1826, 1, 40, '', 1, '2022-11-15', '2022-11-15 13:50:13', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5407, 1827, 1, 40, '', 1, '2022-11-15', '2022-11-15 13:51:22', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5408, 1828, 1, 40, '', 1, '2022-11-15', '2022-11-15 13:53:35', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5409, 1829, 1, 40, '', 1, '2022-11-15', '2022-11-15 13:54:25', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5410, 1830, 1, 40, '', 1, '2022-11-15', '2022-11-15 13:55:21', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5411, 1831, 1, 40, '', 1, '2022-11-15', '2022-11-15 13:57:50', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5412, 1832, 1, 40, '', 1, '2022-11-15', '2022-11-15 13:58:54', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5413, 1833, 1, 40, '', 1, '2022-11-15', '2022-11-15 13:59:23', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5414, 1834, 1, 40, '', 1, '2022-11-15', '2022-11-15 14:07:18', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5415, 1835, 1, 40, '', 1, '2022-11-15', '2022-11-15 14:07:58', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5416, 1836, 1, 40, '', 1, '2022-11-15', '2022-11-15 14:09:47', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5417, 1837, 1, 40, '', 1, '2022-11-15', '2022-11-15 14:11:26', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5418, 1838, 1, 40, '', 1, '2022-11-15', '2022-11-15 14:12:13', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5419, 1839, 1, 40, '', 1, '2022-11-15', '2022-11-15 14:12:50', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5420, 1840, 1, 40, '', 1, '2022-11-15', '2022-11-15 14:13:58', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5421, 1841, 1, 40, '', 1, '2022-11-15', '2022-11-15 14:14:25', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5422, 1842, 1, 40, '', 1, '2022-11-15', '2022-11-15 14:15:12', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5423, 1843, 1, 40, '', 1, '2022-11-15', '2022-11-15 14:15:50', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5424, 1844, 1, 40, '', 1, '2022-11-15', '2022-11-15 14:16:56', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5425, 1845, 1, 40, '', 1, '2022-11-15', '2022-11-15 14:17:34', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5426, 1846, 1, 40, '', 1, '2022-11-15', '2022-11-15 14:19:50', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5427, 1847, 1, 40, '', 1, '2022-11-15', '2022-11-15 14:29:08', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5428, 1848, 1, 40, '', 1, '2022-11-15', '2022-11-15 14:30:02', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5429, 1849, 1, 40, '', 1, '2022-11-15', '2022-11-15 14:30:31', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5430, 1850, 1, 40, '', 1, '2022-11-15', '2022-11-15 14:31:29', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5431, 1851, 1, 40, '', 1, '2022-11-15', '2022-11-15 14:32:12', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5432, 1852, 1, 40, '', 1, '2022-11-15', '2022-11-15 14:32:44', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5433, 1853, 1, 40, '', 1, '2022-11-15', '2022-11-15 14:33:53', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5434, 1854, 1, 40, '', 1, '2022-11-15', '2022-11-15 14:34:31', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5435, 1855, 1, 40, '', 1, '2022-11-15', '2022-11-15 14:34:59', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5436, 1856, 1, 40, '', 1, '2022-11-15', '2022-11-15 14:35:51', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5437, 1857, 1, 40, '', 1, '2022-11-15', '2022-11-15 14:36:38', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5438, 1858, 1, 40, '', 1, '2022-11-15', '2022-11-15 14:37:21', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5439, 1859, 1, 40, '', 1, '2022-11-15', '2022-11-15 14:37:49', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5440, 1860, 1, 40, '', 1, '2022-11-15', '2022-11-15 14:38:36', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5441, 1861, 1, 40, '', 1, '2022-11-15', '2022-11-15 14:41:27', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5442, 1862, 1, 40, '', 1, '2022-11-15', '2022-11-15 14:41:55', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5443, 1863, 1, 40, '', 1, '2022-11-15', '2022-11-15 14:42:47', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5444, 1864, 1, 40, '', 1, '2022-11-15', '2022-11-15 14:43:13', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5445, 1865, 1, 40, '', 1, '2022-11-15', '2022-11-15 14:45:03', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5446, 1866, 1, 40, '', 1, '2022-11-15', '2022-11-15 14:45:45', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5447, 1867, 1, 40, '', 1, '2022-11-15', '2022-11-15 14:46:08', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5448, 1868, 1, 40, '', 1, '2022-11-15', '2022-11-15 14:46:51', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5449, 1869, 1, 40, '', 1, '2022-11-15', '2022-11-15 14:47:37', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5450, 1870, 1, 40, '', 1, '2022-11-15', '2022-11-15 14:48:05', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5451, 1807, 2, 37, 'Recommended ', 2, '2022-11-16', '2022-11-16 10:50:10', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5452, 1808, 2, 37, 'Recommended ', 2, '2022-11-16', '2022-11-16 10:51:10', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5453, 1809, 2, 37, 'Recommended ', 2, '2022-11-16', '2022-11-16 10:52:08', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5454, 1810, 2, 37, 'Recommended ', 2, '2022-11-16', '2022-11-16 10:53:30', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5455, 1811, 2, 37, 'Recommended ', 2, '2022-11-16', '2022-11-16 10:54:56', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5456, 1871, 1, 40, '', 1, '2022-11-16', '2022-11-16 11:00:57', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5457, 1812, 2, 37, 'Recommended ', 2, '2022-11-16', '2022-11-16 11:01:17', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5458, 1813, 2, 37, 'Recommended ', 2, '2022-11-16', '2022-11-16 11:02:24', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5459, 1871, 2, 37, 'Recommended ', 2, '2022-11-16', '2022-11-16 11:03:15', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5460, 1814, 2, 37, 'Recommended ', 2, '2022-11-16', '2022-11-16 13:44:17', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5461, 1815, 2, 37, 'Recommended ', 2, '2022-11-16', '2022-11-16 13:45:16', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5462, 1816, 2, 37, 'Recommended ', 2, '2022-11-16', '2022-11-16 13:46:32', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5463, 1817, 2, 37, 'Recommended ', 2, '2022-11-16', '2022-11-16 13:49:58', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5464, 1818, 2, 37, 'Recommended ', 2, '2022-11-16', '2022-11-16 13:51:11', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5465, 1819, 2, 37, 'Recommended ', 2, '2022-11-16', '2022-11-16 13:52:06', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5466, 1820, 2, 37, 'Recommended ', 2, '2022-11-16', '2022-11-16 13:52:51', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5467, 1821, 2, 37, 'Recommended ', 2, '2022-11-16', '2022-11-16 14:07:31', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5468, 1822, 2, 37, 'Recommended ', 2, '2022-11-16', '2022-11-16 14:10:03', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5469, 1823, 2, 37, 'Recommended ', 2, '2022-11-16', '2022-11-16 14:10:47', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5470, 1824, 2, 37, 'Recommended ', 2, '2022-11-16', '2022-11-16 14:12:13', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5471, 1825, 2, 37, 'Recommended ', 2, '2022-11-16', '2022-11-16 14:13:51', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5472, 1826, 2, 37, 'Recommended ', 2, '2022-11-16', '2022-11-16 14:14:38', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5473, 1827, 2, 37, 'Recommended ', 2, '2022-11-16', '2022-11-16 14:17:09', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5474, 1828, 2, 37, 'Recommended ', 2, '2022-11-16', '2022-11-16 14:18:24', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5475, 1829, 2, 37, 'Recommended ', 2, '2022-11-16', '2022-11-16 14:19:14', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5476, 1830, 2, 37, 'Recommended ', 2, '2022-11-16', '2022-11-16 15:01:29', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5477, 1831, 2, 37, 'Recommended ', 2, '2022-11-16', '2022-11-16 15:02:48', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5478, 1832, 2, 37, 'Recommended ', 2, '2022-11-16', '2022-11-16 15:03:29', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5479, 1833, 2, 37, 'Recommended ', 2, '2022-11-16', '2022-11-16 15:04:13', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5480, 1834, 2, 37, 'Recommended ', 2, '2022-11-16', '2022-11-16 15:05:15', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5481, 1836, 2, 37, 'Recommended ', 2, '2022-11-16', '2022-11-16 15:07:30', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5482, 1837, 2, 37, 'Recommended ', 2, '2022-11-16', '2022-11-16 15:08:24', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5483, 1838, 2, 37, 'Recommended ', 2, '2022-11-16', '2022-11-16 15:09:56', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5484, 1839, 2, 37, 'Recommended ', 2, '2022-11-16', '2022-11-16 15:10:54', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5485, 1840, 2, 37, 'Recommended ', 2, '2022-11-16', '2022-11-16 15:12:10', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5486, 1841, 2, 37, 'Recommended ', 2, '2022-11-16', '2022-11-16 15:13:00', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5487, 1842, 2, 37, 'Recommended ', 2, '2022-11-16', '2022-11-16 15:13:48', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5488, 1843, 2, 37, 'Recommended ', 2, '2022-11-16', '2022-11-16 15:14:50', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5489, 1844, 2, 37, 'Recommended ', 2, '2022-11-16', '2022-11-16 15:15:44', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5490, 1845, 2, 37, 'Recommended ', 2, '2022-11-16', '2022-11-16 15:16:35', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5491, 1846, 2, 37, 'Recommended ', 2, '2022-11-16', '2022-11-16 15:17:47', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5492, 1848, 2, 37, 'Recommended ', 2, '2022-11-16', '2022-11-16 15:20:41', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5493, 1849, 2, 37, 'Recommended ', 2, '2022-11-16', '2022-11-16 15:21:57', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5494, 1835, 2, 37, 'Recommended ', 2, '2022-11-16', '2022-11-16 15:22:22', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5495, 1850, 2, 37, 'Recommended ', 2, '2022-11-16', '2022-11-16 15:23:46', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5496, 1851, 2, 37, 'Recommended ', 2, '2022-11-16', '2022-11-16 15:25:10', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5497, 1852, 2, 37, 'Recommended ', 2, '2022-11-16', '2022-11-16 15:26:01', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5498, 1847, 2, 37, 'Recommended ', 2, '2022-11-16', '2022-11-16 15:26:14', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5499, 1853, 2, 37, 'Recommended ', 2, '2022-11-16', '2022-11-16 15:27:09', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5500, 1854, 2, 37, 'Recommended ', 2, '2022-11-16', '2022-11-16 15:27:58', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5501, 1855, 2, 37, 'Recommended ', 2, '2022-11-16', '2022-11-16 15:28:35', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5502, 1856, 2, 37, 'Recommended ', 2, '2022-11-16', '2022-11-16 15:29:23', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5503, 1857, 2, 37, 'Recommended ', 2, '2022-11-16', '2022-11-16 15:30:15', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5504, 1858, 2, 37, 'Recommended ', 2, '2022-11-16', '2022-11-16 15:31:41', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5505, 1859, 2, 37, 'Recommended ', 2, '2022-11-16', '2022-11-16 15:32:34', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5506, 1860, 2, 37, 'Recommended ', 2, '2022-11-16', '2022-11-16 15:33:52', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5507, 1861, 2, 37, 'Recommended ', 2, '2022-11-16', '2022-11-16 15:34:59', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5508, 1862, 2, 37, 'Recommended ', 2, '2022-11-16', '2022-11-16 15:35:42', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5509, 1863, 2, 37, 'Recommended ', 2, '2022-11-16', '2022-11-16 15:36:37', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5510, 1864, 2, 37, 'Recommended ', 2, '2022-11-16', '2022-11-16 15:37:24', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5511, 1865, 2, 37, 'Recommended ', 2, '2022-11-16', '2022-11-16 15:38:14', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5512, 1866, 2, 37, 'Recommended ', 2, '2022-11-16', '2022-11-16 15:39:13', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5513, 1867, 2, 37, 'Recommended ', 2, '2022-11-16', '2022-11-16 15:39:51', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5514, 1868, 2, 37, 'Recommended ', 2, '2022-11-16', '2022-11-16 15:40:40', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5515, 1869, 2, 37, 'Recommended ', 2, '2022-11-16', '2022-11-16 15:41:29', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5516, 1870, 2, 37, 'Recommended ', 2, '2022-11-16', '2022-11-16 15:42:21', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5517, 1847, 3, 29, 'Approved ', 3, '2022-11-28', '2022-11-28 10:14:16', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5518, 1860, 3, 29, 'Approved ', 3, '2022-11-28', '2022-11-28 10:15:58', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5519, 1861, 3, 29, 'Approved ', 3, '2022-11-28', '2022-11-28 10:16:40', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5520, 1862, 3, 29, 'Approved ', 3, '2022-11-28', '2022-11-28 10:16:46', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5521, 1863, 3, 29, 'Approved ', 3, '2022-11-28', '2022-11-28 10:17:28', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5522, 1864, 3, 29, 'Approved ', 3, '2022-11-28', '2022-11-28 10:17:33', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5523, 1865, 3, 29, 'Approved ', 3, '2022-11-28', '2022-11-28 10:18:03', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5524, 1868, 3, 29, 'Approved ', 3, '2022-11-28', '2022-11-28 10:18:28', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5525, 1866, 3, 29, 'Approved ', 3, '2022-11-28', '2022-11-28 10:19:43', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5526, 1867, 3, 29, 'Approved ', 3, '2022-11-28', '2022-11-28 10:19:47', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5527, 1869, 3, 29, 'Approved ', 3, '2022-11-28', '2022-11-28 10:21:56', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5528, 1870, 3, 29, 'Approved ', 3, '2022-11-28', '2022-11-28 10:22:00', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5529, 1848, 3, 29, 'Approved ', 3, '2022-11-28', '2022-11-28 10:22:53', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5530, 1849, 3, 29, 'Approved ', 3, '2022-11-28', '2022-11-28 10:23:00', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5531, 1834, 3, 29, 'Approved ', 3, '2022-11-28', '2022-11-28 10:26:55', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5532, 1835, 3, 29, 'Approved ', 3, '2022-11-28', '2022-11-28 10:34:39', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5533, 1850, 3, 29, 'Approved ', 3, '2022-11-28', '2022-11-28 10:42:50', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5534, 1851, 3, 29, 'Approved ', 3, '2022-11-28', '2022-11-28 10:43:19', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5535, 1852, 3, 29, 'Approved ', 3, '2022-11-28', '2022-11-28 10:43:25', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5536, 1853, 3, 29, 'Approved ', 3, '2022-11-28', '2022-11-28 10:43:47', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5537, 1854, 3, 29, 'Approved ', 3, '2022-11-28', '2022-11-28 10:44:24', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5538, 1855, 3, 29, 'Approved ', 3, '2022-11-28', '2022-11-28 10:44:31', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5539, 1856, 3, 29, 'Approved ', 3, '2022-11-28', '2022-11-28 10:50:27', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5540, 1857, 3, 29, 'Approved ', 3, '2022-11-28', '2022-11-28 10:51:03', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5541, 1858, 3, 29, 'Approved ', 3, '2022-11-28', '2022-11-28 10:51:27', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5542, 1859, 3, 29, 'Approved ', 3, '2022-11-28', '2022-11-28 10:51:32', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5543, 1840, 3, 29, 'Approved ', 3, '2022-11-28', '2022-11-28 10:51:59', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5544, 1841, 3, 29, 'Approved ', 3, '2022-11-28', '2022-11-28 10:52:02', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5545, 1842, 3, 29, 'Approved ', 3, '2022-11-28', '2022-11-28 10:52:32', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5546, 1843, 3, 29, 'Approved ', 3, '2022-11-28', '2022-11-28 10:52:37', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5547, 1838, 3, 29, 'Approved ', 3, '2022-11-28', '2022-11-28 10:53:02', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5548, 1839, 3, 29, 'Approved ', 3, '2022-11-28', '2022-11-28 10:53:05', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5549, 1844, 3, 29, 'Approved ', 3, '2022-11-28', '2022-11-28 10:53:29', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5550, 1845, 3, 29, 'Approved ', 3, '2022-11-28', '2022-11-28 10:53:33', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5551, 1836, 3, 29, 'Approved ', 3, '2022-11-28', '2022-11-28 11:03:31', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5552, 1837, 3, 29, 'Approved ', 3, '2022-11-28', '2022-11-28 11:03:54', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5553, 1846, 3, 29, 'Approved ', 3, '2022-11-28', '2022-11-28 11:04:54', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5554, 1832, 3, 29, 'Approved ', 3, '2022-11-28', '2022-11-28 11:05:43', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5555, 1833, 3, 29, 'Approved ', 3, '2022-11-28', '2022-11-28 11:05:47', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5556, 1831, 3, 29, 'Approved ', 3, '2022-11-28', '2022-11-28 11:07:18', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5557, 1816, 3, 29, 'Approved ', 3, '2022-11-28', '2022-11-28 11:08:24', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5558, 1817, 3, 29, 'Approved ', 3, '2022-11-28', '2022-11-28 11:08:53', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5559, 1818, 3, 29, 'Approved ', 3, '2022-11-28', '2022-11-28 11:09:22', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5560, 1821, 3, 29, 'Approved ', 3, '2022-11-28', '2022-11-28 11:09:47', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5561, 1819, 3, 29, 'Approved ', 3, '2022-11-28', '2022-11-28 11:10:34', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5562, 1820, 3, 29, 'Approved ', 3, '2022-11-28', '2022-11-28 11:10:38', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5563, 1822, 3, 29, 'Approved ', 3, '2022-11-28', '2022-11-28 11:11:02', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5564, 1807, 3, 29, 'Approved ', 3, '2022-11-28', '2022-11-28 11:11:18', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5565, 1823, 3, 29, 'Approved ', 3, '2022-11-28', '2022-11-28 11:11:49', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5566, 1824, 3, 29, 'Approved ', 3, '2022-11-28', '2022-11-28 11:11:54', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5567, 1825, 3, 29, 'Approved ', 3, '2022-11-28', '2022-11-28 11:12:43', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5568, 1826, 3, 29, 'Approved ', 3, '2022-11-28', '2022-11-28 11:12:47', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5569, 1827, 3, 29, 'Approved ', 3, '2022-11-28', '2022-11-28 11:13:30', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5570, 1828, 3, 29, 'Approved ', 3, '2022-11-28', '2022-11-28 11:13:45', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5571, 1829, 3, 29, 'Approved ', 3, '2022-11-28', '2022-11-28 11:14:01', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5572, 1830, 3, 29, 'Approved ', 3, '2022-11-28', '2022-11-28 11:14:27', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5573, 1814, 3, 29, 'Approved ', 3, '2022-11-28', '2022-11-28 11:14:47', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5574, 1815, 3, 29, 'Approved ', 3, '2022-11-28', '2022-11-28 11:14:50', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5575, 1808, 3, 29, 'Approved ', 3, '2022-11-28', '2022-11-28 11:15:11', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5576, 1809, 3, 29, 'Approved ', 3, '2022-11-28', '2022-11-28 11:15:16', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5577, 1810, 3, 29, 'Approved ', 3, '2022-11-28', '2022-11-28 11:15:44', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5578, 1811, 3, 29, 'Approved ', 3, '2022-11-28', '2022-11-28 11:15:48', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5579, 1812, 3, 29, 'Approved ', 3, '2022-11-28', '2022-11-28 11:18:10', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5580, 1813, 3, 29, 'Approved ', 3, '2022-11-28', '2022-11-28 11:18:29', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5581, 1871, 3, 29, 'Approved ', 3, '2022-11-28', '2022-11-28 11:18:44', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5582, 1872, 1, 42, '', 1, '2022-12-09', '2022-12-09 13:45:49', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5583, 1873, 1, 42, '', 1, '2022-12-09', '2022-12-09 13:47:45', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5584, 1874, 1, 42, '', 1, '2022-12-09', '2022-12-09 13:49:41', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5585, 1875, 1, 42, '', 1, '2022-12-09', '2022-12-09 13:51:07', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5586, 1876, 1, 42, '', 1, '2022-12-09', '2022-12-09 13:52:32', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5587, 1877, 1, 42, '', 1, '2022-12-09', '2022-12-09 13:53:27', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5588, 1878, 1, 42, '', 1, '2022-12-09', '2022-12-09 13:54:53', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5589, 1879, 1, 42, '', 1, '2022-12-09', '2022-12-09 13:56:05', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5590, 1880, 1, 42, '', 1, '2022-12-09', '2022-12-09 13:56:51', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5591, 1881, 1, 40, '', 1, '2022-12-12', '2022-12-12 12:20:58', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5592, 1874, 2, 43, ' Recommended ', 2, '2022-12-14', '2022-12-14 15:24:17', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5593, 1882, 1, 40, '', 1, '2022-12-15', '2022-12-15 08:59:59', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5594, 1883, 1, 42, '', 1, '2022-12-19', '2022-12-19 12:23:14', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5595, 1884, 1, 42, '', 1, '2022-12-19', '2022-12-19 12:24:11', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5596, 1883, 2, 43, 'Recommended  ', 2, '2022-12-20', '2022-12-20 09:41:55', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5597, 1884, 2, 43, 'Recommended  ', 2, '2022-12-20', '2022-12-20 09:44:44', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5598, 1882, 2, 43, 'Recommended ', 2, '2022-12-20', '2022-12-20 10:03:28', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5599, 1881, 2, 43, 'Recommended ', 2, '2022-12-20', '2022-12-20 10:06:36', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5600, 1872, 2, 43, 'Recommended  ', 2, '2022-12-20', '2022-12-20 14:02:48', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5601, 1873, 2, 43, 'Recommended  ', 2, '2022-12-20', '2022-12-20 14:19:11', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5602, 1875, 2, 43, 'Recommended  ', 2, '2022-12-20', '2022-12-20 14:22:19', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5603, 1878, 2, 43, 'Recommended  ', 2, '2022-12-20', '2022-12-20 14:26:45', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5604, 1876, 2, 43, 'Recommended  ', 2, '2022-12-20', '2022-12-20 14:29:28', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5605, 1877, 2, 43, 'Recommended  ', 2, '2022-12-20', '2022-12-20 14:31:53', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5606, 1879, 2, 43, 'Recommended', 2, '2022-12-20', '2022-12-20 14:37:02', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5607, 1880, 2, 43, 'Recommended', 2, '2022-12-20', '2022-12-20 14:39:05', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5608, 1883, 3, 29, ' Approved', 3, '2022-12-27', '2022-12-27 09:17:53', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5609, 1884, 3, 29, ' Approved', 3, '2022-12-27', '2022-12-27 09:18:00', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5610, 1882, 3, 29, ' Approved', 3, '2022-12-27', '2022-12-27 09:18:57', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5611, 1881, 3, 29, ' Approved', 3, '2022-12-27', '2022-12-27 09:19:43', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5612, 1872, 3, 29, ' Approved', 3, '2022-12-27', '2022-12-27 09:23:29', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5613, 1873, 3, 29, ' Approved', 3, '2022-12-27', '2022-12-27 09:24:14', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5614, 1875, 3, 29, ' Approved', 3, '2022-12-27', '2022-12-27 09:24:57', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5615, 1874, 3, 29, ' Approved', 3, '2022-12-27', '2022-12-27 09:25:31', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5616, 1878, 3, 29, ' Approved', 3, '2022-12-27', '2022-12-27 09:26:03', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5617, 1876, 3, 29, ' Approved', 3, '2022-12-27', '2022-12-27 09:27:15', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5618, 1877, 3, 29, ' Approved', 3, '2022-12-27', '2022-12-27 09:27:31', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5619, 1879, 3, 29, ' Approved', 3, '2022-12-27', '2022-12-27 09:28:29', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5620, 1880, 3, 29, ' Approved', 3, '2022-12-27', '2022-12-27 09:28:49', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5621, 1885, 1, 40, '', 1, '2023-01-16', '2023-01-16 10:53:38', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5622, 1886, 1, 40, '', 1, '2023-01-16', '2023-01-16 10:55:07', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5623, 1887, 1, 40, '', 1, '2023-01-16', '2023-01-16 10:56:17', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5624, 1888, 1, 40, '', 1, '2023-01-16', '2023-01-16 10:57:32', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5625, 1889, 1, 40, '', 1, '2023-01-16', '2023-01-16 10:58:06', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5626, 1890, 1, 40, '', 1, '2023-01-16', '2023-01-16 11:11:43', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5627, 1891, 1, 40, '', 1, '2023-01-16', '2023-01-16 11:12:58', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5628, 1892, 1, 40, '', 1, '2023-01-16', '2023-01-16 11:14:32', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5629, 1893, 1, 40, '', 1, '2023-01-16', '2023-01-16 11:14:58', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5630, 1894, 1, 40, '', 1, '2023-01-16', '2023-01-16 11:15:58', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5631, 1895, 1, 40, '', 1, '2023-01-16', '2023-01-16 11:17:19', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5632, 1896, 1, 40, '', 1, '2023-01-16', '2023-01-16 11:18:03', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5633, 1897, 1, 40, '', 1, '2023-01-16', '2023-01-16 11:18:50', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5634, 1898, 1, 40, '', 1, '2023-01-16', '2023-01-16 11:20:20', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5635, 1899, 1, 40, '', 1, '2023-01-16', '2023-01-16 11:21:57', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5636, 1900, 1, 40, '', 1, '2023-01-16', '2023-01-16 11:23:19', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5637, 1901, 1, 40, '', 1, '2023-01-16', '2023-01-16 11:31:20', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5638, 1902, 1, 40, '', 1, '2023-01-16', '2023-01-16 11:35:01', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5639, 1903, 1, 40, '', 1, '2023-01-16', '2023-01-16 11:35:43', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5640, 1904, 1, 40, '', 1, '2023-01-16', '2023-01-16 11:36:51', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5641, 1905, 1, 40, '', 1, '2023-01-16', '2023-01-16 11:37:45', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5642, 1906, 1, 40, '', 1, '2023-01-16', '2023-01-16 11:38:54', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5643, 1907, 1, 40, '', 1, '2023-01-16', '2023-01-16 11:39:57', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5644, 1908, 1, 40, '', 1, '2023-01-16', '2023-01-16 11:41:13', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5645, 1909, 1, 40, '', 1, '2023-01-16', '2023-01-16 11:43:06', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5646, 1910, 1, 40, '', 1, '2023-01-16', '2023-01-16 11:43:58', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5647, 1911, 1, 40, '', 1, '2023-01-16', '2023-01-16 11:46:59', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5648, 1912, 1, 40, '', 1, '2023-01-16', '2023-01-16 11:48:51', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5649, 1913, 1, 40, '', 1, '2023-01-16', '2023-01-16 11:49:47', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5650, 1914, 1, 40, '', 1, '2023-01-16', '2023-01-16 11:51:15', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5651, 1915, 1, 40, '', 1, '2023-01-16', '2023-01-16 11:52:45', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5652, 1916, 1, 40, '', 1, '2023-01-16', '2023-01-16 11:53:38', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5653, 1917, 1, 40, '', 1, '2023-01-16', '2023-01-16 11:54:42', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5654, 1918, 1, 40, '', 1, '2023-01-16', '2023-01-16 11:55:30', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5655, 1919, 1, 40, '', 1, '2023-01-16', '2023-01-16 11:57:09', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5656, 1920, 1, 40, '', 1, '2023-01-16', '2023-01-16 11:59:18', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5657, 1921, 1, 40, '', 1, '2023-01-16', '2023-01-16 12:00:19', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5658, 1922, 1, 40, '', 1, '2023-01-16', '2023-01-16 12:02:04', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5659, 1923, 1, 40, '', 1, '2023-01-16', '2023-01-16 12:02:43', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5660, 1924, 1, 40, '', 1, '2023-01-16', '2023-01-16 12:03:52', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5661, 1925, 1, 40, '', 1, '2023-01-16', '2023-01-16 12:04:18', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5662, 1926, 1, 40, '', 1, '2023-01-16', '2023-01-16 12:05:10', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5663, 1927, 1, 40, '', 1, '2023-01-16', '2023-01-16 12:06:07', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5664, 1928, 1, 40, '', 1, '2023-01-16', '2023-01-16 12:07:42', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5665, 1929, 1, 40, '', 1, '2023-01-16', '2023-01-16 12:08:23', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5666, 1930, 1, 40, '', 1, '2023-01-16', '2023-01-16 12:09:05', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5667, 1931, 1, 40, '', 1, '2023-01-16', '2023-01-16 12:09:38', NULL);
+INSERT INTO `tbl_account_activation_approval` VALUES (5668, 1932, 1, 40, '', 1, 

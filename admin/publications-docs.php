@@ -91,73 +91,17 @@ include "template/head.php";
                                                     <tr>
                                                         <td><?= htmlspecialchars($doc['title']) ?></td>
                                                         <td><?= htmlspecialchars($doc['category_name'] ?? 'N/A') ?></td>
-                                                        <td><?= !empty($doc['branch_name']) ? htmlspecialchars($doc['branch_name']) : '<span class="text-muted">N/A</span>' ?></td>
-                                                        <td><?= htmlspecialchars($doc['uploaded_by_name'] ?? 'Unknown') ?></td>
-                                                        <td><?= date('M j, Y', strtotime($doc['uploaded_at'])) ?></td>
-                                                        <td>
-                                                            <div class="d-flex">
-                                                                <?php if (!empty($doc['file_path'])): ?>
-                                                                    <a href="../view_document.php?file=<?= urlencode($doc['file_path']) ?>" class="btn btn-sm btn-outline-primary me-1"data-bs-toggle="tooltip" title="View Document">
-                                                                        <i class="fas fa-eye"></i>
-                                                                    </a>
-                                                                <?php else: ?>
-                                                                    <button class="btn btn-sm btn-outline-secondary me-1" disabled data-bs-toggle="tooltip" title="No file available">
-                                                                        <i class="fas fa-eye-slash"></i>
-                                                                    </button>
-                                                                <?php endif; ?>
-                                                                <a href="edit.php?id=<?= $doc['id'] ?>" class="btn btn-sm btn-outline-secondary me-1" data-bs-toggle="tooltip" title="Edit Document">
-                                                                    <i class="fas fa-edit"></i>
-                                                                </a>
-                                                                <form action="delete.php" method="post" class="d-inline">
-                                                                    <input type="hidden" name="id" value="<?= $doc['id'] ?>">
-                                                                    <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('Are you sure you want to delete this document?')" data-bs-toggle="tooltip" title="Delete Document">
-                                                                        <i class="fas fa-trash"></i>
-                                                                    </button>
-                                                                </form>
-                                                            </div>
-                                                        </td>
-                                                    </tr>
-                                                <?php endforeach; ?>
-                                            <?php endif; ?>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="footer">
-            <div class="copyright">
-                <p>Copyright © Designed &amp; Developed by <a href="http://dexignzone.com/" target="_blank">DexignZone</a> 2025</p>
-            </div>
-        </div>
-
-    </div>
-
-    <!-- Required vendors -->
-    <script src="assets/vendor/global/global.min.js" type="text/javascript"></script>
-    <script src="assets/vendor/bootstrap-select/dist/js/bootstrap-select.min.js" type="text/javascript"></script>
-    <script src="assets/vendor/datatables/js/jquery.dataTables.min.js" type="text/javascript"></script>
-    <script src="assets/vendor/datatables/responsive/responsive.js" type="text/javascript"></script>
-    <script src="assets/js/plugins-init/datatables.init.js" type="text/javascript"></script>
-    <script src="assets/js/custom.min.js" type="text/javascript"></script>
-    <script src="assets/js/deznav-init.js" type="text/javascript"></script>
-    
-    <script>
-        // Initialize tooltips
-        $(document).ready(function() {
-            $('[data-bs-toggle="tooltip"]').tooltip();
-            
-            
-            // Auto-hide alerts after 5 seconds
-            setTimeout(function() {
-                $('.alert').alert('close');
-            }, 5000);
-        });
-    </script>
-</body>
-
-</html>
+                                                    ��ඩල  තීරණය බලයට ගෙන  අත්හිටු වීම් කරන ලදී.', '2020-11-25', '', 3, 0, 1, 20, '2020-11-25');
+INSERT INTO `tbl_suspension_details` VALUES (4372, 3824, 2768, 4, '2019.07.18 සිට 2019.08.28 දක්වා සිදුකල විගණනයේ දී නිරීක්‍ෂණය වු අයදුම්පත් වලට අදාලව ගිණුම්,183 වන කළමණාකරන මණ්ඩල  තීරණය බලයට ගෙන  අත්හිටු වීම් කරන ලදී.', '2020-11-25', '', 3, 0, 1, 34, '2020-11-25');
+INSERT INTO `tbl_suspension_details` VALUES (4373, 1184, 876, 4, '2019.07.18 සිට 2019.08.28 දක්වා සිදුකල විගණනයේ දී නිරීක්‍ෂණය වු අයදුම්පත් වලට අදාලව ගිණුම්,183 වන කළමණාකරන මණ්ඩල  තීරණය බලයට ගෙන  අත්හිටු වීම් කරන ලදී.', '2020-11-25', '', 3, 0, 1, 35, '2020-11-25');
+INSERT INTO `tbl_suspension_details` VALUES (4374, 16962, 11528, 4, '2019.07.18 සිට 2019.08.28 දක්වා සිදුකල විගණනයේ දී නිරීක්‍ෂණය වු අයදුම්පත් වලට අදාලව ගිණුම්,183 වන කළමණාකරන මණ්ඩල  තීරණය බලයට ගෙන  අත්හිටු වීම් කරන ලදී.', '2020-11-25', '', 3, 0, 1, 26, '2020-11-25');
+INSERT INTO `tbl_suspension_details` VALUES (6195, 145241, 39699, 1, 'Death Certificate', '2021-09-29', '', 3, 0, 1, 40, '2021-10-12');
+INSERT INTO `tbl_suspension_details` VALUES (6196, 4576, 3288, 1, 'Death Certificate', '2021-02-07', '', 3, 0, 1, 40, '2021-10-12');
+INSERT INTO `tbl_suspension_details` VALUES (6197, 10255, 6959, 1, 'Death Certificate', '2021-05-26', '', 3, 0, 1, 40, '2021-10-12');
+INSERT INTO `tbl_suspension_details` VALUES (6198, 22254, 15194, 1, 'Death Certificate', '2017-09-29', '', 3, 0, 1, 40, '2021-10-12');
+INSERT INTO `tbl_suspension_details` VALUES (6199, 142697, 38053, 1, 'Death Certificate', '2021-07-29', '', 3, 0, 1, 40, '2021-10-12');
+INSERT INTO `tbl_suspension_details` VALUES (4376, 3900, 2823, 4, '2019.07.18 සිට 2019.08.28 දක්වා සිදුකල විගණනයේ දී නිරීක්‍ෂණය වු අයදුම්පත් වලට අදාලව ගිණුම්,183 වන කළමණාකරන මණ්ඩල  තීරණය බලයට ගෙන  අත්හිටු වීම් කරන ලදී.', '2020-11-25', '', 3, 0, 1, 20, '2020-11-25');
+INSERT INTO `tbl_suspension_details` VALUES (4377, 10072, 6844, 4, '2019.07.18 සිට 2019.08.28 දක්වා සිදුකල විගණනයේ දී නිරීක්‍ෂණය වු අයදුම්පත් වලට අදාලව ගිණුම්,183 වන කළමණාකරන මණ්ඩල  තීරණය බලයට ගෙන  අත්හිටු වීම් කරන ලදී.', '2020-11-25', '', 3, 0, 1, 33, '2020-11-25');
+INSERT INTO `tbl_suspension_details` VALUES (4378, 251, 185, 4, '2019.07.18 සිට 2019.08.28 දක්වා සිදුකල විගණනයේ දී නිරීක්‍ෂණය වු අයදුම්පත් වලට අදාලව ගිණුම්,183 වන කළමණාකරන මණ්ඩල  තීරණය බලයට ගෙන  අත්හිටු වීම් කරන ලදී.', '2020-11-25', '', 3, 0, 0, 35, '2020-11-25');
+INSERT INTO `tbl_suspension_details` VALUES (4379, 11209, 7565, 4, '2019.07.18 සිට 2019.08.28 දක්වා සිදුකල විගණනයේ දී නිරීක්‍ෂණය වු අයදුම්පත් වලට අදාලව ගිණුම්,183 වන කළමණාකරන මණ්ඩල  තීරණය බලයට ගෙන  අත්හිටු වීම් කරන ලදී.', '2020-11-25', '', 3, 0, 1, 26, '2020-11-25');
+INSERT INTO `tbl_suspension_details` VALUES (4380, 11208, 7565, 4, '2019.07.18 සිට 2019.08.28 දක්වා සිදුකල විගණනයේ දී නිරීක්‍ෂණය වු අයදුම්පත් වලට අදාලව ගිණුම්,183 වන කළමණාකරන මණ්ඩල  තීරණය බලයට ගෙන  අත්හිටු වීම් කර�

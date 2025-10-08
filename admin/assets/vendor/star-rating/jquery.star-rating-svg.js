@@ -1,56 +1,14 @@
-$(document).ready(function(){
-  
-  /* 1. Visualizing things on Hover - See next part for action on click */
-  $('#stars li').on('mouseover', function(){
-    var onStar = parseInt($(this).data('value'), 10); // The star currently mouse on
-   
-    // Now highlight all the stars that's not after the current hovered star
-    $(this).parent().children('li.star').each(function(e){
-      if (e < onStar) {
-        $(this).addClass('hover');
-      }
-      else {
-        $(this).removeClass('hover');
-      }
-    });
-    
-  }).on('mouseout', function(){
-    $(this).parent().children('li.star').each(function(e){
-      $(this).removeClass('hover');
-    });
-  });
-  
-  
-  /* 2. Action to perform on click */
-  $('#stars li').on('click', function(){
-    var onStar = parseInt($(this).data('value'), 10); // The star currently selected
-    var stars = $(this).parent().children('li.star');
-    
-    for (i = 0; i < stars.length; i++) {
-      $(stars[i]).removeClass('selected');
-    }
-    
-    for (i = 0; i < onStar; i++) {
-      $(stars[i]).addClass('selected');
-    }
-    
-    // JUST RESPONSE (Not needed)
-    var ratingValue = parseInt($('#stars li.selected').last().data('value'), 10);
-    var msg = "";
-    if (ratingValue > 1) {
-        msg = "Thanks! You rated this " + ratingValue + " stars.";
-    }
-    else {
-        msg = "We will improve ourselves. You rated this " + ratingValue + " stars.";
-    }
-    responseMessage(msg);
-    
-  });
-  
-  
-});
-
-
-function responseMessage(msg) {
-  alert(msg);  
-}
+ුරු කරන ලදී', 2, 2, '2020-03-02', '2020-03-02 15:07:08');
+INSERT INTO `tbl_approved` VALUES (11472, 40271, 2, 21, 'Recommended', 3, 1, '2020-03-02', '2020-03-02 15:08:23');
+INSERT INTO `tbl_approved` VALUES (11473, 41168, 2, 21, 'Recommended', 3, 1, '2020-03-02', '2020-03-02 15:10:38');
+INSERT INTO `tbl_approved` VALUES (11474, 36865, 2, 21, 'Recommended', 3, 1, '2020-03-02', '2020-03-02 15:11:38');
+INSERT INTO `tbl_approved` VALUES (11475, 41169, 2, 21, 'Recommended', 3, 1, '2020-03-02', '2020-03-02 15:12:35');
+INSERT INTO `tbl_approved` VALUES (11476, 41170, 2, 21, 'Recommended', 3, 1, '2020-03-02', '2020-03-02 15:15:29');
+INSERT INTO `tbl_approved` VALUES (11477, 41161, 2, 21, 'Recommended', 3, 1, '2020-03-02', '2020-03-02 15:17:30');
+INSERT INTO `tbl_approved` VALUES (11478, 41160, 2, 21, 'Recommended', 3, 1, '2020-03-02', '2020-03-02 15:18:44');
+INSERT INTO `tbl_approved` VALUES (11479, 41159, 2, 21, 'Recommended', 3, 1, '2020-03-02', '2020-03-02 15:21:31');
+INSERT INTO `tbl_approved` VALUES (11480, 11483, 2, 21, 'Recommended', 3, 1, '2020-03-03', '2020-03-03 09:11:09');
+INSERT INTO `tbl_approved` VALUES (11481, 8698, 2, 21, 'Not Recommended', 5, NULL, '2020-03-03', '2020-03-03 09:47:41');
+INSERT INTO `tbl_approved` VALUES (11482, 9215, 2, 21, 'Recommended', 3, 1, '2020-03-03', '2020-03-03 09:49:56');
+INSERT INTO `tbl_approved` VALUES (11483, 6940, 2, 21, 'Recommended', 3, 1, '2020-03-03', '2020-03-03 09:53:49');
+INSERT INTO `tbl_approved` VAL
