@@ -208,7 +208,14 @@ include '../template/head.php';
             <!-- Tab Content -->
             <div class="content-column">
                 <div class="tab-content" id="inspectorateTabsContent">
-
+                    <!-- Welcome Screen (shown by default) -->
+                    <div class="tab-pane fade show active" id="welcome" role="tabpanel">
+                        <div class="welcome-message">
+                            <img src="../assets/images/qai-welcome.jpg" alt="Quality Assurance Inspectorate" class="welcome-image">
+                            <h4>Welcome to Command Quality Assurance Inspectorate</h4>
+                            <p>Please select an option from the navigation menu to view the content.</p>
+                        </div>
+                    </div>
                     <!-- OSH Tab Panes -->
                     <div class="tab-pane fade" id="osh_man" role="tabpanel">
                         <h4 class="colour-defult">OSH Manual</h4>
@@ -273,28 +280,21 @@ include '../template/head.php';
     <script>
         // Handle tab selection
         document.addEventListener("DOMContentLoaded", function() {
-            // Set initial active tab and content - using OSH Manual as default
-            const initialTab = document.querySelector('[data-bs-target="#osh_man"]');
-            const initialPane = document.querySelector('#osh_man');
-
-            if (initialTab && initialPane) {
-                initialTab.classList.add('active');
-                initialPane.classList.add('show', 'active');
-
-                // Activate the parent dropdown toggle
-                const parentDropdown = initialTab.closest('.qa-dropdown');
-                if (parentDropdown) {
-                    const dropdownToggle = parentDropdown.querySelector('.qa-dropdown-toggle');
-                    if (dropdownToggle) {
-                        dropdownToggle.classList.add('active');
-                        // Keep the dropdown menu open initially
-                        const dropdownMenu = dropdownToggle.nextElementSibling;
-                        if (dropdownMenu) {
-                            dropdownMenu.classList.add('show');
-                        }
-                    }
-                }
+            // Set initial active tab to welcome screen
+            const welcomePane = document.querySelector('#welcome');
+            if (welcomePane) {
+                welcomePane.classList.add('show', 'active');
             }
+
+            // Remove any active classes from navigation items initially
+            document.querySelectorAll('.nav-link, .qa-dropdown-item').forEach(item => {
+                item.classList.remove('active');
+            });
+
+            // Close all dropdown menus initially
+            document.querySelectorAll('.qa-dropdown-menu').forEach(menu => {
+                menu.classList.remove('show');
+            });
 
             // Handle dropdown toggle for ALL dropdowns
             const dropdownToggles = document.querySelectorAll('.qa-dropdown-toggle');
@@ -330,13 +330,8 @@ include '../template/head.php';
                 item.addEventListener('click', function(e) {
                     e.preventDefault();
 
-                    // Remove active class from all main nav links
-                    document.querySelectorAll('.nav-link:not(.qa-dropdown-toggle)').forEach(tab => {
-                        tab.classList.remove('active');
-                    });
-
-                    // Remove active class from all dropdown items
-                    document.querySelectorAll('.qa-dropdown-item').forEach(tab => {
+                    // Remove active class from all nav items
+                    document.querySelectorAll('.nav-link, .qa-dropdown-item').forEach(tab => {
                         tab.classList.remove('active');
                     });
 
@@ -348,11 +343,11 @@ include '../template/head.php';
                     // Add active class to clicked tab
                     this.classList.add('active');
 
-                    // Show the target tab content
+                    // Show the target tab content and hide welcome screen
                     const targetId = this.getAttribute('data-bs-target');
                     const targetPane = document.querySelector(targetId);
 
-                    // Hide all tab panes
+                    // Hide all tab panes including welcome
                     document.querySelectorAll('.tab-pane').forEach(pane => {
                         pane.classList.remove('show', 'active');
                     });
@@ -376,17 +371,12 @@ include '../template/head.php';
                     e.preventDefault();
                     e.stopPropagation(); // Prevent event from bubbling to document
 
-                    // Remove active class from all main nav links
-                    document.querySelectorAll('.nav-link:not(.qa-dropdown-toggle)').forEach(tab => {
+                    // Remove active class from all nav items
+                    document.querySelectorAll('.nav-link, .qa-dropdown-item').forEach(tab => {
                         tab.classList.remove('active');
                     });
 
-                    // Remove active class from all dropdown items
-                    document.querySelectorAll('.qa-dropdown-item').forEach(tab => {
-                        tab.classList.remove('active');
-                    });
-
-                    // Remove active class from all dropdown toggles except the parent
+                    // Remove active class from all dropdown toggles
                     document.querySelectorAll('.qa-dropdown-toggle').forEach(toggle => {
                         toggle.classList.remove('active');
                     });
@@ -410,11 +400,11 @@ include '../template/head.php';
                         }
                     }
 
-                    // Show the target tab content
+                    // Show the target tab content and hide welcome screen
                     const targetId = this.getAttribute('data-bs-target');
                     const targetPane = document.querySelector(targetId);
 
-                    // Hide all tab panes
+                    // Hide all tab panes including welcome
                     document.querySelectorAll('.tab-pane').forEach(pane => {
                         pane.classList.remove('show', 'active');
                     });

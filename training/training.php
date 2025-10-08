@@ -207,7 +207,14 @@ include '../template/head.php';
             <!-- Tab Content -->
             <div class="content-column">
                 <div class="tab-content" id="inspectorateTabsContent">
-
+                    <!-- Welcome Screen (shown by default) -->
+                    <div class="tab-pane fade show active" id="welcome" role="tabpanel">
+                        <div class="welcome-message">
+                            <img src="../assets/images/qai-welcome.jpg" alt="Quality Assurance Inspectorate" class="welcome-image">
+                            <h4>Welcome to Command Quality Assurance Inspectorate</h4>
+                            <p>Please select an option from the navigation menu to view the content.</p>
+                        </div>
+                    </div>
                     <!-- Other tab panes -->
                     <div class="tab-pane fade" id="ac" role="tabpanel">
                         <h4 class="colour-defult">Approved Training Syllabus</h4>

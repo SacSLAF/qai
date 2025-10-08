@@ -179,7 +179,14 @@ include '../template/head.php';
             <!-- Tab Content -->
             <div class="content-column">
                 <div class="tab-content" id="inspectorateTabsContent">
-
+                    <!-- Welcome Screen (shown by default) -->
+                    <div class="tab-pane fade show active" id="welcome" role="tabpanel">
+                        <div class="welcome-message">
+                            <img src="../assets/images/qai-welcome.jpg" alt="Quality Assurance Inspectorate" class="welcome-image">
+                            <h4>Welcome to Command Quality Assurance Inspectorate</h4>
+                            <p>Please select an option from the navigation menu to view the content.</p>
+                        </div>
+                    </div>
                     <!-- Other tab panes -->
                     <div class="tab-pane fade" id="ac" role="tabpanel">
                         <h4 class="colour-defult">Online Subscription</h4>
@@ -254,58 +261,74 @@ include '../template/head.php';
     <script>
         // Handle tab selection
         document.addEventListener("DOMContentLoaded", function() {
-            <?php if ($show_pdf): ?>
-                // If we're showing a PDF, make sure the audits plan tab is active
-                document.querySelector('[data-bs-target="#audits_plan"]').classList.add('active');
-                document.querySelector('.qa-dropdown-toggle').classList.add('active');
-            <?php else: ?>
-                // Set initial active tab
-                const initialTab = document.querySelector('[data-bs-target="#audits_plan"]');
-                if (initialTab) {
-                    initialTab.classList.add('active');
-                    document.querySelector('.qa-dropdown-toggle').classList.add('active');
-                }
-            <?php endif; ?>
-
-            // Handle dropdown toggle - only close when clicking the toggle itself
-            const dropdownToggle = document.querySelector('.qa-dropdown-toggle');
-            if (dropdownToggle) {
-                dropdownToggle.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    const dropdownMenu = this.nextElementSibling;
-                    dropdownMenu.classList.toggle('show');
-                });
+            // Set initial active tab to welcome screen
+            const welcomePane = document.querySelector('#welcome');
+            if (welcomePane) {
+                welcomePane.classList.add('show', 'active');
             }
 
-            // Handle tab selection for main nav links (non-dropdown)
+            // Remove any active classes from navigation items initially
+            document.querySelectorAll('.nav-link, .qa-dropdown-item').forEach(item => {
+                item.classList.remove('active');
+            });
+
+            // Close all dropdown menus initially
+            document.querySelectorAll('.qa-dropdown-menu').forEach(menu => {
+                menu.classList.remove('show');
+            });
+
+            // Handle dropdown toggle for ALL dropdowns
+            const dropdownToggles = document.querySelectorAll('.qa-dropdown-toggle');
+            dropdownToggles.forEach(toggle => {
+                toggle.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+
+                    const dropdownMenu = this.nextElementSibling;
+                    if (!dropdownMenu) return;
+
+                    // Toggle current dropdown - close if open, open if closed
+                    const isCurrentlyOpen = dropdownMenu.classList.contains('show');
+
+                    // Close all dropdowns first
+                    dropdownToggles.forEach(otherToggle => {
+                        const otherMenu = otherToggle.nextElementSibling;
+                        if (otherMenu) {
+                            otherMenu.classList.remove('show');
+                        }
+                    });
+
+                    // If it wasn't open, open it now
+                    if (!isCurrentlyOpen) {
+                        dropdownMenu.classList.add('show');
+                    }
+                });
+            });
+
+            // Handle tab selection for main nav links (non-dropdown items)
             const mainNavLinks = document.querySelectorAll('.nav-link:not(.qa-dropdown-toggle)');
             mainNavLinks.forEach(item => {
                 item.addEventListener('click', function(e) {
                     e.preventDefault();
 
-                    // Remove active class from all main nav links
-                    document.querySelectorAll('.nav-link:not(.qa-dropdown-toggle)').forEach(tab => {
+                    // Remove active class from all nav items
+                    document.querySelectorAll('.nav-link, .qa-dropdown-item').forEach(tab => {
                         tab.classList.remove('active');
                     });
 
-                    // Remove active class from QA dropdown toggle
-                    document.querySelector('.qa-dropdown-toggle').classList.remove('active');
-
-                    // Close dropdown menu
-                    const dropdownMenu = document.querySelector('.qa-dropdown-menu');
-                    if (dropdownMenu) {
-                        dropdownMenu.classList.remove('show');
-                    }
+                    // Remove active class from all dropdown toggles
+                    document.querySelectorAll('.qa-dropdown-toggle').forEach(toggle => {
+                        toggle.classList.remove('active');
+                    });
 
                     // Add active class to clicked tab
                     this.classList.add('active');
 
-                    // Show the target tab content
+                    // Show the target tab content and hide welcome screen
                     const targetId = this.getAttribute('data-bs-target');
                     const targetPane = document.querySelector(targetId);
 
-                    // Hide all tab panes
+                    // Hide all tab panes including welcome
                     document.querySelectorAll('.tab-pane').forEach(pane => {
                         pane.classList.remove('show', 'active');
                     });
@@ -314,43 +337,55 @@ include '../template/head.php';
                     if (targetPane) {
                         targetPane.classList.add('show', 'active');
                     }
+
+                    // Close all dropdowns when selecting main nav items
+                    document.querySelectorAll('.qa-dropdown-menu').forEach(menu => {
+                        menu.classList.remove('show');
+                    });
                 });
             });
 
-            // Handle tab selection for dropdown items
+            // Handle tab selection for dropdown items (sub-menu items)
             const dropdownItems = document.querySelectorAll('.qa-dropdown-item');
             dropdownItems.forEach(item => {
                 item.addEventListener('click', function(e) {
                     e.preventDefault();
-                    e.stopPropagation(); // Prevent event from bubbling up
+                    e.stopPropagation(); // Prevent event from bubbling to document
 
-                    // Remove active class from all main nav links
-                    document.querySelectorAll('.nav-link:not(.qa-dropdown-toggle)').forEach(tab => {
+                    // Remove active class from all nav items
+                    document.querySelectorAll('.nav-link, .qa-dropdown-item').forEach(tab => {
                         tab.classList.remove('active');
                     });
 
-                    // Remove active class from all dropdown items
-                    document.querySelectorAll('.qa-dropdown-item').forEach(tab => {
-                        tab.classList.remove('active');
+                    // Remove active class from all dropdown toggles
+                    document.querySelectorAll('.qa-dropdown-toggle').forEach(toggle => {
+                        toggle.classList.remove('active');
                     });
 
                     // Add active class to clicked dropdown item
                     this.classList.add('active');
 
-                    // Activate the parent dropdown toggle
-                    document.querySelector('.qa-dropdown-toggle').classList.add('active');
-
-                    // Keep dropdown menu open
-                    const dropdownMenu = document.querySelector('.qa-dropdown-menu');
-                    if (dropdownMenu) {
-                        dropdownMenu.classList.add('show');
+                    // If this is a dropdown item, activate the parent dropdown toggle and keep menu open
+                    if (this.classList.contains('qa-dropdown-item')) {
+                        const parentDropdown = this.closest('.qa-dropdown');
+                        if (parentDropdown) {
+                            const dropdownToggle = parentDropdown.querySelector('.qa-dropdown-toggle');
+                            if (dropdownToggle) {
+                                dropdownToggle.classList.add('active');
+                                // Keep the dropdown menu open
+                                const dropdownMenu = dropdownToggle.nextElementSibling;
+                                if (dropdownMenu) {
+                                    dropdownMenu.classList.add('show');
+                                }
+                            }
+                        }
                     }
 
-                    // Show the target tab content
+                    // Show the target tab content and hide welcome screen
                     const targetId = this.getAttribute('data-bs-target');
                     const targetPane = document.querySelector(targetId);
 
-                    // Hide all tab panes
+                    // Hide all tab panes including welcome
                     document.querySelectorAll('.tab-pane').forEach(pane => {
                         pane.classList.remove('show', 'active');
                     });
@@ -359,26 +394,35 @@ include '../template/head.php';
                     if (targetPane) {
                         targetPane.classList.add('show', 'active');
                     }
+
+                    // DON'T close the dropdown menu - keep it open for sub-menu items
                 });
             });
 
-            // Close dropdown when clicking outside, but only if it's open
+            // Close dropdowns when clicking outside
             document.addEventListener('click', function(e) {
-                const dropdown = document.querySelector('.qa-dropdown');
-                const dropdownMenu = document.querySelector('.qa-dropdown-menu');
-
-                if (dropdown && !dropdown.contains(e.target) && dropdownMenu.classList.contains('show')) {
-                    dropdownMenu.classList.remove('show');
+                if (!e.target.closest('.qa-dropdown')) {
+                    document.querySelectorAll('.qa-dropdown-menu').forEach(menu => {
+                        menu.classList.remove('show');
+                    });
                 }
             });
 
-            // Prevent dropdown from closing when clicking inside it
-            const dropdownMenu = document.querySelector('.qa-dropdown-menu');
-            if (dropdownMenu) {
-                dropdownMenu.addEventListener('click', function(e) {
+            // Prevent dropdown from closing when clicking inside dropdown menu
+            document.querySelectorAll('.qa-dropdown-menu').forEach(menu => {
+                menu.addEventListener('click', function(e) {
                     e.stopPropagation();
                 });
-            }
+            });
+
+            // Handle escape key to close dropdowns
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') {
+                    document.querySelectorAll('.qa-dropdown-menu').forEach(menu => {
+                        menu.classList.remove('show');
+                    });
+                }
+            });
         });
     </script>
 </body>

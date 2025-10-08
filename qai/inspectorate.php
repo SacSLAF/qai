@@ -310,7 +310,7 @@
 
     <!-- Main Content -->
     <main class="container-fluid my-3 pt-3">
-       <!-- <div class="page-header mb-4">
+        <!-- <div class="page-header mb-4">
             <h3 class="colour-defult">The Inspectorate <i class="fa fa-bullhorn"></i>
                 <div class="float-end">
                     <a href="../index.php" class="btn btn-info me-2"><i class="fa fa-home"></i> Home</a>
@@ -323,20 +323,29 @@
             <!-- Navigation Tabs -->
             <div class="col-lg-3 col-xl-2 mb-4">
                 <div class="nav flex-column nav-pills" id="inspectorateTabs" role="tablist">
-                    <a class="nav-link active" id="org-tab" data-bs-toggle="pill" href="#org" role="tab">About us</a>
-                    <a class="nav-link" id="functions-tab" data-bs-toggle="pill" href="#functions" role="tab">Policy</a>
-                    <a class="nav-link" id="structure-tab" data-bs-toggle="pill" href="#structure" role="tab">Structure</a>
-                    <a class="nav-link" id="responsibilities-tab" data-bs-toggle="pill" href="#responsibilities" role="tab">Staff</a>
-                    <a class="nav-link" id="History-tab" data-bs-toggle="pill" href="#history" role="tab">History</a>
-                    <a class="nav-link" id="achievements-tab" data-bs-toggle="pill" href="#achievements" role="tab">Achievements</a>
+                    <!-- <a class="nav-link" href="#" data-bs-target="#welcome" role="tab">Welcome</a> -->
+                    <a class="nav-link" href="#" data-bs-target="#org" role="tab">About us</a>
+                    <a class="nav-link" href="#" data-bs-target="#functions" role="tab">Policy</a>
+                    <a class="nav-link" href="#" data-bs-target="#structure" role="tab">Structure</a>
+                    <a class="nav-link" href="#" data-bs-target="#responsibilities" role="tab">Staff</a>
+                    <a class="nav-link" href="#" data-bs-target="#history" role="tab">History</a>
+                    <a class="nav-link" href="#" data-bs-target="#achievements" role="tab">Achievements</a>
                 </div>
             </div>
 
             <!-- Tab Content -->
             <div class="col-lg-9 col-xl-10">
                 <div class="tab-content" id="inspectorateTabsContent">
+                    <!-- Welcome Screen (shown by default) -->
+                    <div class="tab-pane fade show active" id="welcome" role="tabpanel">
+                        <div class="welcome-message">
+                            <img src="../assets/images/qai-welcome.jpg" alt="Quality Assurance Inspectorate" class="welcome-image">
+                            <h4>Welcome to Command Quality Assurance Inspectorate</h4>
+                            <p>Please select an option from the navigation menu to view the content.</p>
+                        </div>
+                    </div>
                     <!-- About Us -->
-                    <div class="tab-pane fade show active" id="org" role="tabpanel" style="color:#1a4f72;">
+                    <div class="tab-pane fade" id="org" role="tabpanel" style="color:#1a4f72;">
                         <p>The Sri Lanka Air Force (SLAF), in its commitment to fulfil the aspirations of the Nation by achieving excellence in the field of aviation and in all associated functions, is continually striving to enhance customer satisfaction by exceeding stake holders' expectations whilst endeavouring to be efficient, reliable and socially responsible.</p>
                         <p>Towards this end, the Quality Assurance Inspectorate (QAI) was established to perform Quality Assurance Functions within the SLAF. The QAI functions under supervision of the Chief of Staff of the Sri Lanka Air Force and is headed by the Director Quality Assurance (DQA) who is primarily tasked to provide advice on the Quality Assurance Services (QAS) matters such as Policy, Organization and Administration.</p>
 
@@ -395,6 +404,7 @@
                                             <img width="200" height="250" src="../assets/img/staff/cdr.jpg" alt="DIRECTOR QUALITY ASSURANCE" class="img-fluid mb-3">
                                             <p class="mb-1">Air Cdre MF Jansen</p>
                                             <p class="mb-0" style="font-size:11px"><strong>Contact:</strong> 077-2229145 / 11100 </p>
+                                            <p class="mb-1" style="font-size:11px">dqa@airforce.lk</p>
                                         </div>
                                     </div>
                                 </div>
@@ -414,6 +424,7 @@
                                             <img width="200" height="250" src="../assets/img/staff/of1.jpg" alt="SOQA(AERO ENG-FW/RW)" class="img-fluid mb-3">
                                             <p class="mb-1">Sqn Ldr WPAC Dayaratne</p>
                                             <p class="mb-1" style="font-size:11px"><strong>Contact:</strong>077-2229145 / 11115</p>
+                                            <p class="mb-1" style="font-size:11px">soqa.ae@airforce.lk</p>
                                         </div>
                                     </div>
                                 </div>
@@ -424,6 +435,7 @@
                                             <img width="200" height="250" src="../assets/img/staff/of4.jpg" alt="SOQA(E/E&T ENG)" class="img-fluid mb-3">
                                             <p class="mb-1">Sqn Ldr UJC Kumara</p>
                                             <p class="mb-1" style="font-size:11px"><strong>Contact:</strong> 077-2229142 / 11116</p>
+                                            <p class="mb-1" style="font-size:11px">soqa.ee@airforce.lk</p>
                                         </div>
                                     </div>
                                 </div>
@@ -434,6 +446,7 @@
                                             <img width="200" height="250" src="../assets/img/staff/officer3.jpg" alt="SOQA(GE)" class="img-fluid mb-3">
                                             <p class="mb-1">Sqn Ldr THDM Hettige</p>
                                             <p class="mb-1" style="font-size:11px"><strong>Contact:</strong> 077-2229165 / 11117</p>
+                                            <p class="mb-1" style="font-size:11px">soqa.ge@airforce.lk</p>
                                         </div>
                                     </div>
                                 </div>
@@ -444,6 +457,7 @@
                                             <img width="200" height="250" src="../assets/img/staff/of2.jpg" alt="SOQA(TRG & PUG)" class="img-fluid mb-3">
                                             <p class="mb-1">Sqn Ldr MMDC MORAYAS</p>
                                             <p class="mb-1" style="font-size:11px"><strong>Contact:</strong> 0778829671 / 11119</p>
+                                            <p class="mb-1" style="font-size:11px">soqa.trg@airforce.lk<br>soqa.osh@airforce.lk</p>
                                         </div>
                                     </div>
                                 </div>
@@ -710,7 +724,7 @@
                                 </div>
                             </div>
 
-                            
+
                             <div class="col-sm-6 col-lg-4 col-xl-3 mb-4">
                                 <div class="card achievement-card" style="height: 390px;"
                                     data-image="../assets/img/achievements/2003.jpeg"
@@ -729,7 +743,7 @@
                                 </div>
                             </div>
 
-                              <div class="col-sm-6 col-lg-4 col-xl-3 mb-4">
+                            <div class="col-sm-6 col-lg-4 col-xl-3 mb-4">
                                 <div class="card achievement-card" style="height: 390px;"
                                     data-image="../assets/img/achievements/1996.jpg"
                                     data-title="1996 WINNER"
@@ -747,8 +761,8 @@
                                 </div>
                             </div>
 
-                            
-                              <div class="col-sm-6 col-lg-4 col-xl-3 mb-4">
+
+                            <!-- <div class="col-sm-6 col-lg-4 col-xl-3 mb-4">
                                 <div class="card achievement-card" style="height: 390px;"
                                     data-image="../assets/img/achievements/2024.jpg"
                                     data-title="2024 WINNER"
@@ -764,9 +778,9 @@
                                         <p class="card-text" style="font-size:11px">ICQCC Award 2024</p>
                                     </div>
                                 </div>
-                            </div>
+                            </div> -->
 
-                             <div class="col-sm-6 col-lg-4 col-xl-3 mb-4">
+                            <!-- <div class="col-sm-6 col-lg-4 col-xl-3 mb-4">
                                 <div class="card achievement-card" style="height: 390px;"
                                     data-image="../assets/img/achievements/2023.jpeg"
                                     data-title="2023 WINNER"
@@ -782,14 +796,14 @@
                                         <p class="card-text" style="font-size:11px">National Quality & Productivity 2023</p>
                                     </div>
                                 </div>
-                            </div>
+                            </div> -->
 
                         </div>
                     </div>
 
-                    
 
-                    
+
+
 
                     <!-- ✅ One Global Modal -->
                     <div id="myModal" class="modal">
@@ -816,19 +830,19 @@
                                 <img src="../assets/img/achievements/2003.jpeg" style="width:100%" />
                             </div>
 
-                            
+
                             <div class="mySlides">
                                 <div class="numbertext">5 / 7</div>
                                 <img src="../assets/img/achievements/1996.jpg" style="width:100%" />
                             </div>
 
-                            
+
                             <div class="mySlides">
                                 <div class="numbertext">6 / 7</div>
                                 <img src="../assets/img/achievements/2024.jpg" style="width:100%" />
                             </div>
 
-                             <div class="mySlides">
+                            <div class="mySlides">
                                 <div class="numbertext">7 / 7</div>
                                 <img src="../assets/img/achievements/2023.jpeg" style="width:100%" />
                             </div>
@@ -843,7 +857,7 @@
                     </div>
 
 
-                  <!-- <div class="col-sm-6 col-lg-4 col-xl-3 mb-4">
+                    <!-- <div class="col-sm-6 col-lg-4 col-xl-3 mb-4">
                         <div class="card achievement-card" data-image="../assets/img/achievements/2008.jpeg" data-title="2008 WINNER" data-description="Provincial Productivity Award - First Place">
                             <img src="../assets/img/achievements/2008.jpeg" class="card-img-top achievement-zoom" alt="2008 WINNER" style="height:350px">
                             <div class="card-body text-center">
@@ -908,22 +922,81 @@
     <script src="../assets/js/swiper-bundle.min.js"></script>
 
     <script>
-        // Handle URL hash for direct tab access
+        // Handle tab selection
         document.addEventListener("DOMContentLoaded", function() {
+            // Set initial active tab to welcome screen
+            const welcomePane = document.querySelector('#welcome');
+            if (welcomePane) {
+                welcomePane.classList.add('show', 'active');
+            }
+
+            // Remove any active classes from navigation items initially
+            document.querySelectorAll('.nav-link').forEach(item => {
+                item.classList.remove('active');
+            });
+
+            // Handle tab selection for main nav links
+            const mainNavLinks = document.querySelectorAll('.nav-link');
+            mainNavLinks.forEach(item => {
+                item.addEventListener('click', function(e) {
+                    e.preventDefault();
+
+                    // Remove active class from all nav items
+                    document.querySelectorAll('.nav-link').forEach(tab => {
+                        tab.classList.remove('active');
+                    });
+
+                    // Add active class to clicked tab
+                    this.classList.add('active');
+
+                    // Show the target tab content and hide welcome screen
+                    const targetId = this.getAttribute('data-bs-target');
+                    const targetPane = document.querySelector(targetId);
+
+                    // Hide all tab panes including welcome
+                    document.querySelectorAll('.tab-pane').forEach(pane => {
+                        pane.classList.remove('show', 'active');
+                    });
+
+                    // Show the selected tab pane
+                    if (targetPane) {
+                        targetPane.classList.add('show', 'active');
+                    }
+                });
+            });
+
+            // Handle URL hash for direct tab access
             var hash = window.location.hash;
             if (hash) {
                 var tabTrigger = document.querySelector('a[href="' + hash + '"]');
                 if (tabTrigger) {
-                    var tab = new bootstrap.Tab(tabTrigger);
-                    tab.show();
+                    // Remove active class from all nav items first
+                    document.querySelectorAll('.nav-link').forEach(tab => {
+                        tab.classList.remove('active');
+                    });
+
+                    // Add active to the target tab
+                    tabTrigger.classList.add('active');
+
+                    // Hide all tab panes including welcome
+                    document.querySelectorAll('.tab-pane').forEach(pane => {
+                        pane.classList.remove('show', 'active');
+                    });
+
+                    // Show the target tab pane
+                    const targetPane = document.querySelector(hash);
+                    if (targetPane) {
+                        targetPane.classList.add('show', 'active');
+                    }
                 }
             }
 
             // Update URL hash when tabs are shown
-            var tabEls = document.querySelectorAll('a[data-bs-toggle="pill"]');
+            var tabEls = document.querySelectorAll('.nav-link');
             tabEls.forEach(function(tabEl) {
-                tabEl.addEventListener('shown.bs.tab', function(e) {
-                    history.replaceState(null, null, e.target.getAttribute('href'));
+                tabEl.addEventListener('click', function(e) {
+                    const targetId = this.getAttribute('data-bs-target');
+                    history.replaceState(null, null, targetId);
                 });
             });
         });
@@ -968,8 +1041,8 @@
                 closeSwiperOverlay();
             }
         });
-    </script>
-    <script>
+
+        // Modal functions for achievements
         function openModal() {
             document.getElementById("myModal").style.display = "block";
         }
@@ -992,8 +1065,6 @@
         function showSlides(n) {
             var i;
             var slides = document.getElementsByClassName("mySlides");
-            var dots = document.getElementsByClassName("demo");
-            var captionText = document.getElementById("caption");
             if (n > slides.length) {
                 slideIndex = 1;
             }
@@ -1003,12 +1074,7 @@
             for (i = 0; i < slides.length; i++) {
                 slides[i].style.display = "none";
             }
-            for (i = 0; i < dots.length; i++) {
-                dots[i].className = dots[i].className.replace(" active", "");
-            }
             slides[slideIndex - 1].style.display = "block";
-            dots[slideIndex - 1].className += " active";
-            captionText.innerHTML = dots[slideIndex - 1].alt;
         }
     </script>
 </body>
