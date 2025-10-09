@@ -56,7 +56,7 @@ $branches = $db->query("SELECT id, name FROM branches ORDER BY name")->fetch_all
                 <div class="form-group">
                     <label for="publication_category_id" class="required-label">Publication Category</label>
                     <select name="publication_category_id" class="form-control input-default" id="publication_category_id" required onchange="toggleDynamicFields()">
-                        <option value="">Select a category</option>
+                        <option value="" selected disabled>Select a category</option>
                         <option value="1">Online Subscription</option>
                         <option value="2">Airworthiness Directives & Bulletins</option>
                         <option value="3">QAI Safety Newsletters</option>

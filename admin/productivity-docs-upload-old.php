@@ -9,7 +9,6 @@ $productivity_categories = $db->query("SELECT id, name FROM productivity_categor
 $osh_categories = $db->query("SELECT id, name FROM osh_categories ORDER BY name")->fetch_all(MYSQLI_ASSOC);
 $environment_categories = $db->query("SELECT id, name FROM environment_categories ORDER BY name")->fetch_all(MYSQLI_ASSOC);
 $branches = $db->query("SELECT id, name FROM branches ORDER BY name")->fetch_all(MYSQLI_ASSOC);
-$slaf_establishments = $db->query("SELECT id, name FROM slaf_establishments WHERE is_active = 1 ORDER BY name")->fetch_all(MYSQLI_ASSOC);
 ?>
 
 <body>
@@ -18,27 +17,38 @@ $slaf_establishments = $db->query("SELECT id, name FROM slaf_establishments WHER
     include "template/preloader.php";
     ?>
 
+
+
     <div id="main-wrapper">
+
 
         <?php
         include "template/nav.php";
+        // include "template/chatbox.php";
         include "template/header.php";
         ?>
+
 
         <?php
         include "template/desnav.php";
         ?>
 
+
         <div class="content-body">
             <!-- row -->
             <div class="container-fluid">
                 <div class="row">
+                    <?php
+                    //include "section/mainbox.php";
+                    ?>
 
                     <form method="post" enctype="multipart/form-data" action="action/productivity-process.php">
                         <!-- Title -->
+
                         <div class="form-group">
                             <label for="title">Title*</label>
-                            <input type="text" class="form-control input-default" id="title" name="title" required value="">
+                            <input type="text" class="form-control input-default" id="title" name="title" required
+                                value="">
                         </div>
 
                         <!-- Description -->
@@ -46,16 +56,16 @@ $slaf_establishments = $db->query("SELECT id, name FROM slaf_establishments WHER
                             <label for="description">Description</label>
                             <textarea class="form-control input-rounded" id="description" name="description" rows="3"></textarea>
                         </div>
-                        
                         <input type="hidden" id="main" name="main" value="productivity">
-                        
                         <!-- Category Dropdown -->
                         <div class="form-group">
                             <label for="category_id">Productivity Category*</label>
                             <select name="category_id" class="form-control input-default" id="category_id" required onchange="toggleSubCategories()">
                                 <option value="" selected disabled>Select a category</option>
                                 <?php foreach ($productivity_categories as $pro_cat): ?>
-                                    <option value="<?= $pro_cat['id'] ?>" <?= (isset($_POST['category_id']) && $_POST['category_id'] == $pro_cat['id']) ? 'selected' : '' ?>>
+                                    <option value="<?= $pro_cat['id'] ?>" <?=
+                                                                            (isset($_POST['category_id']) && $_POST['category_id'] == $pro_cat['id']) ? 'selected' : ''
+                                                                            ?>>
                                         <?= htmlspecialchars($pro_cat['name']) ?>
                                     </option>
                                 <?php endforeach; ?>
@@ -65,7 +75,7 @@ $slaf_establishments = $db->query("SELECT id, name FROM slaf_establishments WHER
                         <!-- QCC Category Dropdown (Initially Hidden) -->
                         <div class="form-group" id="qcc_category_container" style="display: none;">
                             <label for="qcc_category_id">QCC Category*</label>
-                            <select name="qcc_category_id" class="form-control input-default" id="qcc_category_id" onchange="toggleQCCForm()">
+                            <select name="qcc_category_id" class="form-control input-default" id="qcc_category_id">
                                 <option value="" selected disabled>Select an option</option>
                                 <option value="reg-form">QCC Registration Form</option>
                                 <option value="registrations">Active QCC Registrations</option>
@@ -104,41 +114,13 @@ $slaf_establishments = $db->query("SELECT id, name FROM slaf_establishments WHER
                             <select name="branch_id" class="form-control input-default" id="branch_id">
                                 <option value="">Select a branch</option>
                                 <?php foreach ($branches as $branch): ?>
-                                    <option value="<?= $branch['id'] ?>" <?= (isset($_POST['branch_id']) && $_POST['branch_id'] == $branch['id']) ? 'selected' : '' ?>>
+                                    <option value="<?= $branch['id'] ?>" <?=
+                                                                            (isset($_POST['branch_id']) && $_POST['branch_id'] == $branch['id']) ? 'selected' : ''
+                                                                            ?>>
                                         <?= htmlspecialchars($branch['name']) ?>
                                     </option>
                                 <?php endforeach; ?>
                             </select>
-                        </div>
-
-                        <!-- QCC Registration Form Fields (Initially Hidden) -->
-                        <div id="qcc_registration_form" style="display: none;">
-                            <div class="form-group">
-                                <label for="qcc_name">QCC Name*</label>
-                                <input type="text" class="form-control input-default" id="qcc_name" name="qcc_name">
-                            </div>
-                            
-                            <div class="form-group">
-                                <label for="slaf_establishment_id">SLAF Establishment*</label>
-                                <select name="slaf_establishment_id" class="form-control input-default" id="slaf_establishment_id">
-                                    <option value="" selected disabled>Select SLAF Establishment</option>
-                                    <?php foreach ($slaf_establishments as $establishment): ?>
-                                        <option value="<?= $establishment['id'] ?>">
-                                            <?= htmlspecialchars($establishment['name']) ?>
-                                        </option>
-                                    <?php endforeach; ?>
-                                </select>
-                            </div>
-                            
-                            <div class="form-group">
-                                <label for="location">Location*</label>
-                                <input type="text" class="form-control input-default" id="location" name="location">
-                            </div>
-                            
-                            <div class="form-group">
-                                <label for="team_members">Team Members*</label>
-                                <textarea class="form-control input-rounded" id="team_members" name="team_members" rows="3" placeholder="Enter team members, separated by commas"></textarea>
-                            </div>
                         </div>
 
                         <!-- Document File Upload -->
@@ -151,11 +133,15 @@ $slaf_establishments = $db->query("SELECT id, name FROM slaf_establishments WHER
                             </small>
                         </div>
 
-                        <!-- Checkbox Row -->
+                        <!-- Checkbox Row (Example Usage) -->
                         <div class="row">
                             <div class="col-xl-4 col-xxl-6 col-6">
-                                <!-- Add any checkboxes here if needed -->
+                                <!-- <div class="form-check custom-checkbox mb-3">
+                                    <input type="checkbox" class="form-check-input" id="confirmUpload" required>
+                                    <label class="form-check-label" for="confirmUpload">Confirm Upload</label>
+                                </div> -->
                             </div>
+                            <!-- You can add more checkboxes here if needed -->
                         </div>
                         <br>
 
@@ -175,7 +161,10 @@ $slaf_establishments = $db->query("SELECT id, name FROM slaf_establishments WHER
         include "template/footer.php";
         ?>
 
+
+
     </div>
+
 
     <?php
     include "template/foot.php";
@@ -193,21 +182,16 @@ $slaf_establishments = $db->query("SELECT id, name FROM slaf_establishments WHER
             const docUpload = document.getElementById('document_container');
             const environmentSelect = document.getElementById('environment_category_id');
             const branchSelect = document.getElementById('branch_id');
-            const qccForm = document.getElementById('qcc_registration_form');
+
 
             // Hide all containers first
             oshContainer.style.display = 'none';
             qccContainer.style.display = 'none';
             environmentContainer.style.display = 'none';
             branchContainer.style.display = 'none';
-            qccForm.style.display = 'none';
-            
-            // Reset required attributes
             oshSelect.removeAttribute('required');
             environmentSelect.removeAttribute('required');
             branchSelect.removeAttribute('required');
-            
-            // Clear values
             oshSelect.value = '';
             environmentSelect.value = '';
             branchSelect.value = '';
@@ -225,52 +209,14 @@ $slaf_establishments = $db->query("SELECT id, name FROM slaf_establishments WHER
                 branchSelect.setAttribute('required', 'required');
             } else if (productivityCategory.value == '3') { // Quality Control Circle
                 qccContainer.style.display = 'block';
-                qccSelect.setAttribute('required', 'required');
-                // Also trigger the QCC form toggle
-                toggleQCCForm();
+                qccContainer.querySelector('select').setAttribute('required', 'required');
+                if (qccSelect.value === 'reg-form') {
+                    docUpload.setAttribute('required', 'required');
+                } else if (qccSelect.value === 'registrations') {
+                    docUpload.removeAttribute('required');
+                }
             }
-        }
 
-        function toggleQCCForm() {
-            const qccCategory = document.getElementById('qcc_category_id');
-            const docUpload = document.getElementById('document_container');
-            const qccForm = document.getElementById('qcc_registration_form');
-            const qccName = document.getElementById('qcc_name');
-            const slafEstablishment = document.getElementById('slaf_establishment_id');
-            const location = document.getElementById('location');
-            const teamMembers = document.getElementById('team_members');
-
-            // Hide both initially
-            docUpload.style.display = 'block';
-            qccForm.style.display = 'none';
-            
-            // Remove required attributes from QCC form fields
-            qccName.removeAttribute('required');
-            slafEstablishment.removeAttribute('required');
-            location.removeAttribute('required');
-            teamMembers.removeAttribute('required');
-
-            if (qccCategory.value === 'registrations') {
-                // Show QCC registration form and hide document upload
-                docUpload.style.display = 'none';
-                qccForm.style.display = 'block';
-                
-                // Add required attributes to QCC form fields
-                qccName.setAttribute('required', 'required');
-                slafEstablishment.setAttribute('required', 'required');
-                location.setAttribute('required', 'required');
-                teamMembers.setAttribute('required', 'required');
-            } else if (qccCategory.value === 'reg-form') {
-                // Show document upload and hide QCC form
-                docUpload.style.display = 'block';
-                qccForm.style.display = 'none';
-                docUpload.querySelector('input').setAttribute('required', 'required');
-            } else {
-                // Hide both if no option selected
-                docUpload.style.display = 'block';
-                qccForm.style.display = 'none';
-                docUpload.querySelector('input').removeAttribute('required');
-            }
         }
 
         // Initialize on page load

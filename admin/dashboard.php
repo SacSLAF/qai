@@ -18,13 +18,13 @@ include "template/head.php";
 
 
 		<?php
-		
+
 		include "template/nav.php";
 		// include "template/chatbox.php";
 		include "template/header.php";
 		?>
 
-	
+
 		<?php
 		include "template/desnav.php";
 		?>
@@ -51,10 +51,10 @@ include "template/head.php";
 
 	</div>
 
-	
-		<?php
-		include "template/foot.php";
-		?>
+
+	<?php
+	include "template/foot.php";
+	?>
 
 
 </body>

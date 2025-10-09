@@ -263,6 +263,10 @@ include '../template/head.php';
 
                     <div class="tab-pane fade" id="qcc_active" role="tabpanel">
                         <h4 class="colour-defult">Active QCC 2025</h4>
+                        <div>
+                            <label for="qcc-reg-form">QCC Registration Form</label>
+                            Download: <a href="../admin/action/uploads/productivity/doc_1.pdf" target="_blank">QCC Registration Form.pdf</a>
+                        </div>
 
                     </div>
 

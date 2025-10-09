@@ -31,13 +31,13 @@ include "template/head.php";
     <div id="main-wrapper">
 
         <?php
-    include "template/nav.php";
-    include "template/header.php";
-    ?>
+        include "template/nav.php";
+        include "template/header.php";
+        ?>
 
         <?php
-    include "template/desnav.php";
-    ?>
+        include "template/desnav.php";
+        ?>
 
         <div class="content-body">
             <div class="container-fluid">
@@ -52,17 +52,17 @@ include "template/head.php";
                                         <i class="fas fa-plus"></i> Upload Document
                                     </a>
                                 </div>
-                                
+
                             </div>
                             <?php if (isset($_GET['success'])): ?>
-                                <?php if($_GET['success'] == 1): ?>
-                                <div class="alert alert-primary mx-5">
-                                    Document uploaded successfully!
-                                </div>
-                                <?php elseif($_GET['success'] == 2): ?>
-                                <div class="alert alert-success mx-5">
-                                    Document deleted successfully!
-                                </div>
+                                <?php if ($_GET['success'] == 1): ?>
+                                    <div class="alert alert-primary mx-5">
+                                        Document uploaded successfully!
+                                    </div>
+                                <?php elseif ($_GET['success'] == 2): ?>
+                                    <div class="alert alert-success mx-5">
+                                        Document deleted successfully!
+                                    </div>
                                 <?php endif; ?>
                             <?php endif; ?>
                             <?php if (isset($_GET['error'])): ?>
@@ -105,14 +105,14 @@ include "template/head.php";
                                                         <td><?= htmlspecialchars($doc['uploaded_by_name'] ?? 'Unknown') ?></td>
                                                         <td><?= date('M j, Y', strtotime($doc['uploaded_at'])) ?></td>
                                                         <td>
-                                                            <?php 
+                                                            <?php
                                                             // Get file extension for proper viewing
                                                             $file_path = $doc['file_path'] ?? '';
                                                             $file_ext = pathinfo($file_path, PATHINFO_EXTENSION);
                                                             ?>
-                                                                <a href="../view_document.php?file=<?= urlencode($doc['file_path']) ?>"  class="btn btn-sm btn-outline-primary">
-                                                                    <i class="fas fa-eye"></i> 
-                                                                </a>
+                                                            <a href="../view_document.php?file=<?= urlencode($doc['file_path']) ?>" class="btn btn-sm btn-outline-primary">
+                                                                <i class="fas fa-eye"></i>
+                                                            </a>
 
                                                             <a href="edit.php?id=<?= $doc['id'] ?>" class="btn btn-sm btn-outline-secondary">
                                                                 <i class="fas fa-edit"></i>
@@ -140,7 +140,7 @@ include "template/head.php";
 
         <div class="footer">
             <div class="copyright">
-                <p>Copyright © Designed &amp; Developed by <a href="http://dexignzone.com/" target="_blank">DexignZone</a> 2025</p>
+                <p>Copyright © Designed &amp; Developed by <a href="#" target="_blank">Directorate of Information Technology. Sri Lanka Air Force.</a> 2025</p>
             </div>
         </div>
 
@@ -148,7 +148,7 @@ include "template/head.php";
 
     <!-- Required vendors -->
     <script>
-        var enableSupportButton = '1'
+        var enableSupportButton = 'false'
     </script>
     <script>
         var asset_url = 'assets/productivity/'
@@ -161,24 +161,24 @@ include "template/head.php";
     <script src="assets/js/plugins-init/datatables.init.js" type="text/javascript"></script>
     <script src="assets/js/custom.min.js" type="text/javascript"></script>
     <script src="assets/js/deznav-init.js" type="text/javascript"></script>
-    
+
     <!-- Delete confirmation script -->
     <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        // Add event listener to all delete forms
-        const deleteForms = document.querySelectorAll('.delete-form');
-        
-        deleteForms.forEach(form => {
-            form.addEventListener('submit', function(e) {
-                e.preventDefault(); // Prevent immediate submission
-                
-                // Show confirmation dialog
-                if (confirm('Are you sure you want to delete this document? This action cannot be undone.')) {
-                    this.submit(); // Submit if confirmed
-                }
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add event listener to all delete forms
+            const deleteForms = document.querySelectorAll('.delete-form');
+
+            deleteForms.forEach(form => {
+                form.addEventListener('submit', function(e) {
+                    e.preventDefault(); // Prevent immediate submission
+
+                    // Show confirmation dialog
+                    if (confirm('Are you sure you want to delete this document? This action cannot be undone.')) {
+                        this.submit(); // Submit if confirmed
+                    }
+                });
             });
         });
-    });
     </script>
 </body>
 
