@@ -1,50 +1,569 @@
-UES (20941, 6466, 2, 37, ' Recommended ', 2, '2022-03-24', '2022-03-23 21:26:14');
-INSERT INTO `tbl_suspention_approval` VALUES (20942, 6467, 2, 37, ' Recommended ', 2, '2022-03-24', '2022-03-23 21:27:06');
-INSERT INTO `tbl_suspention_approval` VALUES (20943, 6468, 2, 37, ' Recommended ', 2, '2022-03-24', '2022-03-23 21:27:49');
-INSERT INTO `tbl_suspention_approval` VALUES (20944, 6469, 2, 37, ' Recommended ', 2, '2022-03-24', '2022-03-23 21:35:27');
-INSERT INTO `tbl_suspention_approval` VALUES (20945, 6470, 2, 37, ' Recommended ', 2, '2022-03-24', '2022-03-23 21:36:13');
-INSERT INTO `tbl_suspention_approval` VALUES (20946, 6471, 2, 37, ' Recommended ', 2, '2022-03-24', '2022-03-23 21:36:56');
-INSERT INTO `tbl_suspention_approval` VALUES (20947, 6472, 2, 37, ' Recommended ', 2, '2022-03-24', '2022-03-23 21:37:46');
-INSERT INTO `tbl_suspention_approval` VALUES (20948, 6473, 2, 37, ' Recommended ', 2, '2022-03-24', '2022-03-23 21:38:33');
-INSERT INTO `tbl_suspention_approval` VALUES (20949, 6474, 2, 37, ' Recommended ', 2, '2022-03-24', '2022-03-23 21:39:08');
-INSERT INTO `tbl_suspention_approval` VALUES (20950, 6475, 2, 37, ' Recommended ', 2, '2022-03-24', '2022-03-23 21:39:45');
-INSERT INTO `tbl_suspention_approval` VALUES (20951, 6476, 2, 37, ' Recommended ', 2, '2022-03-24', '2022-03-23 21:52:32');
-INSERT INTO `tbl_suspention_approval` VALUES (20952, 6477, 2, 37, ' Recommended ', 2, '2022-03-24', '2022-03-23 21:57:56');
-INSERT INTO `tbl_suspention_approval` VALUES (20953, 6478, 2, 37, ' Recommended ', 2, '2022-03-24', '2022-03-23 22:04:57');
-INSERT INTO `tbl_suspention_approval` VALUES (20954, 6479, 2, 37, ' Recommended ', 2, '2022-03-24', '2022-03-23 22:05:37');
-INSERT INTO `tbl_suspention_approval` VALUES (20955, 6480, 2, 37, ' Recommended ', 2, '2022-03-24', '2022-03-23 22:06:21');
-INSERT INTO `tbl_suspention_approval` VALUES (20956, 6481, 2, 37, ' Recommended ', 2, '2022-03-24', '2022-03-23 22:07:16');
-INSERT INTO `tbl_suspention_approval` VALUES (20957, 6482, 2, 37, ' Recommended ', 2, '2022-03-24', '2022-03-23 22:08:06');
-INSERT INTO `tbl_suspention_approval` VALUES (20958, 6483, 2, 37, ' Recommended ', 2, '2022-03-24', '2022-03-23 22:09:07');
-INSERT INTO `tbl_suspention_approval` VALUES (20959, 6484, 2, 37, ' Recommended ', 2, '2022-03-24', '2022-03-23 22:09:58');
-INSERT INTO `tbl_suspention_approval` VALUES (20960, 6485, 2, 37, ' Recommended ', 2, '2022-03-24', '2022-03-23 22:11:01');
-INSERT INTO `tbl_suspention_approval` VALUES (20961, 6435, 2, 37, 'Recommended ', 2, '2022-03-29', '2022-03-28 21:14:11');
-INSERT INTO `tbl_suspention_approval` VALUES (20962, 6420, 3, 29, ' Approved', 3, '2022-03-29', '2022-03-29 02:36:20');
-INSERT INTO `tbl_suspention_approval` VALUES (20963, 6421, 3, 29, ' Approved', 3, '2022-03-29', '2022-03-29 02:36:21');
-INSERT INTO `tbl_suspention_approval` VALUES (20964, 6422, 3, 29, ' Approved', 3, '2022-03-29', '2022-03-29 02:36:22');
-INSERT INTO `tbl_suspention_approval` VALUES (20965, 6423, 3, 29, ' Approved', 3, '2022-03-29', '2022-03-29 02:36:23');
-INSERT INTO `tbl_suspention_approval` VALUES (20966, 6424, 3, 29, ' Approved', 3, '2022-03-29', '2022-03-29 02:36:24');
-INSERT INTO `tbl_suspention_approval` VALUES (20967, 6425, 3, 29, ' Approved', 3, '2022-03-29', '2022-03-29 02:36:26');
-INSERT INTO `tbl_suspention_approval` VALUES (20968, 6426, 3, 29, ' Approved', 3, '2022-03-29', '2022-03-29 02:36:27');
-INSERT INTO `tbl_suspention_approval` VALUES (20969, 6427, 3, 29, ' Approved', 3, '2022-03-29', '2022-03-29 02:36:28');
-INSERT INTO `tbl_suspention_approval` VALUES (20970, 6428, 3, 29, ' Approved', 3, '2022-03-29', '2022-03-29 02:36:29');
-INSERT INTO `tbl_suspention_approval` VALUES (20971, 6429, 3, 29, ' Approved', 3, '2022-03-29', '2022-03-29 02:36:30');
-INSERT INTO `tbl_suspention_approval` VALUES (20972, 6430, 3, 29, ' Approved', 3, '2022-03-29', '2022-03-29 02:36:51');
-INSERT INTO `tbl_suspention_approval` VALUES (20973, 6431, 3, 29, ' Approved', 3, '2022-03-29', '2022-03-29 02:36:52');
-INSERT INTO `tbl_suspention_approval` VALUES (20974, 6432, 3, 29, ' Approved', 3, '2022-03-29', '2022-03-29 02:36:53');
-INSERT INTO `tbl_suspention_approval` VALUES (20975, 6433, 3, 29, ' Approved', 3, '2022-03-29', '2022-03-29 02:36:54');
-INSERT INTO `tbl_suspention_approval` VALUES (20976, 6434, 3, 29, ' Approved', 3, '2022-03-29', '2022-03-29 02:36:55');
-INSERT INTO `tbl_suspention_approval` VALUES (20977, 6435, 3, 29, ' Approved', 3, '2022-03-29', '2022-03-29 02:36:56');
-INSERT INTO `tbl_suspention_approval` VALUES (20978, 6436, 3, 29, ' Approved', 3, '2022-03-29', '2022-03-29 02:36:57');
-INSERT INTO `tbl_suspention_approval` VALUES (20979, 6437, 3, 29, ' Approved', 3, '2022-03-29', '2022-03-29 02:36:58');
-INSERT INTO `tbl_suspention_approval` VALUES (20980, 6438, 3, 29, ' Approved', 3, '2022-03-29', '2022-03-29 02:36:59');
-INSERT INTO `tbl_suspention_approval` VALUES (20981, 6439, 3, 29, ' Approved', 3, '2022-03-29', '2022-03-29 02:37:00');
-INSERT INTO `tbl_suspention_approval` VALUES (20982, 6440, 3, 29, ' Approved', 3, '2022-03-29', '2022-03-29 02:37:23');
-INSERT INTO `tbl_suspention_approval` VALUES (20983, 6441, 3, 29, ' Approved', 3, '2022-03-29', '2022-03-29 02:37:24');
-INSERT INTO `tbl_suspention_approval` VALUES (20984, 6442, 3, 29, ' Approved', 3, '2022-03-29', '2022-03-29 02:37:25');
-INSERT INTO `tbl_suspention_approval` VALUES (20985, 6443, 3, 29, ' Approved', 3, '2022-03-29', '2022-03-29 02:37:26');
-INSERT INTO `tbl_suspention_approval` VALUES (20986, 6444, 3, 29, ' Approved', 3, '2022-03-29', '2022-03-29 02:37:27');
-INSERT INTO `tbl_suspention_approval` VALUES (20987, 6445, 3, 29, ' Approved', 3, '2022-03-29', '2022-03-29 02:37:28');
-INSERT INTO `tbl_suspention_approval` VALUES (20988, 6446, 3, 29, ' Approved', 3, '2022-03-29', '2022-03-29 02:37:29');
-INSERT INTO `tbl_suspention_approval` VALUES (20989, 6447, 3, 29, ' Approved', 3, '2022-03-29', '2022-03-29 02:37:30');
-INSERT INTO `tbl_suspention_approval` VALUES (20990, 6448, 3,
+%PDF-1.3
+%ºß¬à
+3 0 obj
+<</Type /Page
+/Parent 1 0 R
+/Resources 2 0 R
+/MediaBox [0 0 595.28 841.89]
+/Contents 4 0 R
+>>
+endobj
+4 0 obj
+<</Length 3026>>
+stream
+0.20 w
+0 G
+0.96 g
+0.78 G
+0.00 w
+1.00 g
+0.78 G
+0.00 w
+0.96 g
+0.78 G
+0.00 w
+0.16 0.50 0.73 rg
+0.78 G
+0.00 w
+0.96 g
+0.78 G
+0.00 w
+1.00 g
+0.78 G
+0.00 w
+0.96 g
+0.78 G
+0.00 w
+0.16 0.50 0.73 rg
+0.78 G
+0.00 w
+0.96 g
+0.78 G
+0.00 w
+1.00 g
+0.78 G
+0.00 w
+0.96 g
+0.78 G
+0.00 w
+0.16 0.50 0.73 rg
+0.78 G
+0.00 w
+0.96 g
+0.78 G
+0.00 w
+1.00 g
+0.78 G
+0.00 w
+0.96 g
+0.78 G
+0.00 w
+0.16 0.50 0.73 rg
+0.78 G
+0.00 w
+0.96 g
+0.78 G
+0.00 w
+0.96 g
+0.78 G
+0.00 w
+0.96 g
+0.78 G
+0.00 w
+0.96 g
+0.78 G
+0.00 w
+0.96 g
+0.78 G
+0.00 w
+0.96 g
+0.78 G
+0.00 w
+0.96 g
+0.78 G
+0.00 w
+0.96 g
+0.78 G
+0.00 w
+1.00 g
+0.78 G
+0.00 w
+1.00 g
+0.78 G
+0.00 w
+1.00 g
+0.78 G
+0.00 w
+1.00 g
+0.78 G
+0.00 w
+1.00 g
+0.78 G
+0.00 w
+1.00 g
+0.78 G
+0.00 w
+1.00 g
+0.78 G
+0.00 w
+1.00 g
+0.78 G
+0.00 w
+0.96 g
+0.78 G
+0.00 w
+0.96 g
+0.78 G
+0.00 w
+0.96 g
+0.78 G
+0.00 w
+0.96 g
+0.78 G
+0.00 w
+0.96 g
+0.78 G
+0.00 w
+0.96 g
+0.78 G
+0.00 w
+0.96 g
+0.78 G
+0.00 w
+0.96 g
+0.78 G
+0.00 w
+0.16 0.50 0.73 rg
+0.78 G
+0.00 w
+0.16 0.50 0.73 rg
+0.78 G
+0.00 w
+0.16 0.50 0.73 rg
+0.78 G
+0.00 w
+0.16 0.50 0.73 rg
+0.78 G
+0.00 w
+0.16 0.50 0.73 rg
+0.78 G
+0.00 w
+0.16 0.50 0.73 rg
+0.78 G
+0.00 w
+0.16 0.50 0.73 rg
+0.78 G
+0.00 w
+0.16 0.50 0.73 rg
+0.78 G
+0.00 w
+0.16 0.50 0.73 rg
+0.78 G
+0.00 w
+40.00 801.89 106.80 -21.50 re
+f
+BT
+/F2 10 Tf
+11.50 TL
+1.000 g
+45.00 788.39 Td
+(#) Tj
+ET
+0.16 0.50 0.73 rg
+0.78 G
+0.00 w
+146.80 801.89 145.43 -21.50 re
+f
+BT
+/F2 10 Tf
+11.50 TL
+1.000 g
+151.80 788.39 Td
+(First) Tj
+ET
+0.16 0.50 0.73 rg
+0.78 G
+0.00 w
+292.23 801.89 136.65 -21.50 re
+f
+BT
+/F2 10 Tf
+11.50 TL
+1.000 g
+297.23 788.39 Td
+(Last) Tj
+ET
+0.16 0.50 0.73 rg
+0.78 G
+0.00 w
+428.88 801.89 126.40 -21.50 re
+f
+BT
+/F2 10 Tf
+11.50 TL
+1.000 g
+433.88 788.39 Td
+(Handle) Tj
+ET
+0.96 g
+0.78 G
+0.00 w
+40.00 780.39 106.80 -21.50 re
+f
+BT
+/F1 10 Tf
+11.50 TL
+0.314 g
+45.00 766.89 Td
+(Mark) Tj
+ET
+0.96 g
+0.78 G
+0.00 w
+146.80 780.39 145.43 -21.50 re
+f
+BT
+/F1 10 Tf
+11.50 TL
+0.314 g
+151.80 766.89 Td
+(Otto) Tj
+ET
+0.96 g
+0.78 G
+0.00 w
+292.23 780.39 136.65 -21.50 re
+f
+BT
+/F1 10 Tf
+11.50 TL
+0.314 g
+297.23 766.89 Td
+(@mdo) Tj
+ET
+0.96 g
+0.78 G
+0.00 w
+428.88 780.39 126.40 -21.50 re
+f
+BT
+/F1 10 Tf
+11.50 TL
+0.314 g
+433.88 766.89 Td
+() Tj
+ET
+1.00 g
+0.78 G
+0.00 w
+40.00 758.89 106.80 -21.50 re
+f
+BT
+/F1 10 Tf
+11.50 TL
+0.314 g
+45.00 745.39 Td
+(Jacob) Tj
+ET
+1.00 g
+0.78 G
+0.00 w
+146.80 758.89 145.43 -21.50 re
+f
+BT
+/F1 10 Tf
+11.50 TL
+0.314 g
+151.80 745.39 Td
+(Thornton) Tj
+ET
+1.00 g
+0.78 G
+0.00 w
+292.23 758.89 136.65 -21.50 re
+f
+BT
+/F1 10 Tf
+11.50 TL
+0.314 g
+297.23 745.39 Td
+(@fat) Tj
+ET
+1.00 g
+0.78 G
+0.00 w
+428.88 758.89 126.40 -21.50 re
+f
+BT
+/F1 10 Tf
+11.50 TL
+0.314 g
+433.88 745.39 Td
+() Tj
+ET
+0.96 g
+0.78 G
+0.00 w
+40.00 737.39 106.80 -21.50 re
+f
+BT
+/F1 10 Tf
+11.50 TL
+0.314 g
+45.00 723.89 Td
+(Larry) Tj
+ET
+0.96 g
+0.78 G
+0.00 w
+146.80 737.39 145.43 -21.50 re
+f
+BT
+/F1 10 Tf
+11.50 TL
+0.314 g
+151.80 723.89 Td
+(the Bird) Tj
+ET
+0.96 g
+0.78 G
+0.00 w
+292.23 737.39 136.65 -21.50 re
+f
+BT
+/F1 10 Tf
+11.50 TL
+0.314 g
+297.23 723.89 Td
+(@twitter) Tj
+ET
+0.96 g
+0.78 G
+0.00 w
+428.88 737.39 126.40 -21.50 re
+f
+BT
+/F1 10 Tf
+11.50 TL
+0.314 g
+433.88 723.89 Td
+() Tj
+ET
+0.78 G
+0.00 w
+endstream
+endobj
+1 0 obj
+<</Type /Pages
+/Kids [3 0 R ]
+/Count 1
+>>
+endobj
+5 0 obj
+<<
+/Type /Font
+/BaseFont /Helvetica
+/Subtype /Type1
+/Encoding /WinAnsiEncoding
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+6 0 obj
+<<
+/Type /Font
+/BaseFont /Helvetica-Bold
+/Subtype /Type1
+/Encoding /WinAnsiEncoding
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+7 0 obj
+<<
+/Type /Font
+/BaseFont /Helvetica-Oblique
+/Subtype /Type1
+/Encoding /WinAnsiEncoding
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+8 0 obj
+<<
+/Type /Font
+/BaseFont /Helvetica-BoldOblique
+/Subtype /Type1
+/Encoding /WinAnsiEncoding
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+9 0 obj
+<<
+/Type /Font
+/BaseFont /Courier
+/Subtype /Type1
+/Encoding /WinAnsiEncoding
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+10 0 obj
+<<
+/Type /Font
+/BaseFont /Courier-Bold
+/Subtype /Type1
+/Encoding /WinAnsiEncoding
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+11 0 obj
+<<
+/Type /Font
+/BaseFont /Courier-Oblique
+/Subtype /Type1
+/Encoding /WinAnsiEncoding
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+12 0 obj
+<<
+/Type /Font
+/BaseFont /Courier-BoldOblique
+/Subtype /Type1
+/Encoding /WinAnsiEncoding
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+13 0 obj
+<<
+/Type /Font
+/BaseFont /Times-Roman
+/Subtype /Type1
+/Encoding /WinAnsiEncoding
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+14 0 obj
+<<
+/Type /Font
+/BaseFont /Times-Bold
+/Subtype /Type1
+/Encoding /WinAnsiEncoding
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+15 0 obj
+<<
+/Type /Font
+/BaseFont /Times-Italic
+/Subtype /Type1
+/Encoding /WinAnsiEncoding
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+16 0 obj
+<<
+/Type /Font
+/BaseFont /Times-BoldItalic
+/Subtype /Type1
+/Encoding /WinAnsiEncoding
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+17 0 obj
+<<
+/Type /Font
+/BaseFont /ZapfDingbats
+/Subtype /Type1
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+18 0 obj
+<<
+/Type /Font
+/BaseFont /Symbol
+/Subtype /Type1
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+2 0 obj
+<<
+/ProcSet [/PDF /Text /ImageB /ImageC /ImageI]
+/Font <<
+/F1 5 0 R
+/F2 6 0 R
+/F3 7 0 R
+/F4 8 0 R
+/F5 9 0 R
+/F6 10 0 R
+/F7 11 0 R
+/F8 12 0 R
+/F9 13 0 R
+/F10 14 0 R
+/F11 15 0 R
+/F12 16 0 R
+/F13 17 0 R
+/F14 18 0 R
+>>
+/XObject <<
+>>
+>>
+endobj
+19 0 obj
+<<
+/Producer (jsPDF 0.0.0)
+/CreationDate (D:20250821203830+05'30')
+>>
+endobj
+20 0 obj
+<<
+/Type /Catalog
+/Pages 1 0 R
+/OpenAction [3 0 R /FitH null]
+/PageLayout /OneColumn
+>>
+endobj
+xref
+0 21
+0000000000 65535 f 
+0000003200 00000 n 
+0000005017 00000 n 
+0000000015 00000 n 
+0000000124 00000 n 
+0000003257 00000 n 
+0000003382 00000 n 
+0000003512 00000 n 
+0000003645 00000 n 
+0000003782 00000 n 
+0000003905 00000 n 
+0000004034 00000 n 
+0000004166 00000 n 
+0000004302 00000 n 
+0000004430 00000 n 
+0000004557 00000 n 
+0000004686 00000 n 
+0000004819 00000 n 
+0000004921 00000 n 
+0000005265 00000 n 
+0000005351 00000 n 
+trailer
+<<
+/Size 21
+/Root 20 0 R
+/Info 19 0 R
+/ID [ <EAF852DAE8A3596155C8824437DBDFF3> <EAF852DAE8A3596155C8824437DBDFF3> ]
+>>
+startxref
+5455
+%%EOF
