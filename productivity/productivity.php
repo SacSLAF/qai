@@ -170,37 +170,45 @@ include '../template/head.php';
             <!-- Navigation Tabs -->
             <div class="nav-column">
                 <div class="nav flex-column nav-pills" id="inspectorateTabs" role="tablist">
-
+                    <!-- Productivity Dropdown -->
+                    <div class="qa-dropdown">
+                        <a class="nav-link qa-dropdown-toggle" href="#" role="button">Productivity</a>
+                        <div class="qa-dropdown-menu">
+                            <a class="qa-dropdown-item" href="#" data-bs-target="#qcc_active" role="tab">Active QCC 2025</a>
+                            <a class="qa-dropdown-item" href="#" data-bs-target="#qcc_registration" role="tab">Productivity Audit Plan</a>
+                            <a class="qa-dropdown-item" href="#" data-bs-target="#qcc_registration" role="tab">Productivity Audit Check List</a>
+                            <a class="qa-dropdown-item" href="#" data-bs-target="#qcc_registration" role="tab">Productivity Audit Report</a>
+                        </div>
+                    </div>
+                    
                     <!-- OSH Dropdown -->
                     <div class="qa-dropdown">
                         <a class="nav-link qa-dropdown-toggle" href="#" role="button">Occupational Safety & Health</a>
                         <div class="qa-dropdown-menu">
-                            <a class="qa-dropdown-item" href="#" data-bs-target="#osh_man" role="tab">OSH Manual</a>
-                            <a class="qa-dropdown-item" href="#" data-bs-target="#osh_checklist" role="tab">Audit Check List</a>
                             <a class="qa-dropdown-item" href="#" data-bs-target="#osh_plan" role="tab">Audit Plan</a>
-                            <a class="qa-dropdown-item" href="#" data-bs-target="#osh_report" role="tab">Audit Report</a>
+                            <a class="qa-dropdown-item" href="#" data-bs-target="#osh_checklist" role="tab">Audit Check List</a>
+                            <a class="qa-dropdown-item" href="#" data-bs-target="#osh_report" role="tab">Audit Reports</a>
+                            <a class="qa-dropdown-item" href="#" data-bs-target="#osh_man" role="tab">OSH Manual</a>
                         </div>
                     </div>
-
                     <!-- Environment Dropdown -->
                     <div class="qa-dropdown">
-                        <a class="nav-link qa-dropdown-toggle" href="#" role="button">Environment</a>
+                        <a class="nav-link qa-dropdown-toggle" href="#" role="button">Environmental Mgt</a>
                         <div class="qa-dropdown-menu">
                             <a class="qa-dropdown-item" href="#" data-bs-target="#env_plan" role="tab">Audit Plan</a>
+                            <a class="qa-dropdown-item" href="#" data-bs-target="#env_plan" role="tab">Audit Check List</a>
                             <a class="qa-dropdown-item" href="#" data-bs-target="#env_report" role="tab">Audit Report</a>
                         </div>
                     </div>
-
-                    <!-- QCC Dropdown -->
+                    <!-- Awards Dropdown -->
                     <div class="qa-dropdown">
-                        <a class="nav-link qa-dropdown-toggle" href="#" role="button">Quality Control Circles</a>
+                        <a class="nav-link qa-dropdown-toggle" href="#" role="button">Awards</a>
                         <div class="qa-dropdown-menu">
-                            <a class="qa-dropdown-item" href="#" data-bs-target="#qcc_registration" role="tab">QCC Registration Form</a>
-                            <a class="qa-dropdown-item" href="#" data-bs-target="#qcc_active" role="tab">Active QCC 2025</a>
+                            <a class="qa-dropdown-item" href="#" data-bs-target="#env_plan" role="tab">Best QCC</a>
+                            <a class="qa-dropdown-item" href="#" data-bs-target="#env_plan" role="tab">Best Environment Management Project</a>
                         </div>
                     </div>
-
-                    <a class="nav-link" href="#" data-bs-target="#awards" role="tab">Awards</a>
+                    <!-- <a class="nav-link" href="#" data-bs-target="#awards" role="tab">Awards</a> -->
 
                 </div>
             </div>
