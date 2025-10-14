@@ -633,3 +633,14 @@ INSERT INTO type (type_name) VALUES
 ('Communication System'), ('Navigation System'), ('Radar System'),
 ('AGSE'), ('OTHER'), ('All Aircraft'), ('RADAR');
 
+
+
+-- If branch contains text values like 'AE', 'GE', etc., update them to match IDs
+UPDATE aircraft_competency SET branch = 1 WHERE branch = 'AE';
+UPDATE aircraft_competency SET branch = 2 WHERE branch = 'GE';
+UPDATE aircraft_competency SET branch = 3 WHERE branch = 'EE';
+UPDATE aircraft_competency SET branch = 4 WHERE branch = 'CPD';
+
+-- Now alter the table
+ALTER TABLE aircraft_competency MODIFY COLUMN branch INT;
+ALTER TABLE aircraft_competency ADD FOREIGN KEY (branch) REFERENCES ac_categories(id);
