@@ -406,22 +406,31 @@ include '../template/head.php';
                                             <table class="table table-striped table-hover document-table">
                                                 <thead>
                                                     <tr>
-                                                        <th>Title</th>
                                                         <th>Description</th>
-                                                        <th>Date Uploaded</th>
+                                                        <th>Check list Number</th>
+                                                        <!-- <th>Date Uploaded</th> -->
                                                         <th>Action</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
                                                     <?php foreach ($qa_check_lists as $qa_check_list): ?>
                                                         <tr>
-                                                            <td><strong><?= htmlspecialchars($qa_check_list['title']) ?></strong></td>
                                                             <td><?= htmlspecialchars($qa_check_list['description'] ?? 'No description') ?></td>
-                                                            <td><?= date('M d, Y', strtotime($qa_check_list['uploaded_at'])) ?></td>
-                                                            <td>
+                                                            <td><strong><?= htmlspecialchars($qa_check_list['title']) ?></strong></td>
+                                                            <!-- <td><?= date('M d, Y', strtotime($qa_check_list['uploaded_at'])) ?></td> -->
+                                                            <!-- <td>
                                                                 <a href="/qai/assets/pdfjs/web/viewer.html?file=<?= urlencode('/qai/admin/action/' . $qa_check_list['file_path']) ?>"
                                                                     target="_blank"
                                                                     class="btn btn-primary btn-sm view-pdf-btn">
+                                                                    View PDF
+                                                                </a>
+                                                            </td> -->
+                                                            <td>
+                                                                <a href="/qai/assets/pdfjs/web/viewer.html?file=<?= urlencode('/qai/admin/action/' . $qa_check_list['file_path']) ?>"
+                                                                    class="btn btn-primary btn-sm view-pdf-btn"
+                                                                    data-bs-toggle="modal"
+                                                                    data-bs-target="#pdfModal"
+                                                                    data-pdf-url="/qai/assets/pdfjs/web/viewer.html?file=<?= urlencode('/qai/admin/action/' . $qa_check_list['file_path']) ?>">
                                                                     View PDF
                                                                 </a>
                                                             </td>
@@ -471,9 +480,10 @@ include '../template/head.php';
                                                     <table class="table table-striped table-hover document-table">
                                                         <thead>
                                                             <tr>
-                                                                <th>Title</th>
+                                                                <th>Location</th>
                                                                 <th>Description</th>
-                                                                <th>Date Uploaded</th>
+                                                                <th>Date carried out</th>
+                                                                <!-- <th>Date Uploaded</th> -->
                                                                 <th>Action</th>
                                                             </tr>
                                                         </thead>
@@ -483,10 +493,19 @@ include '../template/head.php';
                                                                     <td><strong><?= htmlspecialchars($report['title']) ?></strong></td>
                                                                     <td><?= htmlspecialchars($report['description'] ?? 'No description') ?></td>
                                                                     <td><?= date('M d, Y', strtotime($report['uploaded_at'])) ?></td>
-                                                                    <td>
+                                                                    <!-- <td>
                                                                         <a href="/qai/assets/pdfjs/web/viewer.html?file=<?= urlencode('/qai/admin/action/' . $report['file_path']) ?>"
                                                                             target="_blank"
                                                                             class="btn btn-primary btn-sm view-pdf-btn">
+                                                                            View PDF
+                                                                        </a>
+                                                                    </td> -->
+                                                                    <td>
+                                                                        <a href="/qai/assets/pdfjs/web/viewer.html?file=<?= urlencode('/qai/admin/action/' . $report['file_path']) ?>"
+                                                                            class="btn btn-primary btn-sm view-pdf-btn"
+                                                                            data-bs-toggle="modal"
+                                                                            data-bs-target="#pdfModal"
+                                                                            data-pdf-url="/qai/assets/pdfjs/web/viewer.html?file=<?= urlencode('/qai/admin/action/' . $report['file_path']) ?>">
                                                                             View PDF
                                                                         </a>
                                                                     </td>
@@ -910,7 +929,20 @@ include '../template/head.php';
             </div>
         </div>
     </main>
-
+    <!-- Modal Structure -->
+    <div class="modal fade" id="pdfModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-xl modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">View PDF</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" style="height: 80vh;">
+                    <iframe id="pdfFrame" src="" width="100%" height="100%" style="border: none;"></iframe>
+                </div>
+            </div>
+        </div>
+    </div>
     <!-- Footer -->
     <?php include '../template/foot.php'; ?>
 
@@ -920,8 +952,21 @@ include '../template/head.php';
     <script src="../assets/js/swiper-bundle.min.js"></script>
 
     <script>
-       // Handle tab selection
+        // Handle tab selection
         document.addEventListener("DOMContentLoaded", function() {
+            const pdfModal = document.getElementById('pdfModal');
+            const pdfFrame = document.getElementById('pdfFrame');
+
+            pdfModal.addEventListener('show.bs.modal', function(event) {
+                const button = event.relatedTarget;
+                const pdfUrl = button.getAttribute('data-pdf-url');
+                pdfFrame.src = pdfUrl;
+            });
+
+            pdfModal.addEventListener('hidden.bs.modal', function() {
+                pdfFrame.src = ""; // Clear iframe to stop PDF from running
+            });
+
             // Set initial active tab to welcome screen
             const welcomePane = document.querySelector('#welcome');
             if (welcomePane) {
