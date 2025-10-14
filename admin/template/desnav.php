@@ -20,6 +20,11 @@
 							<span class="nav-text">Services</span>
 						</a>
 					</li>
+	                    <li><a  href="aircraft-competency.php" aria-expanded="false">
+	                            <i class="flaticon-381-television"></i>
+	                            <span class="nav-text">Aircraft Competency</span>
+	                        </a>
+	                    </li>
 					<li><a  href="publications-docs.php" aria-expanded="false">
 							<i class="flaticon-381-newspaper"></i>
 							<span class="nav-text">Publication</span>

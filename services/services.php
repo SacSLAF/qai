@@ -329,6 +329,7 @@ include '../template/head.php';
                             <a class="qa-dropdown-item" data-bs-target="#ac_cmpt_1" role="tab">AE</a>
                             <a class="qa-dropdown-item" data-bs-target="#ac_cmpt_5" role="tab">GE</a>
                             <a class="qa-dropdown-item" data-bs-target="#ac_cmpt_4" role="tab">EE</a>
+                            <a class="qa-dropdown-item" data-bs-target="#ac_cmpt_6" role="tab">CPD</a>
                         </div>
                     </div>
                     <!-- <a class="nav-link" data-bs-target="#ac" role="tab">Aircraft Competency</a> -->

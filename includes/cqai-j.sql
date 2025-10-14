@@ -95,39 +95,6 @@ CREATE TABLE `admins`  (
 INSERT INTO `admins` VALUES (1, 'admin', 'all', '$2y$10$2knpl.JqcMC0S0CdK4fkx.ESgqJiGEZcyXqjDHuyWdgFJ1sFvpE4e', '2025-09-09 10:14:05', NULL, 1);
 
 -- ----------------------------
--- Table structure for aircraft_competency
--- ----------------------------
-DROP TABLE IF EXISTS `aircraft_competency`;
-CREATE TABLE `aircraft_competency`  (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `title` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
-  `description` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL,
-  `svc_no` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
-  `rank` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
-  `name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
-  `aircraft_type` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
-  `last_level_of_competency` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
-  `renewal_date` date NOT NULL,
-  `currency` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
-  `squadron` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
-  `uploaded_by` int NULL DEFAULT NULL,
-  `file_path` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
-  `uploaded_at` timestamp(0) NULL DEFAULT CURRENT_TIMESTAMP(0),
-  `is_active` tinyint(1) NULL DEFAULT 1,
-  `branch_id` int NULL DEFAULT NULL,
-  PRIMARY KEY (`id`) USING BTREE,
-  INDEX `fk_ac_uploaded_by`(`uploaded_by`) USING BTREE,
-  INDEX `fk_ac_branch`(`branch_id`) USING BTREE,
-  CONSTRAINT `fk_ac_branch` FOREIGN KEY (`branch_id`) REFERENCES `branches` (`id`) ON DELETE SET NULL ON UPDATE RESTRICT,
-  CONSTRAINT `fk_ac_uploaded_by` FOREIGN KEY (`uploaded_by`) REFERENCES `admins` (`id`) ON DELETE SET NULL ON UPDATE RESTRICT
-) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
-
--- ----------------------------
--- Records of aircraft_competency
--- ----------------------------
-INSERT INTO `aircraft_competency` VALUES (1, 'Test', 'Test d', '99999', 'Sqn Ldr', 'Test', 'PT 6', '1', '2026-08-08', '1', '2', 1, 'uploads/services/doc_9.pdf', '2025-09-28 10:33:05', 0, 1);
-
--- ----------------------------
 -- Table structure for branches
 -- ----------------------------
 DROP TABLE IF EXISTS `branches`;
@@ -386,6 +353,26 @@ INSERT INTO `qa_categories` VALUES (2, 'Audit Reports', '2025-09-09 10:14:05');
 INSERT INTO `qa_categories` VALUES (3, 'Audit Plans', '2025-09-09 10:14:05');
 
 -- ----------------------------
+-- Table structure for ac_categories
+-- ----------------------------
+DROP TABLE IF EXISTS `ac_categories`;
+CREATE TABLE `ac_categories`  (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `created_at` timestamp(0) NULL DEFAULT CURRENT_TIMESTAMP(0),
+  PRIMARY KEY (`id`) USING BTREE,
+  UNIQUE INDEX `name`(`name`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 4 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of ac_categories
+-- ----------------------------
+INSERT INTO `ac_categories` VALUES (1, 'AE', '2025-09-09 10:14:05');
+INSERT INTO `ac_categories` VALUES (2, 'GE', '2025-09-09 10:14:05');
+INSERT INTO `ac_categories` VALUES (3, 'EE', '2025-09-09 10:14:05');
+INSERT INTO `ac_categories` VALUES (4, 'CPD', '2025-09-09 10:14:05');
+
+-- ----------------------------
 -- Table structure for sections
 -- ----------------------------
 DROP TABLE IF EXISTS `sections`;
@@ -573,3 +560,76 @@ CREATE TABLE `vehicle_emission_test`  (
 -- ----------------------------
 
 SET FOREIGN_KEY_CHECKS = 1;
+
+
+
+-- Create Formation table
+CREATE TABLE formation (
+    formation_id INT AUTO_INCREMENT PRIMARY KEY,
+    formation_name VARCHAR(100) NOT NULL UNIQUE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Create Type table
+CREATE TABLE type (
+    type_id INT AUTO_INCREMENT PRIMARY KEY,
+    type_name VARCHAR(100) NOT NULL UNIQUE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Create Aircraft Competency table
+CREATE TABLE aircraft_competency (
+    record_id INT AUTO_INCREMENT PRIMARY KEY,
+    svc_no VARCHAR(50),
+    rank VARCHAR(50),
+    name VARCHAR(100),
+    branch VARCHAR(50),
+    trade VARCHAR(100),
+    formation_id INT,
+    posted_in_date DATE,
+    posted_out_date DATE,
+    type_id INT,
+    competency_level VARCHAR(100),
+    training_start_date DATE,
+    training_end_date DATE,
+    formation_ref VARCHAR(100),
+    for_ref_date DATE,
+    qai_ref VARCHAR(100),
+    qai_ref_date DATE,
+    dt_ref VARCHAR(100),
+    dt_ref_date DATE,
+    qao_ref VARCHAR(100),
+    qao_ref_date DATE,
+    theory_marks DECIMAL(5,2),
+    practical_marks DECIMAL(5,2),
+    competency_issue_ref VARCHAR(100),
+    com_issue_date DATE,
+    competency_renew_ref VARCHAR(100),
+    renew_date DATE,
+    certificate_no VARCHAR(100),
+    cer_issued_date DATE,
+    retired_date DATE,
+    remarks TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    
+    FOREIGN KEY (formation_id) REFERENCES formation(formation_id),
+    FOREIGN KEY (type_id) REFERENCES type(type_id)
+);
+
+-- Insert formations
+INSERT INTO formation (formation_name) VALUES
+ ('No 1 FTW'), ('02 SQN'), ('03 SQN'),
+('04 SQN'), ('05 SQN'), ('06 SQN'), ('07 SQN'), ('08 SQN'), ('09 SQN'),
+('10 SQN'), ('11 SQN'), ('61 FLT'), ('Helitours'), ('ASW'),('AEW'),
+('AOW'), ('AFM'), ('AR & DW'), ('RMW'), ('RADAR SQN'),
+('E &TE Rma'), ('E &TE Kat');
+
+-- Insert aircraft types
+INSERT INTO type (type_name) VALUES
+('K-08'), ('PT-6'), ('C-150'), ('C-130'), ('AN32B'),
+('B-200'), ('B-300'), ('BELL-412/412EP'), ('BELL-212'),
+('MI-17'), ('F-7GS'), ('BELL-206'), ('Y-12II/IV'),
+('MI-24/35'), ('Kfir'), ('Lihiniya MK-I/II'), ('Bay Servicing'),
+('Communication System'), ('Navigation System'), ('Radar System'),
+('AGSE'), ('OTHER'), ('All Aircraft'), ('RADAR');
+
