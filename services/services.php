@@ -179,6 +179,7 @@ try {
     die("Error: " . $e->getMessage());
 }
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -312,6 +313,55 @@ try {
         .badge-secondary { background-color: #6c757d; color: white; }
         .text-danger { color: #dc3545 !important; font-weight: bold; }
         .text-success { color: #28a745 !important; }
+        .btn-view-details {
+            background-color: #17a2b8;
+            border-color: #17a2b8;
+            color: white;
+            padding: 4px 8px;
+            font-size: 0.875rem;
+        }
+        .btn-view-details:hover {
+            background-color: #138496;
+            border-color: #117a8b;
+            color: white;
+        }
+        .details-modal-table {
+            width: 100%;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+        }
+        .details-modal-table th {
+            background-color: #f8f9fa;
+            width: 30%;
+            padding: 8px 12px;
+            font-weight: 600;
+            border-bottom: 1px solid #dee2e6;
+        }
+        .details-modal-table td {
+            padding: 8px 12px;
+            border-bottom: 1px solid #dee2e6;
+            word-break: break-word;
+        }
+        .btn-group .btn {
+            margin-right: 5px;
+        }
+        .btn-group .btn:last-child {
+            margin-right: 0;
+        }
+        .modal-xl-custom {
+            max-width: 1200px;
+        }
+        .section-divider {
+            border-top: 2px solid #007bff;
+            margin: 15px 0;
+            padding-top: 10px;
+            font-weight: bold;
+            color: #007bff;
+        }
+        .empty-value {
+            color: #6c757d;
+            font-style: italic;
+        }
     </style>
 </head>
 
@@ -379,8 +429,6 @@ try {
                     <div class="tab-pane fade show active" id="welcome" role="tabpanel">
                         <div class="welcome-message">
                             <img src="../assets/img/qai-welcome.jpg" alt="Quality Assurance Inspectorate" class="welcome-image">
-                            <!-- <h4>Welcome to Command Quality Assurance Inspectorate</h4> -->
-                            <!-- <p>Please select an option from the navigation menu to view the content.</p> -->
                         </div>
                     </div>
 
@@ -425,8 +473,7 @@ try {
                                                     <tr>
                                                         <th>Description</th>
                                                         <th>Checklist Number</th>
-                                                        <!-- <th>Date Uploaded</th> -->
-                                                        <th>Action</th>
+                                                        <th>Actions</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
@@ -434,26 +481,27 @@ try {
                                                         <tr>
                                                             <td><?= htmlspecialchars($qa_check_list['description'] ?? 'No description') ?></td>
                                                             <td><strong><?= htmlspecialchars($qa_check_list['title']) ?></strong></td>
-                                                            <!-- <td><?= date('M d, Y', strtotime($qa_check_list['uploaded_at'])) ?></td> -->
-                                                            <!-- <td>
-                                                                <?php if (!empty($qa_check_list['file_path'])): ?>
+                                                            <td>
+                                                                <div class="btn-group" role="group">
                                                                     <a href="/qai/assets/pdfjs/web/viewer.html?file=<?= urlencode('/qai/admin/action/' . $qa_check_list['file_path']) ?>"
-                                                                        target="_blank"
-                                                                        class="btn btn-primary btn-sm view-pdf-btn">
+                                                                        class="btn btn-primary btn-sm view-pdf-btn"
+                                                                        data-bs-toggle="modal"
+                                                                        data-bs-target="#pdfModal"
+                                                                        data-pdf-url="/qai/assets/pdfjs/web/viewer.html?file=<?= urlencode('/qai/admin/action/' . $qa_check_list['file_path']) ?>">
                                                                         View PDF
                                                                     </a>
-                                                                <?php else: ?>
-                                                                    <span class="text-muted">No file</span>
-                                                                <?php endif; ?>
-                                                            </td> -->
-                                                            <td>
-                                                                <a href="/qai/assets/pdfjs/web/viewer.html?file=<?= urlencode('/qai/admin/action/' . $qa_check_list['file_path']) ?>"
-                                                                    class="btn btn-primary btn-sm view-pdf-btn"
-                                                                    data-bs-toggle="modal"
-                                                                    data-bs-target="#pdfModal"
-                                                                    data-pdf-url="/qai/assets/pdfjs/web/viewer.html?file=<?= urlencode('/qai/admin/action/' . $qa_check_list['file_path']) ?>">
-                                                                    View PDF
-                                                                </a>
+                                                                    <button class="btn btn-view-details btn-sm view-details-btn"
+                                                                            data-bs-toggle="modal"
+                                                                            data-bs-target="#detailsModal"
+                                                                            data-record-type="qa_check_list"
+                                                                            data-record-id="<?= $qa_check_list['id'] ?>"
+                                                                            data-record-title="<?= htmlspecialchars($qa_check_list['title']) ?>"
+                                                                            data-record-description="<?= htmlspecialchars($qa_check_list['description'] ?? '') ?>"
+                                                                            data-record-file-path="<?= htmlspecialchars($qa_check_list['file_path'] ?? '') ?>"
+                                                                            data-record-uploaded-at="<?= htmlspecialchars($qa_check_list['uploaded_at'] ?? '') ?>">
+                                                                        View Details
+                                                                    </button>
+                                                                </div>
                                                             </td>
                                                         </tr>
                                                     <?php endforeach; ?>
@@ -489,7 +537,7 @@ try {
                                                         <th>Location</th>
                                                         <th>Description</th>
                                                         <th>Date Carried out</th>
-                                                        <th>Action</th>
+                                                        <th>Actions</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
@@ -499,13 +547,26 @@ try {
                                                             <td><?= htmlspecialchars($report['description'] ?? 'No description') ?></td>
                                                             <td><?= date('M d, Y', strtotime($report['uploaded_at'])) ?></td>
                                                             <td>
-                                                                <a href="/qai/assets/pdfjs/web/viewer.html?file=<?= urlencode('/qai/admin/action/' . $report['file_path']) ?>"
-                                                                    class="btn btn-primary btn-sm view-pdf-btn"
-                                                                    data-bs-toggle="modal"
-                                                                    data-bs-target="#pdfModal"
-                                                                    data-pdf-url="/qai/assets/pdfjs/web/viewer.html?file=<?= urlencode('/qai/admin/action/' . $report['file_path']) ?>">
-                                                                    View PDF
-                                                                </a>
+                                                                <div class="btn-group" role="group">
+                                                                    <a href="/qai/assets/pdfjs/web/viewer.html?file=<?= urlencode('/qai/admin/action/' . $report['file_path']) ?>"
+                                                                        class="btn btn-primary btn-sm view-pdf-btn"
+                                                                        data-bs-toggle="modal"
+                                                                        data-bs-target="#pdfModal"
+                                                                        data-pdf-url="/qai/assets/pdfjs/web/viewer.html?file=<?= urlencode('/qai/admin/action/' . $report['file_path']) ?>">
+                                                                        View PDF
+                                                                    </a>
+                                                                    <button class="btn btn-view-details btn-sm view-details-btn"
+                                                                            data-bs-toggle="modal"
+                                                                            data-bs-target="#detailsModal"
+                                                                            data-record-type="qa_report"
+                                                                            data-record-id="<?= $report['id'] ?>"
+                                                                            data-record-title="<?= htmlspecialchars($report['title']) ?>"
+                                                                            data-record-description="<?= htmlspecialchars($report['description'] ?? '') ?>"
+                                                                            data-record-file-path="<?= htmlspecialchars($report['file_path'] ?? '') ?>"
+                                                                            data-record-uploaded-at="<?= htmlspecialchars($report['uploaded_at'] ?? '') ?>">
+                                                                        View Details
+                                                                    </button>
+                                                                </div>
                                                             </td>
                                                         </tr>
                                                     <?php endforeach; ?>
@@ -539,30 +600,61 @@ try {
                                                 <div class="table-responsive">
                                                     <table class="table table-striped table-hover mb-0">
                                                         <thead>
-                                                            <tr class="<?= $index % 2 === 0 ? 'bg-white' : 'bg-light-blue' ?>">
+                                                            <tr>
                                                                 <th>SVC No</th>
                                                                 <th>Rank</th>
                                                                 <th>Name</th>
                                                                 <th>Trade</th>
                                                                 <th>Formation</th>
-                                                                <th>Posted In Date</th>
-                                                                <th>Aircraft Type</th>
-                                                                <th>Competency Level</th>
-                                                                <th>Competency Issue Ref</th>
+                                                                <th>Actions</th>
                                                             </tr>
                                                         </thead>
                                                         <tbody>
-                                                            <?php foreach ($aircraft_competency_data[$category_id]['records'] as $record): ?>
-                                                                <tr>
+                                                            <?php foreach ($aircraft_competency_data[$category_id]['records'] as $index => $record): ?>
+                                                                <tr class="<?= $index % 2 === 0 ? 'bg-white' : 'bg-light-blue' ?>">
                                                                     <td><strong><?= htmlspecialchars($record['svc_no'] ?? '') ?></strong></td>
                                                                     <td><?= htmlspecialchars($record['rank'] ?? '') ?></td>
                                                                     <td><?= htmlspecialchars($record['name'] ?? '') ?></td>
                                                                     <td><?= htmlspecialchars($record['trade'] ?? '') ?></td>
                                                                     <td><?= htmlspecialchars($formations_map[$record['formation_id']] ?? $record['formation'] ?? '') ?></td>
-                                                                    <td><?= htmlspecialchars($record['posted_in_date'] ?? '') ?></td>
-                                                                    <td><?= htmlspecialchars($types_map[$record['type_id']] ?? $record['aircraft_type'] ?? '') ?></td>
-                                                                    <td><?= htmlspecialchars($record['competency_level'] ?? '') ?></td>
-                                                                    <td><?= htmlspecialchars($record['competency_issue_ref'] ?? '') ?></td>
+                                                                    <td>
+                                                                        <button class="btn btn-view-details btn-sm view-details-btn"
+                                                                                data-bs-toggle="modal"
+                                                                                data-bs-target="#detailsModal"
+                                                                                data-record-type="aircraft_competency"
+                                                                                data-record-id="<?= $record['record_id'] ?? '' ?>"
+                                                                                data-record-svc-no="<?= htmlspecialchars($record['svc_no'] ?? '') ?>"
+                                                                                data-record-rank="<?= htmlspecialchars($record['rank'] ?? '') ?>"
+                                                                                data-record-name="<?= htmlspecialchars($record['name'] ?? '') ?>"
+                                                                                data-record-trade="<?= htmlspecialchars($record['trade'] ?? '') ?>"
+                                                                                data-record-formation="<?= htmlspecialchars($formations_map[$record['formation_id']] ?? $record['formation'] ?? '') ?>"
+                                                                                data-record-posted-in-date="<?= htmlspecialchars($record['posted_in_date'] ?? '') ?>"
+                                                                                data-record-posted-out-date="<?= htmlspecialchars($record['posted_out_date'] ?? '') ?>"
+                                                                                data-record-aircraft-type="<?= htmlspecialchars($types_map[$record['type_id']] ?? $record['aircraft_type'] ?? '') ?>"
+                                                                                data-record-competency-level="<?= htmlspecialchars($record['competency_level'] ?? '') ?>"
+                                                                                data-record-training-start-date="<?= htmlspecialchars($record['training_start_date'] ?? '') ?>"
+                                                                                data-record-training-end-date="<?= htmlspecialchars($record['training_end_date'] ?? '') ?>"
+                                                                                data-record-formation-ref="<?= htmlspecialchars($record['formation_ref'] ?? '') ?>"
+                                                                                data-record-for-ref-date="<?= htmlspecialchars($record['for_ref_date'] ?? '') ?>"
+                                                                                data-record-qai-ref="<?= htmlspecialchars($record['qai_ref'] ?? '') ?>"
+                                                                                data-record-qai-ref-date="<?= htmlspecialchars($record['qai_ref_date'] ?? '') ?>"
+                                                                                data-record-dt-ref="<?= htmlspecialchars($record['dt_ref'] ?? '') ?>"
+                                                                                data-record-dt-ref-date="<?= htmlspecialchars($record['dt_ref_date'] ?? '') ?>"
+                                                                                data-record-qao-ref="<?= htmlspecialchars($record['qao_ref'] ?? '') ?>"
+                                                                                data-record-qao-ref-date="<?= htmlspecialchars($record['qao_ref_date'] ?? '') ?>"
+                                                                                data-record-theory-marks="<?= htmlspecialchars($record['theory_marks'] ?? '') ?>"
+                                                                                data-record-practical-marks="<?= htmlspecialchars($record['practical_marks'] ?? '') ?>"
+                                                                                data-record-competency-issue-ref="<?= htmlspecialchars($record['competency_issue_ref'] ?? '') ?>"
+                                                                                data-record-com-issue-date="<?= htmlspecialchars($record['com_issue_date'] ?? '') ?>"
+                                                                                data-record-competency-renew-ref="<?= htmlspecialchars($record['competency_renew_ref'] ?? '') ?>"
+                                                                                data-record-renew-date="<?= htmlspecialchars($record['renew_date'] ?? '') ?>"
+                                                                                data-record-certificate-no="<?= htmlspecialchars($record['certificate_no'] ?? '') ?>"
+                                                                                data-record-cer-issued-date="<?= htmlspecialchars($record['cer_issued_date'] ?? '') ?>"
+                                                                                data-record-retired-date="<?= htmlspecialchars($record['retired_date'] ?? '') ?>"
+                                                                                data-record-remarks="<?= htmlspecialchars($record['remarks'] ?? '') ?>">
+                                                                            View Details
+                                                                        </button>
+                                                                    </td>
                                                                 </tr>
                                                             <?php endforeach; ?>
                                                         </tbody>
@@ -600,13 +692,6 @@ try {
                                         <div class="alert alert-info">
                                             <i class="fas fa-info-circle me-2"></i>
                                             No aircraft competency records found for <?= htmlspecialchars($category_name) ?>.
-                                            <?php
-                                            // Debug information
-                                            echo "<br><small>Category ID: $category_id | ";
-                                            echo "Total records in data: " . count($aircraft_competency_data) . " | ";
-                                            echo "Records for this category: " . (isset($aircraft_competency_data[$category_id]) ? count($aircraft_competency_data[$category_id]['records']) : '0');
-                                            echo "</small>";
-                                            ?>
                                         </div>
                                     <?php endif; ?>
                                 </div>
@@ -623,7 +708,6 @@ try {
                     <div class="tab-pane fade" id="latitude" role="tabpanel">
                         <h4 class="colour-defult">Latitude Records</h4>
                         
-
                         <div class="mt-4">
                             <?php if (!empty($le_error)): ?>
                                 <div class="alert alert-danger">
@@ -640,11 +724,7 @@ try {
                                                         <th>Formation</th>
                                                         <th>Aircraft Type</th>
                                                         <th>Tail No</th>
-                                                        <th>Part No</th>
-                                                        <th>Present Latitude</th>
-                                                        <th>Status</th>
-                                                        <th>Expiry Date</th>
-                                                        <th>Auth Date</th>
+                                                        <th>Actions</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
@@ -658,31 +738,33 @@ try {
                                                             <td><?= htmlspecialchars($record['formation_name'] ?? 'N/A') ?></td>
                                                             <td><?= htmlspecialchars($record['type_name'] ?? 'N/A') ?></td>
                                                             <td><?= htmlspecialchars($record['tail_no'] ?? 'N/A') ?></td>
-                                                            <td><?= htmlspecialchars($record['part_no'] ?? 'N/A') ?></td>
                                                             <td>
-                                                                <strong><?= htmlspecialchars($record['present_latitude'] ?? 'N/A') ?></strong>
-                                                            </td>
-                                                            <td>
-                                                                <span class="badge badge-<?= 
-                                                                    $record['status'] == 'Approved' ? 'success' : 
-                                                                    ($record['status'] == 'Pending' ? 'warning' : 
-                                                                    ($record['status'] == 'Expired' ? 'danger' : 'secondary')) 
-                                                                ?>">
-                                                                    <?= htmlspecialchars($record['status'] ?? 'N/A') ?>
-                                                                </span>
-                                                            </td>
-                                                            <td>
-                                                                <?= $record['latitude_expiry'] ? 
-                                                                    '<span class="' . (strtotime($record['latitude_expiry']) < time() ? 'text-danger' : 'text-success') . '">' .
-                                                                    date('M d, Y', strtotime($record['latitude_expiry'])) . '</span>' : 
-                                                                    'N/A' 
-                                                                ?>
-                                                            </td>
-                                                            <td>
-                                                                <?= $record['auth_date'] ? 
-                                                                    date('M d, Y', strtotime($record['auth_date'])) : 
-                                                                    'N/A' 
-                                                                ?>
+                                                                <button class="btn btn-view-details btn-sm view-details-btn"
+                                                                        data-bs-toggle="modal"
+                                                                        data-bs-target="#detailsModal"
+                                                                        data-record-type="latitude"
+                                                                        data-record-id="<?= $record['id'] ?? '' ?>"
+                                                                        data-record-active="<?= htmlspecialchars($record['active'] ?? '') ?>"
+                                                                        data-record-type-value="<?= htmlspecialchars($record['type'] ?? '') ?>"
+                                                                        data-record-formation="<?= htmlspecialchars($record['formation_name'] ?? '') ?>"
+                                                                        data-record-aircraft-type="<?= htmlspecialchars($record['type_name'] ?? '') ?>"
+                                                                        data-record-tail-no="<?= htmlspecialchars($record['tail_no'] ?? '') ?>"
+                                                                        data-record-part-no="<?= htmlspecialchars($record['part_no'] ?? '') ?>"
+                                                                        data-record-description="<?= htmlspecialchars($record['description'] ?? '') ?>"
+                                                                        data-record-serial-no="<?= htmlspecialchars($record['serial_no'] ?? '') ?>"
+                                                                        data-record-reason="<?= htmlspecialchars($record['reason'] ?? '') ?>"
+                                                                        data-record-hrs="<?= htmlspecialchars($record['hrs'] ?? '') ?>"
+                                                                        data-record-ldgs="<?= htmlspecialchars($record['ldgs'] ?? '') ?>"
+                                                                        data-record-date="<?= htmlspecialchars($record['date'] ?? '') ?>"
+                                                                        data-record-present-latitude="<?= htmlspecialchars($record['present_latitude'] ?? '') ?>"
+                                                                        data-record-dgae-auth-ref="<?= htmlspecialchars($record['dgae_auth_ref'] ?? '') ?>"
+                                                                        data-record-auth-date="<?= htmlspecialchars($record['auth_date'] ?? '') ?>"
+                                                                        data-record-latitude-expiry="<?= htmlspecialchars($record['latitude_expiry'] ?? '') ?>"
+                                                                        data-record-total-prev-latitude="<?= htmlspecialchars($record['total_prev_latitude'] ?? '') ?>"
+                                                                        data-record-demand-ref="<?= htmlspecialchars($record['demand_ref'] ?? '') ?>"
+                                                                        data-record-status="<?= htmlspecialchars($record['status'] ?? '') ?>">
+                                                                    View Details
+                                                                </button>
                                                             </td>
                                                         </tr>
                                                     <?php endforeach; ?>
@@ -699,7 +781,6 @@ try {
                             <?php endif; ?>
                         </div>
                     </div>
-
                     <!-- Modification / R&D Tab Panes -->
                     <div class="tab-pane fade" id="modification" role="tabpanel">
                         <h4 class="colour-defult">Modification</h4>
@@ -799,7 +880,8 @@ try {
             </div>
         </div>
     </main>
-    <!-- Modal Structure -->
+
+        <!-- PDF Modal -->
     <div class="modal fade" id="pdfModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-xl modal-dialog-centered">
             <div class="modal-content">
@@ -813,6 +895,25 @@ try {
             </div>
         </div>
     </div>
+
+    <!-- Details Modal -->
+    <div class="modal fade" id="detailsModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="detailsModalTitle">Record Details</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="detailsModalBody">
+                    <!-- Details will be populated by JavaScript -->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Footer -->
     <?php include '../template/foot.php'; ?>
 
@@ -824,6 +925,7 @@ try {
     <script>
         // Handle tab selection
         document.addEventListener("DOMContentLoaded", function() {
+            // PDF Modal functionality
             const pdfModal = document.getElementById('pdfModal');
             const pdfFrame = document.getElementById('pdfFrame');
 
@@ -836,6 +938,409 @@ try {
             pdfModal.addEventListener('hidden.bs.modal', function() {
                 pdfFrame.src = ""; // Clear iframe to stop PDF from running
             });
+
+            // Details Modal functionality
+            const detailsModal = document.getElementById('detailsModal');
+            const detailsModalTitle = document.getElementById('detailsModalTitle');
+            const detailsModalBody = document.getElementById('detailsModalBody');
+
+            detailsModal.addEventListener('show.bs.modal', function(event) {
+                const button = event.relatedTarget;
+                const recordType = button.getAttribute('data-record-type');
+                
+                // Set modal title based on record type
+                let title = 'Record Details';
+                switch(recordType) {
+                    case 'qa_report':
+                        title = 'QA Report Details';
+                        break;
+                    case 'qa_check_list':
+                        title = 'Audit Checklist Details';
+                        break;
+                    case 'aircraft_competency':
+                        title = 'Aircraft Competency Details';
+                        break;
+                    case 'latitude':
+                        title = 'Latitude Record Details';
+                        break;
+                }
+                detailsModalTitle.textContent = title;
+
+                // Generate modal content based on record type
+                let content = '';
+                switch(recordType) {
+                    case 'qa_report':
+                    case 'qa_check_list':
+                        content = generateDocumentDetails(button);
+                        break;
+                    case 'aircraft_competency':
+                        content = generateAircraftCompetencyDetails(button);
+                        break;
+                    case 'latitude':
+                        content = generateLatitudeDetails(button);
+                        break;
+                    default:
+                        content = '<p>No details available.</p>';
+                }
+                
+                detailsModalBody.innerHTML = content;
+            });
+
+            detailsModal.addEventListener('hidden.bs.modal', function() {
+                detailsModalBody.innerHTML = '';
+            });
+
+            // Helper function to format empty values
+            function formatValue(value) {
+                if (!value || value === 'null' || value === 'undefined' || value === '0000-00-00') {
+                    return '<span class="empty-value">Not provided</span>';
+                }
+                return value;
+            }
+
+            // Helper function to format dates
+            function formatDate(dateString) {
+                if (!dateString || dateString === '0000-00-00') {
+                    return '<span class="empty-value">Not provided</span>';
+                }
+                try {
+                    return new Date(dateString).toLocaleDateString();
+                } catch (e) {
+                    return dateString;
+                }
+            }
+
+            // Generate functions for different record types
+            function generateDocumentDetails(button) {
+                const title = button.getAttribute('data-record-title');
+                const description = button.getAttribute('data-record-description');
+                const filePath = button.getAttribute('data-record-file-path');
+                const uploadedAt = button.getAttribute('data-record-uploaded-at');
+
+                return `
+                    <table class="details-modal-table">
+                        <tr>
+                            <th>Document Title:</th>
+                            <td>${formatValue(title)}</td>
+                        </tr>
+                        <tr>
+                            <th>Description:</th>
+                            <td>${formatValue(description)}</td>
+                        </tr>
+                        <tr>
+                            <th>File Path:</th>
+                            <td>${formatValue(filePath)}</td>
+                        </tr>
+                        <tr>
+                            <th>Uploaded Date:</th>
+                            <td>${formatDate(uploadedAt)}</td>
+                        </tr>
+                    </table>
+                `;
+            }
+
+            function generateAircraftCompetencyDetails(button) {
+                const svcNo = button.getAttribute('data-record-svc-no');
+                const rank = button.getAttribute('data-record-rank');
+                const name = button.getAttribute('data-record-name');
+                const trade = button.getAttribute('data-record-trade');
+                const formation = button.getAttribute('data-record-formation');
+                const postedInDate = button.getAttribute('data-record-posted-in-date');
+                const postedOutDate = button.getAttribute('data-record-posted-out-date');
+                const aircraftType = button.getAttribute('data-record-aircraft-type');
+                const competencyLevel = button.getAttribute('data-record-competency-level');
+                const trainingStartDate = button.getAttribute('data-record-training-start-date');
+                const trainingEndDate = button.getAttribute('data-record-training-end-date');
+                const formationRef = button.getAttribute('data-record-formation-ref');
+                const forRefDate = button.getAttribute('data-record-for-ref-date');
+                const qaiRef = button.getAttribute('data-record-qai-ref');
+                const qaiRefDate = button.getAttribute('data-record-qai-ref-date');
+                const dtRef = button.getAttribute('data-record-dt-ref');
+                const dtRefDate = button.getAttribute('data-record-dt-ref-date');
+                const qaoRef = button.getAttribute('data-record-qao-ref');
+                const qaoRefDate = button.getAttribute('data-record-qao-ref-date');
+                const theoryMarks = button.getAttribute('data-record-theory-marks');
+                const practicalMarks = button.getAttribute('data-record-practical-marks');
+                const competencyIssueRef = button.getAttribute('data-record-competency-issue-ref');
+                const comIssueDate = button.getAttribute('data-record-com-issue-date');
+                const competencyRenewRef = button.getAttribute('data-record-competency-renew-ref');
+                const renewDate = button.getAttribute('data-record-renew-date');
+                const certificateNo = button.getAttribute('data-record-certificate-no');
+                const cerIssuedDate = button.getAttribute('data-record-cer-issued-date');
+                const retiredDate = button.getAttribute('data-record-retired-date');
+                const remarks = button.getAttribute('data-record-remarks');
+
+                return `
+                    <div class="section-divider">Personal Information</div>
+                    <table class="details-modal-table">
+                        <tr>
+                            <th>SVC Number:</th>
+                            <td>${formatValue(svcNo)}</td>
+                        </tr>
+                        <tr>
+                            <th>Rank:</th>
+                            <td>${formatValue(rank)}</td>
+                        </tr>
+                        <tr>
+                            <th>Name:</th>
+                            <td>${formatValue(name)}</td>
+                        </tr>
+                        <tr>
+                            <th>Trade:</th>
+                            <td>${formatValue(trade)}</td>
+                        </tr>
+                        <tr>
+                            <th>Formation:</th>
+                            <td>${formatValue(formation)}</td>
+                        </tr>
+                    </table>
+
+                    <div class="section-divider">Posting Information</div>
+                    <table class="details-modal-table">
+                        <tr>
+                            <th>Posted In Date:</th>
+                            <td>${formatDate(postedInDate)}</td>
+                        </tr>
+                        <tr>
+                            <th>Posted Out Date:</th>
+                            <td>${formatDate(postedOutDate)}</td>
+                        </tr>
+                    </table>
+
+                    <div class="section-divider">Aircraft & Competency Information</div>
+                    <table class="details-modal-table">
+                        <tr>
+                            <th>Aircraft Type:</th>
+                            <td>${formatValue(aircraftType)}</td>
+                        </tr>
+                        <tr>
+                            <th>Competency Level:</th>
+                            <td>${formatValue(competencyLevel)}</td>
+                        </tr>
+                        <tr>
+                            <th>Training Start Date:</th>
+                            <td>${formatDate(trainingStartDate)}</td>
+                        </tr>
+                        <tr>
+                            <th>Training End Date:</th>
+                            <td>${formatDate(trainingEndDate)}</td>
+                        </tr>
+                    </table>
+
+                    <div class="section-divider">Reference Information</div>
+                    <table class="details-modal-table">
+                        <tr>
+                            <th>Formation Reference:</th>
+                            <td>${formatValue(formationRef)}</td>
+                        </tr>
+                        <tr>
+                            <th>Formation Ref Date:</th>
+                            <td>${formatDate(forRefDate)}</td>
+                        </tr>
+                        <tr>
+                            <th>QAI Reference:</th>
+                            <td>${formatValue(qaiRef)}</td>
+                        </tr>
+                        <tr>
+                            <th>QAI Ref Date:</th>
+                            <td>${formatDate(qaiRefDate)}</td>
+                        </tr>
+                        <tr>
+                            <th>DT Reference:</th>
+                            <td>${formatValue(dtRef)}</td>
+                        </tr>
+                        <tr>
+                            <th>DT Ref Date:</th>
+                            <td>${formatDate(dtRefDate)}</td>
+                        </tr>
+                        <tr>
+                            <th>QAO Reference:</th>
+                            <td>${formatValue(qaoRef)}</td>
+                        </tr>
+                        <tr>
+                            <th>QAO Ref Date:</th>
+                            <td>${formatDate(qaoRefDate)}</td>
+                        </tr>
+                    </table>
+
+                    <div class="section-divider">Assessment Information</div>
+                    <table class="details-modal-table">
+                        <tr>
+                            <th>Theory Marks:</th>
+                            <td>${formatValue(theoryMarks)}</td>
+                        </tr>
+                        <tr>
+                            <th>Practical Marks:</th>
+                            <td>${formatValue(practicalMarks)}</td>
+                        </tr>
+                        <tr>
+                            <th>Competency Issue Reference:</th>
+                            <td>${formatValue(competencyIssueRef)}</td>
+                        </tr>
+                        <tr>
+                            <th>Competency Issue Date:</th>
+                            <td>${formatDate(comIssueDate)}</td>
+                        </tr>
+                        <tr>
+                            <th>Competency Renew Reference:</th>
+                            <td>${formatValue(competencyRenewRef)}</td>
+                        </tr>
+                        <tr>
+                            <th>Renew Date:</th>
+                            <td>${formatDate(renewDate)}</td>
+                        </tr>
+                    </table>
+
+                    <div class="section-divider">Certificate Information</div>
+                    <table class="details-modal-table">
+                        <tr>
+                            <th>Certificate Number:</th>
+                            <td>${formatValue(certificateNo)}</td>
+                        </tr>
+                        <tr>
+                            <th>Certificate Issued Date:</th>
+                            <td>${formatDate(cerIssuedDate)}</td>
+                        </tr>
+                        <tr>
+                            <th>Retired Date:</th>
+                            <td>${formatDate(retiredDate)}</td>
+                        </tr>
+                    </table>
+
+                    <div class="section-divider">Additional Information</div>
+                    <table class="details-modal-table">
+                        <tr>
+                            <th>Remarks:</th>
+                            <td>${formatValue(remarks)}</td>
+                        </tr>
+                    </table>
+                `;
+            }
+
+            function generateLatitudeDetails(button) {
+                const active = button.getAttribute('data-record-active');
+                const typeValue = button.getAttribute('data-record-type-value');
+                const formation = button.getAttribute('data-record-formation');
+                const aircraftType = button.getAttribute('data-record-aircraft-type');
+                const tailNo = button.getAttribute('data-record-tail-no');
+                const partNo = button.getAttribute('data-record-part-no');
+                const description = button.getAttribute('data-record-description');
+                const serialNo = button.getAttribute('data-record-serial-no');
+                const reason = button.getAttribute('data-record-reason');
+                const hrs = button.getAttribute('data-record-hrs');
+                const ldgs = button.getAttribute('data-record-ldgs');
+                const date = button.getAttribute('data-record-date');
+                const presentLatitude = button.getAttribute('data-record-present-latitude');
+                const dgaeAuthRef = button.getAttribute('data-record-dgae-auth-ref');
+                const authDate = button.getAttribute('data-record-auth-date');
+                const latitudeExpiry = button.getAttribute('data-record-latitude-expiry');
+                const totalPrevLatitude = button.getAttribute('data-record-total-prev-latitude');
+                const demandRef = button.getAttribute('data-record-demand-ref');
+                const status = button.getAttribute('data-record-status');
+
+                const statusBadge = status === 'Approved' ? 'success' : 
+                                  status === 'Pending' ? 'warning' : 
+                                  status === 'Expired' ? 'danger' : 'secondary';
+
+                const activeBadge = active === 'YES' ? 'success' : 'danger';
+
+                return `
+                    <div class="section-divider">Basic Information</div>
+                    <table class="details-modal-table">
+                        <tr>
+                            <th>Active Status:</th>
+                            <td><span class="badge badge-${activeBadge}">${active}</span></td>
+                        </tr>
+                        <tr>
+                            <th>Type:</th>
+                            <td>${formatValue(typeValue)}</td>
+                        </tr>
+                        <tr>
+                            <th>Formation:</th>
+                            <td>${formatValue(formation)}</td>
+                        </tr>
+                        <tr>
+                            <th>Aircraft Type:</th>
+                            <td>${formatValue(aircraftType)}</td>
+                        </tr>
+                        <tr>
+                            <th>Tail Number:</th>
+                            <td>${formatValue(tailNo)}</td>
+                        </tr>
+                        <tr>
+                            <th>Part Number:</th>
+                            <td>${formatValue(partNo)}</td>
+                        </tr>
+                    </table>
+
+                    <div class="section-divider">Technical Details</div>
+                    <table class="details-modal-table">
+                        <tr>
+                            <th>Description:</th>
+                            <td>${formatValue(description)}</td>
+                        </tr>
+                        <tr>
+                            <th>Serial Number:</th>
+                            <td>${formatValue(serialNo)}</td>
+                        </tr>
+                        <tr>
+                            <th>Reason:</th>
+                            <td>${formatValue(reason)}</td>
+                        </tr>
+                        <tr>
+                            <th>Hours:</th>
+                            <td>${formatValue(hrs)}</td>
+                        </tr>
+                        <tr>
+                            <th>Landings:</th>
+                            <td>${formatValue(ldgs)}</td>
+                        </tr>
+                        <tr>
+                            <th>Date:</th>
+                            <td>${formatDate(date)}</td>
+                        </tr>
+                    </table>
+
+                    <div class="section-divider">Latitude Information</div>
+                    <table class="details-modal-table">
+                        <tr>
+                            <th>Present Latitude:</th>
+                            <td><strong>${formatValue(presentLatitude)}</strong></td>
+                        </tr>
+                        <tr>
+                            <th>Total Previous Latitude:</th>
+                            <td>${formatValue(totalPrevLatitude)}</td>
+                        </tr>
+                        <tr>
+                            <th>DGAE Authorization Reference:</th>
+                            <td>${formatValue(dgaeAuthRef)}</td>
+                        </tr>
+                        <tr>
+                            <th>Authorization Date:</th>
+                            <td>${formatDate(authDate)}</td>
+                        </tr>
+                        <tr>
+                            <th>Latitude Expiry Date:</th>
+                            <td>${formatDate(latitudeExpiry)}</td>
+                        </tr>
+                    </table>
+
+                    <div class="section-divider">Status Information</div>
+                    <table class="details-modal-table">
+                        <tr>
+                            <th>Demand Reference:</th>
+                            <td>${formatValue(demandRef)}</td>
+                        </tr>
+                        <tr>
+                            <th>Status:</th>
+                            <td><span class="badge badge-${statusBadge}">${formatValue(status)}</span></td>
+                        </tr>
+                    </table>
+                `;
+            }
+
+
+
             // Set initial active tab to welcome screen
             const welcomePane = document.querySelector('#welcome');
             if (welcomePane) {
