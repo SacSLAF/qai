@@ -168,6 +168,52 @@ try {
         }
     }
 
+        // Fetch Modification data
+    $modification_data = [];
+    $modification_error = '';
+    $stmt_mod = $db->prepare("
+        SELECT m.*, f.formation_name, t.type_name 
+        FROM modification m 
+        LEFT JOIN formation f ON m.formation_id = f.formation_id 
+        LEFT JOIN type t ON m.type_id = t.type_id 
+        ORDER BY m.created_at DESC
+    ");
+
+    if ($stmt_mod) {
+        if ($stmt_mod->execute()) {
+            $result_mod = $stmt_mod->get_result();
+            $modification_data = $result_mod->fetch_all(MYSQLI_ASSOC);
+            $stmt_mod->close();
+        } else {
+            $modification_error = "Modification query execution failed: " . $stmt_mod->error;
+        }
+    } else {
+        $modification_error = "Error preparing Modification query: " . $db->error;
+    }
+
+    // Fetch R&D data
+    $rnd_data = [];
+    $rnd_error = '';
+    $stmt_rnd = $db->prepare("
+        SELECT r.*, f.formation_name, t.type_name 
+        FROM rnd r 
+        LEFT JOIN formation f ON r.formation_id = f.formation_id 
+        LEFT JOIN type t ON r.type_id = t.type_id 
+        ORDER BY r.created_at DESC
+    ");
+
+    if ($stmt_rnd) {
+        if ($stmt_rnd->execute()) {
+            $result_rnd = $stmt_rnd->get_result();
+            $rnd_data = $result_rnd->fetch_all(MYSQLI_ASSOC);
+            $stmt_rnd->close();
+        } else {
+            $rnd_error = "R&D query execution failed: " . $stmt_rnd->error;
+        }
+    } else {
+        $rnd_error = "Error preparing R&D query: " . $db->error;
+    }
+
     // Include head template after all PHP processing
     include '../template/head.php';
 
@@ -812,47 +858,110 @@ try {
                         </div>
                     </div>
                     <!-- Modification / R&D Tab Panes -->
+                    <!-- Modification Tab -->
                     <div class="tab-pane fade" id="modification" role="tabpanel">
-                        <h4 class="colour-defult">Modification</h4>
-                        <p>Documentation and records related to aircraft and equipment modifications.</p>
+                        <h4 class="colour-defult">Modification Records</h4>
+
                         <div class="mt-4">
-                            <div class="alert alert-info">
-                                <i class="fas fa-info-circle me-2"></i>
-                                Modification records and documentation will be displayed here.
-                            </div>
-                            <div class="card">
-                                <div class="card-header bg-primary text-white">
-                                    <h5 class="mb-0">
-                                        <i class="fas fa-tools me-2"></i>
-                                        Modification Records
-                                    </h5>
+                            <?php if (!empty($modification_error)): ?>
+                                <div class="alert alert-danger">
+                                    <strong>Database Error:</strong> <?= htmlspecialchars($modification_error) ?>
                                 </div>
-                                <div class="card-body">
-                                    <p class="text-muted">Modification data will be loaded here...</p>
+                            <?php elseif (!empty($modification_data)): ?>
+                                <div class="card">
+                                    <div class="card-body p-0">
+                                        <div class="table-responsive">
+                                            <table class="table table-striped table-hover mb-0">
+                                                <thead class="table-light">
+                                                    <tr>
+                                                        <th>Mod No</th>
+                                                        <th>Directorate</th>
+                                                        <th>Formation</th>
+                                                        <th>Aircraft Type</th>
+                                                        <th>Description</th>
+                                                        <th>Recommended Date</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <?php foreach ($modification_data as $record): ?>
+                                                        <tr>
+                                                            <td><?= htmlspecialchars($record['mod_no'] ?? 'N/A') ?></td>
+                                                            <td><?= htmlspecialchars($record['directorate'] ?? 'N/A') ?></td>
+                                                            <td><?= htmlspecialchars($record['formation_name'] ?? 'N/A') ?></td>
+                                                            <td><?= htmlspecialchars($record['type_name'] ?? 'N/A') ?></td>
+                                                            <td><?= htmlspecialchars($record['description'] ?? 'N/A') ?></td>
+                                                            <td>
+                                                                <?= $record['recommended_date'] ? 
+                                                                    date('M d, Y', strtotime($record['recommended_date'])) : 
+                                                                    'N/A' 
+                                                                ?>
+                                                            </td>
+                                                        </tr>
+                                                    <?php endforeach; ?>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>
+                            <?php else: ?>
+                                <div class="alert alert-info">
+                                    <i class="fas fa-info-circle me-2"></i>
+                                    No modification records found.
+                                </div>
+                            <?php endif; ?>
                         </div>
                     </div>
 
+                    <!-- R&D Tab -->
                     <div class="tab-pane fade" id="rnd" role="tabpanel">
-                        <h4 class="colour-defult">Research & Development</h4>
-                        <p>Research projects, development initiatives, and innovation records.</p>
+                        <h4 class="colour-defult">Research  & Development Records</h4>
                         <div class="mt-4">
-                            <div class="alert alert-info">
-                                <i class="fas fa-info-circle me-2"></i>
-                                R&D projects and research documentation will be displayed here.
-                            </div>
-                            <div class="card">
-                                <div class="card-header bg-success text-white">
-                                    <h5 class="mb-0">
-                                        <i class="fas fa-flask me-2"></i>
-                                        R&D Projects
-                                    </h5>
+                            <?php if (!empty($rnd_error)): ?>
+                                <div class="alert alert-danger">
+                                    <strong>Database Error:</strong> <?= htmlspecialchars($rnd_error) ?>
                                 </div>
-                                <div class="card-body">
-                                    <p class="text-muted">R&D project data will be loaded here...</p>
+                            <?php elseif (!empty($rnd_data)): ?>
+                                <div class="card">
+                                    <div class="card-body p-0">
+                                        <div class="table-responsive">
+                                            <table class="table table-striped table-hover mb-0">
+                                                <thead class="table-light">
+                                                    <tr>
+                                                        <th>R&D No</th>
+                                                        <th>Directorate</th>
+                                                        <th>Formation</th>
+                                                        <th>Aircraft Type</th>
+                                                        <th>Description</th>
+                                                        <th>Issue Date</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <?php foreach ($rnd_data as $record): ?>
+                                                        <tr>
+                                                            <td><?= htmlspecialchars($record['rnd_no'] ?? 'N/A') ?></td>
+                                                            <td><?= htmlspecialchars($record['directorate'] ?? 'N/A') ?></td>
+                                                            <td><?= htmlspecialchars($record['formation_name'] ?? 'N/A') ?></td>
+                                                            <td><?= htmlspecialchars($record['type_name'] ?? 'N/A') ?></td>
+                                                            <td><?= htmlspecialchars($record['description'] ?? 'N/A') ?></td>
+                                                            <td>
+                                                                <?= $record['issue_date'] ? 
+                                                                    date('M d, Y', strtotime($record['issue_date'])) : 
+                                                                    'N/A' 
+                                                                ?>
+                                                            </td>
+                                                        </tr>
+                                                    <?php endforeach; ?>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>
+                            <?php else: ?>
+                                <div class="alert alert-info">
+                                    <i class="fas fa-info-circle me-2"></i>
+                                    No R&D records found.
+                                </div>
+                            <?php endif; ?>
                         </div>
                     </div>
 
