@@ -41,7 +41,7 @@ try {
     $ac_cat_map = [];
     $aircraft_competency_data = [];
     $ac_error = '';
-    $latitude_extension_data = [];
+    $latitude_data = [];
     $le_error = '';
 
     // Check if database connection exists and is valid
@@ -146,25 +146,25 @@ try {
             $ac_error = "Error preparing Aircraft Competency query: " . $db->error;
         }
 
-        // Fetch Latitude & Extensions data
+        // Fetch Latitude data
         $stmt = $db->prepare("
-            SELECT le.*, b.name as branch_name 
-            FROM latitude_extension le 
-            LEFT JOIN branches b ON le.branch_id = b.id 
-            WHERE le.is_active = 1 
-            ORDER BY le.uploaded_at DESC, le.related_aircraft, le.title
+            SELECT l.*, f.formation_name, t.type_name 
+            FROM latitude l 
+            LEFT JOIN formation f ON l.formation_id = f.formation_id 
+            LEFT JOIN type t ON l.aircraft_type_id = t.type_id 
+            ORDER BY l.created_at DESC
         ");
 
         if ($stmt) {
             if ($stmt->execute()) {
                 $result = $stmt->get_result();
-                $latitude_extension_data = $result->fetch_all(MYSQLI_ASSOC);
+                $latitude_data = $result->fetch_all(MYSQLI_ASSOC);
                 $stmt->close();
             } else {
-                $le_error = "Latitude & Extensions query execution failed: " . $stmt->error;
+                $le_error = "Latitude query execution failed: " . $stmt->error;
             }
         } else {
-            $le_error = "Error preparing Latitude & Extensions query: " . $db->error;
+            $le_error = "Error preparing Latitude query: " . $db->error;
         }
     }
 
@@ -317,6 +317,12 @@ try {
             font-size: 12px;
             color: #6c757d;
         }
+        .badge-success { background-color: #28a745; color: white; }
+        .badge-warning { background-color: #ffc107; color: black; }
+        .badge-danger { background-color: #dc3545; color: white; }
+        .badge-secondary { background-color: #6c757d; color: white; }
+        .text-danger { color: #dc3545 !important; font-weight: bold; }
+        .text-success { color: #28a745 !important; }
     </style>
 </head>
 
@@ -440,17 +446,6 @@ try {
                                                             <td><strong><?= htmlspecialchars($qa_check_list['title']) ?></strong></td>
                                                             <td><?= htmlspecialchars($qa_check_list['description'] ?? 'No description') ?></td>
                                                             <td><?= date('M d, Y', strtotime($qa_check_list['uploaded_at'])) ?></td>
-                                                            <!-- <td>
-                                                                <?php if (!empty($qa_check_list['file_path'])): ?>
-                                                                    <a href="/qai/assets/pdfjs/web/viewer.html?file=<?= urlencode('/qai/admin/action/' . $qa_check_list['file_path']) ?>"
-                                                                        target="_blank"
-                                                                        class="btn btn-primary btn-sm view-pdf-btn">
-                                                                        View PDF
-                                                                    </a>
-                                                                <?php else: ?>
-                                                                    <span class="text-muted">No file</span>
-                                                                <?php endif; ?>
-                                                            </td> -->
                                                             <td>
                                                                 <a href="/qai/assets/pdfjs/web/viewer.html?file=<?= urlencode('/qai/admin/action/' . $qa_check_list['file_path']) ?>"
                                                                     class="btn btn-primary btn-sm view-pdf-btn"
@@ -503,17 +498,6 @@ try {
                                                             <td><strong><?= htmlspecialchars($report['title']) ?></strong></td>
                                                             <td><?= htmlspecialchars($report['description'] ?? 'No description') ?></td>
                                                             <td><?= date('M d, Y', strtotime($report['uploaded_at'])) ?></td>
-                                                            <!-- <td>
-                                                                <?php if (!empty($report['file_path'])): ?>
-                                                                    <a href="/qai/assets/pdfjs/web/viewer.html?file=<?= urlencode('/qai/admin/action/' . $report['file_path']) ?>"
-                                                                        target="_blank"
-                                                                        class="btn btn-primary btn-sm view-pdf-btn">
-                                                                        View PDF
-                                                                    </a>
-                                                                <?php else: ?>
-                                                                    <span class="text-muted">No file</span>
-                                                                <?php endif; ?>
-                                                            </td> -->
                                                             <td>
                                                                 <a href="/qai/assets/pdfjs/web/viewer.html?file=<?= urlencode('/qai/admin/action/' . $report['file_path']) ?>"
                                                                     class="btn btn-primary btn-sm view-pdf-btn"
@@ -563,14 +547,8 @@ try {
                                                                 <th>Formation</th>
                                                                 <th>Posted In Date</th>
                                                                 <th>Aircraft Type</th>
-                                                                <!-- <th>Type</th> -->
                                                                 <th>Competency Level</th>
                                                                 <th>Competency Issue Ref</th>
-                                                                <!-- <th>Com Issue Date</th>
-                                                                <th>Competency Renew Ref</th>
-                                                                <th>Renew Date</th>
-                                                                <th>Certificate No</th>
-                                                                <th>Cer Issued Date</th> -->
                                                             </tr>
                                                         </thead>
                                                         <tbody>
@@ -583,14 +561,8 @@ try {
                                                                     <td><?= htmlspecialchars($formations_map[$record['formation_id']] ?? $record['formation'] ?? '') ?></td>
                                                                     <td><?= htmlspecialchars($record['posted_in_date'] ?? '') ?></td>
                                                                     <td><?= htmlspecialchars($types_map[$record['type_id']] ?? $record['aircraft_type'] ?? '') ?></td>
-                                                                    <!-- <td><?= htmlspecialchars($record['type_id'] ?? '') ?></td> -->
                                                                     <td><?= htmlspecialchars($record['competency_level'] ?? '') ?></td>
                                                                     <td><?= htmlspecialchars($record['competency_issue_ref'] ?? '') ?></td>
-                                                                    <!-- <td><?= htmlspecialchars($record['com_issue_date'] ?? '') ?></td>
-                                                                    <td><?= htmlspecialchars($record['competency_renew_ref'] ?? '') ?></td>
-                                                                    <td><?= htmlspecialchars($record['renew_date'] ?? '') ?></td>
-                                                                    <td><?= htmlspecialchars($record['certificate_no'] ?? '') ?></td>
-                                                                    <td><?= htmlspecialchars($record['cer_issued_date'] ?? '') ?></td> -->
                                                                 </tr>
                                                             <?php endforeach; ?>
                                                         </tbody>
@@ -649,76 +621,68 @@ try {
 
                     <!-- Latitude & Extensions Tab -->
                     <div class="tab-pane fade" id="latitude" role="tabpanel">
-                        <h4 class="colour-defult">Latitude & Extensions</h4>
-                        <p class="text-muted">Information regarding latitude approvals and extension requests.</p>
+                        <h4 class="colour-defult">Latitude Records</h4>
+                        
 
                         <div class="mt-4">
                             <?php if (!empty($le_error)): ?>
                                 <div class="alert alert-danger">
                                     <strong>Database Error:</strong> <?= htmlspecialchars($le_error) ?>
                                 </div>
-                            <?php elseif (!empty($latitude_extension_data)): ?>
+                            <?php elseif (!empty($latitude_data)): ?>
                                 <div class="card">
-                                    <div class="card-header bg-info text-white">
-                                        <h5 class="mb-0">
-                                            <i class="fas fa-expand-alt me-2"></i>
-                                            Latitude & Extension Records
-                                            <span class="badge bg-light text-dark ms-2">
-                                                <?= count($latitude_extension_data) ?> records
-                                            </span>
-                                        </h5>
-                                    </div>
                                     <div class="card-body p-0">
                                         <div class="table-responsive">
                                             <table class="table table-striped table-hover mb-0">
                                                 <thead class="table-light">
                                                     <tr>
-                                                        <th>Title</th>
-                                                        <th>Description</th>
-                                                        <th>Latitude Description</th>
-                                                        <th>Related Aircraft</th>
-                                                        <th>Latitude Period</th>
-                                                        <th>Branch</th>
-                                                        <th>Upload Date</th>
-                                                        <th>Document</th>
+                                                        <th>Active</th>
+                                                        <th>Formation</th>
+                                                        <th>Aircraft Type</th>
+                                                        <th>Tail No</th>
+                                                        <th>Part No</th>
+                                                        <th>Present Latitude</th>
+                                                        <th>Status</th>
+                                                        <th>Expiry Date</th>
+                                                        <th>Auth Date</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                    <?php foreach ($latitude_extension_data as $record): ?>
+                                                    <?php foreach ($latitude_data as $record): ?>
                                                         <tr>
                                                             <td>
-                                                                <strong><?= htmlspecialchars($record['title']) ?></strong>
+                                                                <span class="badge badge-<?= $record['active'] == 'YES' ? 'success' : 'danger' ?>">
+                                                                    <?= htmlspecialchars($record['active']) ?>
+                                                                </span>
+                                                            </td>
+                                                            <td><?= htmlspecialchars($record['formation_name'] ?? 'N/A') ?></td>
+                                                            <td><?= htmlspecialchars($record['type_name'] ?? 'N/A') ?></td>
+                                                            <td><?= htmlspecialchars($record['tail_no'] ?? 'N/A') ?></td>
+                                                            <td><?= htmlspecialchars($record['part_no'] ?? 'N/A') ?></td>
+                                                            <td>
+                                                                <strong><?= htmlspecialchars($record['present_latitude'] ?? 'N/A') ?></strong>
                                                             </td>
                                                             <td>
-                                                                <?= !empty($record['description']) ? htmlspecialchars($record['description']) : '<span class="text-muted">No description</span>' ?>
-                                                            </td>
-                                                            <td><?= htmlspecialchars($record['latitude_description']) ?></td>
-                                                            <td>
-                                                                <span class="badge bg-primary"><?= htmlspecialchars($record['related_aircraft']) ?></span>
-                                                            </td>
-                                                            <td>
-                                                                <span class="badge bg-warning text-dark"><?= htmlspecialchars($record['latitude_period']) ?></span>
-                                                            </td>
-                                                            <td>
-                                                                <small class="text-muted">
-                                                                    <?= !empty($record['branch_name']) ? htmlspecialchars($record['branch_name']) : 'N/A' ?>
-                                                                </small>
+                                                                <span class="badge badge-<?= 
+                                                                    $record['status'] == 'Approved' ? 'success' : 
+                                                                    ($record['status'] == 'Pending' ? 'warning' : 
+                                                                    ($record['status'] == 'Expired' ? 'danger' : 'secondary')) 
+                                                                ?>">
+                                                                    <?= htmlspecialchars($record['status'] ?? 'N/A') ?>
+                                                                </span>
                                                             </td>
                                                             <td>
-                                                                <small class="text-muted">
-                                                                    <?= date('M d, Y', strtotime($record['uploaded_at'])) ?>
-                                                                </small>
+                                                                <?= $record['latitude_expiry'] ? 
+                                                                    '<span class="' . (strtotime($record['latitude_expiry']) < time() ? 'text-danger' : 'text-success') . '">' .
+                                                                    date('M d, Y', strtotime($record['latitude_expiry'])) . '</span>' : 
+                                                                    'N/A' 
+                                                                ?>
                                                             </td>
                                                             <td>
-                                                                <?php if (!empty($record['file_path']) && file_exists("../admin/action/" . $record['file_path'])): ?>
-                                                                    <a href="/qai/assets/pdfjs/web/viewer.html?file=<?= urlencode('/qai/admin/action/' . $record['file_path']) ?>"
-                                                                        target="_blank"
-                                                                        class="btn btn-sm btn-outline-primary">
-                                                                        <i class="fas fa-file-pdf"></i> View
-                                                                    </a>
-                                                                <?php else: ?>
-                                                                    <span class="text-muted">No document</span>
-                                                                <?php endif; ?>
+                                                                <?= $record['auth_date'] ? 
+                                                                    date('M d, Y', strtotime($record['auth_date'])) : 
+                                                                    'N/A' 
+                                                                ?>
                                                             </td>
                                                         </tr>
                                                     <?php endforeach; ?>
@@ -730,7 +694,7 @@ try {
                             <?php else: ?>
                                 <div class="alert alert-info">
                                     <i class="fas fa-info-circle me-2"></i>
-                                    No latitude and extension records found.
+                                    No latitude records found.
                                 </div>
                             <?php endif; ?>
                         </div>
@@ -788,8 +752,7 @@ try {
                         <div class="mt-4">
                             <?php if ($show_pdf): ?>
                                 <div class="top-bar">
-                                    <a href="?file=<?= $default_file ?>" class="btn btn-sm btn-dark">Vehicle Emission Test - Annual Plan</a>
-                                    <!--<span class="expiry">Expires on <?= date('F d, Y', strtotime('+1 year')) ?></span>-->
+                                    <a href="?file=<?= $file ?>" class="btn btn-sm btn-dark">Vehicle Emission Test - Annual Plan</a>
                                 </div>
 
                                 <!-- PDF.js Viewer -->

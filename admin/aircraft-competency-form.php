@@ -113,7 +113,18 @@ include "template/head.php";
                                             <div class="col-md-6">
                                                 <div class="mb-3">
                                                     <label class="form-label">Trade</label>
-                                                    <input type="text" name="trade" class="form-control">
+                                                    <select name="trade" class="form-select" required>
+                                                        <option value="">Select Trade</option>
+                                                        <option value="Airframe">Airframe</option>
+                                                        <option value="Aero Eng">Aero Eng</option>
+                                                        <option value="Aero E&I">Aero E&I</option>
+                                                        <option value="Safety Eqpt">Safety Eqpt</option>
+                                                        <option value="Air Radio">Air Radio</option>
+                                                        <option value="AGSE">AGSE</option>
+                                                        <option value="Armament">Armament</option>
+                                                        <option value="Airframe & Power Plant">Airframe & Power Plant</option>
+                                                        <option value="None Tech">None Tech</option>
+                                                    </select>
                                                 </div>
                                             </div>
                                         </div>
@@ -176,7 +187,17 @@ include "template/head.php";
                                                         <option value="First Line">First Line</option>
                                                         <option value="Second Line">Second Line</option>
                                                         <option value="Third Line">Third Line</option>
-                                                        <option value="Specialist">Specialist</option>
+                                                        <option value="Flight Line">Flight Line</option>
+                                                        <option value="Bay Level">Bay Level</option>
+                                                        <option value="Shop Level">Shop Level</option>
+                                                        <option value="Field Level">Field Level</option>
+                                                        <option value="Depot Level">Depot Level</option>
+                                                        <option value="B1 A&P Flight Line">B1 A&P Flight Line</option>
+                                                        <option value="B1 A&P First Line">B1 A&P First Line</option>
+                                                        <option value="Sign & Work">Sign & Work</option>
+                                                        <option value="Fiber Level 1">Fiber Level 1</option>
+                                                        <option value="Fiber Level 2">Fiber Level 2</option>
+                                                        <option value="Others">Others</option>
                                                     </select>
                                                 </div>
                                             </div>

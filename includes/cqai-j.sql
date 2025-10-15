@@ -644,3 +644,34 @@ UPDATE aircraft_competency SET branch = 4 WHERE branch = 'CPD';
 -- Now alter the table
 ALTER TABLE aircraft_competency MODIFY COLUMN branch INT;
 ALTER TABLE aircraft_competency ADD FOREIGN KEY (branch) REFERENCES ac_categories(id);
+
+-- Create latitude table
+CREATE TABLE latitude (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    active ENUM('YES','NO') DEFAULT 'YES',
+    type VARCHAR(100) DEFAULT 'Latitude',
+    formation_id INT NOT NULL,
+    aircraft_type_id INT NOT NULL,
+    tail_no VARCHAR(50),
+    part_no VARCHAR(100),
+    description TEXT,
+    serial_no VARCHAR(100),
+    reason TEXT,
+    hrs DECIMAL(10,2),
+    ldgs INT,
+    date DATE,
+    present_latitude VARCHAR(100),
+    dgae_auth_ref VARCHAR(100),
+    auth_date DATE,
+    latitude_expiry DATE,
+    total_prev_latitude VARCHAR(100),
+    demand_ref VARCHAR(100),
+    status VARCHAR(50),
+    created_by INT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    
+    FOREIGN KEY (formation_id) REFERENCES formation(formation_id),
+    FOREIGN KEY (aircraft_type_id) REFERENCES type(type_id),
+    FOREIGN KEY (created_by) REFERENCES admins(id)
+);
