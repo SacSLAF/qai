@@ -1,188 +1,184 @@
 <?php
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
+// ini_set('display_errors', 1);
+// ini_set('display_startup_errors', 1);
+// error_reporting(E_ALL);
 
-require_once "../includes/config.php";
+// Start output buffering to catch any errors
+ob_start();
 
-// Check if a PDF file is requested
-$show_pdf = false;
-$pdf_file = '';
-$pdf_web_path = '';
+try {
+    require_once "../includes/config.php";
 
-// Default file to show in Audits Plan tab
-//$default_file = 'doc_1.pdf';
-
-//if (isset($_GET['file'])) {
-$file = 'doc_1.pdf';
-//} else {
-// If no file specified, use the default
-// $file = $default_file;
-//}
-
-// Server path to PDF - corrected relative path
-$file_path = "../admin/action/uploads/services/audit_plan/" . $file;
-
-// Get absolute path for file existence check
-$absolute_path = realpath($file_path);
-
-if ($absolute_path && file_exists($absolute_path)) {
-    $show_pdf = true;
-    // Web path to PDF (for PDF.js)
-    $pdf_web_path = "/qai/admin/action/uploads/services/audit_plan/" . $file;
-} else {
+    // Initialize variables to avoid undefined variable errors
     $show_pdf = false;
-    $error = "File not found. Tried path: " . htmlspecialchars($file_path);
-    if ($absolute_path === false) {
-        $error .= " (Path does not exist)";
-    }
-}
+    $pdf_file = '';
+    $pdf_web_path = '';
+    $error = '';
+    $file = 'doc_1.pdf';
 
-// Fetch PDF documents where qa_category_id = 2
-$qa_reports = [];
-$qa_check_lists = [];
-$qa_reports_error = '';
-$qa_check_lists_error = '';
+    // Check if a PDF file is requested
+    $file_path = "../admin/action/uploads/services/audit_plan/" . $file;
+    $absolute_path = realpath($file_path);
 
-// Check if database connection exists and is valid
-if (!isset($db) || !$db || $db->connect_error) {
-    $qa_reports_error = "Database connection failed: " . ($db->connect_error ?? 'Unknown error');
-} else {
-    // Fetch QA Reports (qa_category_id = 2)
-    $stmt1 = $db->prepare("
-        SELECT id, title, description, file_path, uploaded_at
-        FROM service_documents 
-        WHERE qa_category_id = 2 AND is_active = 1
-        ORDER BY uploaded_at DESC
-    ");
-
-    if ($stmt1) {
-        if ($stmt1->execute()) {
-            $result = $stmt1->get_result();
-            $qa_reports = $result->fetch_all(MYSQLI_ASSOC);
-            $stmt1->close();
-            echo "<!-- QA Reports query successful, found " . count($qa_reports) . " records -->";
-        } else {
-            $qa_reports_error = "QA Reports query execution failed: " . $stmt1->error;
-        }
+    if ($absolute_path && file_exists($absolute_path)) {
+        $show_pdf = true;
+        $pdf_web_path = "/qai/admin/action/uploads/services/audit_plan/" . $file;
+        $pdf_web_path_vet_plan = "/qai/admin/action/uploads/services/vet_plan/" . $file;
     } else {
-        $qa_reports_error = "Error preparing QA Reports query: " . $db->error;
+        $show_pdf = false;
+        $error = "File not found. Tried path: " . htmlspecialchars($file_path);
+        if ($absolute_path === false) {
+            $error .= " (Path does not exist)";
+        }
     }
 
-    // Fetch QA Check List (qa_category_id = 1)
-    $stmt2 = $db->prepare("
-        SELECT id, title, description, file_path, uploaded_at
-        FROM service_documents 
-        WHERE qa_category_id = 1 AND is_active = 1
-        ORDER BY uploaded_at DESC
-    ");
+    // Initialize arrays and error variables
+    $qa_reports = [];
+    $qa_check_lists = [];
+    $qa_reports_error = '';
+    $qa_check_lists_error = '';
+    $formations_map = [];
+    $types_map = [];
+    $ac_cat_map = [];
+    $aircraft_competency_data = [];
+    $ac_error = '';
+    $latitude_extension_data = [];
+    $le_error = '';
 
-    if ($stmt2) {
-        if ($stmt2->execute()) {
-            $result = $stmt2->get_result();
-            $qa_check_lists = $result->fetch_all(MYSQLI_ASSOC);
-            $stmt2->close();
-            echo "<!-- QA Check List query successful, found " . count($qa_check_lists) . " records -->";
+    // Check if database connection exists and is valid
+    if (!isset($db) || !$db || (property_exists($db, 'connect_error') && $db->connect_error)) {
+        $qa_reports_error = "Database connection failed: " . ($db->connect_error ?? 'Unknown error');
+        $ac_error = $qa_reports_error;
+        $le_error = $qa_reports_error;
+    } else {
+        // Fetch QA Reports (qa_category_id = 2)
+        $stmt1 = $db->prepare("
+            SELECT id, title, description, file_path, uploaded_at
+            FROM service_documents 
+            WHERE qa_category_id = 2 AND is_active = 1
+            ORDER BY uploaded_at DESC
+        ");
+
+        if ($stmt1) {
+            if ($stmt1->execute()) {
+                $result = $stmt1->get_result();
+                $qa_reports = $result->fetch_all(MYSQLI_ASSOC);
+                $stmt1->close();
+            } else {
+                $qa_reports_error = "QA Reports query execution failed: " . $stmt1->error;
+            }
         } else {
-            // Append error if QA Reports query was successful
-            if (empty($qa_check_lists_error)) {
+            $qa_reports_error = "Error preparing QA Reports query: " . $db->error;
+        }
+
+        // Fetch QA Check List (qa_category_id = 1)
+        $stmt2 = $db->prepare("
+            SELECT id, title, description, file_path, uploaded_at
+            FROM service_documents 
+            WHERE qa_category_id = 1 AND is_active = 1
+            ORDER BY uploaded_at DESC
+        ");
+
+        if ($stmt2) {
+            if ($stmt2->execute()) {
+                $result = $stmt2->get_result();
+                $qa_check_lists = $result->fetch_all(MYSQLI_ASSOC);
+                $stmt2->close();
+            } else {
                 $qa_check_lists_error = "QA Check List query execution failed: " . $stmt2->error;
             }
-        }
-    } else {
-        // Append error if QA Reports query was successful
-        if (empty($qa_check_lists_error)) {
+        } else {
             $qa_check_lists_error = "Error preparing QA Check List query: " . $db->error;
         }
-    }
-}
 
-// Fetch Aircraft Competency data categorized by branch
-$aircraft_competency_data = [];
-$ac_error = '';
-
-// Define branch mappings
-$branch_mappings = [
-    1 => 'Aeronautical Engineering',
-    2 => 'Air Operations',
-    3 => 'Construction Engineering',
-    4 => 'Electronic Engineering',
-    5 => 'General Engineering',
-    6 => 'Ground Operations',
-    7 => 'Productivity Management',
-    8 => 'Training'
-];
-
-if (!isset($db) || !$db || $db->connect_error) {
-    // die("DB error: " . ($db->connect_error ?? 'Unknown error'));
-    $ac_error = "Database connection failed: " . ($db->connect_error ?? 'Unknown error');
-} else {
-    // Fetch all aircraft competency records
-    $stmt3 = $db->prepare("
-        SELECT ac.*, b.name as branch_name 
-        FROM aircraft_competency ac 
-        LEFT JOIN branches b ON ac.branch_id = b.id 
-        WHERE ac.is_active = 1 
-        ORDER BY b.name, ac.aircraft_type, ac.name
-    ");
-
-    if ($stmt3) {
-        if ($stmt3->execute()) {
-            $result3 = $stmt3->get_result();
-            $all_records = $result3->fetch_all(MYSQLI_ASSOC);
-
-            // Organize by branch
-            foreach ($all_records as $record) {
-                $branch_id = $record['branch_id'] ?? 0;
-                $branch_name = $record['branch_name'] ?? 'Uncategorized';
-
-                if (!isset($aircraft_competency_data[$branch_id])) {
-                    $aircraft_competency_data[$branch_id] = [
-                        'branch_name' => $branch_name,
-                        'records' => []
-                    ];
-                }
-                $aircraft_competency_data[$branch_id]['records'][] = $record;
+        // Load lookup maps (formations, types, ac_categories)
+        $f_res = $db->query("SELECT formation_id, formation_name FROM formation");
+        if ($f_res) {
+            foreach ($f_res->fetch_all(MYSQLI_ASSOC) as $f) {
+                $formations_map[$f['formation_id']] = $f['formation_name'];
             }
-            $stmt3->close();
-        } else {
-            $ac_error = "Aircraft Competency query execution failed: " . $stmt3->error;
         }
-    } else {
-        $ac_error = "Error preparing Aircraft Competency query: " . $db->error;
-    }
-}
 
-// Fetch Latitude & Extensions data
-$latitude_extension_data = [];
-$le_error = '';
-
-if (!isset($db) || !$db || $db->connect_error) {
-    $le_error = "Database connection failed: " . ($db->connect_error ?? 'Unknown error');
-} else {
-    // Fetch all latitude extension records
-    $stmt = $db->prepare("
-        SELECT le.*, b.name as branch_name 
-        FROM latitude_extension le 
-        LEFT JOIN branches b ON le.branch_id = b.id 
-        WHERE le.is_active = 1 
-        ORDER BY le.uploaded_at DESC, le.related_aircraft, le.title
-    ");
-
-    if ($stmt) {
-        if ($stmt->execute()) {
-            $result = $stmt->get_result();
-            $latitude_extension_data = $result->fetch_all(MYSQLI_ASSOC);
-            $stmt->close();
-        } else {
-            $le_error = "Latitude & Extensions query execution failed: " . $stmt->error;
+        $t_res = $db->query("SELECT type_id, type_name FROM type");
+        if ($t_res) {
+            foreach ($t_res->fetch_all(MYSQLI_ASSOC) as $t) {
+                $types_map[$t['type_id']] = $t['type_name'];
+            }
         }
-    } else {
-        $le_error = "Error preparing Latitude & Extensions query: " . $db->error;
-    }
-}
 
-include '../template/head.php';
+        // Load ac_categories for aircraft competency categories
+        $ac_res = $db->query("SELECT id, name FROM ac_categories ORDER BY name");
+        if ($ac_res) {
+            foreach ($ac_res->fetch_all(MYSQLI_ASSOC) as $c) {
+                $ac_cat_map[$c['id']] = $c['name'];
+            }
+        }
+
+        // Fetch aircraft competency records and organize by ac_category
+        $stmt3 = $db->prepare("
+            SELECT ac.* 
+            FROM aircraft_competency ac 
+            ORDER BY ac.branch, ac.type_id, ac.name
+        ");
+
+        if ($stmt3) {
+            if ($stmt3->execute()) {
+                $result3 = $stmt3->get_result();
+                $all_records = $result3->fetch_all(MYSQLI_ASSOC);
+
+                // Organize by ac_category (branch field in aircraft_competency table)
+                foreach ($all_records as $record) {
+                    $category_id = $record['branch'] ?? 0;
+                    $category_name = $ac_cat_map[$category_id] ?? 'Uncategorized';
+
+                    if (!isset($aircraft_competency_data[$category_id])) {
+                        $aircraft_competency_data[$category_id] = [
+                            'category_name' => $category_name,
+                            'records' => []
+                        ];
+                    }
+                    $aircraft_competency_data[$category_id]['records'][] = $record;
+                }
+                $stmt3->close();
+            } else {
+                $ac_error = "Aircraft Competency query execution failed: " . $stmt3->error;
+            }
+        } else {
+            $ac_error = "Error preparing Aircraft Competency query: " . $db->error;
+        }
+
+        // Fetch Latitude & Extensions data
+        $stmt = $db->prepare("
+            SELECT le.*, b.name as branch_name 
+            FROM latitude_extension le 
+            LEFT JOIN branches b ON le.branch_id = b.id 
+            WHERE le.is_active = 1 
+            ORDER BY le.uploaded_at DESC, le.related_aircraft, le.title
+        ");
+
+        if ($stmt) {
+            if ($stmt->execute()) {
+                $result = $stmt->get_result();
+                $latitude_extension_data = $result->fetch_all(MYSQLI_ASSOC);
+                $stmt->close();
+            } else {
+                $le_error = "Latitude & Extensions query execution failed: " . $stmt->error;
+            }
+        } else {
+            $le_error = "Error preparing Latitude & Extensions query: " . $db->error;
+        }
+    }
+
+    // Include head template after all PHP processing
+    include '../template/head.php';
+
+    // Clear any previous output
+    ob_end_clean();
+} catch (Exception $e) {
+    // Handle any exceptions
+    ob_end_clean();
+    die("Error: " . $e->getMessage());
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -195,6 +191,8 @@ include '../template/head.php';
     <link href="../node_modules/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Swiper CSS -->
     <link rel="stylesheet" href="../assets/css/swiper-bundle.min.css" />
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="../node_modules/@fortawesome/fontawesome-free/css/all.min.css">
 
     <!-- Custom CSS -->
     <link rel="stylesheet" href="../assets/css/styles.css">
@@ -219,13 +217,6 @@ include '../template/head.php';
             color: white;
             text-decoration: none;
             margin-right: 15px;
-        }
-
-        .top-bar span.expiry {
-            float: right;
-            background: #333;
-            padding: 3px 6px;
-            border-radius: 4px;
         }
 
         .pdf-viewer-container {
@@ -294,11 +285,39 @@ include '../template/head.php';
             }
         }
 
-        .pdf-controls {
-            margin-bottom: 15px;
-            padding: 10px;
+        .welcome-message {
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .welcome-image {
+            max-width: 300px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+        }
+
+        .table-responsive {
+            margin-top: 15px;
+        }
+
+        .document-table th {
+            background-color: #f8f9fa;
+            border-bottom: 2px solid #dee2e6;
+        }
+
+        .no-documents {
+            text-align: center;
+            padding: 20px;
+            color: #6c757d;
+        }
+
+        .debug-info {
             background: #f8f9fa;
+            padding: 10px;
+            margin: 10px 0;
             border-radius: 5px;
+            font-size: 12px;
+            color: #6c757d;
         }
     </style>
 </head>
@@ -309,6 +328,7 @@ include '../template/head.php';
 
     <!-- Main Content -->
     <main class="container-fluid my-3 pt-3">
+
         <div class="main-container">
             <!-- Navigation Tabs -->
             <div class="nav-column">
@@ -322,17 +342,25 @@ include '../template/head.php';
                             <a class="qa-dropdown-item" data-bs-target="#qa_report" role="tab">QA Report</a>
                         </div>
                     </div>
-                    <!-- Aircraft Competency Dropdown -->
+
+                    <!-- Aircraft Competency Dropdown - Using ac_categories only -->
                     <div class="qa-dropdown">
                         <a class="nav-link qa-dropdown-toggle" role="button">Aircraft Competency</a>
                         <div class="qa-dropdown-menu">
-                            <a class="qa-dropdown-item" data-bs-target="#ac_cmpt_1" role="tab">AE</a>
-                            <a class="qa-dropdown-item" data-bs-target="#ac_cmpt_5" role="tab">GE</a>
-                            <a class="qa-dropdown-item" data-bs-target="#ac_cmpt_4" role="tab">EE</a>
+                            <?php if (!empty($ac_cat_map)): ?>
+                                <?php foreach ($ac_cat_map as $category_id => $category_name): ?>
+                                    <a class="qa-dropdown-item" data-bs-target="#ac_cmpt_<?= $category_id ?>" role="tab">
+                                        <?= htmlspecialchars($category_name) ?>
+                                    </a>
+                                <?php endforeach; ?>
+                            <?php else: ?>
+                                <a class="qa-dropdown-item text-muted">No categories found</a>
+                            <?php endif; ?>
                         </div>
                     </div>
-                    <!-- <a class="nav-link" data-bs-target="#ac" role="tab">Aircraft Competency</a> -->
+
                     <a class="nav-link" data-bs-target="#latitude" role="tab">Latitude & Extensions</a>
+
                     <!-- Modification / R&D Dropdown -->
                     <div class="qa-dropdown">
                         <a class="nav-link qa-dropdown-toggle" role="button">Modifications / R&D</a>
@@ -364,12 +392,12 @@ include '../template/head.php';
                             <p>Please select an option from the navigation menu to view the content.</p>
                         </div>
                     </div>
+
                     <!-- QA Audits Content Panes -->
                     <div class="tab-pane fade" id="audits_plan" role="tabpanel">
                         <?php if ($show_pdf): ?>
                             <div class="top-bar">
-                                <a href="?file=<?= $default_file ?>" class="btn btn-sm btn-dark">Audit Plan Document</a>
-                                <!--<span class="expiry">Expires on <?= date('F d, Y', strtotime('+1 year')) ?></span>-->
+                                <a href="?file=<?= $file ?>" class="btn btn-sm btn-dark">Audit Plan Document</a>
                             </div>
 
                             <!-- PDF.js Viewer -->
@@ -379,13 +407,11 @@ include '../template/head.php';
                                 </iframe>
                             </div>
                         <?php else: ?>
-                            <?php if (isset($error)): ?>
+                            <?php if (!empty($error)): ?>
                                 <div class="alert alert-danger"><?= $error ?></div>
                             <?php endif; ?>
-
                             <div class="alert alert-info">
                                 <p>No audit plan document is available at the moment.</p>
-                                <a href="?file=doc_1.pdf" class="btn btn-primary">Test with doc_1.pdf</a>
                             </div>
                         <?php endif; ?>
                     </div>
@@ -397,33 +423,37 @@ include '../template/head.php';
                             <div class="card">
                                 <div class="card-header">Audit Check Lists</div>
                                 <div class="card-body">
-                                    <?php if (!empty($qa_reports_error)): ?>
+                                    <?php if (!empty($qa_check_lists_error)): ?>
                                         <div class="alert alert-danger">
-                                            <strong>Database Error:</strong> <?= htmlspecialchars($qa_reports_error) ?>
+                                            <strong>Database Error:</strong> <?= htmlspecialchars($qa_check_lists_error) ?>
                                         </div>
                                     <?php elseif (!empty($qa_check_lists)): ?>
                                         <div class="table-responsive">
                                             <table class="table table-striped table-hover document-table">
                                                 <thead>
                                                     <tr>
+                                                        <th>Title</th>
                                                         <th>Description</th>
-                                                        <th>Check list Number</th>
-                                                        <!-- <th>Date Uploaded</th> -->
+                                                        <th>Date Uploaded</th>
                                                         <th>Action</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
                                                     <?php foreach ($qa_check_lists as $qa_check_list): ?>
                                                         <tr>
-                                                            <td><?= htmlspecialchars($qa_check_list['description'] ?? 'No description') ?></td>
                                                             <td><strong><?= htmlspecialchars($qa_check_list['title']) ?></strong></td>
-                                                            <!-- <td><?= date('M d, Y', strtotime($qa_check_list['uploaded_at'])) ?></td> -->
+                                                            <td><?= htmlspecialchars($qa_check_list['description'] ?? 'No description') ?></td>
+                                                            <td><?= date('M d, Y', strtotime($qa_check_list['uploaded_at'])) ?></td>
                                                             <!-- <td>
-                                                                <a href="/qai/assets/pdfjs/web/viewer.html?file=<?= urlencode('/qai/admin/action/' . $qa_check_list['file_path']) ?>"
-                                                                    target="_blank"
-                                                                    class="btn btn-primary btn-sm view-pdf-btn">
-                                                                    View PDF
-                                                                </a>
+                                                                <?php if (!empty($qa_check_list['file_path'])): ?>
+                                                                    <a href="/qai/assets/pdfjs/web/viewer.html?file=<?= urlencode('/qai/admin/action/' . $qa_check_list['file_path']) ?>"
+                                                                        target="_blank"
+                                                                        class="btn btn-primary btn-sm view-pdf-btn">
+                                                                        View PDF
+                                                                    </a>
+                                                                <?php else: ?>
+                                                                    <span class="text-muted">No file</span>
+                                                                <?php endif; ?>
                                                             </td> -->
                                                             <td>
                                                                 <a href="/qai/assets/pdfjs/web/viewer.html?file=<?= urlencode('/qai/admin/action/' . $qa_check_list['file_path']) ?>"
@@ -442,9 +472,6 @@ include '../template/head.php';
                                     <?php else: ?>
                                         <div class="no-documents">
                                             <p>No QA check lists available at the moment.</p>
-                                            <?php if (empty($qa_reports_error)): ?>
-                                                <p class="text-muted"><small>No documents found for QA category 1.</small></p>
-                                            <?php endif; ?>
                                         </div>
                                     <?php endif; ?>
                                 </div>
@@ -456,197 +483,175 @@ include '../template/head.php';
                         <h4 class="colour-defult">QA Report</h4>
                         <p>Quality assurance reports and analytics.</p>
                         <div class="mt-4">
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <!-- <div class="card">
-                                        <div class="card-header">Recent Reports</div>
-                                        <div class="card-body">
-                                            <ul class="list-group list-group-flush">
-                                                <li class="list-group-item">Q3 2023 Quality Metrics</li>
-                                                <li class="list-group-item">Safety Incident Report - August 2023</li>
-                                                <li class="list-group-item">Compliance Review - July 2023</li>
-                                            </ul>
+                            <div class="card">
+                                <div class="card-header">Recent Reports</div>
+                                <div class="card-body">
+                                    <?php if (!empty($qa_reports_error)): ?>
+                                        <div class="alert alert-danger">
+                                            <strong>Database Error:</strong> <?= htmlspecialchars($qa_reports_error) ?>
                                         </div>
-                                    </div> -->
-                                    <div class="card">
-                                        <div class="card-header">Recent Reports</div>
-                                        <div class="card-body">
-                                            <?php if (!empty($qa_reports_error)): ?>
-                                                <div class="alert alert-danger">
-                                                    <strong>Database Error:</strong> <?= htmlspecialchars($qa_reports_error) ?>
-                                                </div>
-                                            <?php elseif (!empty($qa_reports)): ?>
-                                                <div class="table-responsive">
-                                                    <table class="table table-striped table-hover document-table">
-                                                        <thead>
-                                                            <tr>
-                                                                <th>Location</th>
-                                                                <th>Description</th>
-                                                                <th>Date carried out</th>
-                                                                <!-- <th>Date Uploaded</th> -->
-                                                                <th>Action</th>
-                                                            </tr>
-                                                        </thead>
-                                                        <tbody>
-                                                            <?php foreach ($qa_reports as $report): ?>
-                                                                <tr>
-                                                                    <td><strong><?= htmlspecialchars($report['title']) ?></strong></td>
-                                                                    <td><?= htmlspecialchars($report['description'] ?? 'No description') ?></td>
-                                                                    <td><?= date('M d, Y', strtotime($report['uploaded_at'])) ?></td>
-                                                                    <!-- <td>
-                                                                        <a href="/qai/assets/pdfjs/web/viewer.html?file=<?= urlencode('/qai/admin/action/' . $report['file_path']) ?>"
-                                                                            target="_blank"
-                                                                            class="btn btn-primary btn-sm view-pdf-btn">
-                                                                            View PDF
-                                                                        </a>
-                                                                    </td> -->
-                                                                    <td>
-                                                                        <a href="/qai/assets/pdfjs/web/viewer.html?file=<?= urlencode('/qai/admin/action/' . $report['file_path']) ?>"
-                                                                            class="btn btn-primary btn-sm view-pdf-btn"
-                                                                            data-bs-toggle="modal"
-                                                                            data-bs-target="#pdfModal"
-                                                                            data-pdf-url="/qai/assets/pdfjs/web/viewer.html?file=<?= urlencode('/qai/admin/action/' . $report['file_path']) ?>">
-                                                                            View PDF
-                                                                        </a>
-                                                                    </td>
-                                                                </tr>
-                                                            <?php endforeach; ?>
-                                                        </tbody>
-                                                    </table>
-                                                </div>
-                                            <?php else: ?>
-                                                <div class="no-documents">
-                                                    <p>No QA reports available at the moment.</p>
-                                                    <?php if (empty($qa_reports_error)): ?>
-                                                        <p class="text-muted"><small>No documents found for QA category 2.</small></p>
-                                                    <?php endif; ?>
-                                                </div>
-                                            <?php endif; ?>
+                                    <?php elseif (!empty($qa_reports)): ?>
+                                        <div class="table-responsive">
+                                            <table class="table table-striped table-hover document-table">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Title</th>
+                                                        <th>Description</th>
+                                                        <th>Date Uploaded</th>
+                                                        <th>Action</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <?php foreach ($qa_reports as $report): ?>
+                                                        <tr>
+                                                            <td><strong><?= htmlspecialchars($report['title']) ?></strong></td>
+                                                            <td><?= htmlspecialchars($report['description'] ?? 'No description') ?></td>
+                                                            <td><?= date('M d, Y', strtotime($report['uploaded_at'])) ?></td>
+                                                            <!-- <td>
+                                                                <?php if (!empty($report['file_path'])): ?>
+                                                                    <a href="/qai/assets/pdfjs/web/viewer.html?file=<?= urlencode('/qai/admin/action/' . $report['file_path']) ?>"
+                                                                        target="_blank"
+                                                                        class="btn btn-primary btn-sm view-pdf-btn">
+                                                                        View PDF
+                                                                    </a>
+                                                                <?php else: ?>
+                                                                    <span class="text-muted">No file</span>
+                                                                <?php endif; ?>
+                                                            </td> -->
+                                                            <td>
+                                                                <a href="/qai/assets/pdfjs/web/viewer.html?file=<?= urlencode('/qai/admin/action/' . $report['file_path']) ?>"
+                                                                    class="btn btn-primary btn-sm view-pdf-btn"
+                                                                    data-bs-toggle="modal"
+                                                                    data-bs-target="#pdfModal"
+                                                                    data-pdf-url="/qai/assets/pdfjs/web/viewer.html?file=<?= urlencode('/qai/admin/action/' . $report['file_path']) ?>">
+                                                                    View PDF
+                                                                </a>
+                                                            </td>
+                                                        </tr>
+                                                    <?php endforeach; ?>
+                                                </tbody>
+                                            </table>
                                         </div>
-                                    </div>
+                                    <?php else: ?>
+                                        <div class="no-documents">
+                                            <p>No QA reports available at the moment.</p>
+                                        </div>
+                                    <?php endif; ?>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Other tab panes -->
-                    <!-- <div class="tab-pane fade" id="ac" role="tabpanel">
-                        <h4 class="colour-defult">Aircraft Competency</h4>
-                        <p>This section contains Aircraft Competency information and certification records.</p>
-                        <div class="alert alert-info mt-3">
-                            <strong>Note:</strong> All aircraft certifications are up to date as of September 2023.
-                        </div>
-                    </div> -->
+                    <!-- Aircraft Competency Tab Panes - Using ac_categories only -->
+                    <?php if (!empty($ac_cat_map)): ?>
+                        <?php foreach ($ac_cat_map as $category_id => $category_name): ?>
+                            <div class="tab-pane fade" id="ac_cmpt_<?= $category_id ?>" role="tabpanel">
+                                <h4 class="colour-defult">Aircraft Competency - <?= htmlspecialchars($category_name) ?></h4>
 
-                    <!-- Aircraft Competency Dropdown -->
-                    <!-- <div class="qa-dropdown">
-                        <a class="nav-link qa-dropdown-toggle" role="button">Aircraft Competencyi</a>
-                        <div class="qa-dropdown-menu">
-                            <?php foreach ($branch_mappings as $branch_id => $branch_name): ?>
-                                <a class="qa-dropdown-item" data-bs-target="#ac_cmpt_<?= $branch_id ?>" role="tab">
-                                    <?= htmlspecialchars($branch_name) ?>
-                                </a>
-                            <?php endforeach; ?>
-                        </div>
-                    </div> -->
-
-                    <!-- Aircraft Competency Tab Panes -->
-                    <?php foreach ($branch_mappings as $branch_id => $branch_name): ?>
-                        <div class="tab-pane fade" id="ac_cmpt_<?= $branch_id ?>" role="tabpanel">
-                            <h4 class="colour-defult">Aircraft Competency - <?= htmlspecialchars($branch_name) ?></h4>
-                            <p>This section contains Aircraft Competency information and certification records for <?= htmlspecialchars($branch_name) ?>.</p>
-
-                            <div class="mt-4">
-                                <?php if (!empty($ac_error)): ?>
-                                    <div class="alert alert-danger">
-                                        <strong>Database Error:</strong> <?= htmlspecialchars($ac_error) ?>
-                                    </div>
-                                <?php elseif (isset($aircraft_competency_data[$branch_id]) && !empty($aircraft_competency_data[$branch_id]['records'])): ?>
-                                    <div class="card">
-                                        <div class="card-header bg-primary text-white">
-                                            <h5 class="mb-0">
-                                                <i class="fas fa-plane me-2"></i>
-                                                <?= htmlspecialchars($branch_name) ?> - Competency Records
-                                                <span class="badge bg-light text-dark ms-2">
-                                                    <?= count($aircraft_competency_data[$branch_id]['records']) ?> records
-                                                </span>
-                                            </h5>
+                                <div class="mt-4">
+                                    <?php if (!empty($ac_error)): ?>
+                                        <div class="alert alert-danger">
+                                            <strong>Database Error:</strong> <?= htmlspecialchars($ac_error) ?>
                                         </div>
-                                        <div class="card-body p-0">
-                                            <div class="table-responsive">
-                                                <table class="table table-striped table-hover mb-0">
-                                                    <thead class="table-light">
-                                                        <tr>
-                                                            <th>SVC No</th>
-                                                            <th>Rank</th>
-                                                            <th>Name</th>
-                                                            <th>Aircraft Type</th>
-                                                            <th>Last Competency</th>
-                                                            <th>Renewal Date</th>
-                                                            <th>Currency</th>
-                                                            <th>Squadron</th>
-                                                            <th>Document</th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                        <?php foreach ($aircraft_competency_data[$branch_id]['records'] as $record): ?>
-                                                            <tr>
-                                                                <td><strong><?= htmlspecialchars($record['svc_no']) ?></strong></td>
-                                                                <td><?= htmlspecialchars($record['rank']) ?></td>
-                                                                <td><?= htmlspecialchars($record['name']) ?></td>
-                                                                <td>
-                                                                    <span class="badge bg-info"><?= htmlspecialchars($record['aircraft_type']) ?></span>
-                                                                </td>
-                                                                <td><?= htmlspecialchars($record['last_level_of_competency']) ?></td>
-                                                                <td>
-                                                                    <?php
-                                                                    $renewal_date = new DateTime($record['renewal_date']);
-                                                                    $today = new DateTime();
-                                                                    $days_until_renewal = $today->diff($renewal_date)->days;
-                                                                    $is_expired = $renewal_date < $today;
-                                                                    ?>
-                                                                    <span class="badge <?= $is_expired ? 'bg-danger' : ($days_until_renewal <= 30 ? 'bg-warning' : 'bg-success') ?>">
-                                                                        <?= date('M d, Y', strtotime($record['renewal_date'])) ?>
-                                                                    </span>
-                                                                </td>
-                                                                <td>
-                                                                    <span class="badge <?= $record['currency'] === 'Current' ? 'bg-success' : 'bg-secondary' ?>">
-                                                                        <?= htmlspecialchars($record['currency']) ?>
-                                                                    </span>
-                                                                </td>
-                                                                <td><?= htmlspecialchars($record['squadron']) ?></td>
-                                                                <td>
-                                                                    <?php if (!empty($record['file_path']) && file_exists("../admin/action/" . $record['file_path'])): ?>
-                                                                        <a href="/qai/assets/pdfjs/web/viewer.html?file=<?= urlencode('/qai/admin/action/' . $record['file_path']) ?>"
-                                                                            target="_blank"
-                                                                            class="btn btn-sm btn-outline-primary">
-                                                                            <i class="fas fa-file-pdf"></i> View
-                                                                        </a>
-                                                                    <?php else: ?>
-                                                                        <span class="text-muted">No document</span>
-                                                                    <?php endif; ?>
-                                                                </td>
+                                    <?php elseif (isset($aircraft_competency_data[$category_id]) && !empty($aircraft_competency_data[$category_id]['records'])): ?>
+                                        <div class="card">
+                                            <div class="card-body p-0">
+                                                <div class="table-responsive">
+                                                    <table class="table table-striped table-hover mb-0">
+                                                        <thead>
+                                                            <tr class="<?= $index % 2 === 0 ? 'bg-white' : 'bg-light-blue' ?>">
+                                                                <th>SVC No</th>
+                                                                <th>Rank</th>
+                                                                <th>Name</th>
+                                                                <th>Trade</th>
+                                                                <th>Formation</th>
+                                                                <th>Posted In Date</th>
+                                                                <th>Aircraft Type</th>
+                                                                <!-- <th>Type</th> -->
+                                                                <th>Competency Level</th>
+                                                                <th>Competency Issue Ref</th>
+                                                                <!-- <th>Com Issue Date</th>
+                                                                <th>Competency Renew Ref</th>
+                                                                <th>Renew Date</th>
+                                                                <th>Certificate No</th>
+                                                                <th>Cer Issued Date</th> -->
                                                             </tr>
-                                                        <?php endforeach; ?>
-                                                    </tbody>
-                                                </table>
+                                                        </thead>
+                                                        <tbody>
+                                                            <?php foreach ($aircraft_competency_data[$category_id]['records'] as $record): ?>
+                                                                <tr>
+                                                                    <td><strong><?= htmlspecialchars($record['svc_no'] ?? '') ?></strong></td>
+                                                                    <td><?= htmlspecialchars($record['rank'] ?? '') ?></td>
+                                                                    <td><?= htmlspecialchars($record['name'] ?? '') ?></td>
+                                                                    <td><?= htmlspecialchars($record['trade'] ?? '') ?></td>
+                                                                    <td><?= htmlspecialchars($formations_map[$record['formation_id']] ?? $record['formation'] ?? '') ?></td>
+                                                                    <td><?= htmlspecialchars($record['posted_in_date'] ?? '') ?></td>
+                                                                    <td><?= htmlspecialchars($types_map[$record['type_id']] ?? $record['aircraft_type'] ?? '') ?></td>
+                                                                    <!-- <td><?= htmlspecialchars($record['type_id'] ?? '') ?></td> -->
+                                                                    <td><?= htmlspecialchars($record['competency_level'] ?? '') ?></td>
+                                                                    <td><?= htmlspecialchars($record['competency_issue_ref'] ?? '') ?></td>
+                                                                    <!-- <td><?= htmlspecialchars($record['com_issue_date'] ?? '') ?></td>
+                                                                    <td><?= htmlspecialchars($record['competency_renew_ref'] ?? '') ?></td>
+                                                                    <td><?= htmlspecialchars($record['renew_date'] ?? '') ?></td>
+                                                                    <td><?= htmlspecialchars($record['certificate_no'] ?? '') ?></td>
+                                                                    <td><?= htmlspecialchars($record['cer_issued_date'] ?? '') ?></td> -->
+                                                                </tr>
+                                                            <?php endforeach; ?>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
                                             </div>
-                                        </div>
-                                    </div>
-                                <?php else: ?>
-                                    <div class="alert alert-info">
-                                        <i class="fas fa-info-circle me-2"></i>
-                                        No aircraft competency records found for <?= htmlspecialchars($branch_name) ?>.
-                                    </div>
-                                <?php endif; ?>
-                            </div>
-                        </div>
-                    <?php endforeach; ?>
+                                            <style>
+                                                .bg-light-blue {
+                                                    background-color: #f0f8ff !important;
+                                                }
 
-                    <!-- <div class="tab-pane fade" id="latitude" role="tabpanel">
-                        <h4 class="colour-defult">Latitude & Extensions</h4>
-                        <p>Information regarding latitude approvals and extension requests.</p>
-                    </div> -->
+                                                .bg-white {
+                                                    background-color: #ffffff !important;
+                                                }
+
+                                                .table tbody tr:hover {
+                                                    background-color: #e3f2fd !important;
+                                                }
+
+                                                .table th {
+                                                    background-color: #839abdff;
+                                                    color: white;
+                                                    font-weight: 600;
+                                                    border: none;
+                                                }
+
+                                                .table td {
+                                                    border-bottom: 1px solid #dee2e6;
+                                                    padding: 12px 8px;
+                                                    vertical-align: middle;
+                                                }
+                                            </style>
+                                        </div>
+                                    <?php else: ?>
+                                        <div class="alert alert-info">
+                                            <i class="fas fa-info-circle me-2"></i>
+                                            No aircraft competency records found for <?= htmlspecialchars($category_name) ?>.
+                                            <?php
+                                            // Debug information
+                                            echo "<br><small>Category ID: $category_id | ";
+                                            echo "Total records in data: " . count($aircraft_competency_data) . " | ";
+                                            echo "Records for this category: " . (isset($aircraft_competency_data[$category_id]) ? count($aircraft_competency_data[$category_id]['records']) : '0');
+                                            echo "</small>";
+                                            ?>
+                                        </div>
+                                    <?php endif; ?>
+                                </div>
+                            </div>
+                        <?php endforeach; ?>
+                    <?php else: ?>
+                        <div class="alert alert-warning">
+                            <i class="fas fa-exclamation-triangle me-2"></i>
+                            No aircraft categories found in the system.
+                        </div>
+                    <?php endif; ?>
+
+                    <!-- Latitude & Extensions Tab -->
                     <div class="tab-pane fade" id="latitude" role="tabpanel">
                         <h4 class="colour-defult">Latitude & Extensions</h4>
                         <p class="text-muted">Information regarding latitude approvals and extension requests.</p>
@@ -735,103 +740,15 @@ include '../template/head.php';
                         </div>
                     </div>
 
-                    <!-- Individual Branch Tabs -->
-                    <?php foreach ($branch_mappings as $branch_id => $branch_name): ?>
-                        <div class="tab-pane fade" id="latitude_<?= $branch_id ?>" role="tabpanel">
-                            <h4 class="colour-defult">Latitude & Extensions - <?= htmlspecialchars($branch_name) ?></h4>
-                            <p>Latitude approvals and extension requests for <?= htmlspecialchars($branch_name) ?>.</p>
-
-                            <div class="mt-4">
-                                <?php if (!empty($le_error)): ?>
-                                    <div class="alert alert-danger">
-                                        <strong>Database Error:</strong> <?= htmlspecialchars($le_error) ?>
-                                    </div>
-                                <?php elseif (isset($latitude_extension_data[$branch_id]) && !empty($latitude_extension_data[$branch_id]['records'])): ?>
-                                    <div class="card">
-                                        <div class="card-header bg-info text-white">
-                                            <h5 class="mb-0">
-                                                <i class="fas fa-expand-alt me-2"></i>
-                                                <?= htmlspecialchars($branch_name) ?> - Latitude Records
-                                                <span class="badge bg-light text-dark ms-2">
-                                                    <?= count($latitude_extension_data[$branch_id]['records']) ?> records
-                                                </span>
-                                            </h5>
-                                        </div>
-                                        <div class="card-body p-0">
-                                            <div class="table-responsive">
-                                                <table class="table table-striped table-hover mb-0">
-                                                    <thead class="table-light">
-                                                        <tr>
-                                                            <th>Title</th>
-                                                            <th>Description</th>
-                                                            <th>Latitude Description</th>
-                                                            <th>Related Aircraft</th>
-                                                            <th>Latitude Period</th>
-                                                            <th>Upload Date</th>
-                                                            <th>Document</th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                        <?php foreach ($latitude_extension_data[$branch_id]['records'] as $record): ?>
-                                                            <tr>
-                                                                <td>
-                                                                    <strong><?= htmlspecialchars($record['title']) ?></strong>
-                                                                </td>
-                                                                <td>
-                                                                    <?= !empty($record['description']) ? htmlspecialchars($record['description']) : '<span class="text-muted">No description</span>' ?>
-                                                                </td>
-                                                                <td><?= htmlspecialchars($record['latitude_description']) ?></td>
-                                                                <td>
-                                                                    <span class="badge bg-primary"><?= htmlspecialchars($record['related_aircraft']) ?></span>
-                                                                </td>
-                                                                <td>
-                                                                    <span class="badge bg-warning text-dark"><?= htmlspecialchars($record['latitude_period']) ?></span>
-                                                                </td>
-                                                                <td>
-                                                                    <small class="text-muted">
-                                                                        <?= date('M d, Y', strtotime($record['uploaded_at'])) ?>
-                                                                    </small>
-                                                                </td>
-                                                                <td>
-                                                                    <?php if (!empty($record['file_path']) && file_exists("../admin/action/" . $record['file_path'])): ?>
-                                                                        <a href="/qai/assets/pdfjs/web/viewer.html?file=<?= urlencode('/qai/admin/action/' . $record['file_path']) ?>"
-                                                                            target="_blank"
-                                                                            class="btn btn-sm btn-outline-primary">
-                                                                            <i class="fas fa-file-pdf"></i> View
-                                                                        </a>
-                                                                    <?php else: ?>
-                                                                        <span class="text-muted">No document</span>
-                                                                    <?php endif; ?>
-                                                                </td>
-                                                            </tr>
-                                                        <?php endforeach; ?>
-                                                    </tbody>
-                                                </table>
-                                            </div>
-                                        </div>
-                                    </div>
-                                <?php else: ?>
-                                    <div class="alert alert-info">
-                                        <i class="fas fa-info-circle me-2"></i>
-                                        No latitude and extension records found for <?= htmlspecialchars($branch_name) ?>.
-                                    </div>
-                                <?php endif; ?>
-                            </div>
-                        </div>
-                    <?php endforeach; ?>
-
                     <!-- Modification / R&D Tab Panes -->
                     <div class="tab-pane fade" id="modification" role="tabpanel">
                         <h4 class="colour-defult">Modification</h4>
                         <p>Documentation and records related to aircraft and equipment modifications.</p>
-
                         <div class="mt-4">
                             <div class="alert alert-info">
                                 <i class="fas fa-info-circle me-2"></i>
                                 Modification records and documentation will be displayed here.
                             </div>
-
-                            <!-- Add your modification content here -->
                             <div class="card">
                                 <div class="card-header bg-primary text-white">
                                     <h5 class="mb-0">
@@ -841,7 +758,6 @@ include '../template/head.php';
                                 </div>
                                 <div class="card-body">
                                     <p class="text-muted">Modification data will be loaded here...</p>
-                                    <!-- Table or cards for modification records -->
                                 </div>
                             </div>
                         </div>
@@ -850,14 +766,11 @@ include '../template/head.php';
                     <div class="tab-pane fade" id="rnd" role="tabpanel">
                         <h4 class="colour-defult">Research & Development</h4>
                         <p>Research projects, development initiatives, and innovation records.</p>
-
                         <div class="mt-4">
                             <div class="alert alert-info">
                                 <i class="fas fa-info-circle me-2"></i>
                                 R&D projects and research documentation will be displayed here.
                             </div>
-
-                            <!-- Add your R&D content here -->
                             <div class="card">
                                 <div class="card-header bg-success text-white">
                                     <h5 class="mb-0">
@@ -867,7 +780,6 @@ include '../template/head.php';
                                 </div>
                                 <div class="card-body">
                                     <p class="text-muted">R&D project data will be loaded here...</p>
-                                    <!-- Table or cards for R&D projects -->
                                 </div>
                             </div>
                         </div>
@@ -877,14 +789,11 @@ include '../template/head.php';
                     <div class="tab-pane fade" id="vehicle_annual_plans" role="tabpanel">
                         <h4 class="colour-defult">Vehicle Emission Test - Annual Plans</h4>
                         <p>Annual testing schedules, plans, and compliance documentation for vehicle emission tests.</p>
-
                         <div class="mt-4">
                             <div class="alert alert-info">
                                 <i class="fas fa-info-circle me-2"></i>
                                 Annual emission test plans and schedules will be displayed here.
                             </div>
-
-                            <!-- Add your annual plans content here -->
                             <div class="card">
                                 <div class="card-header bg-warning text-dark">
                                     <h5 class="mb-0">
@@ -894,7 +803,6 @@ include '../template/head.php';
                                 </div>
                                 <div class="card-body">
                                     <p class="text-muted">Annual emission test plans will be loaded here...</p>
-                                    <!-- Table or cards for annual plans -->
                                 </div>
                             </div>
                         </div>
@@ -903,14 +811,11 @@ include '../template/head.php';
                     <div class="tab-pane fade" id="vehicle_test_reports" role="tabpanel">
                         <h4 class="colour-defult">Vehicle Emission Test - Test Reports</h4>
                         <p>Detailed test reports, results, and compliance certificates for vehicle emission testing.</p>
-
                         <div class="mt-4">
                             <div class="alert alert-info">
                                 <i class="fas fa-info-circle me-2"></i>
                                 Vehicle emission test reports and results will be displayed here.
                             </div>
-
-                            <!-- Add your test reports content here -->
                             <div class="card">
                                 <div class="card-header bg-info text-white">
                                     <h5 class="mb-0">
@@ -920,7 +825,6 @@ include '../template/head.php';
                                 </div>
                                 <div class="card-body">
                                     <p class="text-muted">Emission test reports will be loaded here...</p>
-                                    <!-- Table or cards for test reports -->
                                 </div>
                             </div>
                         </div>
@@ -966,7 +870,6 @@ include '../template/head.php';
             pdfModal.addEventListener('hidden.bs.modal', function() {
                 pdfFrame.src = ""; // Clear iframe to stop PDF from running
             });
-
             // Set initial active tab to welcome screen
             const welcomePane = document.querySelector('#welcome');
             if (welcomePane) {

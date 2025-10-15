@@ -4,7 +4,7 @@
 define('DB_HOST', 'localhost');
 define('DB_USER', 'root');
 define('DB_PASS', 'Sac@123');
-define('DB_NAME', 'cqai-j');
+define('DB_NAME', 'cqai-s');
 
 // Application Settings
 define('SITE_NAME', 'Quality Inspectorate');
@@ -31,11 +31,11 @@ if (session_status() === PHP_SESSION_NONE) {
 // Database Connection
 try {
     $db = new mysqli(DB_HOST, DB_USER, DB_PASS, DB_NAME);
-    
+
     if ($db->connect_error) {
         throw new Exception("Database connection failed: " . $db->connect_error);
     }
-    
+
     $db->set_charset("utf8mb4");
 } catch (Exception $e) {
     error_log($e->getMessage());
@@ -60,4 +60,3 @@ header("Content-Security-Policy: default-src 'self';
     img-src 'self' data: https:;
     font-src 'self' https://cdnjs.cloudflare.com;
     frame-src https://docs.google.com");
-?>

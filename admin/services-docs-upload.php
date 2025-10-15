@@ -33,88 +33,88 @@ $branches = $db->query("SELECT id, name FROM branches ORDER BY name")->fetch_all
         ?>
 
         <div class="content-body">
-        <div class="container-fluid">
-            <div class="row">
-                <form method="post" enctype="multipart/form-data" action="action/services-doc-process.php">
+            <div class="container-fluid">
+                <div class="row">
+                    <form method="post" enctype="multipart/form-data" action="action/services-doc-process.php">
 
-                    <!-- Service Category Dropdown -->
-                    <div class="form-group">
-                        <label for="service_category_id" class="required-label">Services Category</label>
-                        <select name="service_category_id" class="form-control input-default" id="service_category_id" required onchange="toggleDynamicFields()">
-                            <option value="">Select a category</option>
-                            <option value="1">Quality Assurance Audits</option>
-                            <option value="2">Aircraft Competency</option>
-                            <option value="3">Latitudes & Extensions</option>
-                            <option value="4">Modifications R&D Projects</option>
-                            <option value="5">Vehicle Emission Test</option>
-                        </select>
-                    </div>
-                    
-                    <!-- Title -->
-                    <div class="form-group">
-                        <label for="title" class="required-label">Title</label>
-                        <input type="text" class="form-control input-default" id="title" name="title" required value="">
-                    </div>
+                        <!-- Service Category Dropdown -->
+                        <div class="form-group">
+                            <label for="service_category_id" class="required-label">Services Category</label>
+                            <select name="service_category_id" class="form-control input-default" id="service_category_id" required onchange="toggleDynamicFields()">
+                                <option value="" selected disabled>Select a category</option>
+                                <option value="1">Quality Assurance Audits</option>
+                                <option value="2">Aircraft Competency</option>
+                                <option value="3">Latitudes & Extensions</option>
+                                <option value="4">Modifications R&D Projects</option>
+                                <option value="5">Vehicle Emission Test</option>
+                            </select>
+                        </div>
 
-                    <!-- Description -->
-                    <div class="form-group">
-                        <label for="description">Description</label>
-                        <textarea class="form-control input-rounded" id="description" name="description" rows="3"></textarea>
-                    </div>
-                    
-                    <input type="hidden" id="main" name="main" value="services">
+                        <!-- Title -->
+                        <div class="form-group">
+                            <label for="title" class="required-label">Title</label>
+                            <input type="text" class="form-control input-default" id="title" name="title" required value="">
+                        </div>
 
-                    <!-- QA Category Dropdown (Initially Hidden) -->
-                    <div class="form-group" id="qa_category_container" style="display: none;">
-                        <label for="qa_category_id" class="required-label">QA Category</label>
-                        <select name="qa_category_id" class="form-control input-default" id="qa_category_id">
-                            <option value="">Select a QA category</option>
-                            <option value="1">Audit Checklists</option>
-                            <option value="2">Audit Reports</option>
-                            <option value="3">Audit Plans</option>
-                        </select>
-                    </div>
-                    
-                    <!-- Branch Dropdown -->
-                    <div class="form-group" id="branch_container">
-                        <label for="branch_id">Branch</label>
-                        <select name="branch_id" class="form-control input-default" id="branch_id">
-                            <option value="">Select a branch</option>
-                            <option value="1">Aeronautical Engineering</option>
-                            <option value="2">Air Operations</option>
-                            <option value="3">Construction Engineering</option>
-                            <option value="4">Electronic Engineering</option>
-                            <option value="5">General Engineering</option>
-                            <option value="6">Ground Operations</option>
-                            <option value="7">Productivity Management</option>
-                            <option value="8">Training</option>
-                        </select>
-                    </div>
+                        <!-- Description -->
+                        <div class="form-group">
+                            <label for="description">Description</label>
+                            <textarea class="form-control input-rounded" id="description" name="description" rows="3"></textarea>
+                        </div>
 
-                    <!-- Dynamic Fields Section -->
-                    <div id="dynamic_fields">
-                        <!-- Fields will be inserted here based on category selection -->
-                    </div>
+                        <input type="hidden" id="main" name="main" value="services">
 
-                    <!-- Document File Upload -->
-                    <div class="form-group">
-                        <label for="document" class="required-label">Document File</label>
-                        <input type="file" class="form-control input-default" id="document" name="document" accept=".pdf,.docx,.xlsx" required>
-                        <small class="text-muted">
-                            Max file size: 5MB. Allowed types: PDF, DOCX, XLSX
-                        </small>
-                    </div>
+                        <!-- QA Category Dropdown (Initially Hidden) -->
+                        <div class="form-group" id="qa_category_container" style="display: none;">
+                            <label for="qa_category_id" class="required-label">QA Category</label>
+                            <select name="qa_category_id" class="form-control input-default" id="qa_category_id">
+                                <option value="" selected disabled>Select a QA category</option>
+                                <option value="1">Audit Checklists</option>
+                                <option value="2">Audit Reports</option>
+                                <option value="3">Audit Plans</option>
+                            </select>
+                        </div>
 
-                    <!-- Submit Button -->
-                    <div>
-                        <button type="submit" class="btn btn-primary">
-                            <i class="fas fa-upload"></i> Upload Document
-                        </button>
-                    </div>
-                </form>
+                        <!-- Branch Dropdown -->
+                        <div class="form-group" id="branch_container">
+                            <label for="branch_id">Branch</label>
+                            <select name="branch_id" class="form-control input-default" id="branch_id">
+                                <option value="" selected disabled>Select a branch</option>
+                                <option value="1">Aeronautical Engineering</option>
+                                <option value="2">Air Operations</option>
+                                <option value="3">Construction Engineering</option>
+                                <option value="4">Electronic Engineering</option>
+                                <option value="5">General Engineering</option>
+                                <option value="6">Ground Operations</option>
+                                <option value="7">Productivity Management</option>
+                                <option value="8">Training</option>
+                            </select>
+                        </div>
+
+                        <!-- Dynamic Fields Section -->
+                        <div id="dynamic_fields">
+                            <!-- Fields will be inserted here based on category selection -->
+                        </div>
+
+                        <!-- Document File Upload -->
+                        <div class="form-group">
+                            <label for="document" class="required-label">Document File</label>
+                            <input type="file" class="form-control input-default" id="document" name="document" accept=".pdf,.docx,.xlsx" required>
+                            <small class="text-muted">
+                                Max file size: 5MB. Allowed types: PDF, DOCX, XLSX
+                            </small>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <div>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-upload"></i> Upload Document
+                            </button>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
-    </div>
 
         <?php
         include "template/footer.php";
@@ -142,17 +142,18 @@ $branches = $db->query("SELECT id, name FROM branches ORDER BY name")->fetch_all
             const branchSelect = document.getElementById('branch_id');
             const dynamicFields = document.getElementById('dynamic_fields');
             const documentInput = document.getElementById('document');
-            
+
             // Show QA category dropdown only if "Quality Assurance Audits" is selected (ID = 1)
             if (serviceCategory.value == '1') {
+                alert(serviceCategory.value);
                 qaCategoryContainer.style.display = 'block';
                 qaCategorySelect.setAttribute('required', 'required');
             } else {
                 qaCategoryContainer.style.display = 'none';
                 qaCategorySelect.removeAttribute('required');
-                qaCategorySelect.value = ''; // Clear selection
+                qaCategorySelect.value = '';
             }
-            
+
             // Show branch dropdown only for specific categories
             if (serviceCategory.value == '1' || serviceCategory.value == '3' || serviceCategory.value == '2') {
                 branchContainer.style.display = 'block';
@@ -162,10 +163,10 @@ $branches = $db->query("SELECT id, name FROM branches ORDER BY name")->fetch_all
                 branchSelect.removeAttribute('required');
                 branchSelect.value = ''; // Clear selection
             }
-            
-            // Clear previous dynamic fields
+
+
             dynamicFields.innerHTML = '';
-            
+
             // Add fields based on selected category
             if (serviceCategory.value == '2') { // Aircraft Competency
                 documentInput.removeAttribute('required');
@@ -252,7 +253,7 @@ $branches = $db->query("SELECT id, name FROM branches ORDER BY name")->fetch_all
                 `;
             }
         }
-        
+
         // Initialize on page load
         document.addEventListener('DOMContentLoaded', function() {
             toggleDynamicFields();
