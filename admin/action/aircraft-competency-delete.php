@@ -14,19 +14,28 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST' || !isset($_POST['id'])) {
 
 $id = intval($_POST['id']);
 
-$stmt = $db->prepare("DELETE FROM aircraft_competency WHERE record_id = ? OR id = ?");
-if (!$stmt) {
-    error_log('Prepare failed: ' . $db->error);
-    header('Location: ../aircraft-competency.php?error=prepare');
-    exit();
-}
+// Debug log
+error_log("Attempting to delete aircraft competency record with record_id: " . $id);
 
-$stmt->bind_param('ii', $id, $id);
-if ($stmt->execute()) {
-    header('Location: ../aircraft-competency.php?deleted=1');
-    exit();
-} else {
-    error_log('Delete failed: ' . $stmt->error);
+try {
+    // Use record_id as the primary key (based on your table structure)
+    $stmt = $db->prepare("DELETE FROM aircraft_competency WHERE record_id = ?");
+    
+    if (!$stmt) {
+        throw new Exception('Prepare failed: ' . $db->error);
+    }
+
+    $stmt->bind_param('i', $id);
+    
+    if ($stmt->execute()) {
+        error_log("Successfully deleted aircraft competency record with record_id: " . $id);
+        header('Location: ../aircraft-competency.php?deleted=1');
+        exit();
+    } else {
+        throw new Exception('Execute failed: ' . $stmt->error);
+    }
+} catch (Exception $e) {
+    error_log('Error in aircraft-competency-delete.php: ' . $e->getMessage());
     header('Location: ../aircraft-competency.php?error=delete');
     exit();
 }
