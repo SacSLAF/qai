@@ -421,18 +421,18 @@ try {
                                             <table class="table table-striped table-hover document-table">
                                                 <thead>
                                                     <tr>
-                                                        <th>Title</th>
                                                         <th>Description</th>
-                                                        <th>Date Uploaded</th>
+                                                        <th>Checklist Number</th>
+                                                        <!-- <th>Date Uploaded</th> -->
                                                         <th>Action</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
                                                     <?php foreach ($qa_check_lists as $qa_check_list): ?>
                                                         <tr>
-                                                            <td><strong><?= htmlspecialchars($qa_check_list['title']) ?></strong></td>
                                                             <td><?= htmlspecialchars($qa_check_list['description'] ?? 'No description') ?></td>
-                                                            <td><?= date('M d, Y', strtotime($qa_check_list['uploaded_at'])) ?></td>
+                                                            <td><strong><?= htmlspecialchars($qa_check_list['title']) ?></strong></td>
+                                                            <!-- <td><?= date('M d, Y', strtotime($qa_check_list['uploaded_at'])) ?></td> -->
                                                             <!-- <td>
                                                                 <?php if (!empty($qa_check_list['file_path'])): ?>
                                                                     <a href="/qai/assets/pdfjs/web/viewer.html?file=<?= urlencode('/qai/admin/action/' . $qa_check_list['file_path']) ?>"
@@ -484,9 +484,9 @@ try {
                                             <table class="table table-striped table-hover document-table">
                                                 <thead>
                                                     <tr>
-                                                        <th>Title</th>
+                                                        <th>Location</th>
                                                         <th>Description</th>
-                                                        <th>Date Uploaded</th>
+                                                        <th>Date Carried out</th>
                                                         <th>Action</th>
                                                     </tr>
                                                 </thead>
