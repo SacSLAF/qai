@@ -182,9 +182,9 @@ include '../template/head.php';
                     <!-- Welcome Screen (shown by default) -->
                     <div class="tab-pane fade show active" id="welcome" role="tabpanel">
                         <div class="welcome-message">
-                            <img src="../assets/images/qai-welcome.jpg" alt="Quality Assurance Inspectorate" class="welcome-image">
-                            <h4>Welcome to Command Quality Assurance Inspectorate</h4>
-                            <p>Please select an option from the navigation menu to view the content.</p>
+                            <img src="../assets/img/qai-welcome.jpg" alt="Quality Assurance Inspectorate" class="welcome-image">
+                            <!-- <h4>Welcome to Command Quality Assurance Inspectorate</h4> -->
+                            <!-- <p>Please select an option from the navigation menu to view the content.</p> -->
                         </div>
                     </div>
                     <!-- Other tab panes -->

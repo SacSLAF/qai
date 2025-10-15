@@ -284,17 +284,6 @@ try {
             }
         }
 
-        .welcome-message {
-            text-align: center;
-            padding: 40px 20px;
-        }
-
-        .welcome-image {
-            max-width: 300px;
-            margin-bottom: 20px;
-            border-radius: 8px;
-        }
-
         .table-responsive {
             margin-top: 15px;
         }
@@ -389,9 +378,9 @@ try {
                     <!-- Welcome Screen (shown by default) -->
                     <div class="tab-pane fade show active" id="welcome" role="tabpanel">
                         <div class="welcome-message">
-                            <img src="../assets/images/qai-welcome.jpg" alt="Quality Assurance Inspectorate" class="welcome-image">
-                            <h4>Welcome to Command Quality Assurance Inspectorate</h4>
-                            <p>Please select an option from the navigation menu to view the content.</p>
+                            <img src="../assets/img/qai-welcome.jpg" alt="Quality Assurance Inspectorate" class="welcome-image">
+                            <!-- <h4>Welcome to Command Quality Assurance Inspectorate</h4> -->
+                            <!-- <p>Please select an option from the navigation menu to view the content.</p> -->
                         </div>
                     </div>
 
@@ -434,18 +423,29 @@ try {
                                             <table class="table table-striped table-hover document-table">
                                                 <thead>
                                                     <tr>
-                                                        <th>Title</th>
                                                         <th>Description</th>
-                                                        <th>Date Uploaded</th>
+                                                        <th>Checklist Number</th>
+                                                        <!-- <th>Date Uploaded</th> -->
                                                         <th>Action</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
                                                     <?php foreach ($qa_check_lists as $qa_check_list): ?>
                                                         <tr>
-                                                            <td><strong><?= htmlspecialchars($qa_check_list['title']) ?></strong></td>
                                                             <td><?= htmlspecialchars($qa_check_list['description'] ?? 'No description') ?></td>
-                                                            <td><?= date('M d, Y', strtotime($qa_check_list['uploaded_at'])) ?></td>
+                                                            <td><strong><?= htmlspecialchars($qa_check_list['title']) ?></strong></td>
+                                                            <!-- <td><?= date('M d, Y', strtotime($qa_check_list['uploaded_at'])) ?></td> -->
+                                                            <!-- <td>
+                                                                <?php if (!empty($qa_check_list['file_path'])): ?>
+                                                                    <a href="/qai/assets/pdfjs/web/viewer.html?file=<?= urlencode('/qai/admin/action/' . $qa_check_list['file_path']) ?>"
+                                                                        target="_blank"
+                                                                        class="btn btn-primary btn-sm view-pdf-btn">
+                                                                        View PDF
+                                                                    </a>
+                                                                <?php else: ?>
+                                                                    <span class="text-muted">No file</span>
+                                                                <?php endif; ?>
+                                                            </td> -->
                                                             <td>
                                                                 <a href="/qai/assets/pdfjs/web/viewer.html?file=<?= urlencode('/qai/admin/action/' . $qa_check_list['file_path']) ?>"
                                                                     class="btn btn-primary btn-sm view-pdf-btn"
@@ -486,9 +486,9 @@ try {
                                             <table class="table table-striped table-hover document-table">
                                                 <thead>
                                                     <tr>
-                                                        <th>Title</th>
+                                                        <th>Location</th>
                                                         <th>Description</th>
-                                                        <th>Date Uploaded</th>
+                                                        <th>Date Carried out</th>
                                                         <th>Action</th>
                                                     </tr>
                                                 </thead>

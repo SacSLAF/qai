@@ -43,13 +43,22 @@ $branches = $db->query("SELECT id, name FROM branches ORDER BY name")->fetch_all
                             <select name="service_category_id" class="form-control input-default" id="service_category_id" required onchange="toggleDynamicFields()">
                                 <option value="" selected disabled>Select a category</option>
                                 <option value="1">Quality Assurance Audits</option>
-                                <option value="2">Aircraft Competency</option>
+                                <!-- <option value="2">Aircraft Competency</option> -->
                                 <option value="3">Latitudes & Extensions</option>
                                 <option value="4">Modifications R&D Projects</option>
                                 <option value="5">Vehicle Emission Test</option>
                             </select>
                         </div>
-
+                        <!-- QA Category Dropdown (Initially Hidden) -->
+                        <div class="form-group" id="qa_category_container" style="display: none;">
+                            <label for="qa_category_id" class="required-label">QA Category</label>
+                            <select name="qa_category_id" class="form-control input-default" id="qa_category_id">
+                                <option value="" selected disabled>Select a QA category</option>
+                                <option value="1">Audit Checklists</option>
+                                <option value="2">Audit Reports</option>
+                                <option value="3">Audit Plans</option>
+                            </select>
+                        </div>
                         <!-- Title -->
                         <div class="form-group">
                             <label for="title" class="required-label">Title</label>
@@ -63,17 +72,6 @@ $branches = $db->query("SELECT id, name FROM branches ORDER BY name")->fetch_all
                         </div>
 
                         <input type="hidden" id="main" name="main" value="services">
-
-                        <!-- QA Category Dropdown (Initially Hidden) -->
-                        <div class="form-group" id="qa_category_container" style="display: none;">
-                            <label for="qa_category_id" class="required-label">QA Category</label>
-                            <select name="qa_category_id" class="form-control input-default" id="qa_category_id">
-                                <option value="" selected disabled>Select a QA category</option>
-                                <option value="1">Audit Checklists</option>
-                                <option value="2">Audit Reports</option>
-                                <option value="3">Audit Plans</option>
-                            </select>
-                        </div>
 
                         <!-- Branch Dropdown -->
                         <div class="form-group" id="branch_container">
@@ -145,9 +143,19 @@ $branches = $db->query("SELECT id, name FROM branches ORDER BY name")->fetch_all
 
             // Show QA category dropdown only if "Quality Assurance Audits" is selected (ID = 1)
             if (serviceCategory.value == '1') {
-                alert(serviceCategory.value);
+                // alert(serviceCategory.value);
                 qaCategoryContainer.style.display = 'block';
                 qaCategorySelect.setAttribute('required', 'required');
+                if (qaCategorySelect.value == '2') {
+                    titleLabel.textContent = 'Location';
+                    titleLabel.classList.add('required-label');
+                } else if (qaCategorySelect.value == '2') {
+                    titleLabel.textContent = 'Checklist Number';
+                    titleLabel.classList.add('required-label');
+                } else {
+                    titleLabel.textContent = 'Title';
+                    titleLabel.classList.add('required-label');
+                }
             } else {
                 qaCategoryContainer.style.display = 'none';
                 qaCategorySelect.removeAttribute('required');
@@ -257,6 +265,19 @@ $branches = $db->query("SELECT id, name FROM branches ORDER BY name")->fetch_all
         // Initialize on page load
         document.addEventListener('DOMContentLoaded', function() {
             toggleDynamicFields();
+            document.getElementById('qa_category_id').addEventListener('change', function() {
+                const serviceCategory = document.getElementById('service_category_id');
+                const titleLabel = document.querySelector('label[for="title"]');
+
+                if (serviceCategory.value == '1' && this.value == '2') {
+                    titleLabel.textContent = 'Location';
+                } else if (serviceCategory.value == '1' && this.value == '1') {
+                    titleLabel.textContent = 'Checklist Number';
+                } else {
+                    titleLabel.textContent = 'Title';
+                }
+                titleLabel.classList.add('required-label');
+            });
         });
     </script>
 
