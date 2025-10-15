@@ -17,6 +17,8 @@
                             <li><a href="services-docs.php">Services Overview</a></li>
                             <li><a href="aircraft-competency.php">Aircraft Competency</a></li>
                             <li><a href="latitude.php">Latitude</a></li>
+							<li><a href="modification.php">Modification</a></li>
+							<li><a href="rnd.php">R & D</a></li>
                         </ul>
                     </li>
                     <li>

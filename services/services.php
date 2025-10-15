@@ -168,6 +168,51 @@ try {
         }
     }
 
+    // Fetch Modification data
+    $modification_data = [];
+    $modification_error = '';
+    $stmt_mod = $db->prepare("
+        SELECT m.*, f.formation_name, t.type_name 
+        FROM modification m 
+        LEFT JOIN formation f ON m.formation_id = f.formation_id 
+        LEFT JOIN type t ON m.type_id = t.type_id 
+        ORDER BY m.created_at DESC
+    ");
+
+    if ($stmt_mod) {
+        if ($stmt_mod->execute()) {
+            $result_mod = $stmt_mod->get_result();
+            $modification_data = $result_mod->fetch_all(MYSQLI_ASSOC);
+            $stmt_mod->close();
+        } else {
+            $modification_error = "Modification query execution failed: " . $stmt_mod->error;
+        }
+    } else {
+        $modification_error = "Error preparing Modification query: " . $db->error;
+    }
+
+    // Fetch R&D data
+    $rnd_data = [];
+    $rnd_error = '';
+    $stmt_rnd = $db->prepare("
+        SELECT r.*, f.formation_name, t.type_name 
+        FROM rnd r 
+        LEFT JOIN formation f ON r.formation_id = f.formation_id 
+        LEFT JOIN type t ON r.type_id = t.type_id 
+        ORDER BY r.created_at DESC
+    ");
+
+    if ($stmt_rnd) {
+        if ($stmt_rnd->execute()) {
+            $result_rnd = $stmt_rnd->get_result();
+            $rnd_data = $result_rnd->fetch_all(MYSQLI_ASSOC);
+            $stmt_rnd->close();
+        } else {
+            $rnd_error = "R&D query execution failed: " . $stmt_rnd->error;
+        }
+    } else {
+        $rnd_error = "Error preparing R&D query: " . $db->error;
+    }
     // Include head template after all PHP processing
     include '../template/head.php';
 
@@ -192,7 +237,7 @@ try {
     <!-- Swiper CSS -->
     <link rel="stylesheet" href="../assets/css/swiper-bundle.min.css" />
     <!-- Font Awesome -->
-    <link rel="stylesheet" href="../node_modules/@fortawesome/fontawesome-free/css/all.min.css">
+    <link rel="stylesheet" href="../fontawesome-free-6.7.2-web/css/all.min.css">
 
     <!-- Custom CSS -->
     <link rel="stylesheet" href="../assets/css/styles.css">
@@ -396,6 +441,9 @@ try {
             color: #6c757d;
             font-style: italic;
         }
+        .welcome-image{
+            width: 100%;
+        }
     </style>
 </head>
 
@@ -426,7 +474,7 @@ try {
                             <?php if (!empty($ac_cat_map)): ?>
                                 <?php ksort($ac_cat_map); ?>
                                 <?php foreach ($ac_cat_map as $category_id => $category_name): ?>
-                                    <?php if ($category_id == 4) continue; // Skip ID 4 
+                                    <?php if ($category_id == 4) continue;
                                     ?>
                                     <a class="qa-dropdown-item" data-bs-target="#ac_cmpt_<?= $category_id ?>" role="tab">
                                         <?= htmlspecialchars($category_name) ?>
@@ -505,7 +553,7 @@ try {
                                         </div>
                                     <?php elseif (!empty($qa_check_lists)): ?>
                                         <div class="table-responsive">
-                                            <table class="table table-striped table-hover document-table">
+                                            <table class="table table-striped table-hover document-table" id="qaCheckListTable">
                                                 <thead>
                                                     <tr>
                                                         <th>Description</th>
@@ -568,13 +616,13 @@ try {
                                         </div>
                                     <?php elseif (!empty($qa_reports)): ?>
                                         <div class="table-responsive">
-                                            <table class="table table-striped table-hover document-table">
+                                            <table class="table table-striped table-hover document-table" id="qaReportsTable">
                                                 <thead>
                                                     <tr>
                                                         <th>Location</th>
                                                         <th>Description</th>
                                                         <th>Date Carried out</th>
-                                                        <th>Actions</th>
+                                                        <th>View</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
@@ -635,7 +683,7 @@ try {
                                         <div class="card">
                                             <div class="card-body p-0">
                                                 <div class="table-responsive">
-                                                    <table class="table table-striped table-hover mb-0">
+                                                    <table class="table table-striped table-hover mb-0" id="competencyTable">
                                                         <thead>
                                                             <tr>
                                                                 <th>SVC No</th>
@@ -643,7 +691,11 @@ try {
                                                                 <th>Name</th>
                                                                 <th>Trade</th>
                                                                 <th>Formation</th>
-                                                                <th>Actions</th>
+                                                                <th>Posted In Date</th>
+                                                                <th>Type</th>
+                                                                <th>Competancy</th>
+                                                                <th>Competecy Issue Ref</th>
+                                                                <th>View</th>
                                                             </tr>
                                                         </thead>
                                                         <tbody>
@@ -654,6 +706,10 @@ try {
                                                                     <td><?= htmlspecialchars($record['name'] ?? '') ?></td>
                                                                     <td><?= htmlspecialchars($record['trade'] ?? '') ?></td>
                                                                     <td><?= htmlspecialchars($formations_map[$record['formation_id']] ?? $record['formation'] ?? '') ?></td>
+                                                                    <td><?= htmlspecialchars($record['posted_in_date'] ?? '') ?></td>
+                                                                    <td><?= htmlspecialchars($types_map[$record['type_id']] ?? $record['aircraft_type'] ?? '') ?></td>
+                                                                    <td><?= htmlspecialchars($record['competency_level'] ?? '') ?></td>
+                                                                    <td><?= htmlspecialchars($record['competency_issue_ref'] ?? '') ?></td>
                                                                     <td>
                                                                         <button class="btn btn-view-details btn-sm view-details-btn"
                                                                             data-bs-toggle="modal"
@@ -754,14 +810,17 @@ try {
                                 <div class="card">
                                     <div class="card-body p-0">
                                         <div class="table-responsive">
-                                            <table class="table table-striped table-hover mb-0">
+                                            <table class="table table-striped table-hover mb-0" id="latitudeTable">
                                                 <thead class="table-light">
                                                     <tr>
-                                                        <th>Active</th>
+                                                        <th>Type</th>
                                                         <th>Formation</th>
                                                         <th>Aircraft Type</th>
                                                         <th>Tail No</th>
-                                                        <th>Actions</th>
+                                                        <th>Part No</th>
+                                                        <th>Description</th>
+                                                        <th>Serial No</th>
+                                                        <th>View</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
@@ -769,12 +828,15 @@ try {
                                                         <tr>
                                                             <td>
                                                                 <span class="badge badge-<?= $record['active'] == 'YES' ? 'success' : 'danger' ?>">
-                                                                    <?= htmlspecialchars($record['active']) ?>
+                                                                    <?= htmlspecialchars($record['type']) ?>
                                                                 </span>
                                                             </td>
                                                             <td><?= htmlspecialchars($record['formation_name'] ?? 'N/A') ?></td>
                                                             <td><?= htmlspecialchars($record['type_name'] ?? 'N/A') ?></td>
                                                             <td><?= htmlspecialchars($record['tail_no'] ?? 'N/A') ?></td>
+                                                            <td><?= htmlspecialchars($record['part_no'] ?? 'N/A') ?></td>
+                                                            <td><?= htmlspecialchars($record['description'] ?? 'N/A') ?></td>
+                                                            <td><?= htmlspecialchars($record['serial_no'] ?? 'N/A') ?></td>
                                                             <td>
                                                                 <button class="btn btn-view-details btn-sm view-details-btn"
                                                                     data-bs-toggle="modal"
@@ -820,46 +882,108 @@ try {
                     </div>
                     <!-- Modification / R&D Tab Panes -->
                     <div class="tab-pane fade" id="modification" role="tabpanel">
-                        <h4 class="colour-defult">Modification</h4>
-                        <p>Documentation and records related to aircraft and equipment modifications.</p>
+                        <h4 class="colour-defult">Modification Records</h4>
+
                         <div class="mt-4">
-                            <div class="alert alert-info">
-                                <i class="fas fa-info-circle me-2"></i>
-                                Modification records and documentation will be displayed here.
-                            </div>
-                            <div class="card">
-                                <div class="card-header bg-primary text-white">
-                                    <h5 class="mb-0">
-                                        <i class="fas fa-tools me-2"></i>
-                                        Modification Records
-                                    </h5>
+                            <?php if (!empty($modification_error)): ?>
+                                <div class="alert alert-danger">
+                                    <strong>Database Error:</strong> <?= htmlspecialchars($modification_error) ?>
                                 </div>
-                                <div class="card-body">
-                                    <p class="text-muted">Modification data will be loaded here...</p>
+                            <?php elseif (!empty($modification_data)): ?>
+                                <div class="card">
+                                    <div class="card-body p-0">
+                                        <div class="table-responsive">
+                                            <table class="table table-striped table-hover mb-0" id="modificationTable">
+                                                <thead class="table-light">
+                                                    <tr>
+                                                        <th>Mod No</th>
+                                                        <th>Directorate</th>
+                                                        <th>Formation</th>
+                                                        <th>Aircraft Type</th>
+                                                        <th>Description</th>
+                                                        <th>Recommended Date</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <?php foreach ($modification_data as $record): ?>
+                                                        <tr>
+                                                            <td><?= htmlspecialchars($record['mod_no'] ?? 'N/A') ?></td>
+                                                            <td><?= htmlspecialchars($record['directorate'] ?? 'N/A') ?></td>
+                                                            <td><?= htmlspecialchars($record['formation_name'] ?? 'N/A') ?></td>
+                                                            <td><?= htmlspecialchars($record['type_name'] ?? 'N/A') ?></td>
+                                                            <td><?= htmlspecialchars($record['description'] ?? 'N/A') ?></td>
+                                                            <td>
+                                                                <?= $record['recommended_date'] ?
+                                                                    date('M d, Y', strtotime($record['recommended_date'])) :
+                                                                    'N/A'
+                                                                ?>
+                                                            </td>
+                                                        </tr>
+                                                    <?php endforeach; ?>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>
+                            <?php else: ?>
+                                <div class="alert alert-info">
+                                    <i class="fas fa-info-circle me-2"></i>
+                                    No modification records found.
+                                </div>
+                            <?php endif; ?>
                         </div>
                     </div>
 
+                    <!-- R&D Tab -->
                     <div class="tab-pane fade" id="rnd" role="tabpanel">
-                        <h4 class="colour-defult">Research & Development</h4>
-                        <p>Research projects, development initiatives, and innovation records.</p>
+                        <h4 class="colour-defult">Research & Development Records</h4>
                         <div class="mt-4">
-                            <div class="alert alert-info">
-                                <i class="fas fa-info-circle me-2"></i>
-                                R&D projects and research documentation will be displayed here.
-                            </div>
-                            <div class="card">
-                                <div class="card-header bg-success text-white">
-                                    <h5 class="mb-0">
-                                        <i class="fas fa-flask me-2"></i>
-                                        R&D Projects
-                                    </h5>
+                            <?php if (!empty($rnd_error)): ?>
+                                <div class="alert alert-danger">
+                                    <strong>Database Error:</strong> <?= htmlspecialchars($rnd_error) ?>
                                 </div>
-                                <div class="card-body">
-                                    <p class="text-muted">R&D project data will be loaded here...</p>
+                            <?php elseif (!empty($rnd_data)): ?>
+                                <div class="card">
+                                    <div class="card-body p-0">
+                                        <div class="table-responsive">
+                                            <table class="table table-striped table-hover mb-0" id="rndTable">
+                                                <thead class="table-light">
+                                                    <tr>
+                                                        <th>R&D No</th>
+                                                        <th>Directorate</th>
+                                                        <th>Formation</th>
+                                                        <th>Aircraft Type</th>
+                                                        <th>Description</th>
+                                                        <th>Issue Date</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <?php foreach ($rnd_data as $record): ?>
+                                                        <tr>
+                                                            <td><?= htmlspecialchars($record['rnd_no'] ?? 'N/A') ?></td>
+                                                            <td><?= htmlspecialchars($record['directorate'] ?? 'N/A') ?></td>
+                                                            <td><?= htmlspecialchars($record['formation_name'] ?? 'N/A') ?></td>
+                                                            <td><?= htmlspecialchars($record['type_name'] ?? 'N/A') ?></td>
+                                                            <td><?= htmlspecialchars($record['description'] ?? 'N/A') ?></td>
+                                                            <td>
+                                                                <?= $record['issue_date'] ?
+                                                                    date('M d, Y', strtotime($record['issue_date'])) :
+                                                                    'N/A'
+                                                                ?>
+                                                            </td>
+                                                        </tr>
+                                                    <?php endforeach; ?>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>
+                            <?php else: ?>
+                                <div class="alert alert-info">
+                                    <i class="fas fa-info-circle me-2"></i>
+                                    No R&D records found.
+                                </div>
+                            <?php endif; ?>
                         </div>
                     </div>
 
@@ -953,15 +1077,54 @@ try {
 
     <!-- Footer -->
     <?php include '../template/foot.php'; ?>
-
+    <script src="../node_modules/jquery/dist/jquery.min.js"></script>
+    <script src="../assets/datatable/datatable.min.js"></script>
+    <link rel="stylesheet" href="../assets/datatable/datatable.min.css">
     <!-- Bootstrap JS Bundle with Popper -->
     <script src="../node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <!-- Swiper JS -->
     <script src="../assets/js/swiper-bundle.min.js"></script>
 
+
     <script>
+        $(document).ready(function() {
+            const dataTableConfig = {
+                "pageLength": 10,
+                "lengthMenu": [10, 25, 50, 100],
+                "order": [
+                    [2, "desc"]
+                ],
+                "language": {
+                    "search": "Filter:",
+                    "lengthMenu": "Show _MENU_ entries",
+                    "info": "Showing _START_ to _END_ of _TOTAL_ entries",
+                    "paginate": {
+                        "previous": "Previous",
+                        "next": "Next"
+                    }
+                }
+            };
+
+            // Initialize all tables with error handling
+            const tableIds = [
+                'qaReportsTable',
+                'qaCheckListTable',
+                'competencyTable',
+                'latitudeTable',
+                'modificationTable',
+                'rndTable'
+            ];
+
+            tableIds.forEach(tableId => {
+                if ($('#' + tableId).length) {
+                    $('#' + tableId).DataTable(dataTableConfig);
+                }
+            });
+        });
+
         // Handle tab selection
         document.addEventListener("DOMContentLoaded", function() {
+
             // PDF Modal functionality
             const pdfModal = document.getElementById('pdfModal');
             const pdfFrame = document.getElementById('pdfFrame');
