@@ -1,6 +1,6 @@
 <?php
 require_once '../includes/config.php';
-session_start();
+// session_start();
 
 // Simple auth guard
 if (!isset($_SESSION['admin_id'])) {

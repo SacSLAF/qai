@@ -1,14 +1,13 @@
 <?php
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
+// ini_set('display_errors', 1);
+// ini_set('display_startup_errors', 1);
+// error_reporting(E_ALL);
 
 // Start output buffering to catch any errors
 ob_start();
 
 try {
     require_once "../includes/config.php";
-    
     // Initialize variables to avoid undefined variable errors
     $show_pdf = false;
     $pdf_file = '';
@@ -23,6 +22,7 @@ try {
     if ($absolute_path && file_exists($absolute_path)) {
         $show_pdf = true;
         $pdf_web_path = "/qai/admin/action/uploads/services/audit_plan/" . $file;
+        $pdf_web_path_vet_plan = "/qai/admin/action/uploads/services/vet_plan/" . $file;
     } else {
         $show_pdf = false;
         $error = "File not found. Tried path: " . htmlspecialchars($file_path);
@@ -170,10 +170,9 @@ try {
 
     // Include head template after all PHP processing
     include '../template/head.php';
-    
+
     // Clear any previous output
     ob_end_clean();
-
 } catch (Exception $e) {
     // Handle any exceptions
     ob_end_clean();
@@ -310,7 +309,6 @@ try {
             padding: 20px;
             color: #6c757d;
         }
-        
         .debug-info {
             background: #f8f9fa;
             padding: 10px;
@@ -342,7 +340,6 @@ try {
                             <a class="qa-dropdown-item" data-bs-target="#qa_report" role="tab">QA Report</a>
                         </div>
                     </div>
-                    
                     <!-- Aircraft Competency Dropdown - Using ac_categories only -->
                     <div class="qa-dropdown">
                         <a class="nav-link qa-dropdown-toggle" role="button">Aircraft Competency</a>
@@ -360,7 +357,6 @@ try {
                     </div>
 
                     <a class="nav-link" data-bs-target="#latitude" role="tab">Latitude & Extensions</a>
-                    
                     <!-- Modification / R&D Dropdown -->
                     <div class="qa-dropdown">
                         <a class="nav-link qa-dropdown-toggle" role="button">Modifications / R&D</a>
@@ -444,7 +440,7 @@ try {
                                                             <td><strong><?= htmlspecialchars($qa_check_list['title']) ?></strong></td>
                                                             <td><?= htmlspecialchars($qa_check_list['description'] ?? 'No description') ?></td>
                                                             <td><?= date('M d, Y', strtotime($qa_check_list['uploaded_at'])) ?></td>
-                                                            <td>
+                                                            <!-- <td>
                                                                 <?php if (!empty($qa_check_list['file_path'])): ?>
                                                                     <a href="/qai/assets/pdfjs/web/viewer.html?file=<?= urlencode('/qai/admin/action/' . $qa_check_list['file_path']) ?>"
                                                                         target="_blank"
@@ -454,6 +450,15 @@ try {
                                                                 <?php else: ?>
                                                                     <span class="text-muted">No file</span>
                                                                 <?php endif; ?>
+                                                            </td> -->
+                                                            <td>
+                                                                <a href="/qai/assets/pdfjs/web/viewer.html?file=<?= urlencode('/qai/admin/action/' . $qa_check_list['file_path']) ?>"
+                                                                    class="btn btn-primary btn-sm view-pdf-btn"
+                                                                    data-bs-toggle="modal"
+                                                                    data-bs-target="#pdfModal"
+                                                                    data-pdf-url="/qai/assets/pdfjs/web/viewer.html?file=<?= urlencode('/qai/admin/action/' . $qa_check_list['file_path']) ?>">
+                                                                    View PDF
+                                                                </a>
                                                             </td>
                                                         </tr>
                                                     <?php endforeach; ?>
@@ -498,7 +503,7 @@ try {
                                                             <td><strong><?= htmlspecialchars($report['title']) ?></strong></td>
                                                             <td><?= htmlspecialchars($report['description'] ?? 'No description') ?></td>
                                                             <td><?= date('M d, Y', strtotime($report['uploaded_at'])) ?></td>
-                                                            <td>
+                                                            <!-- <td>
                                                                 <?php if (!empty($report['file_path'])): ?>
                                                                     <a href="/qai/assets/pdfjs/web/viewer.html?file=<?= urlencode('/qai/admin/action/' . $report['file_path']) ?>"
                                                                         target="_blank"
@@ -508,6 +513,15 @@ try {
                                                                 <?php else: ?>
                                                                     <span class="text-muted">No file</span>
                                                                 <?php endif; ?>
+                                                            </td> -->
+                                                            <td>
+                                                                <a href="/qai/assets/pdfjs/web/viewer.html?file=<?= urlencode('/qai/admin/action/' . $report['file_path']) ?>"
+                                                                    class="btn btn-primary btn-sm view-pdf-btn"
+                                                                    data-bs-toggle="modal"
+                                                                    data-bs-target="#pdfModal"
+                                                                    data-pdf-url="/qai/assets/pdfjs/web/viewer.html?file=<?= urlencode('/qai/admin/action/' . $report['file_path']) ?>">
+                                                                    View PDF
+                                                                </a>
                                                             </td>
                                                         </tr>
                                                     <?php endforeach; ?>
@@ -525,111 +539,113 @@ try {
                     </div>
 
                     <!-- Aircraft Competency Tab Panes - Using ac_categories only -->
-<?php if (!empty($ac_cat_map)): ?>
-    <?php foreach ($ac_cat_map as $category_id => $category_name): ?>
-        <div class="tab-pane fade" id="ac_cmpt_<?= $category_id ?>" role="tabpanel">
-            <h4 class="colour-defult">Aircraft Competency - <?= htmlspecialchars($category_name) ?></h4>
+                    <?php if (!empty($ac_cat_map)): ?>
+                        <?php foreach ($ac_cat_map as $category_id => $category_name): ?>
+                            <div class="tab-pane fade" id="ac_cmpt_<?= $category_id ?>" role="tabpanel">
+                                <h4 class="colour-defult">Aircraft Competency - <?= htmlspecialchars($category_name) ?></h4>
 
-            <div class="mt-4">
-                <?php if (!empty($ac_error)): ?>
-                    <div class="alert alert-danger">
-                        <strong>Database Error:</strong> <?= htmlspecialchars($ac_error) ?>
-                    </div>
-                <?php elseif (isset($aircraft_competency_data[$category_id]) && !empty($aircraft_competency_data[$category_id]['records'])): ?>
-                    <div class="card">
-                        <div class="card-body p-0">
-                            <div class="table-responsive">
-                                <table class="table table-striped table-hover mb-0">
-                                    <thead>
-                                        <tr class="<?= $index % 2 === 0 ? 'bg-white' : 'bg-light-blue' ?>">
-                                           <!-- <th>SVC No</th>-->
-                                            <th>Rank</th>
-                                            <th>Name</th>
-                                            <th>Formation</th>
-                                            <th>Aircraft Type</th>
-                                            <th>Posted In Date</th>
-                                            <!--<th>Type</th>-->
-                                            <th>Competency Level</th>
-                                            <th>Competency Issue Ref</th>
-                                            <!--<th>Com Issue Date</th>
-                                            <th>Competency Renew Ref</th>
-                                            <th>Renew Date</th>
-                                            <th>Certificate No</th>
-                                            <th>Cer Issued Date</th>-->
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <?php foreach ($aircraft_competency_data[$category_id]['records'] as $record): ?>
-                                            <tr>
-                                               <!-- <td><strong><?= htmlspecialchars($record['svc_no'] ?? '') ?></strong></td>-->
-                                                <td><?= htmlspecialchars($record['rank'] ?? '') ?></td>
-                                                <td><?= htmlspecialchars($record['name'] ?? '') ?></td>
-                                                <td><?= htmlspecialchars($formations_map[$record['formation_id']] ?? $record['formation'] ?? '') ?></td>
-                                                <td><?= htmlspecialchars($types_map[$record['type_id']] ?? $record['aircraft_type'] ?? '') ?></td>
-                                                <td><?= htmlspecialchars($record['posted_in_date'] ?? '') ?></td>
-                                               <!-- <td><?= htmlspecialchars($record['type_id'] ?? '') ?></td>-->
-                                                <td><?= htmlspecialchars($record['competency_level'] ?? '') ?></td>
-                                                <td><?= htmlspecialchars($record['competency_issue_ref'] ?? '') ?></td>
-                                               <!-- <td><?= htmlspecialchars($record['com_issue_date'] ?? '') ?></td>
-                                                <td><?= htmlspecialchars($record['competency_renew_ref'] ?? '') ?></td>
-                                                <td><?= htmlspecialchars($record['renew_date'] ?? '') ?></td>
-                                                <td><?= htmlspecialchars($record['certificate_no'] ?? '') ?></td>
-                                                <td><?= htmlspecialchars($record['cer_issued_date'] ?? '') ?></td>-->
-                                            </tr>
-                                        <?php endforeach; ?>
-                                    </tbody>
-                                </table>
+                                <div class="mt-4">
+                                    <?php if (!empty($ac_error)): ?>
+                                        <div class="alert alert-danger">
+                                            <strong>Database Error:</strong> <?= htmlspecialchars($ac_error) ?>
+                                        </div>
+                                    <?php elseif (isset($aircraft_competency_data[$category_id]) && !empty($aircraft_competency_data[$category_id]['records'])): ?>
+                                        <div class="card">
+                                            <div class="card-body p-0">
+                                                <div class="table-responsive">
+                                                    <table class="table table-striped table-hover mb-0">
+                                                        <thead>
+                                                            <tr class="<?= $index % 2 === 0 ? 'bg-white' : 'bg-light-blue' ?>">
+                                                                <th>SVC No</th>
+                                                                <th>Rank</th>
+                                                                <th>Name</th>
+                                                                <th>Trade</th>
+                                                                <th>Formation</th>
+                                                                <th>Posted In Date</th>
+                                                                <th>Aircraft Type</th>
+                                                                <!-- <th>Type</th> -->
+                                                                <th>Competency Level</th>
+                                                                <th>Competency Issue Ref</th>
+                                                                <!-- <th>Com Issue Date</th>
+                                                                <th>Competency Renew Ref</th>
+                                                                <th>Renew Date</th>
+                                                                <th>Certificate No</th>
+                                                                <th>Cer Issued Date</th> -->
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            <?php foreach ($aircraft_competency_data[$category_id]['records'] as $record): ?>
+                                                                <tr>
+                                                                    <td><strong><?= htmlspecialchars($record['svc_no'] ?? '') ?></strong></td>
+                                                                    <td><?= htmlspecialchars($record['rank'] ?? '') ?></td>
+                                                                    <td><?= htmlspecialchars($record['name'] ?? '') ?></td>
+                                                                    <td><?= htmlspecialchars($record['trade'] ?? '') ?></td>
+                                                                    <td><?= htmlspecialchars($formations_map[$record['formation_id']] ?? $record['formation'] ?? '') ?></td>
+                                                                    <td><?= htmlspecialchars($record['posted_in_date'] ?? '') ?></td>
+                                                                    <td><?= htmlspecialchars($types_map[$record['type_id']] ?? $record['aircraft_type'] ?? '') ?></td>
+                                                                    <!-- <td><?= htmlspecialchars($record['type_id'] ?? '') ?></td> -->
+                                                                    <td><?= htmlspecialchars($record['competency_level'] ?? '') ?></td>
+                                                                    <td><?= htmlspecialchars($record['competency_issue_ref'] ?? '') ?></td>
+                                                                    <!-- <td><?= htmlspecialchars($record['com_issue_date'] ?? '') ?></td>
+                                                                    <td><?= htmlspecialchars($record['competency_renew_ref'] ?? '') ?></td>
+                                                                    <td><?= htmlspecialchars($record['renew_date'] ?? '') ?></td>
+                                                                    <td><?= htmlspecialchars($record['certificate_no'] ?? '') ?></td>
+                                                                    <td><?= htmlspecialchars($record['cer_issued_date'] ?? '') ?></td> -->
+                                                                </tr>
+                                                            <?php endforeach; ?>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                            <style>
+                                                .bg-light-blue {
+                                                    background-color: #f0f8ff !important;
+                                                }
+
+                                                .bg-white {
+                                                    background-color: #ffffff !important;
+                                                }
+
+                                                .table tbody tr:hover {
+                                                    background-color: #e3f2fd !important;
+                                                }
+
+                                                .table th {
+                                                    background-color: #839abdff;
+                                                    color: white;
+                                                    font-weight: 600;
+                                                    border: none;
+                                                }
+
+                                                .table td {
+                                                    border-bottom: 1px solid #dee2e6;
+                                                    padding: 12px 8px;
+                                                    vertical-align: middle;
+                                                }
+                                            </style>
+                                        </div>
+                                    <?php else: ?>
+                                        <div class="alert alert-info">
+                                            <i class="fas fa-info-circle me-2"></i>
+                                            No aircraft competency records found for <?= htmlspecialchars($category_name) ?>.
+                                            <?php
+                                            // Debug information
+                                            echo "<br><small>Category ID: $category_id | ";
+                                            echo "Total records in data: " . count($aircraft_competency_data) . " | ";
+                                            echo "Records for this category: " . (isset($aircraft_competency_data[$category_id]) ? count($aircraft_competency_data[$category_id]['records']) : '0');
+                                            echo "</small>";
+                                            ?>
+                                        </div>
+                                    <?php endif; ?>
+                                </div>
                             </div>
+                        <?php endforeach; ?>
+                    <?php else: ?>
+                        <div class="alert alert-warning">
+                            <i class="fas fa-exclamation-triangle me-2"></i>
+                            No aircraft categories found in the system.
                         </div>
-                        <style>
-                            .bg-light-blue {
-                                background-color: #f0f8ff !important;
-                            }
-
-                            .bg-white {
-                                background-color: #ffffff !important;
-                            }
-
-                            .table tbody tr:hover {
-                                background-color: #e3f2fd !important;
-                            }
-
-                            .table th {
-                                background-color: #839abdff;
-                                color: white;
-                                font-weight: 600;
-                                border: none;
-                            }
-
-                            .table td {
-                                border-bottom: 1px solid #dee2e6;
-                                padding: 12px 8px;
-                                vertical-align: middle;
-                            }
-                            </style>
-                    </div>
-                <?php else: ?>
-                    <div class="alert alert-info">
-                        <i class="fas fa-info-circle me-2"></i>
-                        No aircraft competency records found for <?= htmlspecialchars($category_name) ?>.
-                        <?php 
-                        // Debug information
-                        echo "<br><small>Category ID: $category_id | ";
-                        echo "Total records in data: " . count($aircraft_competency_data) . " | ";
-                        echo "Records for this category: " . (isset($aircraft_competency_data[$category_id]) ? count($aircraft_competency_data[$category_id]['records']) : '0');
-                        echo "</small>";
-                        ?>
-                    </div>
-                <?php endif; ?>
-            </div>
-        </div>
-    <?php endforeach; ?>
-<?php else: ?>
-    <div class="alert alert-warning">
-        <i class="fas fa-exclamation-triangle me-2"></i>
-        No aircraft categories found in the system.
-    </div>
-<?php endif; ?>
+                    <?php endif; ?>
 
                     <!-- Latitude & Extensions Tab -->
                     <div class="tab-pane fade" id="latitude" role="tabpanel">
@@ -770,21 +786,28 @@ try {
                         <h4 class="colour-defult">Vehicle Emission Test - Annual Plans</h4>
                         <p>Annual testing schedules, plans, and compliance documentation for vehicle emission tests.</p>
                         <div class="mt-4">
-                            <div class="alert alert-info">
-                                <i class="fas fa-info-circle me-2"></i>
-                                Annual emission test plans and schedules will be displayed here.
-                            </div>
-                            <div class="card">
-                                <div class="card-header bg-warning text-dark">
-                                    <h5 class="mb-0">
-                                        <i class="fas fa-calendar-alt me-2"></i>
-                                        Annual Test Plans
-                                    </h5>
+                            <?php if ($show_pdf): ?>
+                                <div class="top-bar">
+                                    <a href="?file=<?= $default_file ?>" class="btn btn-sm btn-dark">Vehicle Emission Test - Annual Plan</a>
+                                    <!--<span class="expiry">Expires on <?= date('F d, Y', strtotime('+1 year')) ?></span>-->
                                 </div>
-                                <div class="card-body">
-                                    <p class="text-muted">Annual emission test plans will be loaded here...</p>
+
+                                <!-- PDF.js Viewer -->
+                                <div class="pdf-viewer-container">
+                                    <iframe src="/qai/assets/pdfjs/web/viewer.html?file=<?= urlencode($pdf_web_path_vet_plan) ?>"
+                                        width="100%" height="100%" style="border:none;">
+                                    </iframe>
                                 </div>
-                            </div>
+                            <?php else: ?>
+                                <?php if (isset($error)): ?>
+                                    <div class="alert alert-danger"><?= $error ?></div>
+                                <?php endif; ?>
+
+                                <div class="alert alert-info">
+                                    <p>No VET plan document is available at the moment.</p>
+                                    <a href="?file=doc_1.pdf" class="btn btn-primary">Test with doc_1.pdf</a>
+                                </div>
+                            <?php endif; ?>
                         </div>
                     </div>
 
@@ -813,7 +836,20 @@ try {
             </div>
         </div>
     </main>
-
+    <!-- Modal Structure -->
+    <div class="modal fade" id="pdfModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-xl modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">View PDF</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" style="height: 80vh;">
+                    <iframe id="pdfFrame" src="" width="100%" height="100%" style="border: none;"></iframe>
+                </div>
+            </div>
+        </div>
+    </div>
     <!-- Footer -->
     <?php include '../template/foot.php'; ?>
 
@@ -825,6 +861,18 @@ try {
     <script>
         // Handle tab selection
         document.addEventListener("DOMContentLoaded", function() {
+            const pdfModal = document.getElementById('pdfModal');
+            const pdfFrame = document.getElementById('pdfFrame');
+
+            pdfModal.addEventListener('show.bs.modal', function(event) {
+                const button = event.relatedTarget;
+                const pdfUrl = button.getAttribute('data-pdf-url');
+                pdfFrame.src = pdfUrl;
+            });
+
+            pdfModal.addEventListener('hidden.bs.modal', function() {
+                pdfFrame.src = ""; // Clear iframe to stop PDF from running
+            });
             // Set initial active tab to welcome screen
             const welcomePane = document.querySelector('#welcome');
             if (welcomePane) {
