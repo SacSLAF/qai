@@ -790,21 +790,28 @@ try {
                         <h4 class="colour-defult">Vehicle Emission Test - Annual Plans</h4>
                         <p>Annual testing schedules, plans, and compliance documentation for vehicle emission tests.</p>
                         <div class="mt-4">
-                            <div class="alert alert-info">
-                                <i class="fas fa-info-circle me-2"></i>
-                                Annual emission test plans and schedules will be displayed here.
-                            </div>
-                            <div class="card">
-                                <div class="card-header bg-warning text-dark">
-                                    <h5 class="mb-0">
-                                        <i class="fas fa-calendar-alt me-2"></i>
-                                        Annual Test Plans
-                                    </h5>
+                            <?php if ($show_pdf): ?>
+                                <div class="top-bar">
+                                    <a href="?file=<?= $default_file ?>" class="btn btn-sm btn-dark">Vehicle Emission Test - Annual Plan</a>
+                                    <!--<span class="expiry">Expires on <?= date('F d, Y', strtotime('+1 year')) ?></span>-->
                                 </div>
-                                <div class="card-body">
-                                    <p class="text-muted">Annual emission test plans will be loaded here...</p>
+
+                                <!-- PDF.js Viewer -->
+                                <div class="pdf-viewer-container">
+                                    <iframe src="/qai/assets/pdfjs/web/viewer.html?file=<?= urlencode($pdf_web_path_vet_plan) ?>"
+                                        width="100%" height="100%" style="border:none;">
+                                    </iframe>
                                 </div>
-                            </div>
+                            <?php else: ?>
+                                <?php if (isset($error)): ?>
+                                    <div class="alert alert-danger"><?= $error ?></div>
+                                <?php endif; ?>
+
+                                <div class="alert alert-info">
+                                    <p>No VET plan document is available at the moment.</p>
+                                    <a href="?file=doc_1.pdf" class="btn btn-primary">Test with doc_1.pdf</a>
+                                </div>
+                            <?php endif; ?>
                         </div>
                     </div>
 
