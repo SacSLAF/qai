@@ -157,6 +157,9 @@ include '../template/head.php';
             background: #f8f9fa;
             border-radius: 5px;
         }
+        .welcome-image{
+            width: 100%;
+        }
     </style>
 </head>
 

@@ -299,6 +299,9 @@
             box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2),
                 0 6px 20px 0 rgba(0, 0, 0, 0.19);
         }
+        .welcome-image{
+            width: 100%;
+        }
     </style>
 </head>
 
@@ -339,7 +342,7 @@
                     <!-- Welcome Screen (shown by default) -->
                     <div class="tab-pane fade show active" id="welcome" role="tabpanel">
                         <div class="welcome-message">
-                            <img src="../assets/img/qai-welcome.jpg" alt="Quality Assurance Inspectorate" class="welcome-image">
+                            <img src="../assets/img/welcome.jpg" alt="Quality Assurance Inspectorate" class="welcome-image">
                             <!-- <h4>Welcome to Command Quality Assurance Inspectorate</h4> -->
                             <!-- <p>Please select an option from the navigation menu to view the content.</p> -->
                         </div>
