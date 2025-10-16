@@ -19,6 +19,7 @@
                             <li><a href="latitude.php">Latitude</a></li>
 							<li><a href="modification.php">Modification</a></li>
 							<li><a href="rnd.php">R & D</a></li>
+                            <li><a href="vehicle-emission-test.php">Vehicle Emission Test</a></li>
                         </ul>
                     </li>
                     <li>

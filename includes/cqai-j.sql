@@ -720,3 +720,32 @@ CREATE INDEX idx_modification_directorate ON modification(directorate);
 CREATE INDEX idx_rnd_formation ON rnd(formation_id);
 CREATE INDEX idx_rnd_type ON rnd(type_id);
 CREATE INDEX idx_rnd_directorate ON rnd(directorate);
+
+-- Drop existing table
+DROP TABLE IF EXISTS `vehicle_emission_test`;
+
+-- Create new table 
+CREATE TABLE `vehicle_emission_test` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `serial_no` int DEFAULT NULL,
+  `camp_id` int NOT NULL,
+  `vehicle_no` varchar(100) NOT NULL,
+  `vehicle_type` varchar(100) NOT NULL,
+  `model` varchar(100) DEFAULT NULL,
+  `test_date` date NOT NULL,
+  `first_test` decimal(10,2) DEFAULT NULL,
+  `second_test` decimal(10,2) DEFAULT NULL,
+  `third_test` decimal(10,2) DEFAULT NULL,
+  `average` decimal(10,2) DEFAULT NULL,
+  `status` varchar(50) NOT NULL,
+  `next_due_date` date DEFAULT NULL,
+  `remarks` text,
+  `created_by` int DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `fk_vet_camp` (`camp_id`),
+  KEY `fk_vet_created_by` (`created_by`),
+  CONSTRAINT `fk_vet_camp` FOREIGN KEY (`camp_id`) REFERENCES `slaf_establishments` (`id`),
+  CONSTRAINT `fk_vet_created_by` FOREIGN KEY (`created_by`) REFERENCES `admins` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;

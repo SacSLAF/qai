@@ -49,6 +49,7 @@ try {
         $qa_reports_error = "Database connection failed: " . ($db->connect_error ?? 'Unknown error');
         $ac_error = $qa_reports_error;
         $le_error = $qa_reports_error;
+        $vehicle_emission_error = $qa_reports_error;
     } else {
         // Fetch QA Reports (qa_category_id = 2)
         $stmt1 = $db->prepare("
@@ -166,6 +167,28 @@ try {
         } else {
             $le_error = "Error preparing Latitude query: " . $db->error;
         }
+
+        // Fetch Vehicle Emission Test data
+        $vehicle_emission_data = [];
+        $vehicle_emission_error = '';
+        $stmt_vet = $db->prepare("
+            SELECT v.*, s.name as camp_name 
+            FROM vehicle_emission_test v 
+            LEFT JOIN slaf_establishments s ON v.camp_id = s.id 
+            ORDER BY v.test_date DESC, v.serial_no ASC
+        ");
+
+        if ($stmt_vet) {
+            if ($stmt_vet->execute()) {
+                $result_vet = $stmt_vet->get_result();
+                $vehicle_emission_data = $result_vet->fetch_all(MYSQLI_ASSOC);
+                $stmt_vet->close();
+            } else {
+                $vehicle_emission_error = "Vehicle Emission Test query execution failed: " . $stmt_vet->error;
+            }
+        } else {
+            $vehicle_emission_error = "Error preparing Vehicle Emission Test query: " . $db->error;
+        }
     }
 
     // Fetch Modification data
@@ -213,6 +236,7 @@ try {
     } else {
         $rnd_error = "Error preparing R&D query: " . $db->error;
     }
+
     // Include head template after all PHP processing
     include '../template/head.php';
 
@@ -1014,21 +1038,99 @@ try {
                         <h4 class="colour-defult">Vehicle Emission Test - Test Reports</h4>
                         <p>Detailed test reports, results, and compliance certificates for vehicle emission testing.</p>
                         <div class="mt-4">
-                            <div class="alert alert-info">
-                                <i class="fas fa-info-circle me-2"></i>
-                                Vehicle emission test reports and results will be displayed here.
-                            </div>
-                            <div class="card">
-                                <div class="card-header bg-info text-white">
-                                    <h5 class="mb-0">
-                                        <i class="fas fa-file-contract me-2"></i>
-                                        Test Reports
-                                    </h5>
+                            <?php if (!empty($vehicle_emission_error)): ?>
+                                <div class="alert alert-danger">
+                                    <strong>Database Error:</strong> <?= htmlspecialchars($vehicle_emission_error) ?>
                                 </div>
-                                <div class="card-body">
-                                    <p class="text-muted">Emission test reports will be loaded here...</p>
+                            <?php elseif (!empty($vehicle_emission_data)): ?>
+                                <div class="card">
+                                    <div class="card-body p-0">
+                                        <div class="table-responsive">
+                                            <table class="table table-striped table-hover mb-0" id="vehicleEmissionTable">
+                                                <thead class="table-light">
+                                                    <tr>
+                                                        <th>S/No</th>
+                                                        <th>Camp</th>
+                                                        <th>Vehicle No</th>
+                                                        <th>Vehicle Type</th>
+                                                        <th>Model</th>
+                                                        <th>Date</th>
+                                                        <th>Test Values</th>
+                                                        <th>Status</th>
+                                                        <th>Next Due Date</th>
+                                                        <th>Remarks</th>
+                                                        <th>View</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <?php foreach ($vehicle_emission_data as $record): ?>
+                                                        <tr>
+                                                            <td><?= htmlspecialchars($record['serial_no'] ?? '') ?></td>
+                                                            <td><?= htmlspecialchars($record['camp_name'] ?? 'N/A') ?></td>
+                                                            <td><?= htmlspecialchars($record['vehicle_no'] ?? 'N/A') ?></td>
+                                                            <td><?= htmlspecialchars($record['vehicle_type'] ?? 'N/A') ?></td>
+                                                            <td><?= htmlspecialchars($record['model'] ?? 'N/A') ?></td>
+                                                            <td><?= $record['test_date'] ? htmlspecialchars($record['test_date']) : 'N/A' ?></td>
+                                                            <td>
+                                                                <?php if ($record['first_test']): ?>
+                                                                    <small>1st: <?= $record['first_test'] ?></small><br>
+                                                                <?php endif; ?>
+                                                                <?php if ($record['second_test']): ?>
+                                                                    <small>2nd: <?= $record['second_test'] ?></small><br>
+                                                                <?php endif; ?>
+                                                                <?php if ($record['third_test']): ?>
+                                                                    <small>3rd: <?= $record['third_test'] ?></small><br>
+                                                                <?php endif; ?>
+                                                                <?php if ($record['average']): ?>
+                                                                    <small><strong>Avg: <?= $record['average'] ?></strong></small>
+                                                                <?php endif; ?>
+                                                            </td>
+                                                            <td>
+                                                                <span class="badge badge-<?= 
+                                                                    $record['status'] == 'Pass' ? 'success' : 
+                                                                    ($record['status'] == 'Fail' ? 'danger' : 
+                                                                    ($record['status'] == 'Not Suitable' ? 'warning' : 'secondary')) 
+                                                                ?>">
+                                                                    <?= htmlspecialchars($record['status'] ?? 'N/A') ?>
+                                                                </span>
+                                                            </td>
+                                                            <td><?= $record['next_due_date'] ? htmlspecialchars($record['next_due_date']) : 'N/A' ?></td>
+                                                            <td><?= htmlspecialchars($record['remarks'] ?? '') ?></td>
+                                                            <td>
+                                                                <button class="btn btn-view-details btn-sm view-details-btn"
+                                                                    data-bs-toggle="modal"
+                                                                    data-bs-target="#detailsModal"
+                                                                    data-record-type="vehicle_emission"
+                                                                    data-record-id="<?= $record['id'] ?? '' ?>"
+                                                                    data-record-serial-no="<?= htmlspecialchars($record['serial_no'] ?? '') ?>"
+                                                                    data-record-camp="<?= htmlspecialchars($record['camp_name'] ?? '') ?>"
+                                                                    data-record-vehicle-no="<?= htmlspecialchars($record['vehicle_no'] ?? '') ?>"
+                                                                    data-record-vehicle-type="<?= htmlspecialchars($record['vehicle_type'] ?? '') ?>"
+                                                                    data-record-model="<?= htmlspecialchars($record['model'] ?? '') ?>"
+                                                                    data-record-test-date="<?= htmlspecialchars($record['test_date'] ?? '') ?>"
+                                                                    data-record-first-test="<?= htmlspecialchars($record['first_test'] ?? '') ?>"
+                                                                    data-record-second-test="<?= htmlspecialchars($record['second_test'] ?? '') ?>"
+                                                                    data-record-third-test="<?= htmlspecialchars($record['third_test'] ?? '') ?>"
+                                                                    data-record-average="<?= htmlspecialchars($record['average'] ?? '') ?>"
+                                                                    data-record-status="<?= htmlspecialchars($record['status'] ?? '') ?>"
+                                                                    data-record-next-due-date="<?= htmlspecialchars($record['next_due_date'] ?? '') ?>"
+                                                                    data-record-remarks="<?= htmlspecialchars($record['remarks'] ?? '') ?>">
+                                                                    View Details
+                                                                </button>
+                                                            </td>
+                                                        </tr>
+                                                    <?php endforeach; ?>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>
+                            <?php else: ?>
+                                <div class="alert alert-info">
+                                    <i class="fas fa-info-circle me-2"></i>
+                                    No vehicle emission test records found.
+                                </div>
+                            <?php endif; ?>
                         </div>
                     </div>
                 </div>
@@ -1106,7 +1208,8 @@ try {
                 'competencyTable',
                 'latitudeTable',
                 'modificationTable',
-                'rndTable'
+                'rndTable',
+                'vehicleEmissionTable'
             ];
 
             tableIds.forEach(tableId => {
@@ -1157,6 +1260,9 @@ try {
                     case 'latitude':
                         title = 'Latitude Record Details';
                         break;
+                    case 'vehicle_emission':
+                        title = 'Vehicle Emission Test Details';
+                        break;
                 }
                 detailsModalTitle.textContent = title;
 
@@ -1172,6 +1278,9 @@ try {
                         break;
                     case 'latitude':
                         content = generateLatitudeDetails(button);
+                        break;
+                    case 'vehicle_emission':
+                        content = generateVehicleEmissionDetails(button);
                         break;
                     default:
                         content = '<p>No details available.</p>';
@@ -1532,7 +1641,96 @@ try {
                 `;
             }
 
+            function generateVehicleEmissionDetails(button) {
+                const serialNo = button.getAttribute('data-record-serial-no');
+                const camp = button.getAttribute('data-record-camp');
+                const vehicleNo = button.getAttribute('data-record-vehicle-no');
+                const vehicleType = button.getAttribute('data-record-vehicle-type');
+                const model = button.getAttribute('data-record-model');
+                const testDate = button.getAttribute('data-record-test-date');
+                const firstTest = button.getAttribute('data-record-first-test');
+                const secondTest = button.getAttribute('data-record-second-test');
+                const thirdTest = button.getAttribute('data-record-third-test');
+                const average = button.getAttribute('data-record-average');
+                const status = button.getAttribute('data-record-status');
+                const nextDueDate = button.getAttribute('data-record-next-due-date');
+                const remarks = button.getAttribute('data-record-remarks');
 
+                const statusBadge = status === 'Pass' ? 'success' :
+                                 status === 'Fail' ? 'danger' :
+                                 status === 'Not Suitable' ? 'warning' : 
+                                 status === 'Serviceable Not Done' ? 'secondary' : 'secondary';
+
+                return `
+                    <div class="section-divider">Basic Information</div>
+                    <table class="details-modal-table">
+                        <tr>
+                            <th>S/No:</th>
+                            <td>${formatValue(serialNo)}</td>
+                        </tr>
+                        <tr>
+                            <th>Camp:</th>
+                            <td>${formatValue(camp)}</td>
+                        </tr>
+                        <tr>
+                            <th>Vehicle Number:</th>
+                            <td><strong>${formatValue(vehicleNo)}</strong></td>
+                        </tr>
+                        <tr>
+                            <th>Vehicle Type:</th>
+                            <td>${formatValue(vehicleType)}</td>
+                        </tr>
+                        <tr>
+                            <th>Model:</th>
+                            <td>${formatValue(model)}</td>
+                        </tr>
+                        <tr>
+                            <th>Test Date:</th>
+                            <td>${formatDate(testDate)}</td>
+                        </tr>
+                    </table>
+
+                    <div class="section-divider">Test Results</div>
+                    <table class="details-modal-table">
+                        <tr>
+                            <th>1st Test Result:</th>
+                            <td>${formatValue(firstTest)}</td>
+                        </tr>
+                        <tr>
+                            <th>2nd Test Result:</th>
+                            <td>${formatValue(secondTest)}</td>
+                        </tr>
+                        <tr>
+                            <th>3rd Test Result:</th>
+                            <td>${formatValue(thirdTest)}</td>
+                        </tr>
+                        <tr>
+                            <th>Average:</th>
+                            <td><strong>${formatValue(average)}</strong></td>
+                        </tr>
+                    </table>
+
+                    <div class="section-divider">Status Information</div>
+                    <table class="details-modal-table">
+                        <tr>
+                            <th>Status:</th>
+                            <td><span class="badge badge-${statusBadge}">${formatValue(status)}</span></td>
+                        </tr>
+                        <tr>
+                            <th>Next Due Date:</th>
+                            <td>${formatDate(nextDueDate)}</td>
+                        </tr>
+                    </table>
+
+                    <div class="section-divider">Additional Information</div>
+                    <table class="details-modal-table">
+                        <tr>
+                            <th>Remarks:</th>
+                            <td>${formatValue(remarks)}</td>
+                        </tr>
+                    </table>
+                `;
+            }
 
             // Set initial active tab to welcome screen
             const welcomePane = document.querySelector('#welcome');
