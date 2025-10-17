@@ -14,14 +14,14 @@ if ($camps_result) {
     $camps = $camps_result->fetch_all(MYSQLI_ASSOC);
 }
 
-// Vehicle types from Excel
+// Vehicle types including both diesel and petrol
 $vehicle_types = [
     'Truck', 'D/Cab', 'Jeep', 'Van', 'S/Cab', 'Meal Run', 
     'W/ Bowser', 'Fire Vehicle', 'Coach', 'Fuel Bowser', 
-    'Ambulance', 'Drum Truck', 'Gulley Bowser'
+    'Ambulance', 'Drum Truck', 'Gulley Bowser', 'Three Wheel', 'M/Cycle', 'Car'
 ];
 
-// Status options from Excel
+// Status options
 $status_options = [
     'Pass', 'Fail', 'Not Suitable', 'Serviceable Not Done'
 ];
@@ -47,6 +47,23 @@ include "template/head.php";
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= isset($record) ? 'Edit' : 'Add' ?> Vehicle Emission Test Record</title>
+    <style>
+        .test-section {
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+            padding: 15px;
+            margin-bottom: 20px;
+            background: #f8f9fa;
+        }
+        .test-section h6 {
+            color: #495057;
+            margin-bottom: 15px;
+        }
+        .fuel-type-badge {
+            font-size: 0.8rem;
+            padding: 4px 8px;
+        }
+    </style>
 </head>
 <body>
     <?php include "template/preloader.php"; ?>
@@ -89,7 +106,7 @@ include "template/head.php";
                                     <div class="col-md-12 mb-4">
                                         <h5 class="text-primary mb-3"><i class="fas fa-car me-2"></i>Vehicle Details</h5>
                                         <div class="row">
-                                            <div class="col-md-3">
+                                            <div class="col-md-2">
                                                 <div class="mb-3">
                                                     <label class="form-label">S/No</label>
                                                     <input type="number" name="serial_no" class="form-control" 
@@ -117,7 +134,16 @@ include "template/head.php";
                                                            value="<?= isset($record) ? htmlspecialchars($record['vehicle_no']) : '' ?>" required>
                                                 </div>
                                             </div>
-                                            <div class="col-md-3">
+                                            <div class="col-md-2">
+                                                <div class="mb-3">
+                                                    <label class="form-label">Fuel Type *</label>
+                                                    <select name="fuel_type" class="form-select" id="fuelType" required>
+                                                        <option value="Diesel" <?= isset($record) && $record['fuel_type'] == 'Diesel' ? 'selected' : '' ?>>Diesel</option>
+                                                        <option value="Petrol" <?= isset($record) && $record['fuel_type'] == 'Petrol' ? 'selected' : '' ?>>Petrol</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-2">
                                                 <div class="mb-3">
                                                     <label class="form-label">Vehicle Type *</label>
                                                     <select name="vehicle_type" class="form-select" required>
@@ -148,36 +174,81 @@ include "template/head.php";
                                         </div>
                                     </div>
 
-                                    <!-- Test Results -->
-                                    <div class="col-md-12 mb-4">
-                                        <h5 class="text-primary mb-3"><i class="fas fa-flask me-2"></i>Test Results</h5>
-                                        <div class="row">
-                                            <div class="col-md-3">
-                                                <div class="mb-3">
-                                                    <label class="form-label">1st Test</label>
-                                                    <input type="number" step="0.01" name="first_test" class="form-control test-input" 
-                                                           value="<?= isset($record) ? $record['first_test'] : '' ?>">
+                                    <!-- Diesel Test Results -->
+                                    <div class="col-md-12 mb-4" id="dieselSection">
+                                        <div class="test-section">
+                                            <h6 class="text-primary">
+                                                <i class="fas fa-oil-can me-2"></i>Diesel Vehicle Test Results
+                                                <span class="badge bg-secondary fuel-type-badge ms-2">Diesel</span>
+                                            </h6>
+                                            <div class="row">
+                                                <div class="col-md-3">
+                                                    <div class="mb-3">
+                                                        <label class="form-label">1st Test</label>
+                                                        <input type="number" step="0.01" name="first_test" class="form-control test-input-diesel" 
+                                                               value="<?= isset($record) ? $record['first_test'] : '' ?>">
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <div class="mb-3">
+                                                        <label class="form-label">2nd Test</label>
+                                                        <input type="number" step="0.01" name="second_test" class="form-control test-input-diesel" 
+                                                               value="<?= isset($record) ? $record['second_test'] : '' ?>">
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <div class="mb-3">
+                                                        <label class="form-label">3rd Test</label>
+                                                        <input type="number" step="0.01" name="third_test" class="form-control test-input-diesel" 
+                                                               value="<?= isset($record) ? $record['third_test'] : '' ?>">
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <div class="mb-3">
+                                                        <label class="form-label">Average</label>
+                                                        <input type="number" step="0.01" name="average" class="form-control" 
+                                                               value="<?= isset($record) ? $record['average'] : '' ?>" readonly>
+                                                    </div>
                                                 </div>
                                             </div>
-                                            <div class="col-md-3">
-                                                <div class="mb-3">
-                                                    <label class="form-label">2nd Test</label>
-                                                    <input type="number" step="0.01" name="second_test" class="form-control test-input" 
-                                                           value="<?= isset($record) ? $record['second_test'] : '' ?>">
+                                        </div>
+                                    </div>
+
+                                    <!-- Petrol Test Results -->
+                                    <div class="col-md-12 mb-4" id="petrolSection" style="display: none;">
+                                        <div class="test-section">
+                                            <h6 class="text-primary">
+                                                <i class="fas fa-gas-pump me-2"></i>Petrol Vehicle Test Results
+                                                <span class="badge bg-warning fuel-type-badge ms-2">Petrol</span>
+                                            </h6>
+                                            <div class="row">
+                                                <div class="col-md-3">
+                                                    <div class="mb-3">
+                                                        <label class="form-label">2500 RPM HC</label>
+                                                        <input type="number" step="0.01" name="rpm_2500_hc" class="form-control" 
+                                                               value="<?= isset($record) ? $record['rpm_2500_hc'] : '' ?>">
+                                                    </div>
                                                 </div>
-                                            </div>
-                                            <div class="col-md-3">
-                                                <div class="mb-3">
-                                                    <label class="form-label">3rd Test</label>
-                                                    <input type="number" step="0.01" name="third_test" class="form-control test-input" 
-                                                           value="<?= isset($record) ? $record['third_test'] : '' ?>">
+                                                <div class="col-md-3">
+                                                    <div class="mb-3">
+                                                        <label class="form-label">2500 RPM CO</label>
+                                                        <input type="number" step="0.01" name="rpm_2500_co" class="form-control" 
+                                                               value="<?= isset($record) ? $record['rpm_2500_co'] : '' ?>">
+                                                    </div>
                                                 </div>
-                                            </div>
-                                            <div class="col-md-3">
-                                                <div class="mb-3">
-                                                    <label class="form-label">Average</label>
-                                                    <input type="number" step="0.01" name="average" class="form-control" 
-                                                           value="<?= isset($record) ? $record['average'] : '' ?>" readonly>
+                                                <div class="col-md-3">
+                                                    <div class="mb-3">
+                                                        <label class="form-label">Idle HC</label>
+                                                        <input type="number" step="0.01" name="idle_hc" class="form-control" 
+                                                               value="<?= isset($record) ? $record['idle_hc'] : '' ?>">
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <div class="mb-3">
+                                                        <label class="form-label">Idle CO</label>
+                                                        <input type="number" step="0.01" name="idle_co" class="form-control" 
+                                                               value="<?= isset($record) ? $record['idle_co'] : '' ?>">
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
@@ -250,13 +321,34 @@ include "template/head.php";
     <script src="assets/js/deznav-init.js"></script>
 
     <script>
-        // Calculate average automatically
+        // Toggle between diesel and petrol test sections
         document.addEventListener('DOMContentLoaded', function() {
-            const testInputs = document.querySelectorAll('.test-input');
+            const fuelTypeSelect = document.getElementById('fuelType');
+            const dieselSection = document.getElementById('dieselSection');
+            const petrolSection = document.getElementById('petrolSection');
+
+            function toggleTestSections() {
+                if (fuelTypeSelect.value === 'Diesel') {
+                    dieselSection.style.display = 'block';
+                    petrolSection.style.display = 'none';
+                } else {
+                    dieselSection.style.display = 'none';
+                    petrolSection.style.display = 'block';
+                }
+            }
+
+            // Initial toggle
+            toggleTestSections();
+
+            // Toggle on change
+            fuelTypeSelect.addEventListener('change', toggleTestSections);
+
+            // Calculate average for diesel tests
+            const dieselTestInputs = document.querySelectorAll('.test-input-diesel');
             const averageInput = document.querySelector('input[name="average"]');
 
             function calculateAverage() {
-                const values = Array.from(testInputs)
+                const values = Array.from(dieselTestInputs)
                     .map(input => parseFloat(input.value))
                     .filter(val => !isNaN(val) && val > 0);
                 
@@ -268,7 +360,7 @@ include "template/head.php";
                 }
             }
 
-            testInputs.forEach(input => {
+            dieselTestInputs.forEach(input => {
                 input.addEventListener('input', calculateAverage);
             });
         });

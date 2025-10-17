@@ -25,12 +25,22 @@ $serial_no = toNull($_POST['serial_no'] ?? '');
 $camp_id = toNull($_POST['camp_id'] ?? '');
 $vehicle_no = toNull($_POST['vehicle_no'] ?? '');
 $vehicle_type = toNull($_POST['vehicle_type'] ?? '');
+$fuel_type = $_POST['fuel_type'] ?? 'Diesel';
 $model = toNull($_POST['model'] ?? '');
 $test_date = toNull($_POST['test_date'] ?? '');
+
+// Diesel test parameters
 $first_test = toNull($_POST['first_test'] ?? '');
 $second_test = toNull($_POST['second_test'] ?? '');
 $third_test = toNull($_POST['third_test'] ?? '');
 $average = toNull($_POST['average'] ?? '');
+
+// Petrol test parameters
+$rpm_2500_hc = toNull($_POST['rpm_2500_hc'] ?? '');
+$rpm_2500_co = toNull($_POST['rpm_2500_co'] ?? '');
+$idle_hc = toNull($_POST['idle_hc'] ?? '');
+$idle_co = toNull($_POST['idle_co'] ?? '');
+
 $status = toNull($_POST['status'] ?? '');
 $next_due_date = toNull($_POST['next_due_date'] ?? '');
 $remarks = toNull($_POST['remarks'] ?? '');
@@ -46,8 +56,9 @@ if (isset($_POST['id']) && !empty($_POST['id'])) {
     // Update existing record
     $id = (int)$_POST['id'];
     $sql = "UPDATE vehicle_emission_test SET 
-            serial_no = ?, camp_id = ?, vehicle_no = ?, vehicle_type = ?, model = ?, 
-            test_date = ?, first_test = ?, second_test = ?, third_test = ?, average = ?, 
+            serial_no = ?, camp_id = ?, vehicle_no = ?, vehicle_type = ?, fuel_type = ?, model = ?, 
+            test_date = ?, first_test = ?, second_test = ?, third_test = ?, average = ?,
+            rpm_2500_hc = ?, rpm_2500_co = ?, idle_hc = ?, idle_co = ?,
             status = ?, next_due_date = ?, remarks = ?, updated_at = CURRENT_TIMESTAMP 
             WHERE id = ?";
     
@@ -59,18 +70,20 @@ if (isset($_POST['id']) && !empty($_POST['id'])) {
     }
 
     $stmt->bind_param(
-        'isssssddddsssi',
-        $serial_no, $camp_id, $vehicle_no, $vehicle_type, $model,
+        'isssssddddddddsssi',
+        $serial_no, $camp_id, $vehicle_no, $vehicle_type, $fuel_type, $model,
         $test_date, $first_test, $second_test, $third_test, $average,
+        $rpm_2500_hc, $rpm_2500_co, $idle_hc, $idle_co,
         $status, $next_due_date, $remarks, $id
     );
 } else {
     // Insert new record
     $sql = "INSERT INTO vehicle_emission_test (
-        serial_no, camp_id, vehicle_no, vehicle_type, model, test_date, 
-        first_test, second_test, third_test, average, status, next_due_date, 
-        remarks, created_by
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        serial_no, camp_id, vehicle_no, vehicle_type, fuel_type, model, test_date, 
+        first_test, second_test, third_test, average,
+        rpm_2500_hc, rpm_2500_co, idle_hc, idle_co,
+        status, next_due_date, remarks, created_by
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
     
     $stmt = $db->prepare($sql);
     if (!$stmt) {
@@ -80,9 +93,10 @@ if (isset($_POST['id']) && !empty($_POST['id'])) {
     }
 
     $stmt->bind_param(
-        'isssssddddsssi',
-        $serial_no, $camp_id, $vehicle_no, $vehicle_type, $model,
+        'isssssddddddddsssii',
+        $serial_no, $camp_id, $vehicle_no, $vehicle_type, $fuel_type, $model,
         $test_date, $first_test, $second_test, $third_test, $average,
+        $rpm_2500_hc, $rpm_2500_co, $idle_hc, $idle_co,
         $status, $next_due_date, $remarks, $created_by
     );
 }
