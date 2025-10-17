@@ -23,13 +23,22 @@
             margin-bottom: 30px;
         }
         
-        .nav-pills .nav-link {
+        /* .nav-pills .nav-link {
             color: #495057;
             border-radius: 0;
             padding: 12px 20px;
             margin-bottom: 8px;
             transition: all 0.3s;
             border-left: 3px solid transparent;
+        } */
+        .nav-pills .nav-link {
+            color: #495057;
+            border-radius: 0;
+            padding: 10px 10px;
+            margin-bottom: 4px;
+            transition: all 0.3s;
+            border-left: 3px solid transparent;
+            font-size: small;
         }
         
         .nav-pills .nav-link.active, 

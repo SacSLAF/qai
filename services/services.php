@@ -290,7 +290,7 @@ try {
             display: block;
         }
 
-        .qa-dropdown-item {
+        /* .qa-dropdown-item {
             display: block;
             padding: 8px 15px;
             color: #495057;
@@ -298,6 +298,15 @@ try {
             border-radius: 4px;
             margin-bottom: 3px;
             font-size: 0.95rem;
+        } */
+        .qa-dropdown-item {
+            display: block;
+            padding: 5px 10px;
+            color: #495057;
+            text-decoration: none;
+            border-radius: 4px;
+            margin-bottom: 3px;
+            font-size: smaller;
         }
 
         .qa-dropdown-item:hover,
@@ -444,6 +453,9 @@ try {
         .welcome-image{
             width: 100%;
         }
+        .colour-defult{
+            font-size: medium;
+        }
     </style>
 </head>
 
@@ -542,10 +554,10 @@ try {
 
                     <div class="tab-pane fade" id="audit_check_list" role="tabpanel">
                         <h4 class="colour-defult">Audit Check List</h4>
-                        <p>Standard operating procedures and checklists for quality audits.</p>
+                        <!-- <p>Standard operating procedures and checklists for quality audits.</p> -->
                         <div class="mt-4">
                             <div class="card">
-                                <div class="card-header">Audit Check Lists</div>
+                                <!-- <div class="card-header">Audit Check Lists</div> -->
                                 <div class="card-body">
                                     <?php if (!empty($qa_check_lists_error)): ?>
                                         <div class="alert alert-danger">
@@ -554,14 +566,14 @@ try {
                                     <?php elseif (!empty($qa_check_lists)): ?>
                                         <div class="table-responsive">
                                             <table class="table table-striped table-hover document-table" id="qaCheckListTable">
-                                                <thead>
+                                                <thead style="font-size:smaller;">
                                                     <tr>
                                                         <th>Description</th>
                                                         <th>Checklist Number</th>
                                                         <th>Actions</th>
                                                     </tr>
                                                 </thead>
-                                                <tbody>
+                                                <tbody style="font-size:smaller;">
                                                     <?php foreach ($qa_check_lists as $qa_check_list): ?>
                                                         <tr>
                                                             <td><?= htmlspecialchars($qa_check_list['description'] ?? 'No description') ?></td>
@@ -605,10 +617,10 @@ try {
 
                     <div class="tab-pane fade" id="qa_report" role="tabpanel">
                         <h4 class="colour-defult">QA Report</h4>
-                        <p>Quality assurance reports and analytics.</p>
+                        <!-- <p>Quality assurance reports and analytics.</p> -->
                         <div class="mt-4">
                             <div class="card">
-                                <div class="card-header">Recent Reports</div>
+                                <!-- <div class="card-header">Recent Reports</div> -->
                                 <div class="card-body">
                                     <?php if (!empty($qa_reports_error)): ?>
                                         <div class="alert alert-danger">
@@ -617,7 +629,7 @@ try {
                                     <?php elseif (!empty($qa_reports)): ?>
                                         <div class="table-responsive">
                                             <table class="table table-striped table-hover document-table" id="qaReportsTable">
-                                                <thead>
+                                                <thead style="font-size:smaller;">
                                                     <tr>
                                                         <th>Location</th>
                                                         <th>Description</th>
@@ -625,7 +637,7 @@ try {
                                                         <th>View</th>
                                                     </tr>
                                                 </thead>
-                                                <tbody>
+                                                <tbody style="font-size:smaller;">
                                                     <?php foreach ($qa_reports as $report): ?>
                                                         <tr>
                                                             <td><strong><?= htmlspecialchars($report['title']) ?></strong></td>
@@ -683,8 +695,8 @@ try {
                                         <div class="card">
                                             <div class="card-body p-0">
                                                 <div class="table-responsive">
-                                                    <table class="table table-striped table-hover mb-0" id="competencyTable">
-                                                        <thead>
+                                                    <table class="table table-striped table-hover mb-0 competencyTable" id="competencyTable">
+                                                        <thead style="font-size:smaller;">
                                                             <tr>
                                                                 <th>SVC No</th>
                                                                 <th>Rank</th>
@@ -698,7 +710,7 @@ try {
                                                                 <th>View</th>
                                                             </tr>
                                                         </thead>
-                                                        <tbody>
+                                                        <tbody style="font-size:smaller;">
                                                             <?php foreach ($aircraft_competency_data[$category_id]['records'] as $index => $record): ?>
                                                                 <tr class="<?= $index % 2 === 0 ? 'bg-white' : 'bg-light-blue' ?>">
                                                                     <td><strong><?= htmlspecialchars($record['svc_no'] ?? '') ?></strong></td>
@@ -745,7 +757,7 @@ try {
                                                                             data-record-cer-issued-date="<?= htmlspecialchars($record['cer_issued_date'] ?? '') ?>"
                                                                             data-record-retired-date="<?= htmlspecialchars($record['retired_date'] ?? '') ?>"
                                                                             data-record-remarks="<?= htmlspecialchars($record['remarks'] ?? '') ?>">
-                                                                            View Details
+                                                                            View
                                                                         </button>
                                                                     </td>
                                                                 </tr>
@@ -811,7 +823,7 @@ try {
                                     <div class="card-body p-0">
                                         <div class="table-responsive">
                                             <table class="table table-striped table-hover mb-0" id="latitudeTable">
-                                                <thead class="table-light">
+                                                <thead class="table-light" style="font-size:smaller;">
                                                     <tr>
                                                         <th>Type</th>
                                                         <th>Formation</th>
@@ -823,7 +835,7 @@ try {
                                                         <th>View</th>
                                                     </tr>
                                                 </thead>
-                                                <tbody>
+                                                <tbody style="font-size:smaller;">
                                                     <?php foreach ($latitude_data as $record): ?>
                                                         <tr>
                                                             <td>
@@ -862,7 +874,7 @@ try {
                                                                     data-record-total-prev-latitude="<?= htmlspecialchars($record['total_prev_latitude'] ?? '') ?>"
                                                                     data-record-demand-ref="<?= htmlspecialchars($record['demand_ref'] ?? '') ?>"
                                                                     data-record-status="<?= htmlspecialchars($record['status'] ?? '') ?>">
-                                                                    View Details
+                                                                    View
                                                                 </button>
                                                             </td>
                                                         </tr>
@@ -894,7 +906,7 @@ try {
                                     <div class="card-body p-0">
                                         <div class="table-responsive">
                                             <table class="table table-striped table-hover mb-0" id="modificationTable">
-                                                <thead class="table-light">
+                                                <thead class="table-light" style="font-size:smaller;">
                                                     <tr>
                                                         <th>Mod No</th>
                                                         <th>Directorate</th>
@@ -904,7 +916,7 @@ try {
                                                         <th>Recommended Date</th>
                                                     </tr>
                                                 </thead>
-                                                <tbody>
+                                                <tbody style="font-size:smaller;">
                                                     <?php foreach ($modification_data as $record): ?>
                                                         <tr>
                                                             <td><?= htmlspecialchars($record['mod_no'] ?? 'N/A') ?></td>
@@ -947,7 +959,7 @@ try {
                                     <div class="card-body p-0">
                                         <div class="table-responsive">
                                             <table class="table table-striped table-hover mb-0" id="rndTable">
-                                                <thead class="table-light">
+                                                <thead class="table-light" style="font-size:smaller;">
                                                     <tr>
                                                         <th>R&D No</th>
                                                         <th>Directorate</th>
@@ -957,7 +969,7 @@ try {
                                                         <th>Issue Date</th>
                                                     </tr>
                                                 </thead>
-                                                <tbody>
+                                                <tbody style="font-size:smaller;">
                                                     <?php foreach ($rnd_data as $record): ?>
                                                         <tr>
                                                             <td><?= htmlspecialchars($record['rnd_no'] ?? 'N/A') ?></td>
@@ -989,8 +1001,8 @@ try {
 
                     <!-- Vehicle Emission Test Tab Panes -->
                     <div class="tab-pane fade" id="vehicle_annual_plans" role="tabpanel">
-                        <h4 class="colour-defult">Vehicle Emission Test - Annual Plans</h4>
-                        <p>Annual testing schedules, plans, and compliance documentation for vehicle emission tests.</p>
+                        <!-- <h4 class="colour-defult">Vehicle Emission Test - Annual Plans</h4> -->
+                        <!-- <p>Annual testing schedules, plans, and compliance documentation for vehicle emission tests.</p> -->
                         <div class="mt-4">
                             <?php if ($show_pdf): ?>
                                 <div class="top-bar">
@@ -1018,7 +1030,7 @@ try {
 
                     <div class="tab-pane fade" id="vehicle_test_reports" role="tabpanel">
                         <h4 class="colour-defult">Vehicle Emission Test - Test Reports</h4>
-                        <p>Detailed test reports, results, and compliance certificates for vehicle emission testing.</p>
+                        <!-- <p>Detailed test reports, results, and compliance certificates for vehicle emission testing.</p> -->
                         <div class="mt-4">
                             <div class="alert alert-info">
                                 <i class="fas fa-info-circle me-2"></i>
@@ -1047,7 +1059,7 @@ try {
         <div class="modal-dialog modal-xl modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">View PDF</h5>
+                    <h5 class="modal-title"></h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body" style="height: 80vh;">
@@ -1088,6 +1100,7 @@ try {
 
     <script>
         $(document).ready(function() {
+        $('.competencyTable').DataTable();
             const dataTableConfig = {
                 "pageLength": 10,
                 "lengthMenu": [10, 25, 50, 100],
@@ -1095,7 +1108,7 @@ try {
                     [2, "desc"]
                 ],
                 "language": {
-                    "search": "Filter:",
+                    "search": "Search:",
                     "lengthMenu": "Show _MENU_ entries",
                     "info": "Showing _START_ to _END_ of _TOTAL_ entries",
                     "paginate": {
@@ -1109,7 +1122,7 @@ try {
             const tableIds = [
                 'qaReportsTable',
                 'qaCheckListTable',
-                'competencyTable',
+                // 'competencyTable',
                 'latitudeTable',
                 'modificationTable',
                 'rndTable'

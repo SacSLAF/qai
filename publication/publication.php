@@ -100,7 +100,7 @@ include '../template/head.php';
             display: block;
         }
 
-        .qa-dropdown-item {
+        /* .qa-dropdown-item {
             display: block;
             padding: 8px 15px;
             color: #495057;
@@ -108,6 +108,15 @@ include '../template/head.php';
             border-radius: 4px;
             margin-bottom: 3px;
             font-size: 0.95rem;
+        } */
+        .qa-dropdown-item {
+            display: block;
+            padding: 5px 10px;
+            color: #495057;
+            text-decoration: none;
+            border-radius: 4px;
+            margin-bottom: 3px;
+            font-size: smaller;
         }
 
         .qa-dropdown-item:hover,

@@ -33,17 +33,5 @@
 
     <?php include 'template/foot.php'; ?>
   </div>
-
-  <script>
-    document.addEventListener('DOMContentLoaded', function () {
-      const marquee = document.querySelector('.marquee-content');
-      marquee.addEventListener('mouseenter', function () {
-        this.style.animationPlayState = 'paused';
-      });
-      marquee.addEventListener('mouseleave', function () {
-        this.style.animationPlayState = 'running';
-      });
-    });
-  </script>
 </body>
 </html>

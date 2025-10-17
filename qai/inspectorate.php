@@ -160,7 +160,7 @@
     </style>
     <style>
         body {
-            font-family: Verdana, sans-serif;
+            /* font-family: Verdana, sans-serif; */
             margin: 0;
         }
 
