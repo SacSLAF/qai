@@ -624,6 +624,10 @@ INSERT INTO formation (formation_name) VALUES
 ('AOW'), ('AFM'), ('AR & DW'), ('RMW'), ('RADAR SQN'),
 ('E &TE Rma'), ('E &TE Kat');
 
+INSERT INTO formation (formation_name) VALUES
+ ('12 SQN'), ('14 SQN'), ('112 SQN'),
+('KDU'), ('MINIUSCA');
+
 -- Insert aircraft types
 INSERT INTO type (type_name) VALUES
 ('K-08'), ('PT-6'), ('C-150'), ('C-130'), ('AN32B'),
@@ -632,6 +636,10 @@ INSERT INTO type (type_name) VALUES
 ('MI-24/35'), ('Kfir'), ('Lihiniya MK-I/II'), ('Bay Servicing'),
 ('Communication System'), ('Navigation System'), ('Radar System'),
 ('AGSE'), ('OTHER'), ('All Aircraft'), ('RADAR');
+
+INSERT INTO type (type_name) VALUES
+('Cesna 421'), ('AVRO'), ('Y-8'), ('BH-2'), ('CHIPMUNK'),
+('Tiger Month'), ('Siaimar Chetti'), ('Lihiniya MK-1& MK-1E');
 
 
 
@@ -721,22 +729,31 @@ CREATE INDEX idx_rnd_formation ON rnd(formation_id);
 CREATE INDEX idx_rnd_type ON rnd(type_id);
 CREATE INDEX idx_rnd_directorate ON rnd(directorate);
 
--- Drop existing table
+-- Drop existing table and recreate with both diesel and petrol support
 DROP TABLE IF EXISTS `vehicle_emission_test`;
 
--- Create new table 
 CREATE TABLE `vehicle_emission_test` (
   `id` int NOT NULL AUTO_INCREMENT,
   `serial_no` int DEFAULT NULL,
   `camp_id` int NOT NULL,
   `vehicle_no` varchar(100) NOT NULL,
   `vehicle_type` varchar(100) NOT NULL,
+  `fuel_type` enum('Diesel','Petrol') NOT NULL DEFAULT 'Diesel',
   `model` varchar(100) DEFAULT NULL,
   `test_date` date NOT NULL,
+  
+  -- Diesel Test Parameters
   `first_test` decimal(10,2) DEFAULT NULL,
   `second_test` decimal(10,2) DEFAULT NULL,
   `third_test` decimal(10,2) DEFAULT NULL,
   `average` decimal(10,2) DEFAULT NULL,
+  
+  -- Petrol Test Parameters
+  `rpm_2500_hc` decimal(10,2) DEFAULT NULL,
+  `rpm_2500_co` decimal(10,2) DEFAULT NULL,
+  `idle_hc` decimal(10,2) DEFAULT NULL,
+  `idle_co` decimal(10,2) DEFAULT NULL,
+  
   `status` varchar(50) NOT NULL,
   `next_due_date` date DEFAULT NULL,
   `remarks` text,
@@ -746,6 +763,7 @@ CREATE TABLE `vehicle_emission_test` (
   PRIMARY KEY (`id`),
   KEY `fk_vet_camp` (`camp_id`),
   KEY `fk_vet_created_by` (`created_by`),
+  KEY `idx_fuel_type` (`fuel_type`),
   CONSTRAINT `fk_vet_camp` FOREIGN KEY (`camp_id`) REFERENCES `slaf_establishments` (`id`),
   CONSTRAINT `fk_vet_created_by` FOREIGN KEY (`created_by`) REFERENCES `admins` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
