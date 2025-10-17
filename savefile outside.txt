@@ -28,3 +28,17 @@ if (move_uploaded_file($file_tmp, $target_path)) {
         } else {
             echo "<div class='alert alert-danger'>Failed to move uploaded file.</div>";
         }
+
+
+
+
+
+
+
+
+
+
+
+
+Excel list
+=TEXT(DATE(RIGHT(A2,4), MID(A2,4,2), LEFT(A2,2)), "yyyy-mm-dd")

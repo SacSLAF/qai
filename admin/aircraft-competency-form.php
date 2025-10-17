@@ -31,16 +31,23 @@ if ($types_result) {
     $types = $types_result->fetch_all(MYSQLI_ASSOC);
 }
 
+// Fetch ranks from ranks table
+$ranks_result = $db->query("SELECT id, rank_name FROM ranks ORDER BY id");
+if ($ranks_result) {
+    $ranks = $ranks_result->fetch_all(MYSQLI_ASSOC);
+}
 include "template/head.php";
 ?>
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Add Aircraft Competency Record</title>
 </head>
+
 <body>
     <!-- Include your template files -->
     <?php include "template/preloader.php"; ?>
@@ -87,8 +94,17 @@ include "template/head.php";
                                             </div>
                                             <div class="col-md-3">
                                                 <div class="mb-3">
-                                                    <label class="form-label">Rank *</label>
-                                                    <input type="text" name="rank" class="form-control" required>
+                                                    <!-- <label class="form-label">Rank *</label>
+                                                    <input type="text" name="rank" class="form-control" required> -->
+                                                    <label class="form-label">Rank</label>
+                                                    <select name="rank" class="form-select">
+                                                        <option value="" selected disabled>Select Rank</option>
+                                                        <?php foreach ($ranks as $rank): ?>
+                                                            <option value="<?= $rank['id'] ?>">
+                                                                <?= htmlspecialchars($rank['rank_name']) ?>
+                                                            </option>
+                                                        <?php endforeach; ?>
+                                                    </select>
                                                 </div>
                                             </div>
                                             <div class="col-md-3">
@@ -113,7 +129,18 @@ include "template/head.php";
                                             <div class="col-md-6">
                                                 <div class="mb-3">
                                                     <label class="form-label">Trade</label>
-                                                    <input type="text" name="trade" class="form-control">
+                                                    <select name="trade" class="form-select" required>
+                                                        <option value="" selected disabled>Select Trade</option>
+                                                        <option value="Airframe">Airframe</option>
+                                                        <option value="Aero ENG">Aero ENG</option>
+                                                        <option value="Aero E&I">Aero E&I</option>
+                                                        <option value="Safety Eqpt">Safety Eqpt</option>
+                                                        <option value="Air Radio">Air Radio</option>
+                                                        <option value="AGSE">AGSE</option>
+                                                        <option value="Armament">Armament</option>
+                                                        <option value="Airframe & Power Plant">Airframe & Power Plant</option>
+                                                        <option value="None Tech">None Tech</option>
+                                                    </select>
                                                 </div>
                                             </div>
                                         </div>
@@ -172,11 +199,21 @@ include "template/head.php";
                                                 <div class="mb-3">
                                                     <label class="form-label">Competency Level *</label>
                                                     <select name="competency_level" class="form-select" required>
-                                                        <option value="">Select Level</option>
+                                                        <option value="" selected disabled>Select Level</option>
                                                         <option value="First Line">First Line</option>
                                                         <option value="Second Line">Second Line</option>
                                                         <option value="Third Line">Third Line</option>
-                                                        <option value="Specialist">Specialist</option>
+                                                        <option value="Flight Line">Flight Line</option>
+                                                        <option value="Bay Level">Bay Level</option>
+                                                        <option value="Shop Level">Shop Level</option>
+                                                        <option value="Field Level">Field Line</option>
+                                                        <option value="Depot Level">Depot Line</option>
+                                                        <option value="B1 A&P Flight Line">B1 A&P Flight Line</option>
+                                                        <option value="B1 A&P First Line">B1 A&P First Line</option>
+                                                        <option value="Sign and Work">Sign and Work</option>
+                                                        <option value="Fiber Level 1">Fiber Level 1</option>
+                                                        <option value="Fiber Level 2">Fiber Level 2</option>
+                                                        <option value="Other">Other</option>
                                                     </select>
                                                 </div>
                                             </div>
@@ -360,4 +397,5 @@ include "template/head.php";
     <script src="assets/js/custom.min.js"></script>
     <script src="assets/js/deznav-init.js"></script>
 </body>
+
 </html>

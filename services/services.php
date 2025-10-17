@@ -98,6 +98,13 @@ try {
             }
         }
 
+        $r_res = $db->query("SELECT id, rank_name FROM ranks");
+        if ($r_res) {
+            foreach ($r_res->fetch_all(MYSQLI_ASSOC) as $r) {
+                $ranks_map[$r['id']] = $r['rank_name'];
+            }
+        }
+
         $t_res = $db->query("SELECT type_id, type_name FROM type");
         if ($t_res) {
             foreach ($t_res->fetch_all(MYSQLI_ASSOC) as $t) {
@@ -450,10 +457,12 @@ try {
             color: #6c757d;
             font-style: italic;
         }
-        .welcome-image{
+
+        .welcome-image {
             width: 100%;
         }
-        .colour-defult{
+
+        .colour-defult {
             font-size: medium;
         }
     </style>
@@ -475,8 +484,8 @@ try {
                         <a class="nav-link qa-dropdown-toggle active" role="button">QA Audits</a>
                         <div class="qa-dropdown-menu">
                             <a class="qa-dropdown-item active" data-bs-target="#audits_plan" role="tab">Audits Plan</a>
-                            <a class="qa-dropdown-item" data-bs-target="#audit_check_list" role="tab">Audit Check List</a>
-                            <a class="qa-dropdown-item" data-bs-target="#qa_report" role="tab">QA Report</a>
+                            <a class="qa-dropdown-item" data-bs-target="#audit_check_list" role="tab">Audit Check Lists</a>
+                            <a class="qa-dropdown-item" data-bs-target="#qa_report" role="tab">QA Reports</a>
                         </div>
                     </div>
                     <!-- Aircraft Competency Dropdown - Using ac_categories only -->
@@ -533,7 +542,7 @@ try {
                     <div class="tab-pane fade" id="audits_plan" role="tabpanel">
                         <?php if ($show_pdf): ?>
                             <div class="top-bar">
-                                <a href="?file=<?= $file ?>" class="btn btn-sm btn-dark">Audit Plan Document</a>
+                                <a href="?file=<?= $file ?>" class="btn btn-sm btn-dark">Audit Plan</a>
                             </div>
 
                             <!-- PDF.js Viewer -->
@@ -553,9 +562,9 @@ try {
                     </div>
 
                     <div class="tab-pane fade" id="audit_check_list" role="tabpanel">
-                        <h4 class="colour-defult">Audit Check List</h4>
+                        <h4 class="colour-defult">Audit Check Lists</h4>
                         <!-- <p>Standard operating procedures and checklists for quality audits.</p> -->
-                        <div class="mt-4">
+                        <div class="">
                             <div class="card">
                                 <!-- <div class="card-header">Audit Check Lists</div> -->
                                 <div class="card-body">
@@ -570,7 +579,7 @@ try {
                                                     <tr>
                                                         <th>Description</th>
                                                         <th>Checklist Number</th>
-                                                        <th>Actions</th>
+                                                        <th>View</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody style="font-size:smaller;">
@@ -587,7 +596,7 @@ try {
                                                                         data-pdf-url="/qai/assets/pdfjs/web/viewer.html?file=<?= urlencode('/qai/admin/action/' . $qa_check_list['file_path']) ?>">
                                                                         View PDF
                                                                     </a>
-                                                                    <button class="btn btn-view-details btn-sm view-details-btn"
+                                                                    <!-- <button class="btn btn-view-details btn-sm view-details-btn"
                                                                         data-bs-toggle="modal"
                                                                         data-bs-target="#detailsModal"
                                                                         data-record-type="qa_check_list"
@@ -597,7 +606,7 @@ try {
                                                                         data-record-file-path="<?= htmlspecialchars($qa_check_list['file_path'] ?? '') ?>"
                                                                         data-record-uploaded-at="<?= htmlspecialchars($qa_check_list['uploaded_at'] ?? '') ?>">
                                                                         View Details
-                                                                    </button>
+                                                                    </button> -->
                                                                 </div>
                                                             </td>
                                                         </tr>
@@ -616,9 +625,9 @@ try {
                     </div>
 
                     <div class="tab-pane fade" id="qa_report" role="tabpanel">
-                        <h4 class="colour-defult">QA Report</h4>
+                        <h4 class="colour-defult">QA Reports</h4>
                         <!-- <p>Quality assurance reports and analytics.</p> -->
-                        <div class="mt-4">
+                        <div class="">
                             <div class="card">
                                 <!-- <div class="card-header">Recent Reports</div> -->
                                 <div class="card-body">
@@ -652,7 +661,7 @@ try {
                                                                         data-pdf-url="/qai/assets/pdfjs/web/viewer.html?file=<?= urlencode('/qai/admin/action/' . $report['file_path']) ?>">
                                                                         View PDF
                                                                     </a>
-                                                                    <button class="btn btn-view-details btn-sm view-details-btn"
+                                                                    <!-- <button class="btn btn-view-details btn-sm view-details-btn"
                                                                         data-bs-toggle="modal"
                                                                         data-bs-target="#detailsModal"
                                                                         data-record-type="qa_report"
@@ -662,7 +671,7 @@ try {
                                                                         data-record-file-path="<?= htmlspecialchars($report['file_path'] ?? '') ?>"
                                                                         data-record-uploaded-at="<?= htmlspecialchars($report['uploaded_at'] ?? '') ?>">
                                                                         View Details
-                                                                    </button>
+                                                                    </button> -->
                                                                 </div>
                                                             </td>
                                                         </tr>
@@ -682,11 +691,18 @@ try {
 
                     <!-- Aircraft Competency Tab Panes - Using ac_categories only -->
                     <?php if (!empty($ac_cat_map)): ?>
-                        <?php foreach ($ac_cat_map as $category_id => $category_name): ?>
+                        <?php foreach ($ac_cat_map as $category_id => $category_name):
+                            $name_map = [
+                                "AE" => "Aeronautical Engineering",
+                                "GE" => "General Engineering",
+                                "EE" => "Electronics Engineering"
+                            ];
+                            $display_name = $name_map[$category_name] ?? $category_name;
+                        ?>
                             <div class="tab-pane fade" id="ac_cmpt_<?= $category_id ?>" role="tabpanel">
-                                <h4 class="colour-defult">Aircraft Competency - <?= htmlspecialchars($category_name) ?></h4>
+                                <h4 class="colour-defult">Aircraft Competency - <?= htmlspecialchars($display_name) ?></h4>
 
-                                <div class="mt-4">
+                                <div class="">
                                     <?php if (!empty($ac_error)): ?>
                                         <div class="alert alert-danger">
                                             <strong>Database Error:</strong> <?= htmlspecialchars($ac_error) ?>
@@ -702,11 +718,12 @@ try {
                                                                 <th>Rank</th>
                                                                 <th>Name</th>
                                                                 <th>Trade</th>
-                                                                <th>Formation</th>
-                                                                <th>Posted In Date</th>
                                                                 <th>Type</th>
                                                                 <th>Competancy</th>
-                                                                <th>Competecy Issue Ref</th>
+                                                                <th>Competecy Issue Date</th>
+                                                                <!-- <th>Formation</th> -->
+                                                                <!-- <th>Posted In Date</th> -->
+                                                                <!-- <th>Competecy Issue Ref</th> -->
                                                                 <th>View</th>
                                                             </tr>
                                                         </thead>
@@ -714,14 +731,15 @@ try {
                                                             <?php foreach ($aircraft_competency_data[$category_id]['records'] as $index => $record): ?>
                                                                 <tr class="<?= $index % 2 === 0 ? 'bg-white' : 'bg-light-blue' ?>">
                                                                     <td><strong><?= htmlspecialchars($record['svc_no'] ?? '') ?></strong></td>
-                                                                    <td><?= htmlspecialchars($record['rank'] ?? '') ?></td>
+                                                                    <td><?= htmlspecialchars($ranks_map[$record['rank']] ?? 'Unknown Rank') ?></td>
                                                                     <td><?= htmlspecialchars($record['name'] ?? '') ?></td>
                                                                     <td><?= htmlspecialchars($record['trade'] ?? '') ?></td>
-                                                                    <td><?= htmlspecialchars($formations_map[$record['formation_id']] ?? $record['formation'] ?? '') ?></td>
-                                                                    <td><?= htmlspecialchars($record['posted_in_date'] ?? '') ?></td>
                                                                     <td><?= htmlspecialchars($types_map[$record['type_id']] ?? $record['aircraft_type'] ?? '') ?></td>
                                                                     <td><?= htmlspecialchars($record['competency_level'] ?? '') ?></td>
-                                                                    <td><?= htmlspecialchars($record['competency_issue_ref'] ?? '') ?></td>
+                                                                    <td><?= htmlspecialchars($record['com_issue_date'] ?? '') ?></td>
+                                                                    <!-- <td><?= htmlspecialchars($formations_map[$record['formation_id']] ?? $record['formation'] ?? '') ?></td> -->
+                                                                    <!-- <td><?= htmlspecialchars($record['posted_in_date'] ?? '') ?></td> -->
+                                                                    <!-- <td><?= htmlspecialchars($record['competency_issue_ref'] ?? '') ?></td> -->
                                                                     <td>
                                                                         <button class="btn btn-view-details btn-sm view-details-btn"
                                                                             data-bs-toggle="modal"
@@ -828,10 +846,12 @@ try {
                                                         <th>Type</th>
                                                         <th>Formation</th>
                                                         <th>Aircraft Type</th>
-                                                        <th>Tail No</th>
-                                                        <th>Part No</th>
                                                         <th>Description</th>
-                                                        <th>Serial No</th>
+                                                        <th>Present Latitude</th>
+                                                        <th>Latitude Expire</th>
+                                                        <!-- <th>Tail No</th> -->
+                                                        <!-- <th>Part No</th> -->
+                                                        <!-- <th>Serial No</th> -->
                                                         <th>View</th>
                                                     </tr>
                                                 </thead>
@@ -845,10 +865,12 @@ try {
                                                             </td>
                                                             <td><?= htmlspecialchars($record['formation_name'] ?? 'N/A') ?></td>
                                                             <td><?= htmlspecialchars($record['type_name'] ?? 'N/A') ?></td>
-                                                            <td><?= htmlspecialchars($record['tail_no'] ?? 'N/A') ?></td>
-                                                            <td><?= htmlspecialchars($record['part_no'] ?? 'N/A') ?></td>
                                                             <td><?= htmlspecialchars($record['description'] ?? 'N/A') ?></td>
-                                                            <td><?= htmlspecialchars($record['serial_no'] ?? 'N/A') ?></td>
+                                                            <td><?= htmlspecialchars($record['present_latitude'] ?? 'N/A') ?></td>
+                                                            <td><?= htmlspecialchars($record['latitude_expiry'] ?? 'N/A') ?></td>
+                                                            <!-- <td><?= htmlspecialchars($record['tail_no'] ?? 'N/A') ?></td> -->
+                                                            <!-- <td><?= htmlspecialchars($record['part_no'] ?? 'N/A') ?></td> -->
+                                                            <!-- <td><?= htmlspecialchars($record['serial_no'] ?? 'N/A') ?></td> -->
                                                             <td>
                                                                 <button class="btn btn-view-details btn-sm view-details-btn"
                                                                     data-bs-toggle="modal"
@@ -862,6 +884,7 @@ try {
                                                                     data-record-tail-no="<?= htmlspecialchars($record['tail_no'] ?? '') ?>"
                                                                     data-record-part-no="<?= htmlspecialchars($record['part_no'] ?? '') ?>"
                                                                     data-record-description="<?= htmlspecialchars($record['description'] ?? '') ?>"
+                                                                    data-record-recommendation="<?= htmlspecialchars($record['recommend'] ?? '') ?>"
                                                                     data-record-serial-no="<?= htmlspecialchars($record['serial_no'] ?? '') ?>"
                                                                     data-record-reason="<?= htmlspecialchars($record['reason'] ?? '') ?>"
                                                                     data-record-hrs="<?= htmlspecialchars($record['hrs'] ?? '') ?>"
@@ -1100,7 +1123,7 @@ try {
 
     <script>
         $(document).ready(function() {
-        $('.competencyTable').DataTable();
+            $('.competencyTable').DataTable();
             const dataTableConfig = {
                 "pageLength": 10,
                 "lengthMenu": [10, 25, 50, 100],
@@ -1165,7 +1188,7 @@ try {
                 let title = 'Record Details';
                 switch (recordType) {
                     case 'qa_report':
-                        title = 'QA Report Details';
+                        title = 'QA Reports Details';
                         break;
                     case 'qa_check_list':
                         title = 'Audit Checklist Details';
@@ -1314,7 +1337,7 @@ try {
                             <th>Posted In Date:</th>
                             <td>${formatDate(postedInDate)}</td>
                         </tr>
-                        <tr>
+                        <tr style="display: none;">
                             <th>Posted Out Date:</th>
                             <td>${formatDate(postedOutDate)}</td>
                         </tr>
@@ -1330,59 +1353,59 @@ try {
                             <th>Competency Level:</th>
                             <td>${formatValue(competencyLevel)}</td>
                         </tr>
-                        <tr>
+                        <tr style="display: none;">
                             <th>Training Start Date:</th>
                             <td>${formatDate(trainingStartDate)}</td>
                         </tr>
-                        <tr>
+                        <tr style="display: none;">
                             <th>Training End Date:</th>
                             <td>${formatDate(trainingEndDate)}</td>
                         </tr>
                     </table>
 
-                    <div class="section-divider">Reference Information</div>
-                    <table class="details-modal-table">
-                        <tr>
+                    <div class="section-divider" style="display: none;">Reference Information</div>
+                    <table class="details-modal-table" style="display: none;">
+                        <tr style="display: none;">
                             <th>Formation Reference:</th>
                             <td>${formatValue(formationRef)}</td>
                         </tr>
-                        <tr>
+                        <tr style="display: none;">
                             <th>Formation Ref Date:</th>
                             <td>${formatDate(forRefDate)}</td>
                         </tr>
-                        <tr>
+                        <tr style="display: none;">
                             <th>QAI Reference:</th>
                             <td>${formatValue(qaiRef)}</td>
                         </tr>
-                        <tr>
+                        <tr style="display: none;">
                             <th>QAI Ref Date:</th>
                             <td>${formatDate(qaiRefDate)}</td>
                         </tr>
-                        <tr>
+                        <tr style="display: none;">
                             <th>DT Reference:</th>
                             <td>${formatValue(dtRef)}</td>
                         </tr>
-                        <tr>
+                        <tr style="display: none;">
                             <th>DT Ref Date:</th>
                             <td>${formatDate(dtRefDate)}</td>
                         </tr>
-                        <tr>
+                        <tr style="display: none;">
                             <th>QAO Reference:</th>
                             <td>${formatValue(qaoRef)}</td>
                         </tr>
-                        <tr>
+                        <tr style="display: none;">
                             <th>QAO Ref Date:</th>
                             <td>${formatDate(qaoRefDate)}</td>
                         </tr>
                     </table>
 
-                    <div class="section-divider">Assessment Information</div>
+                    <div class="section-divider" style="display: none;">Assessment Information</div>
                     <table class="details-modal-table">
-                        <tr>
+                        <tr style="display: none;">
                             <th>Theory Marks:</th>
                             <td>${formatValue(theoryMarks)}</td>
                         </tr>
-                        <tr>
+                        <tr style="display: none;">
                             <th>Practical Marks:</th>
                             <td>${formatValue(practicalMarks)}</td>
                         </tr>
@@ -1414,14 +1437,14 @@ try {
                             <th>Certificate Issued Date:</th>
                             <td>${formatDate(cerIssuedDate)}</td>
                         </tr>
-                        <tr>
+                        <tr style="display: none;">
                             <th>Retired Date:</th>
                             <td>${formatDate(retiredDate)}</td>
                         </tr>
                     </table>
 
-                    <div class="section-divider">Additional Information</div>
-                    <table class="details-modal-table">
+                    <div class="section-divider" style="display: none;">Additional Information</div>
+                    <table class="details-modal-table" style="display: none;">
                         <tr>
                             <th>Remarks:</th>
                             <td>${formatValue(remarks)}</td>
@@ -1445,6 +1468,7 @@ try {
                 const date = button.getAttribute('data-record-date');
                 const presentLatitude = button.getAttribute('data-record-present-latitude');
                 const dgaeAuthRef = button.getAttribute('data-record-dgae-auth-ref');
+                const recommendation = button.getAttribute('data-record-recommendation');
                 const authDate = button.getAttribute('data-record-auth-date');
                 const latitudeExpiry = button.getAttribute('data-record-latitude-expiry');
                 const totalPrevLatitude = button.getAttribute('data-record-total-prev-latitude');
@@ -1460,7 +1484,7 @@ try {
                 return `
                     <div class="section-divider">Basic Information</div>
                     <table class="details-modal-table">
-                        <tr>
+                        <tr style="display: none;">
                             <th>Active Status:</th>
                             <td><span class="badge badge-${activeBadge}">${active}</span></td>
                         </tr>
@@ -1484,6 +1508,10 @@ try {
                             <th>Part Number:</th>
                             <td>${formatValue(partNo)}</td>
                         </tr>
+                        <tr>
+                            <th>Recommendation:</th>
+                            <td>${formatValue(recommendation)}</td>
+                        </tr>
                     </table>
 
                     <div class="section-divider">Technical Details</div>
@@ -1496,19 +1524,19 @@ try {
                             <th>Serial Number:</th>
                             <td>${formatValue(serialNo)}</td>
                         </tr>
-                        <tr>
+                        <tr style="display: none;">
                             <th>Reason:</th>
                             <td>${formatValue(reason)}</td>
                         </tr>
-                        <tr>
+                        <tr style="display: none;">
                             <th>Hours:</th>
                             <td>${formatValue(hrs)}</td>
                         </tr>
-                        <tr>
+                        <tr style="display: none;">
                             <th>Landings:</th>
                             <td>${formatValue(ldgs)}</td>
                         </tr>
-                        <tr>
+                        <tr style="display: none;">
                             <th>Date:</th>
                             <td>${formatDate(date)}</td>
                         </tr>
@@ -1524,11 +1552,11 @@ try {
                             <th>Total Previous Latitude:</th>
                             <td>${formatValue(totalPrevLatitude)}</td>
                         </tr>
-                        <tr>
+                        <tr style="display: none;">
                             <th>DGAE Authorization Reference:</th>
                             <td>${formatValue(dgaeAuthRef)}</td>
                         </tr>
-                        <tr>
+                        <tr style="display: none;">
                             <th>Authorization Date:</th>
                             <td>${formatDate(authDate)}</td>
                         </tr>
@@ -1538,13 +1566,13 @@ try {
                         </tr>
                     </table>
 
-                    <div class="section-divider">Status Information</div>
-                    <table class="details-modal-table">
-                        <tr>
+                    <div class="section-divider" style="display: none;">Status Information</div>
+                    <table class="details-modal-table" style="display: none;">
+                        <tr style="display: none;">
                             <th>Demand Reference:</th>
                             <td>${formatValue(demandRef)}</td>
                         </tr>
-                        <tr>
+                        <tr style="display: none;">
                             <th>Status:</th>
                             <td><span class="badge badge-${statusBadge}">${formatValue(status)}</span></td>
                         </tr>

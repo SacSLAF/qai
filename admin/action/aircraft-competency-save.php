@@ -35,6 +35,7 @@ $svc_no = toNull($_POST['svc_no'] ?? '');
 $rank = toNull($_POST['rank'] ?? '');
 $name = toNull($_POST['name'] ?? '');
 $trade = toNull($_POST['trade'] ?? '');
+// var_dump($trade);exit();
 $formation_id = toIntNull($_POST['formation_id'] ?? '');
 $posted_in_date = toNull($_POST['posted_in_date'] ?? '');
 $posted_out_date = toNull($_POST['posted_out_date'] ?? '');
@@ -62,8 +63,9 @@ $retired_date = toNull($_POST['retired_date'] ?? '');
 $remarks = toNull($_POST['remarks'] ?? '');
 
 // Debug: Check what values you're getting
-error_log("Branch: " . $branch . ", Type: " . gettype($branch));
-error_log("Formation ID: " . $formation_id . ", Type: " . gettype($formation_id));
+// error_log("Branch: " . $branch . ", Type: " . gettype($branch));
+// error_log("Trade: " . $trade . ", Type: " . gettype($trade));
+// error_log("Formation ID: " . $formation_id . ", Type: " . gettype($formation_id));
 
 $sql = "INSERT INTO aircraft_competency (
     `svc_no`, `rank`, `name`, `branch`, `trade`, `formation_id`, `posted_in_date`, `posted_out_date`,
@@ -82,7 +84,7 @@ if (!$stmt) {
 
 // Use 'i' for integers and 'd' for decimals, 's' for strings
 $stmt->bind_param(
-    'ssssisssisssssssssssddisssssss', // Changed to match actual types
+    'ssssssssisssssssssssddisssssss', // Changed to match actual types
     $svc_no, $rank, $name, $branch, $trade, $formation_id, $posted_in_date, $posted_out_date,
     $type_id, $competency_level, $training_start_date, $training_end_date, $formation_ref, $for_ref_date,
     $qai_ref, $qai_ref_date, $dt_ref, $dt_ref_date, $qao_ref, $qao_ref_date, $theory_marks, $practical_marks,
