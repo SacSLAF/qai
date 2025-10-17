@@ -3,8 +3,8 @@
 
 define('DB_HOST', 'localhost');
 define('DB_USER', 'root');
-define('DB_PASS', 'Sac@123');
-define('DB_NAME', 'cqai-s');
+define('DB_PASS', 'root');
+define('DB_NAME', 'cqai');
 
 // Application Settings
 define('SITE_NAME', 'Quality Inspectorate');
