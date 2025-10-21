@@ -15,24 +15,17 @@ try {
     $error = '';
     $file = 'doc_1.pdf';
 
-    // Check if a PDF file is requested
-    $file_path = "../admin/action/uploads/services/audit_plan/" . $file;
-    $absolute_path = realpath($file_path);
+    // Use uploaded PDFs for Audit Plan and VET Annual Plan if present
+    $annual_plan_dir = "../admin/action/uploads/services/annual_plan/";
+    $audit_plan_pdf = $annual_plan_dir . "audit_plan.pdf";
+    $vet_annual_pdf = $annual_plan_dir . "vet_annual.pdf";
+    $audit_plan_exists = file_exists($audit_plan_pdf);
+    $vet_annual_exists = file_exists($vet_annual_pdf);
+    $audit_plan_web = $audit_plan_exists ? "/qai/admin/action/uploads/services/annual_plan/audit_plan.pdf" : '';
+    $vet_annual_web = $vet_annual_exists ? "/qai/admin/action/uploads/services/annual_plan/vet_annual.pdf" :
 
-    if ($absolute_path && file_exists($absolute_path)) {
-        $show_pdf = true;
-        $pdf_web_path = "/qai/admin/action/uploads/services/audit_plan/" . $file;
-        $pdf_web_path_vet_plan = "/qai/admin/action/uploads/services/vet_plan/" . $file;
-    } else {
-        $show_pdf = false;
-        $error = "File not found. Tried path: " . htmlspecialchars($file_path);
-        if ($absolute_path === false) {
-            $error .= " (Path does not exist)";
-        }
-    }
-
-    // Initialize arrays and error variables
-    $qa_reports = [];
+        // Initialize arrays and error variables
+        $qa_reports = [];
     $qa_check_lists = [];
     $qa_reports_error = '';
     $qa_check_lists_error = '';
@@ -173,6 +166,27 @@ try {
         } else {
             $le_error = "Error preparing Latitude query: " . $db->error;
         }
+        // Fetch Vehicle Emission Test data
+        $vehicle_emission_data = [];
+        $vehicle_emission_error = '';
+        $stmt_vet = $db->prepare("
+            SELECT v.*, s.name as camp_name 
+            FROM vehicle_emission_test v 
+            LEFT JOIN slaf_establishments s ON v.camp_id = s.id 
+            ORDER BY v.fuel_type, v.test_date DESC, v.serial_no ASC
+        ");
+
+        if ($stmt_vet) {
+            if ($stmt_vet->execute()) {
+                $result_vet = $stmt_vet->get_result();
+                $vehicle_emission_data = $result_vet->fetch_all(MYSQLI_ASSOC);
+                $stmt_vet->close();
+            } else {
+                $vehicle_emission_error = "Vehicle Emission Test query execution failed: " . $stmt_vet->error;
+            }
+        } else {
+            $vehicle_emission_error = "Error preparing Vehicle Emission Test query: " . $db->error;
+        }
     }
 
     // Fetch Modification data
@@ -297,7 +311,7 @@ try {
             display: block;
         }
 
-        /* .qa-dropdown-item {
+        .qa-dropdown-item {
             display: block;
             padding: 8px 15px;
             color: #495057;
@@ -305,7 +319,8 @@ try {
             border-radius: 4px;
             margin-bottom: 3px;
             font-size: 0.95rem;
-        } */
+        }
+
         .qa-dropdown-item {
             display: block;
             padding: 5px 10px;
@@ -347,7 +362,7 @@ try {
         }
 
         .table-responsive {
-            margin-top: 15px;
+            margin-top: 5px;
         }
 
         .document-table th {
@@ -540,21 +555,15 @@ try {
 
                     <!-- QA Audits Content Panes -->
                     <div class="tab-pane fade" id="audits_plan" role="tabpanel">
-                        <?php if ($show_pdf): ?>
+                        <?php if (!empty($audit_plan_web)): ?>
                             <div class="top-bar">
-                                <a href="?file=<?= $file ?>" class="btn btn-sm btn-dark">Audit Plan</a>
+                                <a href="<?= $audit_plan_web ?>" target="_blank" class="btn btn-sm btn-dark">Audit Plan Document</a>
                             </div>
-
-                            <!-- PDF.js Viewer -->
                             <div class="pdf-viewer-container">
-                                <iframe src="/qai/assets/pdfjs/web/viewer.html?file=<?= urlencode($pdf_web_path) ?>"
-                                    width="100%" height="100%" style="border:none;">
-                                </iframe>
+                                <iframe src="/qai/assets/pdfjs/web/viewer.html?file=<?= urlencode($audit_plan_web) ?>"
+                                    width="100%" height="100%" style="border:none;"></iframe>
                             </div>
                         <?php else: ?>
-                            <?php if (!empty($error)): ?>
-                                <div class="alert alert-danger"><?= $error ?></div>
-                            <?php endif; ?>
                             <div class="alert alert-info">
                                 <p>No audit plan document is available at the moment.</p>
                             </div>
@@ -1024,53 +1033,242 @@ try {
 
                     <!-- Vehicle Emission Test Tab Panes -->
                     <div class="tab-pane fade" id="vehicle_annual_plans" role="tabpanel">
-                        <!-- <h4 class="colour-defult">Vehicle Emission Test - Annual Plans</h4> -->
-                        <!-- <p>Annual testing schedules, plans, and compliance documentation for vehicle emission tests.</p> -->
+                        <h4 class="colour-defult">Vehicle Emission Test - Annual Plans</h4>
+                        <p>Annual testing schedules, plans, and compliance documentation for vehicle emission tests.</p>
                         <div class="mt-4">
-                            <?php if ($show_pdf): ?>
+                            <?php if (!empty($vet_annual_web)): ?>
                                 <div class="top-bar">
-                                    <a href="?file=<?= $file ?>" class="btn btn-sm btn-dark">Vehicle Emission Test - Annual Plan</a>
+                                    <a href="<?= $vet_annual_web ?>" target="_blank" class="btn btn-sm btn-dark">VET Annual Plan Document</a>
                                 </div>
-
-                                <!-- PDF.js Viewer -->
                                 <div class="pdf-viewer-container">
-                                    <iframe src="/qai/assets/pdfjs/web/viewer.html?file=<?= urlencode($pdf_web_path_vet_plan) ?>"
-                                        width="100%" height="100%" style="border:none;">
-                                    </iframe>
+                                    <iframe src="/qai/assets/pdfjs/web/viewer.html?file=<?= urlencode($vet_annual_web) ?>"
+                                        width="100%" height="100%" style="border:none;"></iframe>
                                 </div>
                             <?php else: ?>
-                                <?php if (isset($error)): ?>
-                                    <div class="alert alert-danger"><?= $error ?></div>
-                                <?php endif; ?>
-
                                 <div class="alert alert-info">
                                     <p>No VET plan document is available at the moment.</p>
-                                    <a href="?file=doc_1.pdf" class="btn btn-primary">Test with doc_1.pdf</a>
                                 </div>
                             <?php endif; ?>
                         </div>
                     </div>
 
+                    <!-- Vehicle Emission Test Reports Tab -->
                     <div class="tab-pane fade" id="vehicle_test_reports" role="tabpanel">
                         <h4 class="colour-defult">Vehicle Emission Test - Test Reports</h4>
-                        <!-- <p>Detailed test reports, results, and compliance certificates for vehicle emission testing.</p> -->
-                        <div class="mt-4">
-                            <div class="alert alert-info">
-                                <i class="fas fa-info-circle me-2"></i>
-                                Vehicle emission test reports and results will be displayed here.
+                        <p>Detailed test reports for vehicle emission testing.</p>
+
+                        <?php if (!empty($vehicle_emission_error)): ?>
+                            <div class="alert alert-danger">
+                                <strong>Database Error:</strong> <?= htmlspecialchars($vehicle_emission_error) ?>
                             </div>
-                            <div class="card">
-                                <div class="card-header bg-info text-white">
-                                    <h5 class="mb-0">
-                                        <i class="fas fa-file-contract me-2"></i>
-                                        Test Reports
-                                    </h5>
+                        <?php else: ?>
+                            <!-- Debug Information -->
+                            <div class="debug-info">
+                                <strong>VET Debug:</strong>
+                                <div>Total records: <?= $vet_count ?></div>
+                                <div>Diesel matches: <?= $diesel_count ?> — Petrol/Gasoline matches: <?= $petrol_count ?></div>
+                            </div>
+
+                            <!-- Fuel Type Tabs -->
+                            <ul class="nav nav-tabs fuel-type-tabs" id="fuelTypeTabs" role="tablist">
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link active" id="public-diesel-tab" data-bs-toggle="tab" data-bs-target="#public-diesel" type="button" role="tab">
+                                        <i class="fas fa-oil-can me-1"></i> Diesel Vehicles (<?= $diesel_count ?>)
+                                    </button>
+                                </li>
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link" id="public-petrol-tab" data-bs-toggle="tab" data-bs-target="#public-petrol" type="button" role="tab">
+                                        <i class="fas fa-gas-pump me-1"></i> Petrol Vehicles (<?= $petrol_count ?>)
+                                    </button>
+                                </li>
+                            </ul>
+
+                            <div class="tab-content" id="fuelTypeTabsContent">
+                                <!-- Diesel Vehicles Tab -->
+                                <div class="tab-pane fade show active" id="public-diesel" role="tabpanel">
+                                    <div class="table-responsive mt-3">
+                                        <table id="publicDieselTable" class="display table table-striped table-hover vehicle-test-table">
+                                            <thead>
+                                                <tr>
+                                                    <th>S/No</th>
+                                                    <th>Camp</th>
+                                                    <th>Vehicle No</th>
+                                                    <th>Vehicle Type</th>
+                                                    <th>Model</th>
+                                                    <th>Date</th>
+                                                    <th>Test Values</th>
+                                                    <th>Status</th>
+                                                    <th>Next Due Date</th>
+                                                    <th>Remarks</th>
+                                                    <th>Details</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <?php
+                                                $diesel_records = array_filter($vehicle_emission_data, function ($r) {
+                                                    $ft = isset($r['fuel_type']) ? strtolower(trim($r['fuel_type'])) : '';
+                                                    return $ft === 'diesel';
+                                                });
+                                                ?>
+                                                <?php if (empty($diesel_records)): ?>
+                                                    <tr>
+                                                        <td colspan="11" class="text-center py-4">No diesel vehicle records found</td>
+                                                    </tr>
+                                                <?php else: ?>
+                                                    <?php foreach ($diesel_records as $r): ?>
+                                                        <tr>
+                                                            <td><?= htmlspecialchars($r['serial_no'] ?? '') ?></td>
+                                                            <td><?= htmlspecialchars($r['camp_name'] ?? 'N/A') ?></td>
+                                                            <td><?= htmlspecialchars($r['vehicle_no'] ?? 'N/A') ?></td>
+                                                            <td><?= htmlspecialchars($r['vehicle_type'] ?? 'N/A') ?></td>
+                                                            <td><?= htmlspecialchars($r['model'] ?? 'N/A') ?></td>
+                                                            <td><?= $r['test_date'] ? htmlspecialchars($r['test_date']) : 'N/A' ?></td>
+                                                            <td class="test-values">
+                                                                <?php if ($r['first_test']): ?>
+                                                                    <small>1st: <?= $r['first_test'] ?></small><br>
+                                                                <?php endif; ?>
+                                                                <?php if ($r['second_test']): ?>
+                                                                    <small>2nd: <?= $r['second_test'] ?></small><br>
+                                                                <?php endif; ?>
+                                                                <?php if ($r['third_test']): ?>
+                                                                    <small>3rd: <?= $r['third_test'] ?></small><br>
+                                                                <?php endif; ?>
+                                                                <?php if ($r['average']): ?>
+                                                                    <small><strong>Avg: <?= $r['average'] ?></strong></small>
+                                                                <?php endif; ?>
+                                                            </td>
+                                                            <td>
+                                                                <span class="badge badge-<?=
+                                                                                            $r['status'] == 'Pass' ? 'success' : ($r['status'] == 'Fail' ? 'danger' : ($r['status'] == 'Not Suitable' ? 'warning' : 'secondary'))
+                                                                                            ?>">
+                                                                    <?= htmlspecialchars($r['status'] ?? 'N/A') ?>
+                                                                </span>
+                                                            </td>
+                                                            <td><?= $r['next_due_date'] ? htmlspecialchars($r['next_due_date']) : 'N/A' ?></td>
+                                                            <td><?= htmlspecialchars($r['remarks'] ?? '') ?></td>
+                                                            <td>
+                                                                <button class="btn btn-view-details btn-sm view-details-btn"
+                                                                    data-bs-toggle="modal"
+                                                                    data-bs-target="#detailsModal"
+                                                                    data-record-type="vehicle_emission"
+                                                                    data-record-id="<?= $r['id'] ?? '' ?>"
+                                                                    data-record-serial-no="<?= htmlspecialchars($r['serial_no'] ?? '') ?>"
+                                                                    data-record-camp="<?= htmlspecialchars($r['camp_name'] ?? '') ?>"
+                                                                    data-record-vehicle-no="<?= htmlspecialchars($r['vehicle_no'] ?? '') ?>"
+                                                                    data-record-vehicle-type="<?= htmlspecialchars($r['vehicle_type'] ?? '') ?>"
+                                                                    data-record-model="<?= htmlspecialchars($r['model'] ?? '') ?>"
+                                                                    data-record-test-date="<?= htmlspecialchars($r['test_date'] ?? '') ?>"
+                                                                    data-record-first-test="<?= htmlspecialchars($r['first_test'] ?? '') ?>"
+                                                                    data-record-second-test="<?= htmlspecialchars($r['second_test'] ?? '') ?>"
+                                                                    data-record-third-test="<?= htmlspecialchars($r['third_test'] ?? '') ?>"
+                                                                    data-record-average="<?= htmlspecialchars($r['average'] ?? '') ?>"
+                                                                    data-record-status="<?= htmlspecialchars($r['status'] ?? '') ?>"
+                                                                    data-record-next-due-date="<?= htmlspecialchars($r['next_due_date'] ?? '') ?>"
+                                                                    data-record-remarks="<?= htmlspecialchars($r['remarks'] ?? '') ?>">
+                                                                    View Details
+                                                                </button>
+                                                            </td>
+                                                        </tr>
+                                                    <?php endforeach; ?>
+                                                <?php endif; ?>
+                                            </tbody>
+                                        </table>
+                                    </div>
                                 </div>
-                                <div class="card-body">
-                                    <p class="text-muted">Emission test reports will be loaded here...</p>
+
+                                <!-- Petrol Vehicles Tab -->
+                                <div class="tab-pane fade" id="public-petrol" role="tabpanel">
+                                    <div class="table-responsive mt-3">
+                                        <table id="publicPetrolTable" class="display table table-striped table-hover vehicle-test-table">
+                                            <thead>
+                                                <tr>
+                                                    <th>S/No</th>
+                                                    <th>Camp</th>
+                                                    <th>Vehicle No</th>
+                                                    <th>Vehicle Type</th>
+                                                    <th>Model</th>
+                                                    <th>Date</th>
+                                                    <th>Test Values</th>
+                                                    <th>Status</th>
+                                                    <th>Next Due Date</th>
+                                                    <th>Remarks</th>
+                                                    <th>Details</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <?php
+                                                $petrol_records = array_filter($vehicle_emission_data, function ($r) {
+                                                    $ft = isset($r['fuel_type']) ? strtolower(trim($r['fuel_type'])) : '';
+                                                    return $ft === 'petrol' || $ft === 'gasoline';
+                                                });
+                                                ?>
+                                                <?php if (empty($petrol_records)): ?>
+                                                    <tr>
+                                                        <td colspan="11" class="text-center py-4">No petrol vehicle records found</td>
+                                                    </tr>
+                                                <?php else: ?>
+                                                    <?php foreach ($petrol_records as $r): ?>
+                                                        <tr>
+                                                            <td><?= htmlspecialchars($r['serial_no'] ?? '') ?></td>
+                                                            <td><?= htmlspecialchars($r['camp_name'] ?? 'N/A') ?></td>
+                                                            <td><?= htmlspecialchars($r['vehicle_no'] ?? 'N/A') ?></td>
+                                                            <td><?= htmlspecialchars($r['vehicle_type'] ?? 'N/A') ?></td>
+                                                            <td><?= htmlspecialchars($r['model'] ?? 'N/A') ?></td>
+                                                            <td><?= $r['test_date'] ? htmlspecialchars($r['test_date']) : 'N/A' ?></td>
+                                                            <td class="test-values">
+                                                                <?php if ($r['rpm_2500_hc']): ?>
+                                                                    <small>2500 RPM HC: <?= $r['rpm_2500_hc'] ?></small><br>
+                                                                <?php endif; ?>
+                                                                <?php if ($r['rpm_2500_co']): ?>
+                                                                    <small>2500 RPM CO: <?= $r['rpm_2500_co'] ?></small><br>
+                                                                <?php endif; ?>
+                                                                <?php if ($r['idle_hc']): ?>
+                                                                    <small>Idle HC: <?= $r['idle_hc'] ?></small><br>
+                                                                <?php endif; ?>
+                                                                <?php if ($r['idle_co']): ?>
+                                                                    <small>Idle CO: <?= $r['idle_co'] ?></small>
+                                                                <?php endif; ?>
+                                                            </td>
+                                                            <td>
+                                                                <span class="badge badge-<?=
+                                                                                            $r['status'] == 'Pass' ? 'success' : ($r['status'] == 'Fail' ? 'danger' : ($r['status'] == 'Not Suitable' ? 'warning' : 'secondary'))
+                                                                                            ?>">
+                                                                    <?= htmlspecialchars($r['status'] ?? 'N/A') ?>
+                                                                </span>
+                                                            </td>
+                                                            <td><?= $r['next_due_date'] ? htmlspecialchars($r['next_due_date']) : 'N/A' ?></td>
+                                                            <td><?= htmlspecialchars($r['remarks'] ?? '') ?></td>
+                                                            <td>
+                                                                <button class="btn btn-view-details btn-sm view-details-btn"
+                                                                    data-bs-toggle="modal"
+                                                                    data-bs-target="#detailsModal"
+                                                                    data-record-type="vehicle_emission"
+                                                                    data-record-id="<?= $r['id'] ?? '' ?>"
+                                                                    data-record-serial-no="<?= htmlspecialchars($r['serial_no'] ?? '') ?>"
+                                                                    data-record-camp="<?= htmlspecialchars($r['camp_name'] ?? '') ?>"
+                                                                    data-record-vehicle-no="<?= htmlspecialchars($r['vehicle_no'] ?? '') ?>"
+                                                                    data-record-vehicle-type="<?= htmlspecialchars($r['vehicle_type'] ?? '') ?>"
+                                                                    data-record-model="<?= htmlspecialchars($r['model'] ?? '') ?>"
+                                                                    data-record-test-date="<?= htmlspecialchars($r['test_date'] ?? '') ?>"
+                                                                    data-record-rpm-2500-hc="<?= htmlspecialchars($r['rpm_2500_hc'] ?? '') ?>"
+                                                                    data-record-rpm-2500-co="<?= htmlspecialchars($r['rpm_2500_co'] ?? '') ?>"
+                                                                    data-record-idle-hc="<?= htmlspecialchars($r['idle_hc'] ?? '') ?>"
+                                                                    data-record-idle-co="<?= htmlspecialchars($r['idle_co'] ?? '') ?>"
+                                                                    data-record-status="<?= htmlspecialchars($r['status'] ?? '') ?>"
+                                                                    data-record-next-due-date="<?= htmlspecialchars($r['next_due_date'] ?? '') ?>"
+                                                                    data-record-remarks="<?= htmlspecialchars($r['remarks'] ?? '') ?>">
+                                                                    View Details
+                                                                </button>
+                                                            </td>
+                                                        </tr>
+                                                    <?php endforeach; ?>
+                                                <?php endif; ?>
+                                            </tbody>
+                                        </table>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
+                        <?php endif; ?>
                     </div>
                 </div>
             </div>
@@ -1157,6 +1355,57 @@ try {
                 }
             });
         });
+
+        // Vehicle Emission Test Tables - Initialize on tab show with better handling
+        function initializeVehicleTables() {
+            console.log('Initializing vehicle tables...');
+
+            // Diesel Table
+            if ($('#publicDieselTable').length && !$.fn.DataTable.isDataTable('#publicDieselTable')) {
+                console.log('Found Diesel table, initializing...');
+                $('#publicDieselTable').DataTable({
+                    ...dataTableConfig,
+                    "initComplete": function(settings, json) {
+                        console.log('Diesel table initialized with', this.api().rows().count(), 'rows');
+                    }
+                });
+            } else if ($.fn.DataTable.isDataTable('#publicDieselTable')) {
+                console.log('Diesel table already initialized');
+                $('#publicDieselTable').DataTable().draw();
+            }
+
+            // Petrol Table
+            if ($('#publicPetrolTable').length && !$.fn.DataTable.isDataTable('#publicPetrolTable')) {
+                console.log('Found Petrol table, initializing...');
+                $('#publicPetrolTable').DataTable({
+                    ...dataTableConfig,
+                    "initComplete": function(settings, json) {
+                        console.log('Petrol table initialized with', this.api().rows().count(), 'rows');
+                    }
+                });
+            } else if ($.fn.DataTable.isDataTable('#publicPetrolTable')) {
+                console.log('Petrol table already initialized');
+                $('#publicPetrolTable').DataTable().draw();
+            }
+        }
+
+        // Initialize vehicle tables when their parent tab is shown
+        $('a[data-bs-target="#vehicle_test_reports"]').on('click', function() {
+            console.log('Vehicle test reports nav item clicked');
+            setTimeout(initializeVehicleTables, 300);
+        });
+
+        // Also initialize when fuel type tabs are shown
+        $('#public-diesel-tab, #public-petrol-tab').on('shown.bs.tab', function(e) {
+            console.log('Fuel type tab shown:', e.target.id);
+            setTimeout(initializeVehicleTables, 100);
+        });
+
+        // If we're already on the vehicle test reports tab, initialize immediately
+        if ($('#vehicle_test_reports').hasClass('active') || $('#vehicle_test_reports').hasClass('show')) {
+            console.log('Vehicle test reports tab is active on load');
+            setTimeout(initializeVehicleTables, 500);
+        }
 
         // Handle tab selection
         document.addEventListener("DOMContentLoaded", function() {
@@ -1580,7 +1829,124 @@ try {
                 `;
             }
 
+            function generateVehicleEmissionDetails(button) {
+                const serialNo = button.getAttribute('data-record-serial-no');
+                const camp = button.getAttribute('data-record-camp');
+                const vehicleNo = button.getAttribute('data-record-vehicle-no');
+                const vehicleType = button.getAttribute('data-record-vehicle-type');
+                const model = button.getAttribute('data-record-model');
+                const testDate = button.getAttribute('data-record-test-date');
+                const firstTest = button.getAttribute('data-record-first-test');
+                const secondTest = button.getAttribute('data-record-second-test');
+                const thirdTest = button.getAttribute('data-record-third-test');
+                const average = button.getAttribute('data-record-average');
+                const rpm2500Hc = button.getAttribute('data-record-rpm-2500-hc');
+                const rpm2500Co = button.getAttribute('data-record-rpm-2500-co');
+                const idleHc = button.getAttribute('data-record-idle-hc');
+                const idleCo = button.getAttribute('data-record-idle-co');
+                const status = button.getAttribute('data-record-status');
+                const nextDueDate = button.getAttribute('data-record-next-due-date');
+                const remarks = button.getAttribute('data-record-remarks');
 
+                const statusBadge = status === 'Pass' ? 'success' :
+                    status === 'Fail' ? 'danger' :
+                    status === 'Not Suitable' ? 'warning' :
+                    status === 'Serviceable Not Done' ? 'secondary' : 'secondary';
+
+                // Determine fuel type based on test values
+                const isDiesel = firstTest || secondTest || thirdTest || average;
+                const isPetrol = rpm2500Hc || rpm2500Co || idleHc || idleCo;
+
+                return `
+                    <div class="section-divider">Basic Information</div>
+                    <table class="details-modal-table">
+                        <tr>
+                            <th>S/No:</th>
+                            <td>${formatValue(serialNo)}</td>
+                        </tr>
+                        <tr>
+                            <th>Camp:</th>
+                            <td>${formatValue(camp)}</td>
+                        </tr>
+                        <tr>
+                            <th>Vehicle Number:</th>
+                            <td><strong>${formatValue(vehicleNo)}</strong></td>
+                        </tr>
+                        <tr>
+                            <th>Vehicle Type:</th>
+                            <td>${formatValue(vehicleType)}</td>
+                        </tr>
+                        <tr>
+                            <th>Model:</th>
+                            <td>${formatValue(model)}</td>
+                        </tr>
+                        <tr>
+                            <th>Test Date:</th>
+                            <td>${formatDate(testDate)}</td>
+                        </tr>
+                    </table>
+
+                    <div class="section-divider">Test Results</div>
+                    <table class="details-modal-table">
+                        ${isDiesel ? `
+                        <tr>
+                            <th>1st Test Result:</th>
+                            <td>${formatValue(firstTest)}</td>
+                        </tr>
+                        <tr>
+                            <th>2nd Test Result:</th>
+                            <td>${formatValue(secondTest)}</td>
+                        </tr>
+                        <tr>
+                            <th>3rd Test Result:</th>
+                            <td>${formatValue(thirdTest)}</td>
+                        </tr>
+                        <tr>
+                            <th>Average:</th>
+                            <td><strong>${formatValue(average)}</strong></td>
+                        </tr>
+                        ` : ''}
+                        ${isPetrol ? `
+                        <tr>
+                            <th>2500 RPM HC:</th>
+                            <td>${formatValue(rpm2500Hc)}</td>
+                        </tr>
+                        <tr>
+                            <th>2500 RPM CO:</th>
+                            <td>${formatValue(rpm2500Co)}</td>
+                        </tr>
+                        <tr>
+                            <th>Idle HC:</th>
+                            <td>${formatValue(idleHc)}</td>
+                        </tr>
+                        <tr>
+                            <th>Idle CO:</th>
+                            <td>${formatValue(idleCo)}</td>
+                        </tr>
+                        ` : ''}
+                    </table>
+
+                    <div class="section-divider">Status Information</div>
+                    <table class="details-modal-table">
+                        <tr>
+                            <th>Status:</th>
+                            <td><span class="badge badge-${statusBadge}">${formatValue(status)}</span></td>
+                        </tr>
+                        <tr>
+                            <th>Next Due Date:</th>
+                            <td>${formatDate(nextDueDate)}</td>
+                        </tr>
+                    </table>
+
+                    <div class="section-divider">Additional Information</div>
+                    <table class="details-modal-table">
+                        <tr>
+                            <th>Remarks:</th>
+                            <td>${formatValue(remarks)}</td>
+                        </tr>
+                    </table>
+                `;
+            }
 
             // Set initial active tab to welcome screen
             const welcomePane = document.querySelector('#welcome');

@@ -99,3 +99,46 @@ body {
     font-size: 1.5rem;
   }
 }
+#competencyTable_next,
+#competencyTable_previous,
+#latitudeTable_next,
+#latitudeTable_previous,
+#qaCheckListTable_next,
+#qaCheckListTable_previous,
+#trainingTable_next,
+#trainingTable_previous,
+#modificationTable_next,
+#modificationTable_previous,
+#rndTable_next,
+#rndTable_previous,
+#qaReportsTable_next,
+#qaReportsTable_previous {
+  display: none !important;
+}
+/* data table  */
+table.dataTable > thead > tr > th,
+table.dataTable > thead > tr > td {
+  padding: 4px;
+}
+/* training  */
+.top-bar {
+  background: #007aff;
+  color: white;
+  padding: 8px;
+  font-size: 14px;
+  margin: -20px -20px 20px -20px;
+  border-radius: 5px 5px 0 0;
+}
+
+.top-bar a {
+  color: white;
+  text-decoration: none;
+  margin-right: 15px;
+}
+
+.top-bar span.expiry {
+  float: right;
+  background: #333;
+  padding: 3px 6px;
+  border-radius: 4px;
+}

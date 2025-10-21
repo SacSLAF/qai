@@ -60,7 +60,7 @@
     .main-nav a {
       color: #222;
       text-decoration: none;
-      font-weight: 500;
+      font-weight: 400;
       position: relative;
       padding-bottom: 4px;
       transition: color 0.3s ease;
@@ -73,6 +73,7 @@
     .main-nav a.active::after {
       content: '';
       position: absolute;
+      font-weight: 500;
       left: 0;
       bottom: 0;
       height: 3px;
@@ -92,7 +93,7 @@
 
       <nav class="main-nav">
         <ul>
-          <li><a href="/qai/index.php">Web Portal</a></li>
+          <li><a href="/qai/index.php" class="web-portal-text">Web Portal</a></li>
           <li><a href="/qai/qai/inspectorate.php">Quality Assurance Inspectorate</a></li>
           <li><a href="/qai/services/services.php">Services</a></li>
           <li><a href="/qai/publication/publication.php">Technical Publications</a></li>
