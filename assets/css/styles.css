@@ -3,11 +3,12 @@
   --secondary-color: #ffcc00;
   --light-bg: #f8f9fa;
   --dark-bg: #343a40;
+  --pure-white: #ffffff;
 }
 
 body {
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-  background-color: var(--light-bg);
+  background-color: var(--pure-white);
   color: #333;
   line-height: 1.6;
 }
@@ -141,4 +142,36 @@ table.dataTable > thead > tr > td {
   background: #333;
   padding: 3px 6px;
   border-radius: 4px;
+}
+/* qai inspectorate  */
+.policy-statement {
+  text-align: center;
+}
+#org,
+#history {
+  font-size: small;
+}
+/* datatable labels  */
+.dataTables_length {
+  font-size: 0.8rem;
+}
+
+.dataTables_length label {
+  font-size: inherit;
+  margin-bottom: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+.dataTables_filter label, .dataTables_info, .dataTables_paginate{
+  font-size: smaller;
+}
+
+.dataTables_length select {
+  font-size: 0.8rem;
+  padding: 0.2rem 0.4rem;
+  margin: 0 0.25rem;
+}
+.web-portal-text{
+  font-weight: 600 !important; 
 }

@@ -178,7 +178,7 @@ include '../template/head.php';
     <?php include '../template/header.php'; ?>
 
     <!-- Main Content -->
-    <main class="container-fluid my-3 pt-3">
+    <main class="container-fluid my-3">
         <div class="main-container">
             <!-- Navigation Tabs -->
             <div class="nav-column">
@@ -222,7 +222,7 @@ include '../template/head.php';
                     <!-- Welcome Screen (shown by default) -->
                     <div class="tab-pane fade show active" id="welcome" role="tabpanel">
                         <div class="welcome-message">
-                            <img src="../assets/img/qai-welcome.jpg" alt="Quality Assurance Inspectorate" class="welcome-image">
+                            <!-- <img src="../assets/img/qai-welcome.jpg" alt="Quality Assurance Inspectorate" class="welcome-image"> -->
                             <!-- <h4>Welcome to Command Quality Assurance Inspectorate</h4> -->
                             <!-- <p>Please select an option from the navigation menu to view the content.</p> -->
                         </div>

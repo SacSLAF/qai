@@ -13,7 +13,271 @@
 
     <!-- Custom CSS -->
     <link rel="stylesheet" href="../assets/css/styles.css">
+    <style>
+        .tab-content {
+            padding: 20px;
+            background: #fff;
+            border-radius: 5px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
 
+        .card {
+            border: none;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .shadow-card {
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .staff-card {
+            height: 100%;
+        }
+
+        .staff-card img {
+            border-radius: 5px;
+            object-fit: cover;
+        }
+
+        .achievement-card {
+            height: 100%;
+        }
+
+        .achievement-card img {
+            height: 200px;
+            object-fit: cover;
+            border-top-left-radius: 8px;
+            border-top-right-radius: 8px;
+        }
+
+        .history-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .history-table th {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 12px;
+            text-align: left;
+        }
+
+        .history-table td {
+            padding: 10px 12px;
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        .history-table tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+
+        .history-table tr:hover {
+            background-color: rgba(26, 79, 114, 0.05);
+        }
+
+        .alert-info {
+            background-color: rgba(26, 79, 114, 0.1);
+            border-color: rgba(26, 79, 114, 0.2);
+            color: var(--primary-color);
+        }
+
+        .policy-statement {
+            font-style: italic;
+            text-align: center;
+            padding: 30px;
+            background-color: rgba(26, 79, 114, 0.05);
+            border-radius: 8px;
+        }
+
+        #orgImage {
+            cursor: zoom-in;
+            transition: transform 0.3s;
+        }
+
+        #orgImage:hover {
+            transform: scale(1.02);
+        }
+
+        #swiperOverlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 9999;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .mySwiper {
+            width: 90%;
+            height: 90%;
+        }
+
+        #closeSwiper {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            font-size: 40px;
+            color: white;
+            cursor: pointer;
+            z-index: 10000;
+        }
+
+        .td {
+            color: #1a4f72;
+        }
+
+        /* Responsive adjustments */
+
+        @media (max-width: 768px) {
+            .page-header h3 {
+                font-size: 1.5rem;
+            }
+
+            .policy-statement {
+                padding: 20px;
+            }
+
+            .history-table {
+                font-size: 0.9rem;
+            }
+
+            .history-table th,
+            .history-table td {
+                padding: 8px 10px;
+            }
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            padding-top: 100px;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: black;
+        }
+
+        /* Modal Content */
+        .modal-content {
+            position: relative;
+            background-color: #fefefe;
+            margin: auto;
+            padding: 0;
+            width: 90%;
+            max-width: 330px;
+        }
+
+        /* The Close Button */
+        .close {
+            color: white;
+            position: absolute;
+            top: 10px;
+            right: 25px;
+            font-size: 35px;
+            font-weight: bold;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: #999;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .mySlides {
+            display: none;
+        }
+
+        .cursor {
+            cursor: pointer;
+        }
+
+        /* Next & previous buttons */
+        .prev,
+        .next {
+            cursor: pointer;
+            position: absolute;
+            top: 50%;
+            width: auto;
+            padding: 16px;
+            margin-top: -50px;
+            color: white;
+            font-weight: bold;
+            font-size: 20px;
+            transition: 0.6s ease;
+            border-radius: 0 3px 3px 0;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        /* Position the "next button" to the right */
+        .next {
+            right: 0;
+            border-radius: 3px 0 0 3px;
+        }
+
+        /* On hover, add a black background color with a little bit see-through */
+        .prev:hover,
+        .next:hover {
+            background-color: rgba(0, 0, 0, 0.8);
+        }
+
+        /* Number text (1/3 etc) */
+        .numbertext {
+            color: #f2f2f2;
+            font-size: 12px;
+            padding: 8px 12px;
+            position: absolute;
+            top: 0;
+        }
+
+        img {
+            margin-bottom: -4px;
+        }
+
+        .caption-container {
+            text-align: center;
+            background-color: black;
+            padding: 2px 16px;
+            color: white;
+        }
+
+        .demo {
+            opacity: 0.6;
+        }
+
+        .active,
+        .demo:hover {
+            opacity: 1;
+        }
+
+        img.hover-shadow {
+            transition: 0.3s;
+        }
+
+        .hover-shadow:hover {
+            box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2),
+                0 6px 20px 0 rgba(0, 0, 0, 0.19);
+        }
+
+        .welcome-image {
+            width: 100%;
+        }
+    </style>
 </head>
 
 <body>
@@ -23,7 +287,7 @@
     <?php include '../template/header.php'; ?>
 
     <!-- Main Content -->
-    <main class="container-fluid my-3 pt-3">
+    <main class="container-fluid my-3">
         <!-- <div class="page-header mb-4">
             <h3 class="colour-defult">The Inspectorate <i class="fa fa-bullhorn"></i>
                 <div class="float-end">
@@ -35,7 +299,7 @@
 
         <div class="row">
             <!-- Navigation Tabs -->
-            <div class="col-lg-3 col-xl-2 mb-4">
+            <div class="col-lg-1 col-xl-1 mb-4">
                 <div class="nav flex-column nav-pills" id="inspectorateTabs" role="tablist">
                     <!-- <a class="nav-link" href="#" data-bs-target="#welcome" role="tab">Welcome</a> -->
                     <a class="nav-link" href="#" data-bs-target="#org" role="tab">About us</a>
@@ -48,20 +312,19 @@
             </div>
 
             <!-- Tab Content -->
-            <div class="col-lg-9 col-xl-10">
+            <div class="col-lg-11 col-xl-11">
                 <div class="tab-content" id="inspectorateTabsContent">
                     <!-- Welcome Screen (shown by default) -->
                     <div class="tab-pane fade show active" id="welcome" role="tabpanel">
                         <div class="welcome-message">
-                            <img src="../assets/img/welcome.jpg" alt="Quality Assurance Inspectorate" class="welcome-image">
+                            <!-- <img src="../assets/img/welcome.jpg" alt="Quality Assurance Inspectorate" class="welcome-image"> -->
                             <!-- <h4>Welcome to Command Quality Assurance Inspectorate</h4> -->
                             <!-- <p>Please select an option from the navigation menu to view the content.</p> -->
                         </div>
                     </div>
                     <!-- About Us -->
                     <div class="tab-pane fade" id="org" role="tabpanel" style="color:#1a4f72;">
-                        <p>The Sri Lanka Air Force (SLAF), in its commitment to fulfil the aspirations of the Nation by achieving excellence in the field of aviation and in all associated functions, is continually striving to enhance customer satisfaction by exceeding stake holders' expectations whilst endeavouring to be efficient, reliable and socially responsible.</p>
-                        <p>Towards this end, the Quality Assurance Inspectorate (QAI) was established to perform Quality Assurance Functions within the SLAF. The QAI functions under supervision of the Chief of Staff of the Sri Lanka Air Force and is headed by the Director Quality Assurance (DQA) who is primarily tasked to provide advice on the Quality Assurance Services (QAS) matters such as Policy, Organization and Administration.</p>
+                        <p>The Sri Lanka Air Force (SLAF), in its commitment to fulfil the aspirations of the Nation by achieving excellence in the field of aviation and in all associated functions, is continually striving to enhance customer satisfaction by exceeding stake holders' expectations whilst endeavouring to be efficient, reliable and socially responsible.<br>Towards this end, the Quality Assurance Inspectorate (QAI) was established to perform Quality Assurance Functions within the SLAF. The QAI functions under supervision of the Chief of Staff of the Sri Lanka Air Force and is headed by the Director Quality Assurance (DQA) who is primarily tasked to provide advice on the Quality Assurance Services (QAS) matters such as Policy, Organization and Administration.</p>
 
                         <h5 class="mt-4 mb-3">Main Functions</h5>
                         <ul class="list-group list-group-flush">

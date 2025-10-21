@@ -488,11 +488,13 @@ try {
     <?php include '../template/header.php'; ?>
 
     <!-- Main Content -->
-    <main class="container-fluid my-3 pt-3">
+    <main class="container-fluid my-3">
 
-        <div class="main-container">
-            <!-- Navigation Tabs -->
-            <div class="nav-column">
+        <!-- <div class="main-container"> -->
+        <!-- Navigation Tabs -->
+        <!-- <div class="nav-column"> -->
+        <div class="row">
+            <div class="col-lg-1 col-xl-1 mb-4">
                 <div class="nav flex-column nav-pills" id="inspectorateTabs" role="tablist">
                     <!-- QA Audits Dropdown -->
                     <div class="qa-dropdown">
@@ -541,15 +543,17 @@ try {
                         </div>
                     </div>
                 </div>
+                <!-- </div> -->
             </div>
 
             <!-- Tab Content -->
-            <div class="content-column">
+            <!-- <div class="content-column"> -->
+            <div class="col-lg-11 col-xl-11">
                 <div class="tab-content" id="inspectorateTabsContent">
                     <!-- Welcome Screen (shown by default) -->
                     <div class="tab-pane fade show active" id="welcome" role="tabpanel">
                         <div class="welcome-message">
-                            <img src="../assets/img/qai-welcome.jpg" alt="Quality Assurance Inspectorate" class="welcome-image">
+                            <!-- <img src="../assets/img/qai-welcome.jpg" alt="Quality Assurance Inspectorate" class="welcome-image"> -->
                         </div>
                     </div>
 
@@ -727,9 +731,14 @@ try {
                                                                 <th>Rank</th>
                                                                 <th>Name</th>
                                                                 <th>Trade</th>
+                                                                <th>Formation</th>
+                                                                <th>Posted In Date</th>
                                                                 <th>Type</th>
                                                                 <th>Competancy</th>
+                                                                <th>Competecy Issue Ref</th>
                                                                 <th>Competecy Issue Date</th>
+                                                                <th>Competency Renew Ref</th>
+                                                                <th>Competency Renew Date</th>
                                                                 <!-- <th>Formation</th> -->
                                                                 <!-- <th>Posted In Date</th> -->
                                                                 <!-- <th>Competecy Issue Ref</th> -->
@@ -743,10 +752,14 @@ try {
                                                                     <td><?= htmlspecialchars($ranks_map[$record['rank']] ?? 'Unknown Rank') ?></td>
                                                                     <td><?= htmlspecialchars($record['name'] ?? '') ?></td>
                                                                     <td><?= htmlspecialchars($record['trade'] ?? '') ?></td>
+                                                                    <td><?= htmlspecialchars($formations_map[$record['formation_id']] ?? $record['formation'] ?? '') ?></td>
+                                                                    <td><?= htmlspecialchars($record['posted_in_date'] ?? '') ?></td>
                                                                     <td><?= htmlspecialchars($types_map[$record['type_id']] ?? $record['aircraft_type'] ?? '') ?></td>
                                                                     <td><?= htmlspecialchars($record['competency_level'] ?? '') ?></td>
+                                                                    <td><?= htmlspecialchars($record['com_issue_ref'] ?? '') ?></td>
                                                                     <td><?= htmlspecialchars($record['com_issue_date'] ?? '') ?></td>
-                                                                    <!-- <td><?= htmlspecialchars($formations_map[$record['formation_id']] ?? $record['formation'] ?? '') ?></td> -->
+                                                                    <td><?= htmlspecialchars($record['competency_renew_ref'] ?? '') ?></td>
+                                                                    <td><?= htmlspecialchars($record['renew_date'] ?? '') ?></td>
                                                                     <!-- <td><?= htmlspecialchars($record['posted_in_date'] ?? '') ?></td> -->
                                                                     <!-- <td><?= htmlspecialchars($record['competency_issue_ref'] ?? '') ?></td> -->
                                                                     <td>
@@ -1271,7 +1284,9 @@ try {
                         <?php endif; ?>
                     </div>
                 </div>
+                <!-- </div> -->
             </div>
+            <!-- </div> -->
         </div>
     </main>
 
@@ -1602,59 +1617,59 @@ try {
                             <th>Competency Level:</th>
                             <td>${formatValue(competencyLevel)}</td>
                         </tr>
-                        <tr style="display: none;">
+                        <tr>
                             <th>Training Start Date:</th>
                             <td>${formatDate(trainingStartDate)}</td>
                         </tr>
-                        <tr style="display: none;">
+                        <tr>
                             <th>Training End Date:</th>
                             <td>${formatDate(trainingEndDate)}</td>
                         </tr>
                     </table>
 
-                    <div class="section-divider" style="display: none;">Reference Information</div>
-                    <table class="details-modal-table" style="display: none;">
-                        <tr style="display: none;">
+                    <div class="section-divider">Reference Information</div>
+                    <table class="details-modal-table">
+                        <tr>
                             <th>Formation Reference:</th>
                             <td>${formatValue(formationRef)}</td>
                         </tr>
-                        <tr style="display: none;">
+                        <tr>
                             <th>Formation Ref Date:</th>
                             <td>${formatDate(forRefDate)}</td>
                         </tr>
-                        <tr style="display: none;">
+                        <tr>
                             <th>QAI Reference:</th>
                             <td>${formatValue(qaiRef)}</td>
                         </tr>
-                        <tr style="display: none;">
+                        <tr>
                             <th>QAI Ref Date:</th>
                             <td>${formatDate(qaiRefDate)}</td>
                         </tr>
-                        <tr style="display: none;">
+                        <tr>
                             <th>DT Reference:</th>
                             <td>${formatValue(dtRef)}</td>
                         </tr>
-                        <tr style="display: none;">
+                        <tr>
                             <th>DT Ref Date:</th>
                             <td>${formatDate(dtRefDate)}</td>
                         </tr>
-                        <tr style="display: none;">
+                        <tr>
                             <th>QAO Reference:</th>
                             <td>${formatValue(qaoRef)}</td>
                         </tr>
-                        <tr style="display: none;">
+                        <tr>
                             <th>QAO Ref Date:</th>
                             <td>${formatDate(qaoRefDate)}</td>
                         </tr>
                     </table>
 
-                    <div class="section-divider" style="display: none;">Assessment Information</div>
+                    <div class="section-divider">Assessment Information</div>
                     <table class="details-modal-table">
-                        <tr style="display: none;">
+                        <tr>
                             <th>Theory Marks:</th>
                             <td>${formatValue(theoryMarks)}</td>
                         </tr>
-                        <tr style="display: none;">
+                        <tr>
                             <th>Practical Marks:</th>
                             <td>${formatValue(practicalMarks)}</td>
                         </tr>
@@ -1686,14 +1701,14 @@ try {
                             <th>Certificate Issued Date:</th>
                             <td>${formatDate(cerIssuedDate)}</td>
                         </tr>
-                        <tr style="display: none;">
+                        <tr>
                             <th>Retired Date:</th>
                             <td>${formatDate(retiredDate)}</td>
                         </tr>
                     </table>
 
-                    <div class="section-divider" style="display: none;">Additional Information</div>
-                    <table class="details-modal-table" style="display: none;">
+                    <div class="section-divider">Additional Information</div>
+                    <table class="details-modal-table">
                         <tr>
                             <th>Remarks:</th>
                             <td>${formatValue(remarks)}</td>
