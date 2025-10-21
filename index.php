@@ -17,6 +17,9 @@
       height: 100vh;
       width: 100vw;
     }
+    main{
+      margin-top: -4rem;
+    }
 </style>
 <body>
   <div class="page-wrapper">

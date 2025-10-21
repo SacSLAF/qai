@@ -1,6 +1,6 @@
 <style>
   footer {
-    height: 40px;
+    height: 25px;
     background-color: #184274;
     color: white;
     display: flex;
@@ -31,7 +31,7 @@
     white-space: nowrap;
     animation: scroll-left 20s linear infinite;
     font-weight: 500;
-    font-size: 1rem;
+    font-size: small;
   }
 
   @keyframes scroll-left {

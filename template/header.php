@@ -5,7 +5,7 @@
     justify-content: center;
     align-items: center;
     width: 100%;
-    height: 100px;
+    height: 70px;
     background-color: white;
     gap: 2em;
     padding: 0;
@@ -34,9 +34,9 @@
 
 
   .logo-right {
-    height: 100%;
+    height: 105%;
     width: 80%;
-    object-fit: contain;
+    object-fit: cover;
   }
 
   /* Navigation */
@@ -54,7 +54,7 @@
     display: flex;
     gap: 7em;
     margin: 0;
-    padding: 0.4em 0;
+    padding: 0.3em 0;
   }
 
   .main-nav a {

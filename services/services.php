@@ -263,21 +263,21 @@ try {
     <!-- Custom CSS -->
     <link rel="stylesheet" href="../assets/css/styles.css">
     <style>
-        .tab-content {
+        /* .tab-content {
             padding: 20px;
             background: #fff;
             border-radius: 5px;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        }
+        } */
 
-        .top-bar {
+        /* .top-bar {
             background: #007aff;
             color: white;
             padding: 8px;
             font-size: 14px;
             margin: -20px -20px 20px -20px;
             border-radius: 5px 5px 0 0;
-        }
+        } */
 
         .top-bar a {
             color: white;
@@ -333,8 +333,24 @@ try {
 
         .qa-dropdown-item:hover,
         .qa-dropdown-item.active {
-            background-color: #e9ecef;
-            color: #1a4f72;
+            /* background-color: #e9ecef; */
+            /* color: #1a4f72; */
+        }
+
+        .qa-dropdown-item.active {
+            position: relative;
+            display: inline-block;
+            font-weight: 600;
+        }
+
+        .qa-dropdown-item.active::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            height: 3px;
+            width: 100%;
+            background-color: var(--primary-color);
         }
 
         .qa-dropdown-toggle::after {
@@ -361,9 +377,9 @@ try {
             }
         }
 
-        .table-responsive {
-            margin-top: 5px;
-        }
+        /* .table-responsive {
+            margin-top: -5px;
+        } */
 
         .document-table th {
             background-color: #f8f9fa;
@@ -415,16 +431,22 @@ try {
         }
 
         .btn-view-details {
-            background-color: #17a2b8;
-            border-color: #17a2b8;
+            background-color: rgb(25 68 113);
+            border-color: rgb(25 68 113);
             color: white;
             padding: 4px 8px;
             font-size: 0.875rem;
         }
 
         .btn-view-details:hover {
-            background-color: #138496;
-            border-color: #117a8b;
+            background-color: rgb(25 68 113);
+            border-color: rgb(25 68 113);
+            color: white;
+        }
+
+        .view-pdf-btn{
+            background-color: rgb(25 68 113);
+            border-color: rgb(25 68 113);
             color: white;
         }
 
@@ -478,7 +500,7 @@ try {
         }
 
         .colour-defult {
-            font-size: medium;
+            font-size: small;
         }
     </style>
 </head>
@@ -488,7 +510,7 @@ try {
     <?php include '../template/header.php'; ?>
 
     <!-- Main Content -->
-    <main class="container-fluid my-3">
+    <main class="container-fluid">
 
         <!-- <div class="main-container"> -->
         <!-- Navigation Tabs -->
@@ -561,7 +583,7 @@ try {
                     <div class="tab-pane fade" id="audits_plan" role="tabpanel">
                         <?php if (!empty($audit_plan_web)): ?>
                             <div class="top-bar">
-                                <a href="<?= $audit_plan_web ?>" target="_blank" class="btn btn-sm btn-dark">Audit Plan Document</a>
+                                <a href="<?= $audit_plan_web ?>" target="_blank" class="btn btn-sm btn-dark">Audit Plan</a>
                             </div>
                             <div class="pdf-viewer-container">
                                 <iframe src="/qai/assets/pdfjs/web/viewer.html?file=<?= urlencode($audit_plan_web) ?>"
@@ -587,15 +609,15 @@ try {
                                         </div>
                                     <?php elseif (!empty($qa_check_lists)): ?>
                                         <div class="table-responsive">
-                                            <table class="table table-striped table-hover document-table" id="qaCheckListTable">
-                                                <thead style="font-size:smaller;">
+                                            <table class="table  table-hover document-table" id="qaCheckListTable">
+                                                <thead style="font-size:x-small;">
                                                     <tr>
                                                         <th>Description</th>
                                                         <th>Checklist Number</th>
                                                         <th>View</th>
                                                     </tr>
                                                 </thead>
-                                                <tbody style="font-size:smaller;">
+                                                <tbody style="font-size:x-small;">
                                                     <?php foreach ($qa_check_lists as $qa_check_list): ?>
                                                         <tr>
                                                             <td><?= htmlspecialchars($qa_check_list['description'] ?? 'No description') ?></td>
@@ -650,8 +672,8 @@ try {
                                         </div>
                                     <?php elseif (!empty($qa_reports)): ?>
                                         <div class="table-responsive">
-                                            <table class="table table-striped table-hover document-table" id="qaReportsTable">
-                                                <thead style="font-size:smaller;">
+                                            <table class="table  table-hover document-table" id="qaReportsTable">
+                                                <thead style="font-size:x-small;">
                                                     <tr>
                                                         <th>Location</th>
                                                         <th>Description</th>
@@ -659,7 +681,7 @@ try {
                                                         <th>View</th>
                                                     </tr>
                                                 </thead>
-                                                <tbody style="font-size:smaller;">
+                                                <tbody style="font-size:x-small;">
                                                     <?php foreach ($qa_reports as $report): ?>
                                                         <tr>
                                                             <td><strong><?= htmlspecialchars($report['title']) ?></strong></td>
@@ -724,8 +746,8 @@ try {
                                         <div class="card">
                                             <div class="card-body p-0">
                                                 <div class="table-responsive">
-                                                    <table class="table table-striped table-hover mb-0 competencyTable" id="competencyTable">
-                                                        <thead style="font-size:smaller;">
+                                                    <table class="table  table-hover mb-0 competencyTable" id="competencyTable">
+                                                        <thead style="font-size:x-small;">
                                                             <tr>
                                                                 <th>SVC No</th>
                                                                 <th>Rank</th>
@@ -745,10 +767,10 @@ try {
                                                                 <th>View</th>
                                                             </tr>
                                                         </thead>
-                                                        <tbody style="font-size:smaller;">
+                                                        <tbody style="font-size:x-small;">
                                                             <?php foreach ($aircraft_competency_data[$category_id]['records'] as $index => $record): ?>
                                                                 <tr class="<?= $index % 2 === 0 ? 'bg-white' : 'bg-light-blue' ?>">
-                                                                    <td><strong><?= htmlspecialchars($record['svc_no'] ?? '') ?></strong></td>
+                                                                    <td><?= htmlspecialchars($record['svc_no'] ?? '') ?></td>
                                                                     <td><?= htmlspecialchars($ranks_map[$record['rank']] ?? 'Unknown Rank') ?></td>
                                                                     <td><?= htmlspecialchars($record['name'] ?? '') ?></td>
                                                                     <td><?= htmlspecialchars($record['trade'] ?? '') ?></td>
@@ -862,8 +884,8 @@ try {
                                 <div class="card">
                                     <div class="card-body p-0">
                                         <div class="table-responsive">
-                                            <table class="table table-striped table-hover mb-0" id="latitudeTable">
-                                                <thead class="table-light" style="font-size:smaller;">
+                                            <table class="table  table-hover mb-0" id="latitudeTable">
+                                                <thead class="table-light" style="font-size:x-small;">
                                                     <tr>
                                                         <th>Type</th>
                                                         <th>Formation</th>
@@ -877,7 +899,7 @@ try {
                                                         <th>View</th>
                                                     </tr>
                                                 </thead>
-                                                <tbody style="font-size:smaller;">
+                                                <tbody style="font-size:x-small;">
                                                     <?php foreach ($latitude_data as $record): ?>
                                                         <tr>
                                                             <td>
@@ -950,8 +972,8 @@ try {
                                 <div class="card">
                                     <div class="card-body p-0">
                                         <div class="table-responsive">
-                                            <table class="table table-striped table-hover mb-0" id="modificationTable">
-                                                <thead class="table-light" style="font-size:smaller;">
+                                            <table class="table  table-hover mb-0" id="modificationTable">
+                                                <thead class="table-light" style="font-size:x-small;">
                                                     <tr>
                                                         <th>Mod No</th>
                                                         <th>Directorate</th>
@@ -961,7 +983,7 @@ try {
                                                         <th>Recommended Date</th>
                                                     </tr>
                                                 </thead>
-                                                <tbody style="font-size:smaller;">
+                                                <tbody style="font-size:x-small;">
                                                     <?php foreach ($modification_data as $record): ?>
                                                         <tr>
                                                             <td><?= htmlspecialchars($record['mod_no'] ?? 'N/A') ?></td>
@@ -1003,8 +1025,8 @@ try {
                                 <div class="card">
                                     <div class="card-body p-0">
                                         <div class="table-responsive">
-                                            <table class="table table-striped table-hover mb-0" id="rndTable">
-                                                <thead class="table-light" style="font-size:smaller;">
+                                            <table class="table  table-hover mb-0" id="rndTable">
+                                                <thead class="table-light" style="font-size:x-small;">
                                                     <tr>
                                                         <th>R&D No</th>
                                                         <th>Directorate</th>
@@ -1014,7 +1036,7 @@ try {
                                                         <th>Issue Date</th>
                                                     </tr>
                                                 </thead>
-                                                <tbody style="font-size:smaller;">
+                                                <tbody style="font-size:x-small;">
                                                     <?php foreach ($rnd_data as $record): ?>
                                                         <tr>
                                                             <td><?= htmlspecialchars($record['rnd_no'] ?? 'N/A') ?></td>
@@ -1046,12 +1068,11 @@ try {
 
                     <!-- Vehicle Emission Test Tab Panes -->
                     <div class="tab-pane fade" id="vehicle_annual_plans" role="tabpanel">
-                        <h4 class="colour-defult">Vehicle Emission Test - Annual Plans</h4>
-                        <p>Annual testing schedules, plans, and compliance documentation for vehicle emission tests.</p>
-                        <div class="mt-4">
+                        <h3 class="colour-defult">Vehicle Emission Test - Annual Plan</h3>
+                        <div class="mt-1">
                             <?php if (!empty($vet_annual_web)): ?>
                                 <div class="top-bar">
-                                    <a href="<?= $vet_annual_web ?>" target="_blank" class="btn btn-sm btn-dark">VET Annual Plan Document</a>
+                                    <a href="<?= $vet_annual_web ?>" target="_blank" class="btn btn-sm btn-dark">VET Annual Plan</a>
                                 </div>
                                 <div class="pdf-viewer-container">
                                     <iframe src="/qai/assets/pdfjs/web/viewer.html?file=<?= urlencode($vet_annual_web) ?>"
@@ -1068,7 +1089,6 @@ try {
                     <!-- Vehicle Emission Test Reports Tab -->
                     <div class="tab-pane fade" id="vehicle_test_reports" role="tabpanel">
                         <h4 class="colour-defult">Vehicle Emission Test - Test Reports</h4>
-                        <p>Detailed test reports for vehicle emission testing.</p>
 
                         <?php if (!empty($vehicle_emission_error)): ?>
                             <div class="alert alert-danger">
@@ -1100,7 +1120,7 @@ try {
                                 <!-- Diesel Vehicles Tab -->
                                 <div class="tab-pane fade show active" id="public-diesel" role="tabpanel">
                                     <div class="table-responsive mt-3">
-                                        <table id="publicDieselTable" class="display table table-striped table-hover vehicle-test-table">
+                                        <table id="publicDieselTable" class="display table  table-hover vehicle-test-table">
                                             <thead>
                                                 <tr>
                                                     <th>S/No</th>
@@ -1192,7 +1212,7 @@ try {
                                 <!-- Petrol Vehicles Tab -->
                                 <div class="tab-pane fade" id="public-petrol" role="tabpanel">
                                     <div class="table-responsive mt-3">
-                                        <table id="publicPetrolTable" class="display table table-striped table-hover vehicle-test-table">
+                                        <table id="publicPetrolTable" class="display table  table-hover vehicle-test-table">
                                             <thead>
                                                 <tr>
                                                     <th>S/No</th>
