@@ -165,9 +165,6 @@ $vet_info = $vet_exists ? [
                                         <button type="submit" class="btn btn-primary">
                                             <i class="fas fa-upload me-2"></i> Upload Selected PDFs
                                         </button>
-                                        <a href="services.php" class="btn btn-secondary ms-2">
-                                            <i class="fas fa-arrow-left me-2"></i> Back to Services
-                                        </a>
                                     </div>
                                 </form>
                                 
