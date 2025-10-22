@@ -187,6 +187,19 @@ try {
         } else {
             $vehicle_emission_error = "Error preparing Vehicle Emission Test query: " . $db->error;
         }
+
+        // Fetch all vehicle emission test records
+        $records = [];
+        $res = $db->query("SELECT v.*, s.name as camp_name 
+                        FROM vehicle_emission_test v 
+                        LEFT JOIN slaf_establishments s ON v.camp_id = s.id 
+                        ORDER BY v.fuel_type, v.test_date DESC, v.serial_no ASC");
+        if ($res !== false) {
+            $records = $res->fetch_all(MYSQLI_ASSOC);
+        } else {
+            error_log('Error fetching vehicle emission test records: ' . $db->error);
+            $records = [];
+        }
     }
 
     // Fetch Modification data
@@ -233,6 +246,17 @@ try {
         }
     } else {
         $rnd_error = "Error preparing R&D query: " . $db->error;
+    }
+    // Count vehicle emission records by fuel type for debugging
+    $vet_count = is_array($vehicle_emission_data) ? count($vehicle_emission_data) : 0;
+    $diesel_count = 0;
+    $petrol_count = 0;
+    if (is_array($vehicle_emission_data)) {
+        foreach ($vehicle_emission_data as $rec) {
+            $ft = isset($rec['fuel_type']) ? strtolower(trim($rec['fuel_type'])) : '';
+            if ($ft === 'diesel') $diesel_count++;
+            if ($ft === 'petrol' || $ft === 'gasoline') $petrol_count++;
+        }
     }
     // Include head template after all PHP processing
     include '../template/head.php';
@@ -292,163 +316,7 @@ try {
             border: 1px solid #ddd;
         }
 
-        .qa-dropdown {
-            position: relative;
-            display: block;
-        }
-
-        .qa-dropdown-menu {
-            position: relative;
-            width: 100%;
-            border: none;
-            box-shadow: none;
-            margin-top: 0;
-            padding-left: 15px;
-            display: none;
-        }
-
-        .qa-dropdown-menu.show {
-            display: block;
-        }
-
-        .qa-dropdown-item {
-            display: block;
-            padding: 8px 15px;
-            color: #495057;
-            text-decoration: none;
-            border-radius: 4px;
-            margin-bottom: 3px;
-            font-size: 0.95rem;
-        }
-
-        .qa-dropdown-item {
-            display: block;
-            padding: 5px 10px;
-            color: #495057;
-            text-decoration: none;
-            border-radius: 4px;
-            margin-bottom: 3px;
-            font-size: smaller;
-        }
-
-        .qa-dropdown-item:hover,
-        .qa-dropdown-item.active {
-            /* background-color: #e9ecef; */
-            /* color: #1a4f72; */
-        }
-
-        .qa-dropdown-item.active {
-            position: relative;
-            display: inline-block;
-            font-weight: 600;
-        }
-
-        .qa-dropdown-item.active::after {
-            content: '';
-            position: absolute;
-            left: 0;
-            bottom: 0;
-            height: 3px;
-            width: 100%;
-            background-color: var(--primary-color);
-        }
-
-        .qa-dropdown-toggle::after {
-            float: right;
-            margin-top: 8px;
-        }
-
-        .main-container {
-            gap: 15px;
-        }
-
-        @media (min-width: 992px) {
-            .main-container {
-                display: grid;
-                grid-template-columns: 200px 1fr;
-            }
-
-            .nav-column {
-                padding-right: 0;
-            }
-
-            .content-column {
-                padding-left: 0;
-            }
-        }
-
-        /* .table-responsive {
-            margin-top: -5px;
-        } */
-
-        .document-table th {
-            background-color: #f8f9fa;
-            border-bottom: 2px solid #dee2e6;
-        }
-
-        .no-documents {
-            text-align: center;
-            padding: 20px;
-            color: #6c757d;
-        }
-
-        .debug-info {
-            background: #f8f9fa;
-            padding: 10px;
-            margin: 10px 0;
-            border-radius: 5px;
-            font-size: 12px;
-            color: #6c757d;
-        }
-
-        .badge-success {
-            background-color: #28a745;
-            color: white;
-        }
-
-        .badge-warning {
-            background-color: #ffc107;
-            color: black;
-        }
-
-        .badge-danger {
-            background-color: #dc3545;
-            color: white;
-        }
-
-        .badge-secondary {
-            background-color: #6c757d;
-            color: white;
-        }
-
-        .text-danger {
-            color: #dc3545 !important;
-            font-weight: bold;
-        }
-
-        .text-success {
-            color: #28a745 !important;
-        }
-
-        .btn-view-details {
-            background-color: rgb(25 68 113);
-            border-color: rgb(25 68 113);
-            color: white;
-            padding: 4px 8px;
-            font-size: 0.875rem;
-        }
-
-        .btn-view-details:hover {
-            background-color: rgb(25 68 113);
-            border-color: rgb(25 68 113);
-            color: white;
-        }
-
-        .view-pdf-btn{
-            background-color: rgb(25 68 113);
-            border-color: rgb(25 68 113);
-            color: white;
-        }
+       
 
         .details-modal-table {
             width: 100%;
@@ -629,7 +497,7 @@ try {
                                                                         data-bs-toggle="modal"
                                                                         data-bs-target="#pdfModal"
                                                                         data-pdf-url="/qai/assets/pdfjs/web/viewer.html?file=<?= urlencode('/qai/admin/action/' . $qa_check_list['file_path']) ?>">
-                                                                        View PDF
+                                                                        View
                                                                     </a>
                                                                     <!-- <button class="btn btn-view-details btn-sm view-details-btn"
                                                                         data-bs-toggle="modal"
@@ -694,7 +562,7 @@ try {
                                                                         data-bs-toggle="modal"
                                                                         data-bs-target="#pdfModal"
                                                                         data-pdf-url="/qai/assets/pdfjs/web/viewer.html?file=<?= urlencode('/qai/admin/action/' . $report['file_path']) ?>">
-                                                                        View PDF
+                                                                        View
                                                                     </a>
                                                                     <!-- <button class="btn btn-view-details btn-sm view-details-btn"
                                                                         data-bs-toggle="modal"
@@ -757,10 +625,11 @@ try {
                                                                 <th>Posted In Date</th>
                                                                 <th>Type</th>
                                                                 <th>Competancy</th>
-                                                                <th>Competecy Issue Ref</th>
+                                                                <!-- <th>Competecy Issue Ref</th> -->
                                                                 <th>Competecy Issue Date</th>
-                                                                <th>Competency Renew Ref</th>
                                                                 <th>Competency Renew Date</th>
+                                                                <th>Certificate No</th>
+                                                                <th>Certificate Issue Date</th>
                                                                 <!-- <th>Formation</th> -->
                                                                 <!-- <th>Posted In Date</th> -->
                                                                 <!-- <th>Competecy Issue Ref</th> -->
@@ -778,10 +647,11 @@ try {
                                                                     <td><?= htmlspecialchars($record['posted_in_date'] ?? '') ?></td>
                                                                     <td><?= htmlspecialchars($types_map[$record['type_id']] ?? $record['aircraft_type'] ?? '') ?></td>
                                                                     <td><?= htmlspecialchars($record['competency_level'] ?? '') ?></td>
-                                                                    <td><?= htmlspecialchars($record['com_issue_ref'] ?? '') ?></td>
+                                                                    <!-- <td><?= htmlspecialchars($record['com_issue_ref'] ?? '') ?></td> -->
                                                                     <td><?= htmlspecialchars($record['com_issue_date'] ?? '') ?></td>
-                                                                    <td><?= htmlspecialchars($record['competency_renew_ref'] ?? '') ?></td>
                                                                     <td><?= htmlspecialchars($record['renew_date'] ?? '') ?></td>
+                                                                    <td><?= htmlspecialchars($record['certificate_no'] ?? '') ?></td>
+                                                                    <td><?= htmlspecialchars($record['cer_issued_date'] ?? '') ?></td>
                                                                     <!-- <td><?= htmlspecialchars($record['posted_in_date'] ?? '') ?></td> -->
                                                                     <!-- <td><?= htmlspecialchars($record['competency_issue_ref'] ?? '') ?></td> -->
                                                                     <td>
@@ -791,7 +661,7 @@ try {
                                                                             data-record-type="aircraft_competency"
                                                                             data-record-id="<?= $record['record_id'] ?? '' ?>"
                                                                             data-record-svc-no="<?= htmlspecialchars($record['svc_no'] ?? '') ?>"
-                                                                            data-record-rank="<?= htmlspecialchars($record['rank'] ?? '') ?>"
+                                                                            data-record-rank="<?= htmlspecialchars($ranks_map[$record['rank']] ?? 'Unknown Rank') ?>"
                                                                             data-record-name="<?= htmlspecialchars($record['name'] ?? '') ?>"
                                                                             data-record-trade="<?= htmlspecialchars($record['trade'] ?? '') ?>"
                                                                             data-record-formation="<?= htmlspecialchars($formations_map[$record['formation_id']] ?? $record['formation'] ?? '') ?>"
@@ -1085,223 +955,173 @@ try {
                             <?php endif; ?>
                         </div>
                     </div>
-
                     <!-- Vehicle Emission Test Reports Tab -->
                     <div class="tab-pane fade" id="vehicle_test_reports" role="tabpanel">
                         <h4 class="colour-defult">Vehicle Emission Test - Test Reports</h4>
 
-                        <?php if (!empty($vehicle_emission_error)): ?>
-                            <div class="alert alert-danger">
-                                <strong>Database Error:</strong> <?= htmlspecialchars($vehicle_emission_error) ?>
-                            </div>
-                        <?php else: ?>
-                            <!-- Debug Information -->
-                            <div class="debug-info">
-                                <strong>VET Debug:</strong>
-                                <div>Total records: <?= $vet_count ?></div>
-                                <div>Diesel matches: <?= $diesel_count ?> — Petrol/Gasoline matches: <?= $petrol_count ?></div>
-                            </div>
-
-                            <!-- Fuel Type Tabs -->
-                            <ul class="nav nav-tabs fuel-type-tabs" id="fuelTypeTabs" role="tablist">
-                                <li class="nav-item" role="presentation">
-                                    <button class="nav-link active" id="public-diesel-tab" data-bs-toggle="tab" data-bs-target="#public-diesel" type="button" role="tab">
-                                        <i class="fas fa-oil-can me-1"></i> Diesel Vehicles (<?= $diesel_count ?>)
+                        <!-- Fuel Type Dropdown -->
+                        <div class="row mb-3">
+                            <div class="col-md-4">
+                                <div class="dropdown">
+                                    <button class="btn btn-secondary dropdown-toggle" type="button" id="fuelTypeDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <i class="fas fa-filter me-1"></i> Select Fuel Type
                                     </button>
-                                </li>
-                                <li class="nav-item" role="presentation">
-                                    <button class="nav-link" id="public-petrol-tab" data-bs-toggle="tab" data-bs-target="#public-petrol" type="button" role="tab">
-                                        <i class="fas fa-gas-pump me-1"></i> Petrol Vehicles (<?= $petrol_count ?>)
-                                    </button>
-                                </li>
-                            </ul>
-
-                            <div class="tab-content" id="fuelTypeTabsContent">
-                                <!-- Diesel Vehicles Tab -->
-                                <div class="tab-pane fade show active" id="public-diesel" role="tabpanel">
-                                    <div class="table-responsive mt-3">
-                                        <table id="publicDieselTable" class="display table  table-hover vehicle-test-table">
-                                            <thead>
-                                                <tr>
-                                                    <th>S/No</th>
-                                                    <th>Camp</th>
-                                                    <th>Vehicle No</th>
-                                                    <th>Vehicle Type</th>
-                                                    <th>Model</th>
-                                                    <th>Date</th>
-                                                    <th>Test Values</th>
-                                                    <th>Status</th>
-                                                    <th>Next Due Date</th>
-                                                    <th>Remarks</th>
-                                                    <th>Details</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <?php
-                                                $diesel_records = array_filter($vehicle_emission_data, function ($r) {
-                                                    $ft = isset($r['fuel_type']) ? strtolower(trim($r['fuel_type'])) : '';
-                                                    return $ft === 'diesel';
-                                                });
-                                                ?>
-                                                <?php if (empty($diesel_records)): ?>
-                                                    <tr>
-                                                        <td colspan="11" class="text-center py-4">No diesel vehicle records found</td>
-                                                    </tr>
-                                                <?php else: ?>
-                                                    <?php foreach ($diesel_records as $r): ?>
-                                                        <tr>
-                                                            <td><?= htmlspecialchars($r['serial_no'] ?? '') ?></td>
-                                                            <td><?= htmlspecialchars($r['camp_name'] ?? 'N/A') ?></td>
-                                                            <td><?= htmlspecialchars($r['vehicle_no'] ?? 'N/A') ?></td>
-                                                            <td><?= htmlspecialchars($r['vehicle_type'] ?? 'N/A') ?></td>
-                                                            <td><?= htmlspecialchars($r['model'] ?? 'N/A') ?></td>
-                                                            <td><?= $r['test_date'] ? htmlspecialchars($r['test_date']) : 'N/A' ?></td>
-                                                            <td class="test-values">
-                                                                <?php if ($r['first_test']): ?>
-                                                                    <small>1st: <?= $r['first_test'] ?></small><br>
-                                                                <?php endif; ?>
-                                                                <?php if ($r['second_test']): ?>
-                                                                    <small>2nd: <?= $r['second_test'] ?></small><br>
-                                                                <?php endif; ?>
-                                                                <?php if ($r['third_test']): ?>
-                                                                    <small>3rd: <?= $r['third_test'] ?></small><br>
-                                                                <?php endif; ?>
-                                                                <?php if ($r['average']): ?>
-                                                                    <small><strong>Avg: <?= $r['average'] ?></strong></small>
-                                                                <?php endif; ?>
-                                                            </td>
-                                                            <td>
-                                                                <span class="badge badge-<?=
-                                                                                            $r['status'] == 'Pass' ? 'success' : ($r['status'] == 'Fail' ? 'danger' : ($r['status'] == 'Not Suitable' ? 'warning' : 'secondary'))
-                                                                                            ?>">
-                                                                    <?= htmlspecialchars($r['status'] ?? 'N/A') ?>
-                                                                </span>
-                                                            </td>
-                                                            <td><?= $r['next_due_date'] ? htmlspecialchars($r['next_due_date']) : 'N/A' ?></td>
-                                                            <td><?= htmlspecialchars($r['remarks'] ?? '') ?></td>
-                                                            <td>
-                                                                <button class="btn btn-view-details btn-sm view-details-btn"
-                                                                    data-bs-toggle="modal"
-                                                                    data-bs-target="#detailsModal"
-                                                                    data-record-type="vehicle_emission"
-                                                                    data-record-id="<?= $r['id'] ?? '' ?>"
-                                                                    data-record-serial-no="<?= htmlspecialchars($r['serial_no'] ?? '') ?>"
-                                                                    data-record-camp="<?= htmlspecialchars($r['camp_name'] ?? '') ?>"
-                                                                    data-record-vehicle-no="<?= htmlspecialchars($r['vehicle_no'] ?? '') ?>"
-                                                                    data-record-vehicle-type="<?= htmlspecialchars($r['vehicle_type'] ?? '') ?>"
-                                                                    data-record-model="<?= htmlspecialchars($r['model'] ?? '') ?>"
-                                                                    data-record-test-date="<?= htmlspecialchars($r['test_date'] ?? '') ?>"
-                                                                    data-record-first-test="<?= htmlspecialchars($r['first_test'] ?? '') ?>"
-                                                                    data-record-second-test="<?= htmlspecialchars($r['second_test'] ?? '') ?>"
-                                                                    data-record-third-test="<?= htmlspecialchars($r['third_test'] ?? '') ?>"
-                                                                    data-record-average="<?= htmlspecialchars($r['average'] ?? '') ?>"
-                                                                    data-record-status="<?= htmlspecialchars($r['status'] ?? '') ?>"
-                                                                    data-record-next-due-date="<?= htmlspecialchars($r['next_due_date'] ?? '') ?>"
-                                                                    data-record-remarks="<?= htmlspecialchars($r['remarks'] ?? '') ?>">
-                                                                    View Details
-                                                                </button>
-                                                            </td>
-                                                        </tr>
-                                                    <?php endforeach; ?>
-                                                <?php endif; ?>
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-
-                                <!-- Petrol Vehicles Tab -->
-                                <div class="tab-pane fade" id="public-petrol" role="tabpanel">
-                                    <div class="table-responsive mt-3">
-                                        <table id="publicPetrolTable" class="display table  table-hover vehicle-test-table">
-                                            <thead>
-                                                <tr>
-                                                    <th>S/No</th>
-                                                    <th>Camp</th>
-                                                    <th>Vehicle No</th>
-                                                    <th>Vehicle Type</th>
-                                                    <th>Model</th>
-                                                    <th>Date</th>
-                                                    <th>Test Values</th>
-                                                    <th>Status</th>
-                                                    <th>Next Due Date</th>
-                                                    <th>Remarks</th>
-                                                    <th>Details</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <?php
-                                                $petrol_records = array_filter($vehicle_emission_data, function ($r) {
-                                                    $ft = isset($r['fuel_type']) ? strtolower(trim($r['fuel_type'])) : '';
-                                                    return $ft === 'petrol' || $ft === 'gasoline';
-                                                });
-                                                ?>
-                                                <?php if (empty($petrol_records)): ?>
-                                                    <tr>
-                                                        <td colspan="11" class="text-center py-4">No petrol vehicle records found</td>
-                                                    </tr>
-                                                <?php else: ?>
-                                                    <?php foreach ($petrol_records as $r): ?>
-                                                        <tr>
-                                                            <td><?= htmlspecialchars($r['serial_no'] ?? '') ?></td>
-                                                            <td><?= htmlspecialchars($r['camp_name'] ?? 'N/A') ?></td>
-                                                            <td><?= htmlspecialchars($r['vehicle_no'] ?? 'N/A') ?></td>
-                                                            <td><?= htmlspecialchars($r['vehicle_type'] ?? 'N/A') ?></td>
-                                                            <td><?= htmlspecialchars($r['model'] ?? 'N/A') ?></td>
-                                                            <td><?= $r['test_date'] ? htmlspecialchars($r['test_date']) : 'N/A' ?></td>
-                                                            <td class="test-values">
-                                                                <?php if ($r['rpm_2500_hc']): ?>
-                                                                    <small>2500 RPM HC: <?= $r['rpm_2500_hc'] ?></small><br>
-                                                                <?php endif; ?>
-                                                                <?php if ($r['rpm_2500_co']): ?>
-                                                                    <small>2500 RPM CO: <?= $r['rpm_2500_co'] ?></small><br>
-                                                                <?php endif; ?>
-                                                                <?php if ($r['idle_hc']): ?>
-                                                                    <small>Idle HC: <?= $r['idle_hc'] ?></small><br>
-                                                                <?php endif; ?>
-                                                                <?php if ($r['idle_co']): ?>
-                                                                    <small>Idle CO: <?= $r['idle_co'] ?></small>
-                                                                <?php endif; ?>
-                                                            </td>
-                                                            <td>
-                                                                <span class="badge badge-<?=
-                                                                                            $r['status'] == 'Pass' ? 'success' : ($r['status'] == 'Fail' ? 'danger' : ($r['status'] == 'Not Suitable' ? 'warning' : 'secondary'))
-                                                                                            ?>">
-                                                                    <?= htmlspecialchars($r['status'] ?? 'N/A') ?>
-                                                                </span>
-                                                            </td>
-                                                            <td><?= $r['next_due_date'] ? htmlspecialchars($r['next_due_date']) : 'N/A' ?></td>
-                                                            <td><?= htmlspecialchars($r['remarks'] ?? '') ?></td>
-                                                            <td>
-                                                                <button class="btn btn-view-details btn-sm view-details-btn"
-                                                                    data-bs-toggle="modal"
-                                                                    data-bs-target="#detailsModal"
-                                                                    data-record-type="vehicle_emission"
-                                                                    data-record-id="<?= $r['id'] ?? '' ?>"
-                                                                    data-record-serial-no="<?= htmlspecialchars($r['serial_no'] ?? '') ?>"
-                                                                    data-record-camp="<?= htmlspecialchars($r['camp_name'] ?? '') ?>"
-                                                                    data-record-vehicle-no="<?= htmlspecialchars($r['vehicle_no'] ?? '') ?>"
-                                                                    data-record-vehicle-type="<?= htmlspecialchars($r['vehicle_type'] ?? '') ?>"
-                                                                    data-record-model="<?= htmlspecialchars($r['model'] ?? '') ?>"
-                                                                    data-record-test-date="<?= htmlspecialchars($r['test_date'] ?? '') ?>"
-                                                                    data-record-rpm-2500-hc="<?= htmlspecialchars($r['rpm_2500_hc'] ?? '') ?>"
-                                                                    data-record-rpm-2500-co="<?= htmlspecialchars($r['rpm_2500_co'] ?? '') ?>"
-                                                                    data-record-idle-hc="<?= htmlspecialchars($r['idle_hc'] ?? '') ?>"
-                                                                    data-record-idle-co="<?= htmlspecialchars($r['idle_co'] ?? '') ?>"
-                                                                    data-record-status="<?= htmlspecialchars($r['status'] ?? '') ?>"
-                                                                    data-record-next-due-date="<?= htmlspecialchars($r['next_due_date'] ?? '') ?>"
-                                                                    data-record-remarks="<?= htmlspecialchars($r['remarks'] ?? '') ?>">
-                                                                    View Details
-                                                                </button>
-                                                            </td>
-                                                        </tr>
-                                                    <?php endforeach; ?>
-                                                <?php endif; ?>
-                                            </tbody>
-                                        </table>
-                                    </div>
+                                    <ul class="dropdown-menu" aria-labelledby="fuelTypeDropdown">
+                                        <li>
+                                            <a class="dropdown-item fuel-type-option active" href="#" data-target="diesel">
+                                                <i class="fas fa-oil-can me-2"></i>Diesel Vehicles
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item fuel-type-option" href="#" data-target="petrol">
+                                                <i class="fas fa-gas-pump me-2"></i>Petrol Vehicles
+                                            </a>
+                                        </li>
+                                    </ul>
                                 </div>
                             </div>
-                        <?php endif; ?>
+                            <div class="col-md-8">
+                                <div id="currentFuelType" class="text-muted mt-2">
+                                    Currently showing: <strong>Diesel Vehicles</strong>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Diesel Vehicles Table -->
+                        <div class="fuel-type-content active" id="diesel-content">
+                            <div class="table-responsive">
+                                <table id="dieselTable" class="display table table-striped table-hover vehicle-test-table">
+                                    <thead>
+                                        <tr>
+                                            <th>S/No</th>
+                                            <th>Camp</th>
+                                            <th>Vehicle No</th>
+                                            <th>Vehicle Type</th>
+                                            <th>Model</th>
+                                            <th>Date</th>
+                                            <th>Test Values</th>
+                                            <th>Status</th>
+                                            <th>Next Due Date</th>
+                                            <th>Remarks</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <?php
+                                        $diesel_records = array_filter($records, function ($r) {
+                                            return isset($r['fuel_type']) && strtolower(trim($r['fuel_type'])) === 'diesel';
+                                        });
+                                        ?>
+                                        <?php if (empty($diesel_records)): ?>
+                                            <tr>
+                                                <td colspan="10" class="text-center py-4">No diesel vehicle records found</td>
+                                            </tr>
+                                        <?php else: ?>
+                                            <?php foreach ($diesel_records as $r): ?>
+                                                <tr>
+                                                    <td><?= htmlspecialchars($r['serial_no'] ?? '') ?></td>
+                                                    <td><?= htmlspecialchars($r['camp_name'] ?? 'N/A') ?></td>
+                                                    <td><?= htmlspecialchars($r['vehicle_no'] ?? 'N/A') ?></td>
+                                                    <td><?= htmlspecialchars($r['vehicle_type'] ?? 'N/A') ?></td>
+                                                    <td><?= htmlspecialchars($r['model'] ?? 'N/A') ?></td>
+                                                    <td><?= $r['test_date'] ? htmlspecialchars($r['test_date']) : 'N/A' ?></td>
+                                                    <td class="test-values">
+                                                        <?php if (!empty($r['first_test'])): ?>
+                                                            <small>1st: <?= $r['first_test'] ?></small><br>
+                                                        <?php endif; ?>
+                                                        <?php if (!empty($r['second_test'])): ?>
+                                                            <small>2nd: <?= $r['second_test'] ?></small><br>
+                                                        <?php endif; ?>
+                                                        <?php if (!empty($r['third_test'])): ?>
+                                                            <small>3rd: <?= $r['third_test'] ?></small><br>
+                                                        <?php endif; ?>
+                                                        <?php if (!empty($r['average'])): ?>
+                                                            <small><strong>Avg: <?= $r['average'] ?></strong></small>
+                                                        <?php endif; ?>
+                                                    </td>
+                                                    <td>
+                                                        <span class="badge badge-<?=
+                                                                                    $r['status'] == 'Pass' ? 'success' : ($r['status'] == 'Fail' ? 'danger' : ($r['status'] == 'Not Suitable' ? 'warning' : 'secondary'))
+                                                                                    ?>">
+                                                            <?= htmlspecialchars($r['status'] ?? 'N/A') ?>
+                                                        </span>
+                                                    </td>
+                                                    <td><?= $r['next_due_date'] ? htmlspecialchars($r['next_due_date']) : 'N/A' ?></td>
+                                                    <td><?= htmlspecialchars($r['remarks'] ?? '') ?></td>
+                                                </tr>
+                                            <?php endforeach; ?>
+                                        <?php endif; ?>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- Petrol Vehicles Table -->
+                        <div class="fuel-type-content" id="petrol-content">
+                            <div class="table-responsive">
+                                <table id="petrolTable" class="display table table-striped table-hover vehicle-test-table">
+                                    <thead>
+                                        <tr>
+                                            <th>S/No</th>
+                                            <th>Camp</th>
+                                            <th>Vehicle No</th>
+                                            <th>Vehicle Type</th>
+                                            <th>Model</th>
+                                            <th>Date</th>
+                                            <th>Test Values</th>
+                                            <th>Status</th>
+                                            <th>Next Due Date</th>
+                                            <th>Remarks</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <?php
+                                        $petrol_records = array_filter($records, function ($r) {
+                                            return isset($r['fuel_type']) && (strtolower(trim($r['fuel_type'])) === 'petrol' || strtolower(trim($r['fuel_type'])) === 'gasoline');
+                                        });
+                                        ?>
+                                        <?php if (empty($petrol_records)): ?>
+                                            <tr>
+                                                <td colspan="10" class="text-center py-4">No petrol vehicle records found</td>
+                                            </tr>
+                                        <?php else: ?>
+                                            <?php foreach ($petrol_records as $r): ?>
+                                                <tr>
+                                                    <td><?= htmlspecialchars($r['serial_no'] ?? '') ?></td>
+                                                    <td><?= htmlspecialchars($r['camp_name'] ?? 'N/A') ?></td>
+                                                    <td><?= htmlspecialchars($r['vehicle_no'] ?? 'N/A') ?></td>
+                                                    <td><?= htmlspecialchars($r['vehicle_type'] ?? 'N/A') ?></td>
+                                                    <td><?= htmlspecialchars($r['model'] ?? 'N/A') ?></td>
+                                                    <td><?= $r['test_date'] ? htmlspecialchars($r['test_date']) : 'N/A' ?></td>
+                                                    <td class="test-values">
+                                                        <?php if (!empty($r['rpm_2500_hc'])): ?>
+                                                            <small>2500 RPM HC: <?= $r['rpm_2500_hc'] ?></small><br>
+                                                        <?php endif; ?>
+                                                        <?php if (!empty($r['rpm_2500_co'])): ?>
+                                                            <small>2500 RPM CO: <?= $r['rpm_2500_co'] ?></small><br>
+                                                        <?php endif; ?>
+                                                        <?php if (!empty($r['idle_hc'])): ?>
+                                                            <small>Idle HC: <?= $r['idle_hc'] ?></small><br>
+                                                        <?php endif; ?>
+                                                        <?php if (!empty($r['idle_co'])): ?>
+                                                            <small>Idle CO: <?= $r['idle_co'] ?></small>
+                                                        <?php endif; ?>
+                                                    </td>
+                                                    <td>
+                                                        <span class="badge badge-<?=
+                                                                                    $r['status'] == 'Pass' ? 'success' : ($r['status'] == 'Fail' ? 'danger' : ($r['status'] == 'Not Suitable' ? 'warning' : 'secondary'))
+                                                                                    ?>">
+                                                            <?= htmlspecialchars($r['status'] ?? 'N/A') ?>
+                                                        </span>
+                                                    </td>
+                                                    <td><?= $r['next_due_date'] ? htmlspecialchars($r['next_due_date']) : 'N/A' ?></td>
+                                                    <td><?= htmlspecialchars($r['remarks'] ?? '') ?></td>
+                                                </tr>
+                                            <?php endforeach; ?>
+                                        <?php endif; ?>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <!-- </div> -->
@@ -1356,171 +1176,169 @@ try {
 
     <script>
         $(document).ready(function() {
-            $('.competencyTable').DataTable();
+            console.log("Document ready - starting initialization");
+
             const dataTableConfig = {
-                "pageLength": 10,
-                "lengthMenu": [10, 25, 50, 100],
-                "order": [
-                    [2, "desc"]
+                pageLength: 10,
+                lengthMenu: [10, 25, 50, 100],
+                order: [
+                    [0, "asc"]
                 ],
-                "language": {
-                    "search": "Search:",
-                    "lengthMenu": "Show _MENU_ entries",
-                    "info": "Showing _START_ to _END_ of _TOTAL_ entries",
-                    "paginate": {
-                        "previous": "Previous",
-                        "next": "Next"
-                    }
-                }
+                language: {
+                    search: "Filter:",
+                    lengthMenu: "Show _MENU_ entries",
+                    info: "Showing _START_ to _END_ of _TOTAL_ entries",
+                    paginate: {
+                        previous: "Previous",
+                        next: "Next",
+                    },
+                },
+                autoWidth: false,
+                responsive: true,
+                destroy: true, // Allow reinitialization
             };
 
-            // Initialize all tables with error handling
-            const tableIds = [
-                'qaReportsTable',
-                'qaCheckListTable',
-                // 'competencyTable',
-                'latitudeTable',
-                'modificationTable',
-                'rndTable'
+            // Initialize always visible tables immediately
+            const alwaysVisibleTables = [
+                "qaReportsTable",
+                "qaCheckListTable",
+                "competencyTable",
+                "latitudeTable",
+                "modificationTable",
+                "rndTable",
             ];
 
-            tableIds.forEach(tableId => {
-                if ($('#' + tableId).length) {
-                    $('#' + tableId).DataTable(dataTableConfig);
+            alwaysVisibleTables.forEach((tableId) => {
+                if ($("#" + tableId).length && !$.fn.DataTable.isDataTable("#" + tableId)) {
+                    console.log("Initializing table:", tableId);
+                    $("#" + tableId).DataTable(dataTableConfig);
                 }
             });
-        });
 
-        // Vehicle Emission Test Tables - Initialize on tab show with better handling
-        function initializeVehicleTables() {
-            console.log('Initializing vehicle tables...');
+            // Initialize vehicle tables
+            // $("#dieselTable").DataTable(dataTableConfig);
+            // $("#petrolTable").DataTable(dataTableConfig);
 
-            // Diesel Table
-            if ($('#publicDieselTable').length && !$.fn.DataTable.isDataTable('#publicDieselTable')) {
-                console.log('Found Diesel table, initializing...');
-                $('#publicDieselTable').DataTable({
-                    ...dataTableConfig,
-                    "initComplete": function(settings, json) {
-                        console.log('Diesel table initialized with', this.api().rows().count(), 'rows');
-                    }
-                });
-            } else if ($.fn.DataTable.isDataTable('#publicDieselTable')) {
-                console.log('Diesel table already initialized');
-                $('#publicDieselTable').DataTable().draw();
-            }
+            // Fuel type dropdown functionality
+            $(".fuel-type-option").on("click", function(e) {
+                e.preventDefault();
 
-            // Petrol Table
-            if ($('#publicPetrolTable').length && !$.fn.DataTable.isDataTable('#publicPetrolTable')) {
-                console.log('Found Petrol table, initializing...');
-                $('#publicPetrolTable').DataTable({
-                    ...dataTableConfig,
-                    "initComplete": function(settings, json) {
-                        console.log('Petrol table initialized with', this.api().rows().count(), 'rows');
-                    }
-                });
-            } else if ($.fn.DataTable.isDataTable('#publicPetrolTable')) {
-                console.log('Petrol table already initialized');
-                $('#publicPetrolTable').DataTable().draw();
-            }
-        }
+                // Remove active class from all options
+                $(".fuel-type-option").removeClass("active");
+                // Add active class to clicked option
+                $(this).addClass("active");
 
-        // Initialize vehicle tables when their parent tab is shown
-        $('a[data-bs-target="#vehicle_test_reports"]').on('click', function() {
-            console.log('Vehicle test reports nav item clicked');
-            setTimeout(initializeVehicleTables, 300);
-        });
+                // Get target content
+                const target = $(this).data("target");
+                const targetContent = $("#" + target + "-content");
 
-        // Also initialize when fuel type tabs are shown
-        $('#public-diesel-tab, #public-petrol-tab').on('shown.bs.tab', function(e) {
-            console.log('Fuel type tab shown:', e.target.id);
-            setTimeout(initializeVehicleTables, 100);
-        });
+                // Hide all content sections
+                $(".fuel-type-content").removeClass("active");
+                // Show target content
+                targetContent.addClass("active");
 
-        // If we're already on the vehicle test reports tab, initialize immediately
-        if ($('#vehicle_test_reports').hasClass('active') || $('#vehicle_test_reports').hasClass('show')) {
-            console.log('Vehicle test reports tab is active on load');
-            setTimeout(initializeVehicleTables, 500);
-        }
+                // Update dropdown button text
+                const buttonText = $(this).text().trim();
+                $("#fuelTypeDropdown").html(
+                    '<i class="fas fa-filter me-1"></i> ' + buttonText
+                );
 
-        // Handle tab selection
-        document.addEventListener("DOMContentLoaded", function() {
-
-            // PDF Modal functionality
-            const pdfModal = document.getElementById('pdfModal');
-            const pdfFrame = document.getElementById('pdfFrame');
-
-            pdfModal.addEventListener('show.bs.modal', function(event) {
-                const button = event.relatedTarget;
-                const pdfUrl = button.getAttribute('data-pdf-url');
-                pdfFrame.src = pdfUrl;
+                // Update current fuel type display
+                $("#currentFuelType").html(
+                    "Currently showing: <strong>" + buttonText + "</strong>"
+                );
             });
 
-            pdfModal.addEventListener('hidden.bs.modal', function() {
-                pdfFrame.src = ""; // Clear iframe to stop PDF from running
-            });
+            // Ensure diesel is shown by default
+            $('.fuel-type-option[data-target="diesel"]').click();
+
+            // Modal functionality
+            const pdfModal = document.getElementById("pdfModal");
+            const pdfFrame = document.getElementById("pdfFrame");
+
+            if (pdfModal) {
+                pdfModal.addEventListener("show.bs.modal", function(event) {
+                    const button = event.relatedTarget;
+                    const pdfUrl = button.getAttribute("data-pdf-url");
+                    pdfFrame.src = pdfUrl;
+                });
+
+                pdfModal.addEventListener("hidden.bs.modal", function() {
+                    pdfFrame.src = "";
+                });
+            }
 
             // Details Modal functionality
-            const detailsModal = document.getElementById('detailsModal');
-            const detailsModalTitle = document.getElementById('detailsModalTitle');
-            const detailsModalBody = document.getElementById('detailsModalBody');
+            const detailsModal = document.getElementById("detailsModal");
+            const detailsModalTitle = document.getElementById("detailsModalTitle");
+            const detailsModalBody = document.getElementById("detailsModalBody");
 
-            detailsModal.addEventListener('show.bs.modal', function(event) {
-                const button = event.relatedTarget;
-                const recordType = button.getAttribute('data-record-type');
+            if (detailsModal) {
+                detailsModal.addEventListener("show.bs.modal", function(event) {
+                    const button = event.relatedTarget;
+                    const recordType = button.getAttribute("data-record-type");
 
-                // Set modal title based on record type
-                let title = 'Record Details';
-                switch (recordType) {
-                    case 'qa_report':
-                        title = 'QA Reports Details';
-                        break;
-                    case 'qa_check_list':
-                        title = 'Audit Checklist Details';
-                        break;
-                    case 'aircraft_competency':
-                        title = 'Aircraft Competency Details';
-                        break;
-                    case 'latitude':
-                        title = 'Latitude Record Details';
-                        break;
-                }
-                detailsModalTitle.textContent = title;
+                    let title = "Record Details";
+                    switch (recordType) {
+                        case "qa_report":
+                            title = "QA Report Details";
+                            break;
+                        case "qa_check_list":
+                            title = "Audit Checklist Details";
+                            break;
+                        case "aircraft_competency":
+                            title = "Aircraft Competency Details";
+                            break;
+                        case "latitude":
+                            title = "Latitude Record Details";
+                            break;
+                        case "vehicle_emission":
+                            title = "Vehicle Emission Test Details";
+                            break;
+                    }
+                    detailsModalTitle.textContent = title;
 
-                // Generate modal content based on record type
-                let content = '';
-                switch (recordType) {
-                    case 'qa_report':
-                    case 'qa_check_list':
-                        content = generateDocumentDetails(button);
-                        break;
-                    case 'aircraft_competency':
-                        content = generateAircraftCompetencyDetails(button);
-                        break;
-                    case 'latitude':
-                        content = generateLatitudeDetails(button);
-                        break;
-                    default:
-                        content = '<p>No details available.</p>';
-                }
+                    let content = "";
+                    switch (recordType) {
+                        case "qa_report":
+                        case "qa_check_list":
+                            content = generateDocumentDetails(button);
+                            break;
+                        case "aircraft_competency":
+                            content = generateAircraftCompetencyDetails(button);
+                            break;
+                        case "latitude":
+                            content = generateLatitudeDetails(button);
+                            break;
+                        case "vehicle_emission":
+                            content = generateVehicleEmissionDetails(button);
+                            break;
+                        default:
+                            content = "<p>No details available.</p>";
+                    }
+                    detailsModalBody.innerHTML = content;
+                });
 
-                detailsModalBody.innerHTML = content;
-            });
+                detailsModal.addEventListener("hidden.bs.modal", function() {
+                    detailsModalBody.innerHTML = "";
+                });
+            }
 
-            detailsModal.addEventListener('hidden.bs.modal', function() {
-                detailsModalBody.innerHTML = '';
-            });
-
-            // Helper function to format empty values
+            // Helper functions
             function formatValue(value) {
-                if (!value || value === 'null' || value === 'undefined' || value === '0000-00-00') {
+                if (
+                    !value ||
+                    value === "null" ||
+                    value === "undefined" ||
+                    value === "0000-00-00"
+                ) {
                     return '<span class="empty-value">Not provided</span>';
                 }
                 return value;
             }
 
-            // Helper function to format dates
             function formatDate(dateString) {
-                if (!dateString || dateString === '0000-00-00') {
+                if (!dateString || dateString === "0000-00-00") {
                     return '<span class="empty-value">Not provided</span>';
                 }
                 try {
@@ -1530,65 +1348,68 @@ try {
                 }
             }
 
-            // Generate functions for different record types
             function generateDocumentDetails(button) {
-                const title = button.getAttribute('data-record-title');
-                const description = button.getAttribute('data-record-description');
-                const filePath = button.getAttribute('data-record-file-path');
-                const uploadedAt = button.getAttribute('data-record-uploaded-at');
+                const title = button.getAttribute("data-record-title");
+                const description = button.getAttribute("data-record-description");
+                const filePath = button.getAttribute("data-record-file-path");
+                const uploadedAt = button.getAttribute("data-record-uploaded-at");
 
                 return `
                     <table class="details-modal-table">
-                        <tr>
-                            <th>Document Title:</th>
-                            <td>${formatValue(title)}</td>
-                        </tr>
-                        <tr>
-                            <th>Description:</th>
-                            <td>${formatValue(description)}</td>
-                        </tr>
-                        <tr>
-                            <th>File Path:</th>
-                            <td>${formatValue(filePath)}</td>
-                        </tr>
-                        <tr>
-                            <th>Uploaded Date:</th>
-                            <td>${formatDate(uploadedAt)}</td>
-                        </tr>
+                        <tr><th>Document Title:</th><td>${formatValue(
+                          title
+                        )}</td></tr>
+                        <tr><th>Description:</th><td>${formatValue(
+                          description
+                        )}</td></tr>
+                        <tr><th>File Path:</th><td>${formatValue(
+                          filePath
+                        )}</td></tr>
+                        <tr><th>Uploaded Date:</th><td>${formatDate(
+                          uploadedAt
+                        )}</td></tr>
                     </table>
                 `;
             }
 
             function generateAircraftCompetencyDetails(button) {
-                const svcNo = button.getAttribute('data-record-svc-no');
-                const rank = button.getAttribute('data-record-rank');
-                const name = button.getAttribute('data-record-name');
-                const trade = button.getAttribute('data-record-trade');
-                const formation = button.getAttribute('data-record-formation');
-                const postedInDate = button.getAttribute('data-record-posted-in-date');
-                const postedOutDate = button.getAttribute('data-record-posted-out-date');
-                const aircraftType = button.getAttribute('data-record-aircraft-type');
-                const competencyLevel = button.getAttribute('data-record-competency-level');
-                const trainingStartDate = button.getAttribute('data-record-training-start-date');
-                const trainingEndDate = button.getAttribute('data-record-training-end-date');
-                const formationRef = button.getAttribute('data-record-formation-ref');
-                const forRefDate = button.getAttribute('data-record-for-ref-date');
-                const qaiRef = button.getAttribute('data-record-qai-ref');
-                const qaiRefDate = button.getAttribute('data-record-qai-ref-date');
-                const dtRef = button.getAttribute('data-record-dt-ref');
-                const dtRefDate = button.getAttribute('data-record-dt-ref-date');
-                const qaoRef = button.getAttribute('data-record-qao-ref');
-                const qaoRefDate = button.getAttribute('data-record-qao-ref-date');
-                const theoryMarks = button.getAttribute('data-record-theory-marks');
-                const practicalMarks = button.getAttribute('data-record-practical-marks');
-                const competencyIssueRef = button.getAttribute('data-record-competency-issue-ref');
-                const comIssueDate = button.getAttribute('data-record-com-issue-date');
-                const competencyRenewRef = button.getAttribute('data-record-competency-renew-ref');
-                const renewDate = button.getAttribute('data-record-renew-date');
-                const certificateNo = button.getAttribute('data-record-certificate-no');
-                const cerIssuedDate = button.getAttribute('data-record-cer-issued-date');
-                const retiredDate = button.getAttribute('data-record-retired-date');
-                const remarks = button.getAttribute('data-record-remarks');
+                const svcNo = button.getAttribute("data-record-svc-no");
+                const rank = button.getAttribute("data-record-rank");
+                const name = button.getAttribute("data-record-name");
+                const trade = button.getAttribute("data-record-trade");
+                const formation = button.getAttribute("data-record-formation");
+                const postedInDate = button.getAttribute("data-record-posted-in-date");
+                const postedOutDate = button.getAttribute("data-record-posted-out-date");
+                const aircraftType = button.getAttribute("data-record-aircraft-type");
+                const competencyLevel = button.getAttribute("data-record-competency-level");
+                const trainingStartDate = button.getAttribute(
+                    "data-record-training-start-date"
+                );
+                const trainingEndDate = button.getAttribute(
+                    "data-record-training-end-date"
+                );
+                const formationRef = button.getAttribute("data-record-formation-ref");
+                const forRefDate = button.getAttribute("data-record-for-ref-date");
+                const qaiRef = button.getAttribute("data-record-qai-ref");
+                const qaiRefDate = button.getAttribute("data-record-qai-ref-date");
+                const dtRef = button.getAttribute("data-record-dt-ref");
+                const dtRefDate = button.getAttribute("data-record-dt-ref-date");
+                const qaoRef = button.getAttribute("data-record-qao-ref");
+                const qaoRefDate = button.getAttribute("data-record-qao-ref-date");
+                const theoryMarks = button.getAttribute("data-record-theory-marks");
+                const practicalMarks = button.getAttribute("data-record-practical-marks");
+                const competencyIssueRef = button.getAttribute(
+                    "data-record-competency-issue-ref"
+                );
+                const comIssueDate = button.getAttribute("data-record-com-issue-date");
+                const competencyRenewRef = button.getAttribute(
+                    "data-record-competency-renew-ref"
+                );
+                const renewDate = button.getAttribute("data-record-renew-date");
+                const certificateNo = button.getAttribute("data-record-certificate-no");
+                const cerIssuedDate = button.getAttribute("data-record-cer-issued-date");
+                const retiredDate = button.getAttribute("data-record-retired-date");
+                const remarks = button.getAttribute("data-record-remarks");
 
                 return `
                     <div class="section-divider">Personal Information</div>
@@ -1621,7 +1442,7 @@ try {
                             <th>Posted In Date:</th>
                             <td>${formatDate(postedInDate)}</td>
                         </tr>
-                        <tr style="display: none;">
+                        <tr>
                             <th>Posted Out Date:</th>
                             <td>${formatDate(postedOutDate)}</td>
                         </tr>
@@ -1738,37 +1559,43 @@ try {
             }
 
             function generateLatitudeDetails(button) {
-                const active = button.getAttribute('data-record-active');
-                const typeValue = button.getAttribute('data-record-type-value');
-                const formation = button.getAttribute('data-record-formation');
-                const aircraftType = button.getAttribute('data-record-aircraft-type');
-                const tailNo = button.getAttribute('data-record-tail-no');
-                const partNo = button.getAttribute('data-record-part-no');
-                const description = button.getAttribute('data-record-description');
-                const serialNo = button.getAttribute('data-record-serial-no');
-                const reason = button.getAttribute('data-record-reason');
-                const hrs = button.getAttribute('data-record-hrs');
-                const ldgs = button.getAttribute('data-record-ldgs');
-                const date = button.getAttribute('data-record-date');
-                const presentLatitude = button.getAttribute('data-record-present-latitude');
-                const dgaeAuthRef = button.getAttribute('data-record-dgae-auth-ref');
-                const recommendation = button.getAttribute('data-record-recommendation');
-                const authDate = button.getAttribute('data-record-auth-date');
-                const latitudeExpiry = button.getAttribute('data-record-latitude-expiry');
-                const totalPrevLatitude = button.getAttribute('data-record-total-prev-latitude');
-                const demandRef = button.getAttribute('data-record-demand-ref');
-                const status = button.getAttribute('data-record-status');
+                const active = button.getAttribute("data-record-active");
+                const typeValue = button.getAttribute("data-record-type-value");
+                const formation = button.getAttribute("data-record-formation");
+                const aircraftType = button.getAttribute("data-record-aircraft-type");
+                const tailNo = button.getAttribute("data-record-tail-no");
+                const partNo = button.getAttribute("data-record-part-no");
+                const description = button.getAttribute("data-record-description");
+                const serialNo = button.getAttribute("data-record-serial-no");
+                const reason = button.getAttribute("data-record-reason");
+                const hrs = button.getAttribute("data-record-hrs");
+                const ldgs = button.getAttribute("data-record-ldgs");
+                const date = button.getAttribute("data-record-date");
+                const presentLatitude = button.getAttribute("data-record-present-latitude");
+                const dgaeAuthRef = button.getAttribute("data-record-dgae-auth-ref");
+                const authDate = button.getAttribute("data-record-auth-date");
+                const latitudeExpiry = button.getAttribute("data-record-latitude-expiry");
+                const totalPrevLatitude = button.getAttribute(
+                    "data-record-total-prev-latitude"
+                );
+                const demandRef = button.getAttribute("data-record-demand-ref");
+                const status = button.getAttribute("data-record-status");
 
-                const statusBadge = status === 'Approved' ? 'success' :
-                    status === 'Pending' ? 'warning' :
-                    status === 'Expired' ? 'danger' : 'secondary';
+                const statusBadge =
+                    status === "Approved" ?
+                    "success" :
+                    status === "Pending" ?
+                    "warning" :
+                    status === "Expired" ?
+                    "danger" :
+                    "secondary";
 
-                const activeBadge = active === 'YES' ? 'success' : 'danger';
+                const activeBadge = active === "YES" ? "success" : "danger";
 
                 return `
                     <div class="section-divider">Basic Information</div>
                     <table class="details-modal-table">
-                        <tr style="display: none;">
+                        <tr>
                             <th>Active Status:</th>
                             <td><span class="badge badge-${activeBadge}">${active}</span></td>
                         </tr>
@@ -1792,10 +1619,6 @@ try {
                             <th>Part Number:</th>
                             <td>${formatValue(partNo)}</td>
                         </tr>
-                        <tr>
-                            <th>Recommendation:</th>
-                            <td>${formatValue(recommendation)}</td>
-                        </tr>
                     </table>
 
                     <div class="section-divider">Technical Details</div>
@@ -1808,19 +1631,19 @@ try {
                             <th>Serial Number:</th>
                             <td>${formatValue(serialNo)}</td>
                         </tr>
-                        <tr style="display: none;">
+                        <tr>
                             <th>Reason:</th>
                             <td>${formatValue(reason)}</td>
                         </tr>
-                        <tr style="display: none;">
+                        <tr>
                             <th>Hours:</th>
                             <td>${formatValue(hrs)}</td>
                         </tr>
-                        <tr style="display: none;">
+                        <tr>
                             <th>Landings:</th>
                             <td>${formatValue(ldgs)}</td>
                         </tr>
-                        <tr style="display: none;">
+                        <tr>
                             <th>Date:</th>
                             <td>${formatDate(date)}</td>
                         </tr>
@@ -1830,17 +1653,19 @@ try {
                     <table class="details-modal-table">
                         <tr>
                             <th>Present Latitude:</th>
-                            <td><strong>${formatValue(presentLatitude)}</strong></td>
+                            <td><strong>${formatValue(
+                              presentLatitude
+                            )}</strong></td>
                         </tr>
                         <tr>
                             <th>Total Previous Latitude:</th>
                             <td>${formatValue(totalPrevLatitude)}</td>
                         </tr>
-                        <tr style="display: none;">
+                        <tr>
                             <th>DGAE Authorization Reference:</th>
                             <td>${formatValue(dgaeAuthRef)}</td>
                         </tr>
-                        <tr style="display: none;">
+                        <tr>
                             <th>Authorization Date:</th>
                             <td>${formatDate(authDate)}</td>
                         </tr>
@@ -1850,13 +1675,13 @@ try {
                         </tr>
                     </table>
 
-                    <div class="section-divider" style="display: none;">Status Information</div>
-                    <table class="details-modal-table" style="display: none;">
-                        <tr style="display: none;">
+                    <div class="section-divider">Status Information</div>
+                    <table class="details-modal-table">
+                        <tr>
                             <th>Demand Reference:</th>
                             <td>${formatValue(demandRef)}</td>
                         </tr>
-                        <tr style="display: none;">
+                        <tr>
                             <th>Status:</th>
                             <td><span class="badge badge-${statusBadge}">${formatValue(status)}</span></td>
                         </tr>
@@ -1865,28 +1690,34 @@ try {
             }
 
             function generateVehicleEmissionDetails(button) {
-                const serialNo = button.getAttribute('data-record-serial-no');
-                const camp = button.getAttribute('data-record-camp');
-                const vehicleNo = button.getAttribute('data-record-vehicle-no');
-                const vehicleType = button.getAttribute('data-record-vehicle-type');
-                const model = button.getAttribute('data-record-model');
-                const testDate = button.getAttribute('data-record-test-date');
-                const firstTest = button.getAttribute('data-record-first-test');
-                const secondTest = button.getAttribute('data-record-second-test');
-                const thirdTest = button.getAttribute('data-record-third-test');
-                const average = button.getAttribute('data-record-average');
-                const rpm2500Hc = button.getAttribute('data-record-rpm-2500-hc');
-                const rpm2500Co = button.getAttribute('data-record-rpm-2500-co');
-                const idleHc = button.getAttribute('data-record-idle-hc');
-                const idleCo = button.getAttribute('data-record-idle-co');
-                const status = button.getAttribute('data-record-status');
-                const nextDueDate = button.getAttribute('data-record-next-due-date');
-                const remarks = button.getAttribute('data-record-remarks');
+                const serialNo = button.getAttribute("data-record-serial-no");
+                const camp = button.getAttribute("data-record-camp");
+                const vehicleNo = button.getAttribute("data-record-vehicle-no");
+                const vehicleType = button.getAttribute("data-record-vehicle-type");
+                const model = button.getAttribute("data-record-model");
+                const testDate = button.getAttribute("data-record-test-date");
+                const firstTest = button.getAttribute("data-record-first-test");
+                const secondTest = button.getAttribute("data-record-second-test");
+                const thirdTest = button.getAttribute("data-record-third-test");
+                const average = button.getAttribute("data-record-average");
+                const rpm2500Hc = button.getAttribute("data-record-rpm-2500-hc");
+                const rpm2500Co = button.getAttribute("data-record-rpm-2500-co");
+                const idleHc = button.getAttribute("data-record-idle-hc");
+                const idleCo = button.getAttribute("data-record-idle-co");
+                const status = button.getAttribute("data-record-status");
+                const nextDueDate = button.getAttribute("data-record-next-due-date");
+                const remarks = button.getAttribute("data-record-remarks");
 
-                const statusBadge = status === 'Pass' ? 'success' :
-                    status === 'Fail' ? 'danger' :
-                    status === 'Not Suitable' ? 'warning' :
-                    status === 'Serviceable Not Done' ? 'secondary' : 'secondary';
+                const statusBadge =
+                    status === "Pass" ?
+                    "success" :
+                    status === "Fail" ?
+                    "danger" :
+                    status === "Not Suitable" ?
+                    "warning" :
+                    status === "Serviceable Not Done" ?
+                    "secondary" :
+                    "secondary";
 
                 // Determine fuel type based on test values
                 const isDiesel = firstTest || secondTest || thirdTest || average;
@@ -1923,7 +1754,9 @@ try {
 
                     <div class="section-divider">Test Results</div>
                     <table class="details-modal-table">
-                        ${isDiesel ? `
+                        ${
+                          isDiesel
+                            ? `
                         <tr>
                             <th>1st Test Result:</th>
                             <td>${formatValue(firstTest)}</td>
@@ -1940,8 +1773,12 @@ try {
                             <th>Average:</th>
                             <td><strong>${formatValue(average)}</strong></td>
                         </tr>
-                        ` : ''}
-                        ${isPetrol ? `
+                        `
+                            : ""
+                        }
+                        ${
+                          isPetrol
+                            ? `
                         <tr>
                             <th>2500 RPM HC:</th>
                             <td>${formatValue(rpm2500Hc)}</td>
@@ -1958,7 +1795,9 @@ try {
                             <th>Idle CO:</th>
                             <td>${formatValue(idleCo)}</td>
                         </tr>
-                        ` : ''}
+                        `
+                            : ""
+                        }
                     </table>
 
                     <div class="section-divider">Status Information</div>
@@ -1983,168 +1822,138 @@ try {
                 `;
             }
 
-            // Set initial active tab to welcome screen
-            const welcomePane = document.querySelector('#welcome');
+            // Navigation and tab handling
+            const welcomePane = document.querySelector("#welcome");
             if (welcomePane) {
-                welcomePane.classList.add('show', 'active');
+                welcomePane.classList.add("show", "active");
             }
 
-            // Remove any active classes from navigation items initially
-            document.querySelectorAll('.nav-link, .qa-dropdown-item').forEach(item => {
-                item.classList.remove('active');
+            document.querySelectorAll(".nav-link, .qa-dropdown-item").forEach((item) => {
+                item.classList.remove("active");
             });
 
-            // Close all dropdown menus initially
-            document.querySelectorAll('.qa-dropdown-menu').forEach(menu => {
-                menu.classList.remove('show');
+            document.querySelectorAll(".qa-dropdown-menu").forEach((menu) => {
+                menu.classList.remove("show");
             });
 
-            // Handle dropdown toggle for ALL dropdowns
-            const dropdownToggles = document.querySelectorAll('.qa-dropdown-toggle');
-            dropdownToggles.forEach(toggle => {
-                toggle.addEventListener('click', function(e) {
+            // Dropdown toggle handling
+            const dropdownToggles = document.querySelectorAll(".qa-dropdown-toggle");
+            dropdownToggles.forEach((toggle) => {
+                toggle.addEventListener("click", function(e) {
                     e.preventDefault();
                     e.stopPropagation();
 
                     const dropdownMenu = this.nextElementSibling;
                     if (!dropdownMenu) return;
 
-                    // Toggle current dropdown - close if open, open if closed
-                    const isCurrentlyOpen = dropdownMenu.classList.contains('show');
+                    const isCurrentlyOpen = dropdownMenu.classList.contains("show");
 
-                    // Close all dropdowns first
-                    dropdownToggles.forEach(otherToggle => {
+                    dropdownToggles.forEach((otherToggle) => {
                         const otherMenu = otherToggle.nextElementSibling;
-                        if (otherMenu) {
-                            otherMenu.classList.remove('show');
-                        }
+                        if (otherMenu) otherMenu.classList.remove("show");
                     });
 
-                    // If it wasn't open, open it now
-                    if (!isCurrentlyOpen) {
-                        dropdownMenu.classList.add('show');
-                    }
+                    if (!isCurrentlyOpen) dropdownMenu.classList.add("show");
                 });
             });
 
-            // Handle tab selection for main nav links (non-dropdown items)
-            const mainNavLinks = document.querySelectorAll('.nav-link:not(.qa-dropdown-toggle)');
-            mainNavLinks.forEach(item => {
-                item.addEventListener('click', function(e) {
+            // Main nav links
+            const mainNavLinks = document.querySelectorAll(
+                ".nav-link:not(.qa-dropdown-toggle)"
+            );
+            mainNavLinks.forEach((item) => {
+                item.addEventListener("click", function(e) {
                     e.preventDefault();
-
-                    // Remove active class from all nav items
-                    document.querySelectorAll('.nav-link, .qa-dropdown-item').forEach(tab => {
-                        tab.classList.remove('active');
+                    document
+                        .querySelectorAll(".nav-link, .qa-dropdown-item")
+                        .forEach((tab) => {
+                            tab.classList.remove("active");
+                        });
+                    document.querySelectorAll(".qa-dropdown-toggle").forEach((toggle) => {
+                        toggle.classList.remove("active");
                     });
+                    this.classList.add("active");
 
-                    // Remove active class from all dropdown toggles
-                    document.querySelectorAll('.qa-dropdown-toggle').forEach(toggle => {
-                        toggle.classList.remove('active');
-                    });
-
-                    // Add active class to clicked tab
-                    this.classList.add('active');
-
-                    // Show the target tab content and hide welcome screen
-                    const targetId = this.getAttribute('data-bs-target');
+                    const targetId = this.getAttribute("data-bs-target");
                     const targetPane = document.querySelector(targetId);
 
-                    // Hide all tab panes including welcome
-                    document.querySelectorAll('.tab-pane').forEach(pane => {
-                        pane.classList.remove('show', 'active');
+                    document.querySelectorAll(".tab-pane").forEach((pane) => {
+                        pane.classList.remove("show", "active");
                     });
 
-                    // Show the selected tab pane
-                    if (targetPane) {
-                        targetPane.classList.add('show', 'active');
-                    }
-
-                    // Close all dropdowns when selecting main nav items
-                    document.querySelectorAll('.qa-dropdown-menu').forEach(menu => {
-                        menu.classList.remove('show');
+                    if (targetPane) targetPane.classList.add("show", "active");
+                    document.querySelectorAll(".qa-dropdown-menu").forEach((menu) => {
+                        menu.classList.remove("show");
                     });
                 });
             });
 
-            // Handle tab selection for dropdown items (sub-menu items)
-            const dropdownItems = document.querySelectorAll('.qa-dropdown-item');
-            dropdownItems.forEach(item => {
-                item.addEventListener('click', function(e) {
+            // Dropdown items
+            const dropdownItems = document.querySelectorAll(".qa-dropdown-item");
+            dropdownItems.forEach((item) => {
+                item.addEventListener("click", function(e) {
                     e.preventDefault();
-                    e.stopPropagation(); // Prevent event from bubbling to document
+                    e.stopPropagation();
 
-                    // Remove active class from all nav items
-                    document.querySelectorAll('.nav-link, .qa-dropdown-item').forEach(tab => {
-                        tab.classList.remove('active');
+                    document
+                        .querySelectorAll(".nav-link, .qa-dropdown-item")
+                        .forEach((tab) => {
+                            tab.classList.remove("active");
+                        });
+                    document.querySelectorAll(".qa-dropdown-toggle").forEach((toggle) => {
+                        toggle.classList.remove("active");
                     });
+                    this.classList.add("active");
 
-                    // Remove active class from all dropdown toggles
-                    document.querySelectorAll('.qa-dropdown-toggle').forEach(toggle => {
-                        toggle.classList.remove('active');
-                    });
-
-                    // Add active class to clicked dropdown item
-                    this.classList.add('active');
-
-                    // If this is a dropdown item, activate the parent dropdown toggle and keep menu open
-                    if (this.classList.contains('qa-dropdown-item')) {
-                        const parentDropdown = this.closest('.qa-dropdown');
+                    if (this.classList.contains("qa-dropdown-item")) {
+                        const parentDropdown = this.closest(".qa-dropdown");
                         if (parentDropdown) {
-                            const dropdownToggle = parentDropdown.querySelector('.qa-dropdown-toggle');
+                            const dropdownToggle = parentDropdown.querySelector(
+                                ".qa-dropdown-toggle"
+                            );
                             if (dropdownToggle) {
-                                dropdownToggle.classList.add('active');
-                                // Keep the dropdown menu open
+                                dropdownToggle.classList.add("active");
                                 const dropdownMenu = dropdownToggle.nextElementSibling;
-                                if (dropdownMenu) {
-                                    dropdownMenu.classList.add('show');
-                                }
+                                if (dropdownMenu) dropdownMenu.classList.add("show");
                             }
                         }
                     }
 
-                    // Show the target tab content and hide welcome screen
-                    const targetId = this.getAttribute('data-bs-target');
+                    const targetId = this.getAttribute("data-bs-target");
                     const targetPane = document.querySelector(targetId);
 
-                    // Hide all tab panes including welcome
-                    document.querySelectorAll('.tab-pane').forEach(pane => {
-                        pane.classList.remove('show', 'active');
+                    document.querySelectorAll(".tab-pane").forEach((pane) => {
+                        pane.classList.remove("show", "active");
                     });
 
-                    // Show the selected tab pane
-                    if (targetPane) {
-                        targetPane.classList.add('show', 'active');
-                    }
-
-                    // DON'T close the dropdown menu - keep it open for sub-menu items
+                    if (targetPane) targetPane.classList.add("show", "active");
                 });
             });
 
-            // Close dropdowns when clicking outside
-            document.addEventListener('click', function(e) {
-                if (!e.target.closest('.qa-dropdown')) {
-                    document.querySelectorAll('.qa-dropdown-menu').forEach(menu => {
-                        menu.classList.remove('show');
+            // Close dropdowns on outside click
+            document.addEventListener("click", function(e) {
+                if (!e.target.closest(".qa-dropdown")) {
+                    document.querySelectorAll(".qa-dropdown-menu").forEach((menu) => {
+                        menu.classList.remove("show");
                     });
                 }
             });
 
-            // Prevent dropdown from closing when clicking inside dropdown menu
-            document.querySelectorAll('.qa-dropdown-menu').forEach(menu => {
-                menu.addEventListener('click', function(e) {
+            document.querySelectorAll(".qa-dropdown-menu").forEach((menu) => {
+                menu.addEventListener("click", function(e) {
                     e.stopPropagation();
                 });
             });
 
-            // Handle escape key to close dropdowns
-            document.addEventListener('keydown', function(e) {
-                if (e.key === 'Escape') {
-                    document.querySelectorAll('.qa-dropdown-menu').forEach(menu => {
-                        menu.classList.remove('show');
+            document.addEventListener("keydown", function(e) {
+                if (e.key === "Escape") {
+                    document.querySelectorAll(".qa-dropdown-menu").forEach((menu) => {
+                        menu.classList.remove("show");
                     });
                 }
             });
+
+            console.log("Initialization complete");
         });
     </script>
 </body>

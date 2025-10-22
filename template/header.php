@@ -10,6 +10,7 @@
     gap: 2em;
     padding: 0;
     margin: 0;
+    margin-top: 0.5rem;
     box-sizing: border-box;
 
   }
@@ -27,15 +28,17 @@
 
   .logo-left {
     height: 100%;
-    width: 100%;
+    width: 60%;
     object-fit: contain;
     display: block;
+    border-bottom: 2px solid #18426e;
+    margin-left: 2.6rem;
   }
 
 
   .logo-right {
     height: 105%;
-    width: 80%;
+    width: 100%;
     object-fit: cover;
   }
 
@@ -45,7 +48,7 @@
     width: 100%;
     display: flex;
     justify-content: center;
-    border-bottom: 3px solid #4b4747ff;
+    border-bottom: 1px solid #4b4747ff;
   }
 
   .main-nav ul {
@@ -56,15 +59,19 @@
     margin: 0;
     padding: 0.3em 0;
   }
+  .main-nav ul li:first-child {
+  padding-right: 12rem;
+}
 
   .main-nav a {
     color: #222;
     text-decoration: none;
-    font-size: small;
+    font-size: x-small;
     font-weight: 400;
     position: relative;
     padding-bottom: 4px;
     transition: color 0.3s ease;
+    text-shadow: 1px 1px 2px #18416e8f;
   }
 
   .main-nav a:hover {
@@ -81,7 +88,7 @@
     font-weight: 600;
     left: 0;
     bottom: 0;
-    height: 3px;
+    height: 1px;
     width: 100%;
     background-color: var(--primary-color);
   }
@@ -90,7 +97,7 @@
 <header>
   <section class="logo-section">
     <a href="/qai/index.php" class="logo-link">
-      <img src="/qai/assets/img/logo/QAI_NEW_LOG.png" alt="SLAF Logo" class="logo-left">
+      <img src="/qai/assets/img/logo/logo.png" alt="SLAF Logo" class="logo-left">
     </a>
     <img src="/qai/assets/img/jet-banner.png" alt="Jet Aircraft Banner" class="logo-right">
   </section>
