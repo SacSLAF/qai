@@ -48,30 +48,6 @@ CREATE TABLE `active_qcc_registrations`  (
 -- ----------------------------
 INSERT INTO `active_qcc_registrations` VALUES (1, 'Test', 'Test', 'Test QCC', 8, 'Test', 'Test one, Test Two', 3, '0', 'productivity', 1, 1, '2025-10-09 17:40:09', '2025-10-09 17:40:09');
 
--- ----------------------------
--- Table structure for ad_bulletins
--- ----------------------------
-DROP TABLE IF EXISTS `ad_bulletins`;
-CREATE TABLE `ad_bulletins`  (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `title` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
-  `description` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL,
-  `aircraft_type` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
-  `file_path` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
-  `uploaded_by` int NULL DEFAULT NULL,
-  `uploaded_at` timestamp(0) NULL DEFAULT CURRENT_TIMESTAMP(0),
-  `is_active` tinyint(1) NULL DEFAULT 1,
-  `branch_id` int NULL DEFAULT NULL,
-  PRIMARY KEY (`id`) USING BTREE,
-  INDEX `fk_ad_uploaded_by`(`uploaded_by`) USING BTREE,
-  INDEX `fk_ad_branch`(`branch_id`) USING BTREE,
-  CONSTRAINT `fk_ad_branch` FOREIGN KEY (`branch_id`) REFERENCES `branches` (`id`) ON DELETE SET NULL ON UPDATE RESTRICT,
-  CONSTRAINT `fk_ad_uploaded_by` FOREIGN KEY (`uploaded_by`) REFERENCES `admins` (`id`) ON DELETE SET NULL ON UPDATE RESTRICT
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
-
--- ----------------------------
--- Records of ad_bulletins
--- ----------------------------
 
 -- ----------------------------
 -- Table structure for admins
@@ -767,3 +743,22 @@ CREATE TABLE `vehicle_emission_test` (
   CONSTRAINT `fk_vet_camp` FOREIGN KEY (`camp_id`) REFERENCES `slaf_establishments` (`id`),
   CONSTRAINT `fk_vet_created_by` FOREIGN KEY (`created_by`) REFERENCES `admins` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- ----------------------------
+-- Table structure for ad_bulletins
+-- ----------------------------
+DROP TABLE IF EXISTS `ad_bulletins`;
+CREATE TABLE `ad_bulletins`  (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `reference_no` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `bulletin_description` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `related_aircraft_id` int NOT NULL,
+  `formation_id` int NOT NULL,
+  `date_of_issue` date NOT NULL,
+  PRIMARY KEY (`id`) USING BTREE,
+  UNIQUE INDEX `reference_no`(`reference_no`) USING BTREE,
+  INDEX `related_aircraft_id`(`related_aircraft_id`) USING BTREE,
+  INDEX `formation_id`(`formation_id`) USING BTREE,
+  CONSTRAINT `ad_bulletins_ibfk_1` FOREIGN KEY (`related_aircraft_id`) REFERENCES `type` (`type_id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
+  CONSTRAINT `ad_bulletins_ibfk_2` FOREIGN KEY (`formation_id`) REFERENCES `formation` (`formation_id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;

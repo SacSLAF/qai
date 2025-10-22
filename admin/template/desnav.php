@@ -23,11 +23,19 @@
                             <li><a href="vehicle-emission-test.php">Vehicle Emission Test</a></li>
                         </ul>
                     </li>
-                    <li>
-                        <a href="publications-docs.php" aria-expanded="false">
-                            <i class="fas fa-newspaper"></i>
+                    <li class="has-arrow">
+                        <a href="javascript:void(0)" aria-expanded="false">
+                            <i class="fas fa-briefcase"></i>
                             <span class="nav-text">Publication</span>
                         </a>
+                        <ul aria-expanded="false">
+                            <li><a href="publications-docs.php">Publication Overview</a></li>
+                            <li><a href="#">Online Subscription</a></li>
+                            <li><a href="ad-bulletins.php">ADs & Bulletins</a></li>
+                            <li><a href="#">QAI Safety Newsletters</a></li>
+							<li><a href="#">Maintenance Program</a></li>
+							<li><a href="#">Technical Library</a></li>
+                        </ul>
                     </li>
                     <li>
                         <a href="training-docs.php" aria-expanded="false">
