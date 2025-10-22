@@ -1,0 +1,119 @@
+<?php
+require_once '../includes/config.php';
+
+// Simple auth guard
+if (!isset($_SESSION['admin_id'])) {
+    header("Location: login.php");
+    exit();
+}
+
+// Fetch all QAI Newsletter records
+$records = [];
+$res = $db->query("SELECT * FROM qai_newsletters ORDER BY issue_date DESC, qsn_no DESC");
+if ($res !== false) {
+    $records = $res->fetch_all(MYSQLI_ASSOC);
+} else {
+    error_log('Error fetching QAI Newsletter records: ' . $db->error);
+    $records = [];
+}
+
+include "template/head.php";
+?>
+
+<!DOCTYPE html>
+<html lang="en">
+<body>
+    <?php include "template/preloader.php"; ?>
+
+    <div id="main-wrapper">
+        <?php include "template/nav.php"; include "template/header.php"; ?>
+        <?php include "template/desnav.php"; ?>
+
+        <div class="content-body">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <h4 class="card-title">QAI Safety Newsletters Management</h4>
+                                <a href="qai-newsletters-form.php" class="btn btn-sm btn-outline-primary">
+                                    <i class="fas fa-plus"></i> Add New Newsletter
+                                </a>
+                            </div>
+
+                            <?php if (isset($_GET['success']) && $_GET['success'] == 1): ?>
+                                <div class="alert alert-primary mx-5">
+                                    Newsletter saved successfully!
+                                </div>
+                            <?php elseif (isset($_GET['error'])): ?>
+                                <div class="alert alert-danger mx-5">
+                                    Error occurred while processing your request.
+                                </div>
+                            <?php endif; ?>
+
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table id="qaiNewslettersTable" class="display min-w850 table table-striped table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th>QSN No</th>
+                                                <th>Description</th>
+                                                <th>Issue Date</th>
+                                                <th>Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <?php if (empty($records)): ?>
+                                                <tr>
+                                                    <td colspan="4" class="text-center py-4">No records found</td>
+                                                </tr>
+                                            <?php else: ?>
+                                                <?php foreach ($records as $r): ?>
+                                                    <tr>
+                                                        <td><strong><?= htmlspecialchars($r['qsn_no']) ?></strong></td>
+                                                        <td><?= htmlspecialchars(substr($r['description'], 0, 100)) . (strlen($r['description']) > 100 ? '...' : '') ?></td>
+                                                        <td><?= $r['issue_date'] ? date('M d, Y', strtotime($r['issue_date'])) : 'N/A' ?></td>
+                                                        <td>
+                                                            <div class="d-flex">
+                                                                <a href="edit-qai-newsletters.php?id=<?= $r['id'] ?>" class="btn btn-sm btn-outline-secondary">
+                                                                    <i class="fas fa-edit"></i> Edit
+                                                                </a>
+
+                                                                <form action="action/qai-newsletters-delete.php" method="post" style="display:inline-block;" onsubmit="return confirm('Are you sure you want to delete this newsletter?');">
+                                                                    <input type="hidden" name="id" value="<?= $r['id'] ?>">
+                                                                    <button type="submit" class="btn btn-sm btn-outline-danger ms-1">
+                                                                        <i class="fas fa-trash"></i> Delete
+                                                                    </button>
+                                                                </form>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                <?php endforeach; ?>
+                                            <?php endif; ?>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <div class="copyright">
+                <p>Copyright © Designed &amp; Developed by <a href="#" target="_blank">Directorate of Information Technology. Sri Lanka Air Force.</a> 2025</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Required scripts -->
+    <script src="assets/vendor/global/global.min.js"></script>
+    <script src="assets/vendor/bootstrap-select/dist/js/bootstrap-select.min.js"></script>
+    <script src="assets/vendor/datatables/js/jquery.dataTables.min.js"></script>
+    <script src="assets/vendor/datatables/responsive/responsive.js"></script>
+    <script src="assets/js/plugins-init/datatables.init.js"></script>
+    <script src="assets/js/custom.min.js"></script>
+    <script src="assets/js/deznav-init.js"></script>
+</body>
+</html>

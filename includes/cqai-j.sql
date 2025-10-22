@@ -762,3 +762,16 @@ CREATE TABLE `ad_bulletins`  (
   CONSTRAINT `ad_bulletins_ibfk_1` FOREIGN KEY (`related_aircraft_id`) REFERENCES `type` (`type_id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
   CONSTRAINT `ad_bulletins_ibfk_2` FOREIGN KEY (`formation_id`) REFERENCES `formation` (`formation_id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Table structure for qai_newsletters
+-- ----------------------------
+DROP TABLE IF EXISTS `qai_newsletters`;
+CREATE TABLE `qai_newsletters` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `title` varchar(255) NOT NULL,
+  `description` text NOT NULL,
+  `file_path` varchar(255) DEFAULT NULL,
+  `issue_date` date NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;

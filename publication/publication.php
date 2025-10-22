@@ -35,9 +35,14 @@ $ad_bulletins_error = '';
 $formations_map = [];
 $types_map = [];
 
+// Fetch data for QAI Newsletters
+$qai_newsletters = [];
+$qai_newsletters_error = '';
+
 // Check database connection
 if (!isset($db) || !$db || (property_exists($db, 'connect_error') && $db->connect_error)) {
     $ad_bulletins_error = "Database connection failed: " . ($db->connect_error ?? 'Unknown error');
+    $qai_newsletters_error = $ad_bulletins_error;
 } else {
     // Load lookup maps (formations, types)
     $f_res = $db->query("SELECT formation_id, formation_name FROM formation");
@@ -73,6 +78,25 @@ if (!isset($db) || !$db || (property_exists($db, 'connect_error') && $db->connec
         }
     } else {
         $ad_bulletins_error = "Error preparing AD Bulletins query: " . $db->error;
+    }
+
+    // Fetch QAI Newsletters records
+    $stmt_qai = $db->prepare("
+        SELECT qn.* 
+        FROM qai_newsletters qn 
+        ORDER BY qn.issue_date DESC, qn.qsn_no DESC
+    ");
+
+    if ($stmt_qai) {
+        if ($stmt_qai->execute()) {
+            $result_qai = $stmt_qai->get_result();
+            $qai_newsletters = $result_qai->fetch_all(MYSQLI_ASSOC);
+            $stmt_qai->close();
+        } else {
+            $qai_newsletters_error = "QAI Newsletters query execution failed: " . $stmt_qai->error;
+        }
+    } else {
+        $qai_newsletters_error = "Error preparing QAI Newsletters query: " . $db->error;
     }
 }
 
@@ -233,6 +257,20 @@ include '../template/head.php';
             color: white;
         }
 
+        .btn-view-pdf {
+            background-color: #28a745;
+            border-color: #28a745;
+            color: white;
+            padding: 4px 8px;
+            font-size: 0.875rem;
+        }
+
+        .btn-view-pdf:hover {
+            background-color: #218838;
+            border-color: #1e7e34;
+            color: white;
+        }
+
         .details-modal-table {
             width: 100%;
             margin-bottom: 1rem;
@@ -289,6 +327,14 @@ include '../template/head.php';
             -webkit-box-orient: vertical;
             overflow: hidden;
         }
+
+        .btn-group .btn {
+            margin-right: 5px;
+        }
+
+        .btn-group .btn:last-child {
+            margin-right: 0;
+        }
     </style>
 </head>
 
@@ -305,7 +351,7 @@ include '../template/head.php';
 
                     <a class="nav-link" data-bs-target="#ac" role="tab">Online Subscription</a>
                     <a class="nav-link" data-bs-target="#ad" role="tab">ADs & Bulletins</a>
-                    <a class="nav-link" data-bs-target="#latitude" role="tab">QAI Safety Newsletters</a>
+                    <a class="nav-link" data-bs-target="#qai_news" role="tab">QAI Safety Newsletters</a>
 
                     <!-- Maintenance Program Dropdown -->
                     <div class="qa-dropdown">
@@ -357,7 +403,7 @@ include '../template/head.php';
                                                         <th>Related Aircraft</th>
                                                         <th>Formation</th>
                                                         <th>Date of Issue</th>
-                                                       <!-- <th>Actions</th>-->
+                                                        <th>Actions</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
@@ -370,7 +416,7 @@ include '../template/head.php';
                                                             <td><?= htmlspecialchars($bulletin['type_name'] ?? 'N/A') ?></td>
                                                             <td><?= htmlspecialchars($bulletin['formation_name'] ?? 'N/A') ?></td>
                                                             <td><?= $bulletin['date_of_issue'] ? date('M d, Y', strtotime($bulletin['date_of_issue'])) : 'N/A' ?></td>
-                                                            <!--<td>
+                                                            <td>
                                                                 <button class="btn btn-view-details btn-sm view-details-btn"
                                                                     data-bs-toggle="modal"
                                                                     data-bs-target="#detailsModal"
@@ -383,7 +429,7 @@ include '../template/head.php';
                                                                     data-record-date-of-issue="<?= htmlspecialchars($bulletin['date_of_issue'] ?? '') ?>">
                                                                     View Details
                                                                 </button>
-                                                            </td>-->
+                                                            </td>
                                                         </tr>
                                                     <?php endforeach; ?>
                                                 </tbody>
@@ -401,10 +447,70 @@ include '../template/head.php';
                     </div>
 
                     <!-- QAI Safety Newsletters Tab -->
-                    <div class="tab-pane fade" id="latitude" role="tabpanel">
+                    <div class="tab-pane fade" id="qai_news" role="tabpanel">
                         <h4 class="colour-defult">QAI Safety Newsletters</h4>
-                        <div>
-                            <?php include 'qai_news.php' ?>
+                        <div class="mt-4">
+                            <?php if (!empty($qai_newsletters_error)): ?>
+                                <div class="alert alert-danger">
+                                    <strong>Database Error:</strong> <?= htmlspecialchars($qai_newsletters_error) ?>
+                                </div>
+                            <?php elseif (!empty($qai_newsletters)): ?>
+                                <div class="card">
+                                    <div class="card-body p-0">
+                                        <div class="table-responsive">
+                                            <table class="table table-striped table-hover mb-0" id="qaiNewslettersTable">
+                                                <thead>
+                                                    <tr>
+                                                        <th>QSN No</th>
+                                                        <th>Description</th>
+                                                        <th>Issue Date</th>
+                                                        <th>Actions</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <?php foreach ($qai_newsletters as $newsletter): ?>
+                                                        <tr>
+                                                            <td><strong><?= htmlspecialchars($newsletter['qsn_no']) ?></strong></td>
+                                                            <td class="text-truncate-multiline" title="<?= htmlspecialchars($newsletter['description']) ?>">
+                                                                <?= htmlspecialchars($newsletter['description']) ?>
+                                                            </td>
+                                                            <td><?= $newsletter['issue_date'] ? date('M d, Y', strtotime($newsletter['issue_date'])) : 'N/A' ?></td>
+                                                            <td>
+                                                                <div class="btn-group" role="group">
+                                                                    <?php if (!empty($newsletter['file_path'])): ?>
+                                                                        <a href="/qai/assets/pdfjs/web/viewer.html?file=<?= urlencode('/qai/admin/action/' . $newsletter['file_path']) ?>"
+                                                                            class="btn btn-view-pdf btn-sm view-pdf-btn"
+                                                                            data-bs-toggle="modal"
+                                                                            data-bs-target="#pdfModal"
+                                                                            data-pdf-url="/qai/assets/pdfjs/web/viewer.html?file=<?= urlencode('/qai/admin/action/' . $newsletter['file_path']) ?>">
+                                                                            <i class="fas fa-file-pdf me-1"></i>View PDF
+                                                                        </a>
+                                                                    <?php endif; ?>
+                                                                    <button class="btn btn-view-details btn-sm view-details-btn"
+                                                                        data-bs-toggle="modal"
+                                                                        data-bs-target="#detailsModal"
+                                                                        data-record-type="qai_newsletter"
+                                                                        data-record-id="<?= $newsletter['id'] ?? '' ?>"
+                                                                        data-record-qsn-no="<?= htmlspecialchars($newsletter['qsn_no'] ?? '') ?>"
+                                                                        data-record-description="<?= htmlspecialchars($newsletter['description'] ?? '') ?>"
+                                                                        data-record-issue-date="<?= htmlspecialchars($newsletter['issue_date'] ?? '') ?>">
+                                                                        View Details
+                                                                    </button>
+                                                                </div>
+                                                            </td>
+                                                        </tr>
+                                                    <?php endforeach; ?>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            <?php else: ?>
+                                <div class="alert alert-info">
+                                    <i class="fas fa-info-circle me-2"></i>
+                                    No QAI Safety Newsletters found.
+                                </div>
+                            <?php endif; ?>
                         </div>
                     </div>
 
@@ -445,12 +551,27 @@ include '../template/head.php';
         </div>
     </main>
 
+    <!-- PDF Modal -->
+    <div class="modal fade" id="pdfModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-xl modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">View PDF</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" style="height: 80vh;">
+                    <iframe id="pdfFrame" src="" width="100%" height="100%" style="border: none;"></iframe>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Details Modal -->
     <div class="modal fade" id="detailsModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-lg modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="detailsModalTitle">AD Bulletin Details</h5>
+                    <h5 class="modal-title" id="detailsModalTitle">Record Details</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body" id="detailsModalBody">
@@ -503,6 +624,27 @@ include '../template/head.php';
                 $('#adBulletinsTable').DataTable(dataTableConfig);
             }
 
+            // Initialize QAI Newsletters table
+            if ($('#qaiNewslettersTable').length) {
+                $('#qaiNewslettersTable').DataTable(dataTableConfig);
+            }
+
+            // PDF Modal functionality
+            const pdfModal = document.getElementById('pdfModal');
+            const pdfFrame = document.getElementById('pdfFrame');
+
+            if (pdfModal) {
+                pdfModal.addEventListener('show.bs.modal', function(event) {
+                    const button = event.relatedTarget;
+                    const pdfUrl = button.getAttribute('data-pdf-url');
+                    pdfFrame.src = pdfUrl;
+                });
+
+                pdfModal.addEventListener('hidden.bs.modal', function() {
+                    pdfFrame.src = "";
+                });
+            }
+
             // Details Modal functionality
             const detailsModal = document.getElementById('detailsModal');
             const detailsModalTitle = document.getElementById('detailsModalTitle');
@@ -516,6 +658,7 @@ include '../template/head.php';
                     let title = 'Record Details';
                     switch (recordType) {
                         case 'ad_bulletin': title = 'AD Bulletin Details'; break;
+                        case 'qai_newsletter': title = 'QAI Safety Newsletter Details'; break;
                         default: title = 'Record Details';
                     }
                     detailsModalTitle.textContent = title;
@@ -524,6 +667,9 @@ include '../template/head.php';
                     switch (recordType) {
                         case 'ad_bulletin':
                             content = generateADBulletinDetails(button);
+                            break;
+                        case 'qai_newsletter':
+                            content = generateQAINewsletterDetails(button);
                             break;
                         default:
                             content = '<p>No details available.</p>';
@@ -589,6 +735,38 @@ include '../template/head.php';
                             <th>Description:</th>
                             <td style="white-space: pre-wrap;">${formatValue(bulletinDescription)}</td>
                         </tr>
+                    </table>
+                `;
+            }
+
+            function generateQAINewsletterDetails(button) {
+                const qsnNo = button.getAttribute('data-record-qsn-no');
+                const description = button.getAttribute('data-record-description');
+                const issueDate = button.getAttribute('data-record-issue-date');
+                const filePath = button.getAttribute('data-record-file-path');
+                const createdAt = button.getAttribute('data-record-created-at');
+                const updatedAt = button.getAttribute('data-record-updated-at');
+
+                return `
+                    <div class="section-divider">Basic Information</div>
+                    <table class="details-modal-table">
+                        <tr>
+                            <th>QSN Number:</th>
+                            <td><strong>${formatValue(qsnNo)}</strong></td>
+                        </tr>
+                        <tr>
+                            <th>Issue Date:</th>
+                            <td>${formatDate(issueDate)}</td>
+                        </tr>
+                    </table>
+
+                    <div class="section-divider">Newsletter Description</div>
+                    <table class="details-modal-table">
+                        <tr>
+                            <th>Description:</th>
+                            <td style="white-space: pre-wrap;">${formatValue(description)}</td>
+                        </tr>
+                    </table>
                     </table>
                 `;
             }

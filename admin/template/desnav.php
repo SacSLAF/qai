@@ -32,7 +32,7 @@
                             <li><a href="publications-docs.php">Publication Overview</a></li>
                             <li><a href="#">Online Subscription</a></li>
                             <li><a href="ad-bulletins.php">ADs & Bulletins</a></li>
-                            <li><a href="#">QAI Safety Newsletters</a></li>
+                            <li><a href="qai-newsletters.php">QAI Safety Newsletters</a></li>
 							<li><a href="#">Maintenance Program</a></li>
 							<li><a href="#">Technical Library</a></li>
                         </ul>
