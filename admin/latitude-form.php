@@ -40,11 +40,13 @@ include "template/head.php";
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= isset($record) ? 'Edit' : 'Add' ?> Latitude Record</title>
 </head>
+
 <body>
     <!-- Include your template files -->
     <?php include "template/preloader.php"; ?>
@@ -87,7 +89,7 @@ include "template/head.php";
                                     <div class="col-md-12 mb-4">
                                         <h5 class="text-primary mb-3"><i class="fas fa-info-circle me-2"></i>Basic Details</h5>
                                         <div class="row">
-                                            <div class="col-md-3">
+                                            <div class="col-md-4">
                                                 <div class="mb-3">
                                                     <label class="form-label">Active *</label>
                                                     <select name="active" class="form-select" required>
@@ -102,13 +104,13 @@ include "template/head.php";
                                                     <input type="text" name="type" class="form-control" value="<?= isset($record) ? htmlspecialchars($record['type']) : 'Latitude' ?>">
                                                 </div>
                                             </div>-->
-                                            <div class="col-md-3">
+                                            <div class="col-md-4">
                                                 <div class="mb-3">
                                                     <label class="form-label">Formation *</label>
                                                     <select name="formation_id" class="form-select" required>
                                                         <option value="">Select Formation</option>
                                                         <?php foreach ($formations as $formation): ?>
-                                                            <option value="<?= $formation['formation_id'] ?>" 
+                                                            <option value="<?= $formation['formation_id'] ?>"
                                                                 <?= isset($record) && $record['formation_id'] == $formation['formation_id'] ? 'selected' : '' ?>>
                                                                 <?= htmlspecialchars($formation['formation_name']) ?>
                                                             </option>
@@ -116,13 +118,13 @@ include "template/head.php";
                                                     </select>
                                                 </div>
                                             </div>
-                                            <div class="col-md-3">
+                                            <div class="col-md-4">
                                                 <div class="mb-3">
                                                     <label class="form-label">Aircraft Type *</label>
                                                     <select name="aircraft_type_id" class="form-select" required>
                                                         <option value="">Select Type</option>
                                                         <?php foreach ($types as $type): ?>
-                                                            <option value="<?= $type['type_id'] ?>" 
+                                                            <option value="<?= $type['type_id'] ?>"
                                                                 <?= isset($record) && $record['aircraft_type_id'] == $type['type_id'] ? 'selected' : '' ?>>
                                                                 <?= htmlspecialchars($type['type_name']) ?>
                                                             </option>
@@ -159,6 +161,16 @@ include "template/head.php";
                                                 <div class="mb-3">
                                                     <label class="form-label">Description</label>
                                                     <textarea name="description" class="form-control" rows="3"><?= isset($record) ? htmlspecialchars($record['description']) : '' ?></textarea>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="mb-3">
+                                                    <label class="form-label">Recommendation</label>
+                                                    <select name="recommend" class="form-select">
+                                                        <option value="" selected disabled>Select Status</option>
+                                                        <option value="recommended" <?= isset($record) && $record['recommend'] == 'recommended' ? 'selected' : '' ?>>Recommended</option>
+                                                        <option value="not recommended" <?= isset($record) && $record['recommend'] == 'notrecommend' ? 'selected' : '' ?>>Not Recommended</option>
+                                                    </select>
                                                 </div>
                                             </div>
                                         </div>
@@ -213,6 +225,18 @@ include "template/head.php";
                                             </div>
                                             <div class="col-md-6">
                                                 <div class="mb-3">
+                                                    <label class="form-label">Status</label>
+                                                    <select name="status" class="form-select">
+                                                        <option value="" selected disabled>Select Status</option>
+                                                        <option value="Pending" <?= isset($record) && $record['status'] == 'Pending' ? 'selected' : '' ?>>Pending</option>
+                                                        <option value="Approved" <?= isset($record) && $record['status'] == 'Approved' ? 'selected' : '' ?>>Approved</option>
+                                                        <option value="Rejected" <?= isset($record) && $record['status'] == 'Rejected' ? 'selected' : '' ?>>Rejected</option>
+                                                        <option value="Expired" <?= isset($record) && $record['status'] == 'Expired' ? 'selected' : '' ?>>Expired</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="mb-3">
                                                     <label class="form-label">Auth Date</label>
                                                     <input type="date" name="auth_date" class="form-control" value="<?= isset($record) ? $record['auth_date'] : '' ?>">
                                                 </div>
@@ -229,24 +253,14 @@ include "template/head.php";
                                                     <input type="text" name="demand_ref" class="form-control" value="<?= isset($record) ? htmlspecialchars($record['demand_ref']) : '' ?>">
                                                 </div>
                                             </div>
-                                            <div class="col-md-6">
-                                                <div class="mb-3">
-                                                    <label class="form-label">Status</label>
-                                                    <select name="status" class="form-select">
-                                                        <option value="">Select Status</option>
-                                                        <option value="Pending" <?= isset($record) && $record['status'] == 'Pending' ? 'selected' : '' ?>>Pending</option>
-                                                        <option value="Approved" <?= isset($record) && $record['status'] == 'Approved' ? 'selected' : '' ?>>Approved</option>
-                                                        <option value="Rejected" <?= isset($record) && $record['status'] == 'Rejected' ? 'selected' : '' ?>>Rejected</option>
-                                                        <option value="Expired" <?= isset($record) && $record['status'] == 'Expired' ? 'selected' : '' ?>>Expired</option>
-                                                    </select>
-                                                </div>
-                                            </div>
+
                                             <div class="col-md-12">
                                                 <div class="mb-3">
                                                     <label class="form-label">Reason</label>
                                                     <textarea name="reason" class="form-control" rows="3"><?= isset($record) ? htmlspecialchars($record['reason']) : '' ?></textarea>
                                                 </div>
                                             </div>
+
                                         </div>
                                     </div>
 
@@ -283,4 +297,5 @@ include "template/head.php";
     <script src="assets/js/custom.min.js"></script>
     <script src="assets/js/deznav-init.js"></script>
 </body>
+
 </html>

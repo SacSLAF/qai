@@ -8,19 +8,10 @@ require_once "../includes/config.php";
 $show_pdf = false;
 $pdf_file = '';
 $pdf_web_path = '';
-
-// Default file to show in Audits Plan tab
-$default_file = 'doc_1.pdf';
-
-//if (isset($_GET['file'])) {
-$file = 'doc_1.pdf';
-//} else {
-// If no file specified, use the default
-// $file = $default_file;
-//}
+$file = 'CPD Training.pdf';
 
 // Server path to PDF - corrected relative path
-$file_path = "../admin/action/uploads/services/audit_plan/" . $file;
+$file_path = "../admin/action/uploads/publication/tech/" . $file;
 
 // Get absolute path for file existence check
 $absolute_path = realpath($file_path);
@@ -28,7 +19,7 @@ $absolute_path = realpath($file_path);
 if ($absolute_path && file_exists($absolute_path)) {
     $show_pdf = true;
     // Web path to PDF (for PDF.js)
-    $pdf_web_path = "/qai/admin/action/uploads/services/audit_plan/" . $file;
+    $pdf_web_path = "/qai/admin/action/uploads/publication/tech/" . $file;
 } else {
     $show_pdf = false;
     $error = "File not found. Tried path: " . htmlspecialchars($file_path);
@@ -118,7 +109,7 @@ include '../template/head.php';
             margin-bottom: 3px;
             font-size: 0.95rem;
         } */
-            .qa-dropdown-item {
+        .qa-dropdown-item {
             display: block;
             padding: 5px 10px;
             color: #495057;
@@ -137,9 +128,7 @@ include '../template/head.php';
         .qa-dropdown-toggle::after {
             float: right;
             margin-top: 8px;
-            font-size: 0.8em;
         }
-
 
         .main-container {
             gap: 15px;
@@ -182,46 +171,20 @@ include '../template/head.php';
             <!-- Navigation Tabs -->
             <div class="nav-column">
                 <div class="nav flex-column nav-pills" id="inspectorateTabs" role="tablist">
-                    <!-- Productivity Dropdown -->
-                    <div class="qa-dropdown">
-                        <a class="nav-link qa-dropdown-toggle" href="#" role="button">Productivity</a>
-                        <div class="qa-dropdown-menu">
-                            <a class="qa-dropdown-item" href="#" data-bs-target="#qcc_active" role="tab">Active QCC 2025</a>
-                            <a class="qa-dropdown-item" href="#" data-bs-target="#qcc_registration" role="tab">Productivity Audit Plan</a>
-                            <a class="qa-dropdown-item" href="#" data-bs-target="#qcc_registration" role="tab">Productivity Audit Check List</a>
-                            <a class="qa-dropdown-item" href="#" data-bs-target="#qcc_registration" role="tab">Productivity Audit Report</a>
-                        </div>
-                    </div>
-                    
-                    <!-- OSH Dropdown -->
-                    <div class="qa-dropdown">
-                        <a class="nav-link qa-dropdown-toggle" href="#" role="button">Occupational Safety & Health</a>
-                        <div class="qa-dropdown-menu">
-                            <a class="qa-dropdown-item" href="#" data-bs-target="#osh_plan" role="tab">Audit Plan</a>
-                            <a class="qa-dropdown-item" href="#" data-bs-target="#osh_checklist" role="tab">Audit Check List</a>
-                            <a class="qa-dropdown-item" href="#" data-bs-target="#osh_report" role="tab">Audit Reports</a>
-                            <a class="qa-dropdown-item" href="#" data-bs-target="#osh_man" role="tab">OSH Manual</a>
-                        </div>
-                    </div>
-                    <!-- Environment Dropdown -->
-                    <div class="qa-dropdown">
-                        <a class="nav-link qa-dropdown-toggle" href="#" role="button">Environmental Mgt</a>
-                        <div class="qa-dropdown-menu">
-                            <a class="qa-dropdown-item" href="#" data-bs-target="#env_plan" role="tab">Audit Plan</a>
-                            <a class="qa-dropdown-item" href="#" data-bs-target="#env_plan" role="tab">Audit Check List</a>
-                            <a class="qa-dropdown-item" href="#" data-bs-target="#env_report" role="tab">Audit Report</a>
-                        </div>
-                    </div>
-                    <!-- Awards Dropdown -->
-                    <div class="qa-dropdown">
-                        <a class="nav-link qa-dropdown-toggle" href="#" role="button">Awards</a>
-                        <div class="qa-dropdown-menu">
-                            <a class="qa-dropdown-item" href="#" data-bs-target="#env_plan" role="tab">Best QCC</a>
-                            <a class="qa-dropdown-item" href="#" data-bs-target="#env_plan" role="tab">Best Environment Management Project</a>
-                        </div>
-                    </div>
-                    <!-- <a class="nav-link" href="#" data-bs-target="#awards" role="tab">Awards</a> -->
 
+                    <a class="nav-link" data-bs-target="#ac" role="tab">Online Subscription</a>
+                    <a class="nav-link" data-bs-target="#ad" role="tab">ADs & Bulletins</a>
+                    <a class="nav-link" data-bs-target="#latitude" role="tab">QAI Safety Newsletters</a>
+
+                    <!-- Maintenance Program Dropdown -->
+                    <div class="qa-dropdown">
+                        <a class="nav-link qa-dropdown-toggle" role="button">Maintenance Program</a>
+                        <div class="qa-dropdown-menu">
+                            <a class="qa-dropdown-item " data-bs-target="#audits_plan" role="tab">Servicing Schedule</a>
+                            <a class="qa-dropdown-item" data-bs-target="#audit_check_list" role="tab">Worksheet</a>
+                        </div>
+                    </div>
+                    <a class="nav-link" data-bs-target="#vehicle" role="tab">Technical Library</a>
                 </div>
             </div>
 
@@ -236,56 +199,62 @@ include '../template/head.php';
                             <!-- <p>Please select an option from the navigation menu to view the content.</p> -->
                         </div>
                     </div>
-                    <!-- OSH Tab Panes -->
-                    <div class="tab-pane fade" id="osh_man" role="tabpanel">
-                        <h4 class="colour-defult">OSH Manual</h4>
-                    </div>
-
-                    <div class="tab-pane fade" id="osh_checklist" role="tabpanel">
-                        <h4 class="colour-defult">Audit Check List</h4>
-
-                    </div>
-
-                    <div class="tab-pane fade" id="osh_plan" role="tabpanel">
-                        <h4 class="colour-defult">Audit Plan</h4>
-
-                    </div>
-
-                    <div class="tab-pane fade" id="osh_report" role="tabpanel">
-                        <h4 class="colour-defult">Audit Report</h4>
-
-                    </div>
-
-                    <!-- Environment Tab Panes -->
-                    <div class="tab-pane fade" id="env_plan" role="tabpanel">
-                        <h4 class="colour-defult">Environment - Audit Plan</h4>
-
-                    </div>
-
-                    <div class="tab-pane fade" id="env_report" role="tabpanel">
-                        <h4 class="colour-defult">Environment - Audit Report</h4>
-
-                    </div>
-
-                    <!-- QCC Tab Panes -->
-                    <div class="tab-pane fade" id="qcc_registration" role="tabpanel">
-                        <h4 class="colour-defult">QCC Registration Form</h4>
-
-                    </div>
-
-                    <div class="tab-pane fade" id="qcc_active" role="tabpanel">
-                        <h4 class="colour-defult">Active QCC 2025</h4>
+                    <!-- Other tab panes -->
+                    <div class="tab-pane fade" id="ac" role="tabpanel">
+                        <h4 class="colour-defult">Online Subscription</h4>
                         <div>
-                            <label for="qcc-reg-form">QCC Registration Form</label>
-                            Download: <a href="../admin/action/uploads/productivity/doc_1.pdf" target="_blank">QCC Registration Form.pdf</a>
+                            <?php include 'online_sub.php' ?>
                         </div>
+                    </div>
+
+                    <div class="tab-pane fade" id="ad" role="tabpanel">
+                        <h4 class="colour-defult">ADs & Bulletins</h4>
+                        <div>
+                            <?php include 'ad_bulletins.php' ?>
+                        </div>
+                    </div>
+
+                    <div class="tab-pane fade" id="latitude" role="tabpanel">
+                        <h4 class="colour-defult">QAI Safety Newsletters</h4>
+                        <div>
+                            <?php include 'qai_news.php' ?>
+                        </div>
+                    </div>
+
+                    <!-- Maintenance tab panes -->
+                    <div class="tab-pane fade" id="audits_plan" role="tabpanel">
+                        <h4 class="colour-defult">Servicing Schedule</h4>
 
                     </div>
 
-                    <!-- Awards Tab Pane -->
-                    <div class="tab-pane fade" id="awards" role="tabpanel">
-                        <h4 class="colour-defult">Awards</h4>
+                    <div class="tab-pane fade" id="audit_check_list" role="tabpanel">
+                        <h4 class="colour-defult">Worksheet</h4>
 
+                    </div>
+
+                    <div class="tab-pane fade show" id="vehicle" role="tabpanel">
+                        <?php if ($show_pdf): ?>
+                            <div class="top-bar">
+                                <a href="?file=<?= $default_file ?>" class="btn btn-sm btn-dark">Technical Library Document</a>
+                                <!--<span class="expiry">Expires on <?= date('F d, Y', strtotime('+1 year')) ?></span>-->
+                            </div>
+
+                            <!-- PDF.js Viewer -->
+                            <div class="pdf-viewer-container">
+                                <iframe src="/qai/assets/pdfjs/web/viewer.html?file=<?= urlencode($pdf_web_path) ?>"
+                                    width="100%" height="100%" style="border:none;">
+                                </iframe>
+                            </div>
+                        <?php else: ?>
+                            <?php if (isset($error)): ?>
+                                <div class="alert alert-danger"><?= $error ?></div>
+                            <?php endif; ?>
+
+                            <div class="alert alert-info">
+                                <p>No audit plan document is available at the moment.</p>
+                                <a href="?file=doc_1.pdf" class="btn btn-primary">Test with doc_1.pdf</a>
+                            </div>
+                        <?php endif; ?>
                     </div>
 
                 </div>

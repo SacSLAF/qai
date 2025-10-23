@@ -121,220 +121,12 @@ include '../template/head.php';
     <!-- Custom CSS -->
     <link rel="stylesheet" href="../assets/css/styles.css">
     <style>
-        .tab-content {
+        /* .tab-content {
             padding: 20px;
             background: #fff;
             border-radius: 5px;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        }
-
-        .top-bar {
-            background: #007aff;
-            color: white;
-            padding: 8px;
-            font-size: 14px;
-            margin: -20px -20px 20px -20px;
-            border-radius: 5px 5px 0 0;
-        }
-
-        .top-bar a {
-            color: white;
-            text-decoration: none;
-            margin-right: 15px;
-        }
-
-        .top-bar span.expiry {
-            float: right;
-            background: #333;
-            padding: 3px 6px;
-            border-radius: 4px;
-        }
-
-        .pdf-viewer-container {
-            position: relative;
-            width: 100%;
-            height: 600px;
-            border: 1px solid #ddd;
-        }
-
-        .qa-dropdown {
-            position: relative;
-            display: block;
-        }
-
-        .qa-dropdown-menu {
-            position: relative;
-            width: 100%;
-            border: none;
-            box-shadow: none;
-            margin-top: 0;
-            padding-left: 15px;
-            display: none;
-        }
-
-        .qa-dropdown-menu.show {
-            display: block;
-        }
-
-        .qa-dropdown-item {
-            display: block;
-            padding: 8px 15px;
-            color: #495057;
-            text-decoration: none;
-            border-radius: 4px;
-            margin-bottom: 3px;
-            font-size: 0.95rem;
-        }
-
-        .qa-dropdown-item:hover,
-        .qa-dropdown-item.active {
-            background-color: #e9ecef;
-            color: #1a4f72;
-        }
-
-        .qa-dropdown-toggle::after {
-            float: right;
-            margin-top: 8px;
-        }
-
-        .main-container {
-            gap: 15px;
-        }
-
-        @media (min-width: 992px) {
-            .main-container {
-                display: grid;
-                grid-template-columns: 200px 1fr;
-            }
-
-            .nav-column {
-                padding-right: 0;
-            }
-
-            .content-column {
-                padding-left: 0;
-            }
-        }
-
-        .pdf-controls {
-            margin-bottom: 15px;
-            padding: 10px;
-            background: #f8f9fa;
-            border-radius: 5px;
-        }
-        
-        .welcome-image{
-            width: 100%;
-        }
-
-        /* Table Styles */
-        .table-responsive {
-            margin-top: 15px;
-        }
-
-        .document-table th {
-            background-color: #f8f9fa;
-            border-bottom: 2px solid #dee2e6;
-        }
-
-        .no-documents {
-            text-align: center;
-            padding: 20px;
-            color: #6c757d;
-        }
-
-        .btn-view-details {
-            background-color: #17a2b8;
-            border-color: #17a2b8;
-            color: white;
-            padding: 4px 8px;
-            font-size: 0.875rem;
-        }
-
-        .btn-view-details:hover {
-            background-color: #138496;
-            border-color: #117a8b;
-            color: white;
-        }
-
-        .btn-view-pdf {
-            background-color: #28a745;
-            border-color: #28a745;
-            color: white;
-            padding: 4px 8px;
-            font-size: 0.875rem;
-        }
-
-        .btn-view-pdf:hover {
-            background-color: #218838;
-            border-color: #1e7e34;
-            color: white;
-        }
-
-        .details-modal-table {
-            width: 100%;
-            margin-bottom: 1rem;
-            font-size: 0.9rem;
-        }
-
-        .details-modal-table th {
-            background-color: #f8f9fa;
-            width: 30%;
-            padding: 8px 12px;
-            font-weight: 600;
-            border-bottom: 1px solid #dee2e6;
-        }
-
-        .details-modal-table td {
-            padding: 8px 12px;
-            border-bottom: 1px solid #dee2e6;
-            word-break: break-word;
-        }
-
-        .section-divider {
-            border-top: 2px solid #007bff;
-            margin: 15px 0;
-            padding-top: 10px;
-            font-weight: bold;
-            color: #007bff;
-        }
-
-        .empty-value {
-            color: #6c757d;
-            font-style: italic;
-        }
-
-        .table tbody tr:hover {
-            background-color: #e3f2fd !important;
-        }
-
-        .table th {
-            background-color: #839abdff;
-            color: white;
-            font-weight: 600;
-            border: none;
-        }
-
-        .table td {
-            border-bottom: 1px solid #dee2e6;
-            padding: 12px 8px;
-            vertical-align: middle;
-        }
-
-        .text-truncate-multiline {
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-        }
-
-        .btn-group .btn {
-            margin-right: 5px;
-        }
-
-        .btn-group .btn:last-child {
-            margin-right: 0;
-        }
+        } */
     </style>
 </head>
 
@@ -343,37 +135,40 @@ include '../template/head.php';
     <?php include '../template/header.php'; ?>
 
     <!-- Main Content -->
-    <main class="container-fluid my-3 pt-3">
-        <div class="main-container">
-            <!-- Navigation Tabs -->
-            <div class="nav-column">
-                <div class="nav flex-column nav-pills" id="inspectorateTabs" role="tablist">
+    <main class="container-fluid">
+        <!-- <div class="main-container"> -->
+        <!-- Navigation Tabs -->
+        <div class="row">
+            <div class="col-lg-1 col-xl-1 mb-4">
+                <div class="nav-column">
+                    <div class="nav flex-column nav-pills" id="inspectorateTabs" role="tablist">
 
                     <a class="nav-link" data-bs-target="#ac" role="tab">Online Subscription</a>
                     <a class="nav-link" data-bs-target="#ad" role="tab">ADs & Bulletins</a>
                     <a class="nav-link" data-bs-target="#qai_news" role="tab">QAI Safety Newsletters</a>
 
-                    <!-- Maintenance Program Dropdown -->
-                    <div class="qa-dropdown">
-                        <a class="nav-link qa-dropdown-toggle" role="button">Maintenance Program</a>
-                        <div class="qa-dropdown-menu">
-                            <a class="qa-dropdown-item " data-bs-target="#audits_plan" role="tab">Servicing Schedule</a>
-                            <a class="qa-dropdown-item" data-bs-target="#audit_check_list" role="tab">Worksheet</a>
+                        <!-- Maintenance Program Dropdown -->
+                        <div class="qa-dropdown">
+                            <a class="nav-link qa-dropdown-toggle" role="button">Maintenance Program</a>
+                            <div class="qa-dropdown-menu">
+                                <a class="qa-dropdown-item " data-bs-target="#audits_plan" role="tab">Servicing Schedule</a>
+                                <a class="qa-dropdown-item" data-bs-target="#audit_check_list" role="tab">Worksheet</a>
+                            </div>
                         </div>
+                        <a class="nav-link" data-bs-target="#vehicle" role="tab">Technical Library</a>
                     </div>
-                    <a class="nav-link" data-bs-target="#vehicle" role="tab">Technical Library</a>
                 </div>
             </div>
-
             <!-- Tab Content -->
-            <div class="content-column">
-                <div class="tab-content" id="inspectorateTabsContent">
-                    <!-- Welcome Screen (shown by default) -->
-                    <div class="tab-pane fade show active" id="welcome" role="tabpanel">
-                        <div class="welcome-message">
-                            <img src="../assets/img/qai-welcome.jpg" alt="Quality Assurance Inspectorate" class="welcome-image">
+            <div class="col-lg-11 col-xl-11">
+                <div class="content-column">
+                    <div class="tab-content" id="inspectorateTabsContent">
+                        <!-- Welcome Screen (shown by default) -->
+                        <div class="tab-pane fade show active" id="welcome" role="tabpanel">
+                            <div class="welcome-message">
+                                <!-- <img src="../assets/img/qai-welcome.jpg" alt="Quality Assurance Inspectorate" class="welcome-image"> -->
+                            </div>
                         </div>
-                    </div>
 
                     <!-- Online Subscription Tab -->
                     <div class="tab-pane fade" id="ac" role="tabpanel">
@@ -529,26 +324,125 @@ include '../template/head.php';
                             <div class="top-bar">
                                 <a href="?file=<?= $default_file ?>" class="btn btn-sm btn-dark">Technical Library Document</a>
                             </div>
-
-                            <!-- PDF.js Viewer -->
-                            <div class="pdf-viewer-container">
-                                <iframe src="/qai/assets/pdfjs/web/viewer.html?file=<?= urlencode($pdf_web_path) ?>"
-                                    width="100%" height="100%" style="border:none;">
-                                </iframe>
-                            </div>
-                        <?php else: ?>
-                            <?php if (isset($error)): ?>
-                                <div class="alert alert-danger"><?= $error ?></div>
-                            <?php endif; ?>
-
-                            <div class="alert alert-info">
-                                <p>No technical library document is available at the moment.</p>
-                            </div>
                         <?php endif; ?>
+                    </div>
+
+                        <!-- Online Subscription Tab -->
+                        <div class="tab-pane fade" id="ac" role="tabpanel">
+                            <h4 class="colour-defult">Online Subscription</h4>
+                            <div>
+                                <?php include 'online_sub.php' ?>
+                            </div>
+                        </div>
+
+                        <!-- ADs & Bulletins Tab -->
+                        <div class="tab-pane fade" id="ad" role="tabpanel">
+                            <h4 class="colour-defult">ADs & Bulletins</h4>
+                            <div class="mt-4">
+                                <?php if (!empty($ad_bulletins_error)): ?>
+                                    <div class="alert alert-danger">
+                                        <strong>Database Error:</strong> <?= htmlspecialchars($ad_bulletins_error) ?>
+                                    </div>
+                                <?php elseif (!empty($ad_bulletins)): ?>
+                                    <div class="card">
+                                        <div class="card-body p-0">
+                                            <div class="table-responsive">
+                                                <table class="table table-striped table-hover mb-0" id="adBulletinsTable">
+                                                    <thead style="font-size:x-small;">
+                                                        <tr>
+                                                            <th>Reference No</th>
+                                                            <th>Bulletin Description</th>
+                                                            <th>Related Aircraft</th>
+                                                            <th>Formation</th>
+                                                            <th>Date of Issue</th>
+                                                            <!-- <th>Actions</th>-->
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody style="font-size:x-small;">
+                                                        <?php foreach ($ad_bulletins as $bulletin): ?>
+                                                            <tr>
+                                                                <td><strong><?= htmlspecialchars($bulletin['reference_no']) ?></strong></td>
+                                                                <td class="text-truncate-multiline" title="<?= htmlspecialchars($bulletin['bulletin_description']) ?>">
+                                                                    <?= htmlspecialchars($bulletin['bulletin_description']) ?>
+                                                                </td>
+                                                                <td><?= htmlspecialchars($bulletin['type_name'] ?? 'N/A') ?></td>
+                                                                <td><?= htmlspecialchars($bulletin['formation_name'] ?? 'N/A') ?></td>
+                                                                <td><?= $bulletin['date_of_issue'] ? date('M d, Y', strtotime($bulletin['date_of_issue'])) : 'N/A' ?></td>
+                                                                <!--<td>
+                                                                <button class="btn btn-view-details btn-sm view-details-btn"
+                                                                    data-bs-toggle="modal"
+                                                                    data-bs-target="#detailsModal"
+                                                                    data-record-type="ad_bulletin"
+                                                                    data-record-id="<?= $bulletin['id'] ?? '' ?>"
+                                                                    data-record-reference-no="<?= htmlspecialchars($bulletin['reference_no'] ?? '') ?>"
+                                                                    data-record-bulletin-description="<?= htmlspecialchars($bulletin['bulletin_description'] ?? '') ?>"
+                                                                    data-record-related-aircraft="<?= htmlspecialchars($bulletin['type_name'] ?? '') ?>"
+                                                                    data-record-formation="<?= htmlspecialchars($bulletin['formation_name'] ?? '') ?>"
+                                                                    data-record-date-of-issue="<?= htmlspecialchars($bulletin['date_of_issue'] ?? '') ?>">
+                                                                    View Details
+                                                                </button>
+                                                            </td>-->
+                                                            </tr>
+                                                        <?php endforeach; ?>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                <?php else: ?>
+                                    <div class="alert alert-info">
+                                        <i class="fas fa-info-circle me-2"></i>
+                                        No AD Bulletins found.
+                                    </div>
+                                <?php endif; ?>
+                            </div>
+                        </div>
+
+                        <!-- QAI Safety Newsletters Tab -->
+                        <div class="tab-pane fade" id="latitude" role="tabpanel">
+                            <h4 class="colour-defult">QAI Safety Newsletters</h4>
+                            <div>
+                                <?php include 'qai_news.php' ?>
+                            </div>
+                        </div>
+
+                        <!-- Maintenance tab panes -->
+                        <div class="tab-pane fade" id="audits_plan" role="tabpanel">
+                            <h4 class="colour-defult">Servicing Schedule</h4>
+                        </div>
+
+                        <div class="tab-pane fade" id="audit_check_list" role="tabpanel">
+                            <h4 class="colour-defult">Worksheet</h4>
+                        </div>
+
+                        <!-- Technical Library Tab -->
+                        <div class="tab-pane fade show" id="vehicle" role="tabpanel">
+                            <?php if ($show_pdf): ?>
+                                <div class="top-bar">
+                                    <a href="?file=<?= $default_file ?>" class="btn btn-sm btn-dark">Technical Library Document</a>
+                                </div>
+
+                                <!-- PDF.js Viewer -->
+                                <div class="pdf-viewer-container">
+                                    <iframe src="/qai/assets/pdfjs/web/viewer.html?file=<?= urlencode($pdf_web_path) ?>"
+                                        width="100%" height="100%" style="border:none;">
+                                    </iframe>
+                                </div>
+                            <?php else: ?>
+                                <?php if (isset($error)): ?>
+                                    <div class="alert alert-danger"><?= $error ?></div>
+                                <?php endif; ?>
+
+                                <div class="alert alert-info">
+                                    <p>No technical library document is available at the moment.</p>
+                                </div>
+                            <?php endif; ?>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
+        <!-- </div> -->
     </main>
 
     <!-- PDF Modal -->
@@ -571,7 +465,7 @@ include '../template/head.php';
         <div class="modal-dialog modal-lg modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="detailsModalTitle">Record Details</h5>
+                    <h5 class="modal-title" id="detailsModalTitle">AD Bulletin Details</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body" id="detailsModalBody">
@@ -604,7 +498,9 @@ include '../template/head.php';
             const dataTableConfig = {
                 "pageLength": 10,
                 "lengthMenu": [10, 25, 50, 100],
-                "order": [[0, "asc"]],
+                "order": [
+                    [0, "asc"]
+                ],
                 "language": {
                     "search": "Filter:",
                     "lengthMenu": "Show _MENU_ entries",
@@ -896,6 +792,7 @@ include '../template/head.php';
 
             console.log('Publication page initialization complete');
         });
+
     </script>
 </body>
 </html>

@@ -94,6 +94,13 @@ try {
             }
         }
 
+        $r_res = $db->query("SELECT id, rank_name FROM ranks");
+        if ($r_res) {
+            foreach ($r_res->fetch_all(MYSQLI_ASSOC) as $r) {
+                $ranks_map[$r['id']] = $r['rank_name'];
+            }
+        }
+
         $t_res = $db->query("SELECT type_id, type_name FROM type");
         if ($t_res) {
             foreach ($t_res->fetch_all(MYSQLI_ASSOC) as $t) {
@@ -222,7 +229,6 @@ try {
     } else {
         $rnd_error = "Error preparing R&D query: " . $db->error;
     }
-
     // Count vehicle emission records by fuel type for debugging
     $vet_count = is_array($vehicle_emission_data) ? count($vehicle_emission_data) : 0;
     $diesel_count = 0;
@@ -234,7 +240,6 @@ try {
             if ($ft === 'petrol' || $ft === 'gasoline') $petrol_count++;
         }
     }
-
     // Include head template after all PHP processing
     include '../template/head.php';
 
@@ -264,21 +269,21 @@ try {
     <!-- Custom CSS -->
     <link rel="stylesheet" href="../assets/css/styles.css">
     <style>
-        .tab-content {
+        /* .tab-content {
             padding: 20px;
             background: #fff;
             border-radius: 5px;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        }
+        } */
 
-        .top-bar {
+        /* .top-bar {
             background: #007aff;
             color: white;
             padding: 8px;
             font-size: 14px;
             margin: -20px -20px 20px -20px;
             border-radius: 5px 5px 0 0;
-        }
+        } */
 
         .top-bar a {
             color: white;
@@ -293,129 +298,8 @@ try {
             border: 1px solid #ddd;
         }
 
-        .qa-dropdown {
-            position: relative;
-            display: block;
-        }
+       
 
-        .qa-dropdown-menu {
-            position: relative;
-            width: 100%;
-            border: none;
-            box-shadow: none;
-            margin-top: 0;
-            padding-left: 15px;
-            display: none;
-        }
-
-        .qa-dropdown-menu.show {
-            display: block;
-        }
-
-        .qa-dropdown-item {
-            display: block;
-            padding: 8px 15px;
-            color: #495057;
-            text-decoration: none;
-            border-radius: 4px;
-            margin-bottom: 3px;
-            font-size: 0.95rem;
-        }
-
-        .qa-dropdown-item:hover,
-        .qa-dropdown-item.active {
-            background-color: #e9ecef;
-            color: #1a4f72;
-        }
-
-        .qa-dropdown-toggle::after {
-            float: right;
-            margin-top: 8px;
-        }
-
-        .main-container {
-            gap: 15px;
-        }
-
-        @media (min-width: 992px) {
-            .main-container {
-                display: grid;
-                grid-template-columns: 200px 1fr;
-            }
-
-            .nav-column {
-                padding-right: 0;
-            }
-
-            .content-column {
-                padding-left: 0;
-            }
-        }
-
-        .table-responsive {
-            margin-top: 15px;
-        }
-
-        .document-table th {
-            background-color: #f8f9fa;
-            border-bottom: 2px solid #dee2e6;
-        }
-
-        .no-documents {
-            text-align: center;
-            padding: 20px;
-            color: #6c757d;
-        }
-        .debug-info {
-            background: #f8f9fa;
-            padding: 10px;
-            margin: 10px 0;
-            border-radius: 5px;
-            font-size: 12px;
-            color: #6c757d;
-        }
-
-        .badge-success {
-            background-color: #28a745;
-            color: white;
-        }
-
-        .badge-warning {
-            background-color: #ffc107;
-            color: black;
-        }
-
-        .badge-danger {
-            background-color: #dc3545;
-            color: white;
-        }
-
-        .badge-secondary {
-            background-color: #6c757d;
-            color: white;
-        }
-
-        .text-danger {
-            color: #dc3545 !important;
-            font-weight: bold;
-        }
-
-        .text-success {
-            color: #28a745 !important;
-        }
-
-        .btn-view-details {
-            background-color: #17a2b8;
-            border-color: #17a2b8;
-            color: white;
-            padding: 4px 8px;
-            font-size: 0.875rem;
-        }
-        .btn-view-details:hover {
-            background-color: #138496;
-            border-color: #117a8b;
-            color: white;
-        }
         .details-modal-table {
             width: 100%;
             margin-bottom: 1rem;
@@ -457,7 +341,8 @@ try {
             color: #6c757d;
             font-style: italic;
         }
-        .welcome-image{
+
+        .welcome-image {
             width: 100%;
         }
         
@@ -504,6 +389,9 @@ try {
             padding: 12px 8px;
             vertical-align: middle;
         }
+        .colour-defult {
+            font-size: small;
+        }
     </style>
 </head>
 
@@ -512,19 +400,21 @@ try {
     <?php include '../template/header.php'; ?>
 
     <!-- Main Content -->
-    <main class="container-fluid my-3 pt-3">
+    <main class="container-fluid">
 
-        <div class="main-container">
-            <!-- Navigation Tabs -->
-            <div class="nav-column">
+        <!-- <div class="main-container"> -->
+        <!-- Navigation Tabs -->
+        <!-- <div class="nav-column"> -->
+        <div class="row">
+            <div class="col-lg-1 col-xl-1 mb-4">
                 <div class="nav flex-column nav-pills" id="inspectorateTabs" role="tablist">
                     <!-- QA Audits Dropdown -->
                     <div class="qa-dropdown">
                         <a class="nav-link qa-dropdown-toggle active" role="button">QA Audits</a>
                         <div class="qa-dropdown-menu">
                             <a class="qa-dropdown-item active" data-bs-target="#audits_plan" role="tab">Audits Plan</a>
-                            <a class="qa-dropdown-item" data-bs-target="#audit_check_list" role="tab">Audit Check List</a>
-                            <a class="qa-dropdown-item" data-bs-target="#qa_report" role="tab">QA Report</a>
+                            <a class="qa-dropdown-item" data-bs-target="#audit_check_list" role="tab">Audit Check Lists</a>
+                            <a class="qa-dropdown-item" data-bs-target="#qa_report" role="tab">QA Reports</a>
                         </div>
                     </div>
                     <!-- Aircraft Competency Dropdown - Using ac_categories only -->
@@ -564,15 +454,17 @@ try {
                         </div>
                     </div>
                 </div>
+                <!-- </div> -->
             </div>
 
             <!-- Tab Content -->
-            <div class="content-column">
+            <!-- <div class="content-column"> -->
+            <div class="col-lg-11 col-xl-11">
                 <div class="tab-content" id="inspectorateTabsContent">
                     <!-- Welcome Screen (shown by default) -->
                     <div class="tab-pane fade show active" id="welcome" role="tabpanel">
                         <div class="welcome-message">
-                            <img src="../assets/img/qai-welcome.jpg" alt="Quality Assurance Inspectorate" class="welcome-image">
+                            <!-- <img src="../assets/img/qai-welcome.jpg" alt="Quality Assurance Inspectorate" class="welcome-image"> -->
                         </div>
                     </div>
 
@@ -580,7 +472,7 @@ try {
                     <div class="tab-pane fade" id="audits_plan" role="tabpanel">
                         <?php if (!empty($audit_plan_web)): ?>
                             <div class="top-bar">
-                                <a href="<?= $audit_plan_web ?>" target="_blank" class="btn btn-sm btn-dark">Audit Plan Document</a>
+                                <a href="<?= $audit_plan_web ?>" target="_blank" class="btn btn-sm btn-dark">Audit Plan</a>
                             </div>
                             <div class="pdf-viewer-container">
                                 <iframe src="/qai/assets/pdfjs/web/viewer.html?file=<?= urlencode($audit_plan_web) ?>"
@@ -594,11 +486,11 @@ try {
                     </div>
 
                     <div class="tab-pane fade" id="audit_check_list" role="tabpanel">
-                        <h4 class="colour-defult">Audit Check List</h4>
-                        <p>Standard operating procedures and checklists for quality audits.</p>
-                        <div class="mt-4">
+                        <h4 class="colour-defult">Audit Check Lists</h4>
+                        <!-- <p>Standard operating procedures and checklists for quality audits.</p> -->
+                        <div class="">
                             <div class="card">
-                                <div class="card-header">Audit Check Lists</div>
+                                <!-- <div class="card-header">Audit Check Lists</div> -->
                                 <div class="card-body">
                                     <?php if (!empty($qa_check_lists_error)): ?>
                                         <div class="alert alert-danger">
@@ -606,15 +498,15 @@ try {
                                         </div>
                                     <?php elseif (!empty($qa_check_lists)): ?>
                                         <div class="table-responsive">
-                                            <table class="table table-striped table-hover document-table" id="qaCheckListTable">
-                                                <thead>
+                                            <table class="table  table-hover document-table" id="qaCheckListTable">
+                                                <thead style="font-size:x-small;">
                                                     <tr>
                                                         <th>Description</th>
                                                         <th>Checklist Number</th>
-                                                        <th>Actions</th>
+                                                        <th>View</th>
                                                     </tr>
                                                 </thead>
-                                                <tbody>
+                                                <tbody style="font-size:x-small;">
                                                     <?php foreach ($qa_check_lists as $qa_check_list): ?>
                                                         <tr>
                                                             <td><?= htmlspecialchars($qa_check_list['description'] ?? 'No description') ?></td>
@@ -626,9 +518,9 @@ try {
                                                                         data-bs-toggle="modal"
                                                                         data-bs-target="#pdfModal"
                                                                         data-pdf-url="/qai/assets/pdfjs/web/viewer.html?file=<?= urlencode('/qai/admin/action/' . $qa_check_list['file_path']) ?>">
-                                                                        View PDF
+                                                                        View
                                                                     </a>
-                                                                    <button class="btn btn-view-details btn-sm view-details-btn"
+                                                                    <!-- <button class="btn btn-view-details btn-sm view-details-btn"
                                                                         data-bs-toggle="modal"
                                                                         data-bs-target="#detailsModal"
                                                                         data-record-type="qa_check_list"
@@ -638,7 +530,7 @@ try {
                                                                         data-record-file-path="<?= htmlspecialchars($qa_check_list['file_path'] ?? '') ?>"
                                                                         data-record-uploaded-at="<?= htmlspecialchars($qa_check_list['uploaded_at'] ?? '') ?>">
                                                                         View Details
-                                                                    </button>
+                                                                    </button> -->
                                                                 </div>
                                                             </td>
                                                         </tr>
@@ -657,11 +549,11 @@ try {
                     </div>
 
                     <div class="tab-pane fade" id="qa_report" role="tabpanel">
-                        <h4 class="colour-defult">QA Report</h4>
-                        <p>Quality assurance reports and analytics.</p>
-                        <div class="mt-4">
+                        <h4 class="colour-defult">QA Reports</h4>
+                        <!-- <p>Quality assurance reports and analytics.</p> -->
+                        <div class="">
                             <div class="card">
-                                <div class="card-header">Recent Reports</div>
+                                <!-- <div class="card-header">Recent Reports</div> -->
                                 <div class="card-body">
                                     <?php if (!empty($qa_reports_error)): ?>
                                         <div class="alert alert-danger">
@@ -669,8 +561,8 @@ try {
                                         </div>
                                     <?php elseif (!empty($qa_reports)): ?>
                                         <div class="table-responsive">
-                                            <table class="table table-striped table-hover document-table" id="qaReportsTable">
-                                                <thead>
+                                            <table class="table  table-hover document-table" id="qaReportsTable">
+                                                <thead style="font-size:x-small;">
                                                     <tr>
                                                         <th>Location</th>
                                                         <th>Description</th>
@@ -678,7 +570,7 @@ try {
                                                         <th>View</th>
                                                     </tr>
                                                 </thead>
-                                                <tbody>
+                                                <tbody style="font-size:x-small;">
                                                     <?php foreach ($qa_reports as $report): ?>
                                                         <tr>
                                                             <td><strong><?= htmlspecialchars($report['title']) ?></strong></td>
@@ -691,9 +583,9 @@ try {
                                                                         data-bs-toggle="modal"
                                                                         data-bs-target="#pdfModal"
                                                                         data-pdf-url="/qai/assets/pdfjs/web/viewer.html?file=<?= urlencode('/qai/admin/action/' . $report['file_path']) ?>">
-                                                                        View PDF
+                                                                        View
                                                                     </a>
-                                                                    <button class="btn btn-view-details btn-sm view-details-btn"
+                                                                    <!-- <button class="btn btn-view-details btn-sm view-details-btn"
                                                                         data-bs-toggle="modal"
                                                                         data-bs-target="#detailsModal"
                                                                         data-record-type="qa_report"
@@ -703,7 +595,7 @@ try {
                                                                         data-record-file-path="<?= htmlspecialchars($report['file_path'] ?? '') ?>"
                                                                         data-record-uploaded-at="<?= htmlspecialchars($report['uploaded_at'] ?? '') ?>">
                                                                         View Details
-                                                                    </button>
+                                                                    </button> -->
                                                                 </div>
                                                             </td>
                                                         </tr>
@@ -723,11 +615,18 @@ try {
 
                     <!-- Aircraft Competency Tab Panes - Using ac_categories only -->
                     <?php if (!empty($ac_cat_map)): ?>
-                        <?php foreach ($ac_cat_map as $category_id => $category_name): ?>
+                        <?php foreach ($ac_cat_map as $category_id => $category_name):
+                            $name_map = [
+                                "AE" => "Aeronautical Engineering",
+                                "GE" => "General Engineering",
+                                "EE" => "Electronics Engineering"
+                            ];
+                            $display_name = $name_map[$category_name] ?? $category_name;
+                        ?>
                             <div class="tab-pane fade" id="ac_cmpt_<?= $category_id ?>" role="tabpanel">
-                                <h4 class="colour-defult">Aircraft Competency - <?= htmlspecialchars($category_name) ?></h4>
+                                <h4 class="colour-defult">Aircraft Competency - <?= htmlspecialchars($display_name) ?></h4>
 
-                                <div class="mt-4">
+                                <div class="">
                                     <?php if (!empty($ac_error)): ?>
                                         <div class="alert alert-danger">
                                             <strong>Database Error:</strong> <?= htmlspecialchars($ac_error) ?>
@@ -736,8 +635,8 @@ try {
                                         <div class="card">
                                             <div class="card-body p-0">
                                                 <div class="table-responsive">
-                                                    <table class="table table-striped table-hover mb-0" id="competencyTable">
-                                                        <thead>
+                                                    <table class="table  table-hover mb-0 competencyTable" id="competencyTable">
+                                                        <thead style="font-size:x-small;">
                                                             <tr>
                                                                 <th>SVC No</th>
                                                                 <th>Rank</th>
@@ -747,22 +646,35 @@ try {
                                                                 <th>Posted In Date</th>
                                                                 <th>Type</th>
                                                                 <th>Competancy</th>
-                                                                <th>Competecy Issue Ref</th>
+                                                                <!-- <th>Competecy Issue Ref</th> -->
+                                                                <th>Competecy Issue Date</th>
+                                                                <th>Competency Renew Date</th>
+                                                                <th>Certificate No</th>
+                                                                <th>Certificate Issue Date</th>
+                                                                <!-- <th>Formation</th> -->
+                                                                <!-- <th>Posted In Date</th> -->
+                                                                <!-- <th>Competecy Issue Ref</th> -->
                                                                 <th>View</th>
                                                             </tr>
                                                         </thead>
-                                                        <tbody>
+                                                        <tbody style="font-size:x-small;">
                                                             <?php foreach ($aircraft_competency_data[$category_id]['records'] as $index => $record): ?>
                                                                 <tr class="<?= $index % 2 === 0 ? 'bg-white' : 'bg-light-blue' ?>">
-                                                                    <td><strong><?= htmlspecialchars($record['svc_no'] ?? '') ?></strong></td>
-                                                                    <td><?= htmlspecialchars($record['rank'] ?? '') ?></td>
+                                                                    <td><?= htmlspecialchars($record['svc_no'] ?? '') ?></td>
+                                                                    <td><?= htmlspecialchars($ranks_map[$record['rank']] ?? 'Unknown Rank') ?></td>
                                                                     <td><?= htmlspecialchars($record['name'] ?? '') ?></td>
                                                                     <td><?= htmlspecialchars($record['trade'] ?? '') ?></td>
                                                                     <td><?= htmlspecialchars($formations_map[$record['formation_id']] ?? $record['formation'] ?? '') ?></td>
                                                                     <td><?= htmlspecialchars($record['posted_in_date'] ?? '') ?></td>
                                                                     <td><?= htmlspecialchars($types_map[$record['type_id']] ?? $record['aircraft_type'] ?? '') ?></td>
                                                                     <td><?= htmlspecialchars($record['competency_level'] ?? '') ?></td>
-                                                                    <td><?= htmlspecialchars($record['competency_issue_ref'] ?? '') ?></td>
+                                                                    <!-- <td><?= htmlspecialchars($record['com_issue_ref'] ?? '') ?></td> -->
+                                                                    <td><?= htmlspecialchars($record['com_issue_date'] ?? '') ?></td>
+                                                                    <td><?= htmlspecialchars($record['renew_date'] ?? '') ?></td>
+                                                                    <td><?= htmlspecialchars($record['certificate_no'] ?? '') ?></td>
+                                                                    <td><?= htmlspecialchars($record['cer_issued_date'] ?? '') ?></td>
+                                                                    <!-- <td><?= htmlspecialchars($record['posted_in_date'] ?? '') ?></td> -->
+                                                                    <!-- <td><?= htmlspecialchars($record['competency_issue_ref'] ?? '') ?></td> -->
                                                                     <td>
                                                                         <button class="btn btn-view-details btn-sm view-details-btn"
                                                                             data-bs-toggle="modal"
@@ -770,7 +682,7 @@ try {
                                                                             data-record-type="aircraft_competency"
                                                                             data-record-id="<?= $record['record_id'] ?? '' ?>"
                                                                             data-record-svc-no="<?= htmlspecialchars($record['svc_no'] ?? '') ?>"
-                                                                            data-record-rank="<?= htmlspecialchars($record['rank'] ?? '') ?>"
+                                                                            data-record-rank="<?= htmlspecialchars($ranks_map[$record['rank']] ?? 'Unknown Rank') ?>"
                                                                             data-record-name="<?= htmlspecialchars($record['name'] ?? '') ?>"
                                                                             data-record-trade="<?= htmlspecialchars($record['trade'] ?? '') ?>"
                                                                             data-record-formation="<?= htmlspecialchars($formations_map[$record['formation_id']] ?? $record['formation'] ?? '') ?>"
@@ -798,7 +710,7 @@ try {
                                                                             data-record-cer-issued-date="<?= htmlspecialchars($record['cer_issued_date'] ?? '') ?>"
                                                                             data-record-retired-date="<?= htmlspecialchars($record['retired_date'] ?? '') ?>"
                                                                             data-record-remarks="<?= htmlspecialchars($record['remarks'] ?? '') ?>">
-                                                                            View Details
+                                                                            View
                                                                         </button>
                                                                     </td>
                                                                 </tr>
@@ -836,20 +748,22 @@ try {
                                 <div class="card">
                                     <div class="card-body p-0">
                                         <div class="table-responsive">
-                                            <table class="table table-striped table-hover mb-0" id="latitudeTable">
-                                                <thead class="table-light">
+                                            <table class="table  table-hover mb-0" id="latitudeTable">
+                                                <thead class="table-light" style="font-size:x-small;">
                                                     <tr>
                                                         <th>Type</th>
                                                         <th>Formation</th>
                                                         <th>Aircraft Type</th>
-                                                        <th>Tail No</th>
-                                                        <th>Part No</th>
                                                         <th>Description</th>
-                                                        <th>Serial No</th>
+                                                        <th>Present Latitude</th>
+                                                        <th>Latitude Expire</th>
+                                                        <!-- <th>Tail No</th> -->
+                                                        <!-- <th>Part No</th> -->
+                                                        <!-- <th>Serial No</th> -->
                                                         <th>View</th>
                                                     </tr>
                                                 </thead>
-                                                <tbody>
+                                                <tbody style="font-size:x-small;">
                                                     <?php foreach ($latitude_data as $record): ?>
                                                         <tr>
                                                             <td>
@@ -859,10 +773,12 @@ try {
                                                             </td>
                                                             <td><?= htmlspecialchars($record['formation_name'] ?? 'N/A') ?></td>
                                                             <td><?= htmlspecialchars($record['type_name'] ?? 'N/A') ?></td>
-                                                            <td><?= htmlspecialchars($record['tail_no'] ?? 'N/A') ?></td>
-                                                            <td><?= htmlspecialchars($record['part_no'] ?? 'N/A') ?></td>
                                                             <td><?= htmlspecialchars($record['description'] ?? 'N/A') ?></td>
-                                                            <td><?= htmlspecialchars($record['serial_no'] ?? 'N/A') ?></td>
+                                                            <td><?= htmlspecialchars($record['present_latitude'] ?? 'N/A') ?></td>
+                                                            <td><?= htmlspecialchars($record['latitude_expiry'] ?? 'N/A') ?></td>
+                                                            <!-- <td><?= htmlspecialchars($record['tail_no'] ?? 'N/A') ?></td> -->
+                                                            <!-- <td><?= htmlspecialchars($record['part_no'] ?? 'N/A') ?></td> -->
+                                                            <!-- <td><?= htmlspecialchars($record['serial_no'] ?? 'N/A') ?></td> -->
                                                             <td>
                                                                 <button class="btn btn-view-details btn-sm view-details-btn"
                                                                     data-bs-toggle="modal"
@@ -876,6 +792,7 @@ try {
                                                                     data-record-tail-no="<?= htmlspecialchars($record['tail_no'] ?? '') ?>"
                                                                     data-record-part-no="<?= htmlspecialchars($record['part_no'] ?? '') ?>"
                                                                     data-record-description="<?= htmlspecialchars($record['description'] ?? '') ?>"
+                                                                    data-record-recommendation="<?= htmlspecialchars($record['recommend'] ?? '') ?>"
                                                                     data-record-serial-no="<?= htmlspecialchars($record['serial_no'] ?? '') ?>"
                                                                     data-record-reason="<?= htmlspecialchars($record['reason'] ?? '') ?>"
                                                                     data-record-hrs="<?= htmlspecialchars($record['hrs'] ?? '') ?>"
@@ -888,7 +805,7 @@ try {
                                                                     data-record-total-prev-latitude="<?= htmlspecialchars($record['total_prev_latitude'] ?? '') ?>"
                                                                     data-record-demand-ref="<?= htmlspecialchars($record['demand_ref'] ?? '') ?>"
                                                                     data-record-status="<?= htmlspecialchars($record['status'] ?? '') ?>">
-                                                                    View Details
+                                                                    View
                                                                 </button>
                                                             </td>
                                                         </tr>
@@ -921,8 +838,8 @@ try {
                                 <div class="card">
                                     <div class="card-body p-0">
                                         <div class="table-responsive">
-                                            <table class="table table-striped table-hover mb-0" id="modificationTable">
-                                                <thead class="table-light">
+                                            <table class="table  table-hover mb-0" id="modificationTable">
+                                                <thead class="table-light" style="font-size:x-small;">
                                                     <tr>
                                                         <th>Mod No</th>
                                                         <th>Directorate</th>
@@ -932,7 +849,7 @@ try {
                                                         <th>Recommended Date</th>
                                                     </tr>
                                                 </thead>
-                                                <tbody>
+                                                <tbody style="font-size:x-small;">
                                                     <?php foreach ($modification_data as $record): ?>
                                                         <tr>
                                                             <td><?= htmlspecialchars($record['mod_no'] ?? 'N/A') ?></td>
@@ -974,8 +891,8 @@ try {
                                 <div class="card">
                                     <div class="card-body p-0">
                                         <div class="table-responsive">
-                                            <table class="table table-striped table-hover mb-0" id="rndTable">
-                                                <thead class="table-light">
+                                            <table class="table  table-hover mb-0" id="rndTable">
+                                                <thead class="table-light" style="font-size:x-small;">
                                                     <tr>
                                                         <th>R&D No</th>
                                                         <th>Directorate</th>
@@ -985,7 +902,7 @@ try {
                                                         <th>Issue Date</th>
                                                     </tr>
                                                 </thead>
-                                                <tbody>
+                                                <tbody style="font-size:x-small;">
                                                     <?php foreach ($rnd_data as $record): ?>
                                                         <tr>
                                                             <td><?= htmlspecialchars($record['rnd_no'] ?? 'N/A') ?></td>
@@ -1017,12 +934,11 @@ try {
 
                     <!-- Vehicle Emission Test Tab Panes -->
                     <div class="tab-pane fade" id="vehicle_annual_plans" role="tabpanel">
-                        <h4 class="colour-defult">Vehicle Emission Test - Annual Plans</h4>
-                        <p>Annual testing schedules, plans, and compliance documentation for vehicle emission tests.</p>
-                        <div class="mt-4">
+                        <h3 class="colour-defult">Vehicle Emission Test - Annual Plan</h3>
+                        <div class="mt-1">
                             <?php if (!empty($vet_annual_web)): ?>
                                 <div class="top-bar">
-                                    <a href="<?= $vet_annual_web ?>" target="_blank" class="btn btn-sm btn-dark">VET Annual Plan Document</a>
+                                    <a href="<?= $vet_annual_web ?>" target="_blank" class="btn btn-sm btn-dark">VET Annual Plan</a>
                                 </div>
                                 <div class="pdf-viewer-container">
                                     <iframe src="/qai/assets/pdfjs/web/viewer.html?file=<?= urlencode($vet_annual_web) ?>"
@@ -1035,11 +951,10 @@ try {
                             <?php endif; ?>
                         </div>
                     </div>
-                    
-                   <!-- Vehicle Emission Test Reports Tab -->
+                    <!-- Vehicle Emission Test Reports Tab -->
                     <div class="tab-pane fade" id="vehicle_test_reports" role="tabpanel">
                         <h4 class="colour-defult">Vehicle Emission Test - Test Reports</h4>
-                        
+
                         <!-- Fuel Type Dropdown -->
                         <div class="row mb-3">
                             <div class="col-md-4">
@@ -1087,8 +1002,8 @@ try {
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <?php 
-                                        $diesel_records = array_filter($records, function($r) {
+                                        <?php
+                                        $diesel_records = array_filter($records, function ($r) {
                                             return isset($r['fuel_type']) && strtolower(trim($r['fuel_type'])) === 'diesel';
                                         });
                                         ?>
@@ -1120,11 +1035,9 @@ try {
                                                         <?php endif; ?>
                                                     </td>
                                                     <td>
-                                                        <span class="badge badge-<?= 
-                                                            $r['status'] == 'Pass' ? 'success' : 
-                                                            ($r['status'] == 'Fail' ? 'danger' : 
-                                                            ($r['status'] == 'Not Suitable' ? 'warning' : 'secondary')) 
-                                                        ?>">
+                                                        <span class="badge badge-<?=
+                                                                                    $r['status'] == 'Pass' ? 'success' : ($r['status'] == 'Fail' ? 'danger' : ($r['status'] == 'Not Suitable' ? 'warning' : 'secondary'))
+                                                                                    ?>">
                                                             <?= htmlspecialchars($r['status'] ?? 'N/A') ?>
                                                         </span>
                                                     </td>
@@ -1157,8 +1070,8 @@ try {
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <?php 
-                                        $petrol_records = array_filter($records, function($r) {
+                                        <?php
+                                        $petrol_records = array_filter($records, function ($r) {
                                             return isset($r['fuel_type']) && (strtolower(trim($r['fuel_type'])) === 'petrol' || strtolower(trim($r['fuel_type'])) === 'gasoline');
                                         });
                                         ?>
@@ -1190,11 +1103,9 @@ try {
                                                         <?php endif; ?>
                                                     </td>
                                                     <td>
-                                                        <span class="badge badge-<?= 
-                                                            $r['status'] == 'Pass' ? 'success' : 
-                                                            ($r['status'] == 'Fail' ? 'danger' : 
-                                                            ($r['status'] == 'Not Suitable' ? 'warning' : 'secondary')) 
-                                                        ?>">
+                                                        <span class="badge badge-<?=
+                                                                                    $r['status'] == 'Pass' ? 'success' : ($r['status'] == 'Fail' ? 'danger' : ($r['status'] == 'Not Suitable' ? 'warning' : 'secondary'))
+                                                                                    ?>">
                                                             <?= htmlspecialchars($r['status'] ?? 'N/A') ?>
                                                         </span>
                                                     </td>
@@ -1209,7 +1120,9 @@ try {
                         </div>
                     </div>
                 </div>
+                <!-- </div> -->
             </div>
+            <!-- </div> -->
         </div>
     </main>
 
@@ -1218,7 +1131,7 @@ try {
         <div class="modal-dialog modal-xl modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">View PDF</h5>
+                    <h5 class="modal-title"></h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body" style="height: 80vh;">
@@ -1258,144 +1171,169 @@ try {
 
     <script>
         $(document).ready(function() {
-            console.log('Document ready - starting initialization');
-            
+            console.log("Document ready - starting initialization");
+
             const dataTableConfig = {
-                "pageLength": 10,
-                "lengthMenu": [10, 25, 50, 100],
-                "order": [[0, "asc"]],
-                "language": {
-                    "search": "Filter:",
-                    "lengthMenu": "Show _MENU_ entries",
-                    "info": "Showing _START_ to _END_ of _TOTAL_ entries",
-                    "paginate": {
-                        "previous": "Previous",
-                        "next": "Next"
-                    }
+                pageLength: 10,
+                lengthMenu: [10, 25, 50, 100],
+                order: [
+                    [0, "asc"]
+                ],
+                language: {
+                    search: "Filter:",
+                    lengthMenu: "Show _MENU_ entries",
+                    info: "Showing _START_ to _END_ of _TOTAL_ entries",
+                    paginate: {
+                        previous: "Previous",
+                        next: "Next",
+                    },
                 },
-                "autoWidth": false,
-                "responsive": true,
-                "destroy": true // Allow reinitialization
+                autoWidth: false,
+                responsive: true,
+                destroy: true, // Allow reinitialization
             };
 
             // Initialize always visible tables immediately
             const alwaysVisibleTables = [
-                'qaReportsTable', 'qaCheckListTable', 'competencyTable', 
-                'latitudeTable', 'modificationTable', 'rndTable'
+                "qaReportsTable",
+                "qaCheckListTable",
+                "competencyTable",
+                "latitudeTable",
+                "modificationTable",
+                "rndTable",
             ];
 
-            alwaysVisibleTables.forEach(tableId => {
-                if ($('#' + tableId).length && !$.fn.DataTable.isDataTable('#' + tableId)) {
-                    console.log('Initializing table:', tableId);
-                    $('#' + tableId).DataTable(dataTableConfig);
+            alwaysVisibleTables.forEach((tableId) => {
+                if ($("#" + tableId).length && !$.fn.DataTable.isDataTable("#" + tableId)) {
+                    console.log("Initializing table:", tableId);
+                    $("#" + tableId).DataTable(dataTableConfig);
                 }
             });
 
             // Initialize vehicle tables
-            $('#dieselTable').DataTable(dataTableConfig);
-            $('#petrolTable').DataTable(dataTableConfig);
+            // $("#dieselTable").DataTable(dataTableConfig);
+            // $("#petrolTable").DataTable(dataTableConfig);
 
             // Fuel type dropdown functionality
-            $('.fuel-type-option').on('click', function(e) {
+            $(".fuel-type-option").on("click", function(e) {
                 e.preventDefault();
-                
+
                 // Remove active class from all options
-                $('.fuel-type-option').removeClass('active');
+                $(".fuel-type-option").removeClass("active");
                 // Add active class to clicked option
-                $(this).addClass('active');
-                
+                $(this).addClass("active");
+
                 // Get target content
-                const target = $(this).data('target');
-                const targetContent = $('#' + target + '-content');
-                
+                const target = $(this).data("target");
+                const targetContent = $("#" + target + "-content");
+
                 // Hide all content sections
-                $('.fuel-type-content').removeClass('active');
+                $(".fuel-type-content").removeClass("active");
                 // Show target content
-                targetContent.addClass('active');
-                
+                targetContent.addClass("active");
+
                 // Update dropdown button text
                 const buttonText = $(this).text().trim();
-                $('#fuelTypeDropdown').html('<i class="fas fa-filter me-1"></i> ' + buttonText);
-                
+                $("#fuelTypeDropdown").html(
+                    '<i class="fas fa-filter me-1"></i> ' + buttonText
+                );
+
                 // Update current fuel type display
-                $('#currentFuelType').html('Currently showing: <strong>' + buttonText + '</strong>');
+                $("#currentFuelType").html(
+                    "Currently showing: <strong>" + buttonText + "</strong>"
+                );
             });
 
             // Ensure diesel is shown by default
             $('.fuel-type-option[data-target="diesel"]').click();
 
             // Modal functionality
-            const pdfModal = document.getElementById('pdfModal');
-            const pdfFrame = document.getElementById('pdfFrame');
+            const pdfModal = document.getElementById("pdfModal");
+            const pdfFrame = document.getElementById("pdfFrame");
 
             if (pdfModal) {
-                pdfModal.addEventListener('show.bs.modal', function(event) {
+                pdfModal.addEventListener("show.bs.modal", function(event) {
                     const button = event.relatedTarget;
-                    const pdfUrl = button.getAttribute('data-pdf-url');
+                    const pdfUrl = button.getAttribute("data-pdf-url");
                     pdfFrame.src = pdfUrl;
                 });
 
-                pdfModal.addEventListener('hidden.bs.modal', function() {
+                pdfModal.addEventListener("hidden.bs.modal", function() {
                     pdfFrame.src = "";
                 });
             }
 
             // Details Modal functionality
-            const detailsModal = document.getElementById('detailsModal');
-            const detailsModalTitle = document.getElementById('detailsModalTitle');
-            const detailsModalBody = document.getElementById('detailsModalBody');
+            const detailsModal = document.getElementById("detailsModal");
+            const detailsModalTitle = document.getElementById("detailsModalTitle");
+            const detailsModalBody = document.getElementById("detailsModalBody");
 
             if (detailsModal) {
-                detailsModal.addEventListener('show.bs.modal', function(event) {
+                detailsModal.addEventListener("show.bs.modal", function(event) {
                     const button = event.relatedTarget;
-                    const recordType = button.getAttribute('data-record-type');
+                    const recordType = button.getAttribute("data-record-type");
 
-                    let title = 'Record Details';
+                    let title = "Record Details";
                     switch (recordType) {
-                        case 'qa_report': title = 'QA Report Details'; break;
-                        case 'qa_check_list': title = 'Audit Checklist Details'; break;
-                        case 'aircraft_competency': title = 'Aircraft Competency Details'; break;
-                        case 'latitude': title = 'Latitude Record Details'; break;
-                        case 'vehicle_emission': title = 'Vehicle Emission Test Details'; break;
+                        case "qa_report":
+                            title = "QA Report Details";
+                            break;
+                        case "qa_check_list":
+                            title = "Audit Checklist Details";
+                            break;
+                        case "aircraft_competency":
+                            title = "Aircraft Competency Details";
+                            break;
+                        case "latitude":
+                            title = "Latitude Record Details";
+                            break;
+                        case "vehicle_emission":
+                            title = "Vehicle Emission Test Details";
+                            break;
                     }
                     detailsModalTitle.textContent = title;
 
-                    let content = '';
+                    let content = "";
                     switch (recordType) {
-                        case 'qa_report':
-                        case 'qa_check_list':
+                        case "qa_report":
+                        case "qa_check_list":
                             content = generateDocumentDetails(button);
                             break;
-                        case 'aircraft_competency':
+                        case "aircraft_competency":
                             content = generateAircraftCompetencyDetails(button);
                             break;
-                        case 'latitude':
+                        case "latitude":
                             content = generateLatitudeDetails(button);
                             break;
-                        case 'vehicle_emission':
+                        case "vehicle_emission":
                             content = generateVehicleEmissionDetails(button);
                             break;
                         default:
-                            content = '<p>No details available.</p>';
+                            content = "<p>No details available.</p>";
                     }
                     detailsModalBody.innerHTML = content;
                 });
 
-                detailsModal.addEventListener('hidden.bs.modal', function() {
-                    detailsModalBody.innerHTML = '';
+                detailsModal.addEventListener("hidden.bs.modal", function() {
+                    detailsModalBody.innerHTML = "";
                 });
             }
 
             // Helper functions
             function formatValue(value) {
-                if (!value || value === 'null' || value === 'undefined' || value === '0000-00-00') {
+                if (
+                    !value ||
+                    value === "null" ||
+                    value === "undefined" ||
+                    value === "0000-00-00"
+                ) {
                     return '<span class="empty-value">Not provided</span>';
                 }
                 return value;
             }
 
             function formatDate(dateString) {
-                if (!dateString || dateString === '0000-00-00') {
+                if (!dateString || dateString === "0000-00-00") {
                     return '<span class="empty-value">Not provided</span>';
                 }
                 try {
@@ -1406,51 +1344,67 @@ try {
             }
 
             function generateDocumentDetails(button) {
-                const title = button.getAttribute('data-record-title');
-                const description = button.getAttribute('data-record-description');
-                const filePath = button.getAttribute('data-record-file-path');
-                const uploadedAt = button.getAttribute('data-record-uploaded-at');
+                const title = button.getAttribute("data-record-title");
+                const description = button.getAttribute("data-record-description");
+                const filePath = button.getAttribute("data-record-file-path");
+                const uploadedAt = button.getAttribute("data-record-uploaded-at");
 
                 return `
                     <table class="details-modal-table">
-                        <tr><th>Document Title:</th><td>${formatValue(title)}</td></tr>
-                        <tr><th>Description:</th><td>${formatValue(description)}</td></tr>
-                        <tr><th>File Path:</th><td>${formatValue(filePath)}</td></tr>
-                        <tr><th>Uploaded Date:</th><td>${formatDate(uploadedAt)}</td></tr>
+                        <tr><th>Document Title:</th><td>${formatValue(
+                          title
+                        )}</td></tr>
+                        <tr><th>Description:</th><td>${formatValue(
+                          description
+                        )}</td></tr>
+                        <tr><th>File Path:</th><td>${formatValue(
+                          filePath
+                        )}</td></tr>
+                        <tr><th>Uploaded Date:</th><td>${formatDate(
+                          uploadedAt
+                        )}</td></tr>
                     </table>
                 `;
             }
 
             function generateAircraftCompetencyDetails(button) {
-                const svcNo = button.getAttribute('data-record-svc-no');
-                const rank = button.getAttribute('data-record-rank');
-                const name = button.getAttribute('data-record-name');
-                const trade = button.getAttribute('data-record-trade');
-                const formation = button.getAttribute('data-record-formation');
-                const postedInDate = button.getAttribute('data-record-posted-in-date');
-                const postedOutDate = button.getAttribute('data-record-posted-out-date');
-                const aircraftType = button.getAttribute('data-record-aircraft-type');
-                const competencyLevel = button.getAttribute('data-record-competency-level');
-                const trainingStartDate = button.getAttribute('data-record-training-start-date');
-                const trainingEndDate = button.getAttribute('data-record-training-end-date');
-                const formationRef = button.getAttribute('data-record-formation-ref');
-                const forRefDate = button.getAttribute('data-record-for-ref-date');
-                const qaiRef = button.getAttribute('data-record-qai-ref');
-                const qaiRefDate = button.getAttribute('data-record-qai-ref-date');
-                const dtRef = button.getAttribute('data-record-dt-ref');
-                const dtRefDate = button.getAttribute('data-record-dt-ref-date');
-                const qaoRef = button.getAttribute('data-record-qao-ref');
-                const qaoRefDate = button.getAttribute('data-record-qao-ref-date');
-                const theoryMarks = button.getAttribute('data-record-theory-marks');
-                const practicalMarks = button.getAttribute('data-record-practical-marks');
-                const competencyIssueRef = button.getAttribute('data-record-competency-issue-ref');
-                const comIssueDate = button.getAttribute('data-record-com-issue-date');
-                const competencyRenewRef = button.getAttribute('data-record-competency-renew-ref');
-                const renewDate = button.getAttribute('data-record-renew-date');
-                const certificateNo = button.getAttribute('data-record-certificate-no');
-                const cerIssuedDate = button.getAttribute('data-record-cer-issued-date');
-                const retiredDate = button.getAttribute('data-record-retired-date');
-                const remarks = button.getAttribute('data-record-remarks');
+                const svcNo = button.getAttribute("data-record-svc-no");
+                const rank = button.getAttribute("data-record-rank");
+                const name = button.getAttribute("data-record-name");
+                const trade = button.getAttribute("data-record-trade");
+                const formation = button.getAttribute("data-record-formation");
+                const postedInDate = button.getAttribute("data-record-posted-in-date");
+                const postedOutDate = button.getAttribute("data-record-posted-out-date");
+                const aircraftType = button.getAttribute("data-record-aircraft-type");
+                const competencyLevel = button.getAttribute("data-record-competency-level");
+                const trainingStartDate = button.getAttribute(
+                    "data-record-training-start-date"
+                );
+                const trainingEndDate = button.getAttribute(
+                    "data-record-training-end-date"
+                );
+                const formationRef = button.getAttribute("data-record-formation-ref");
+                const forRefDate = button.getAttribute("data-record-for-ref-date");
+                const qaiRef = button.getAttribute("data-record-qai-ref");
+                const qaiRefDate = button.getAttribute("data-record-qai-ref-date");
+                const dtRef = button.getAttribute("data-record-dt-ref");
+                const dtRefDate = button.getAttribute("data-record-dt-ref-date");
+                const qaoRef = button.getAttribute("data-record-qao-ref");
+                const qaoRefDate = button.getAttribute("data-record-qao-ref-date");
+                const theoryMarks = button.getAttribute("data-record-theory-marks");
+                const practicalMarks = button.getAttribute("data-record-practical-marks");
+                const competencyIssueRef = button.getAttribute(
+                    "data-record-competency-issue-ref"
+                );
+                const comIssueDate = button.getAttribute("data-record-com-issue-date");
+                const competencyRenewRef = button.getAttribute(
+                    "data-record-competency-renew-ref"
+                );
+                const renewDate = button.getAttribute("data-record-renew-date");
+                const certificateNo = button.getAttribute("data-record-certificate-no");
+                const cerIssuedDate = button.getAttribute("data-record-cer-issued-date");
+                const retiredDate = button.getAttribute("data-record-retired-date");
+                const remarks = button.getAttribute("data-record-remarks");
 
                 return `
                     <div class="section-divider">Personal Information</div>
@@ -1600,31 +1554,38 @@ try {
             }
 
             function generateLatitudeDetails(button) {
-                const active = button.getAttribute('data-record-active');
-                const typeValue = button.getAttribute('data-record-type-value');
-                const formation = button.getAttribute('data-record-formation');
-                const aircraftType = button.getAttribute('data-record-aircraft-type');
-                const tailNo = button.getAttribute('data-record-tail-no');
-                const partNo = button.getAttribute('data-record-part-no');
-                const description = button.getAttribute('data-record-description');
-                const serialNo = button.getAttribute('data-record-serial-no');
-                const reason = button.getAttribute('data-record-reason');
-                const hrs = button.getAttribute('data-record-hrs');
-                const ldgs = button.getAttribute('data-record-ldgs');
-                const date = button.getAttribute('data-record-date');
-                const presentLatitude = button.getAttribute('data-record-present-latitude');
-                const dgaeAuthRef = button.getAttribute('data-record-dgae-auth-ref');
-                const authDate = button.getAttribute('data-record-auth-date');
-                const latitudeExpiry = button.getAttribute('data-record-latitude-expiry');
-                const totalPrevLatitude = button.getAttribute('data-record-total-prev-latitude');
-                const demandRef = button.getAttribute('data-record-demand-ref');
-                const status = button.getAttribute('data-record-status');
+                const active = button.getAttribute("data-record-active");
+                const typeValue = button.getAttribute("data-record-type-value");
+                const formation = button.getAttribute("data-record-formation");
+                const aircraftType = button.getAttribute("data-record-aircraft-type");
+                const tailNo = button.getAttribute("data-record-tail-no");
+                const partNo = button.getAttribute("data-record-part-no");
+                const description = button.getAttribute("data-record-description");
+                const serialNo = button.getAttribute("data-record-serial-no");
+                const reason = button.getAttribute("data-record-reason");
+                const hrs = button.getAttribute("data-record-hrs");
+                const ldgs = button.getAttribute("data-record-ldgs");
+                const date = button.getAttribute("data-record-date");
+                const presentLatitude = button.getAttribute("data-record-present-latitude");
+                const dgaeAuthRef = button.getAttribute("data-record-dgae-auth-ref");
+                const authDate = button.getAttribute("data-record-auth-date");
+                const latitudeExpiry = button.getAttribute("data-record-latitude-expiry");
+                const totalPrevLatitude = button.getAttribute(
+                    "data-record-total-prev-latitude"
+                );
+                const demandRef = button.getAttribute("data-record-demand-ref");
+                const status = button.getAttribute("data-record-status");
 
-                const statusBadge = status === 'Approved' ? 'success' :
-                    status === 'Pending' ? 'warning' :
-                    status === 'Expired' ? 'danger' : 'secondary';
+                const statusBadge =
+                    status === "Approved" ?
+                    "success" :
+                    status === "Pending" ?
+                    "warning" :
+                    status === "Expired" ?
+                    "danger" :
+                    "secondary";
 
-                const activeBadge = active === 'YES' ? 'success' : 'danger';
+                const activeBadge = active === "YES" ? "success" : "danger";
 
                 return `
                     <div class="section-divider">Basic Information</div>
@@ -1687,7 +1648,9 @@ try {
                     <table class="details-modal-table">
                         <tr>
                             <th>Present Latitude:</th>
-                            <td><strong>${formatValue(presentLatitude)}</strong></td>
+                            <td><strong>${formatValue(
+                              presentLatitude
+                            )}</strong></td>
                         </tr>
                         <tr>
                             <th>Total Previous Latitude:</th>
@@ -1722,28 +1685,34 @@ try {
             }
 
             function generateVehicleEmissionDetails(button) {
-                const serialNo = button.getAttribute('data-record-serial-no');
-                const camp = button.getAttribute('data-record-camp');
-                const vehicleNo = button.getAttribute('data-record-vehicle-no');
-                const vehicleType = button.getAttribute('data-record-vehicle-type');
-                const model = button.getAttribute('data-record-model');
-                const testDate = button.getAttribute('data-record-test-date');
-                const firstTest = button.getAttribute('data-record-first-test');
-                const secondTest = button.getAttribute('data-record-second-test');
-                const thirdTest = button.getAttribute('data-record-third-test');
-                const average = button.getAttribute('data-record-average');
-                const rpm2500Hc = button.getAttribute('data-record-rpm-2500-hc');
-                const rpm2500Co = button.getAttribute('data-record-rpm-2500-co');
-                const idleHc = button.getAttribute('data-record-idle-hc');
-                const idleCo = button.getAttribute('data-record-idle-co');
-                const status = button.getAttribute('data-record-status');
-                const nextDueDate = button.getAttribute('data-record-next-due-date');
-                const remarks = button.getAttribute('data-record-remarks');
+                const serialNo = button.getAttribute("data-record-serial-no");
+                const camp = button.getAttribute("data-record-camp");
+                const vehicleNo = button.getAttribute("data-record-vehicle-no");
+                const vehicleType = button.getAttribute("data-record-vehicle-type");
+                const model = button.getAttribute("data-record-model");
+                const testDate = button.getAttribute("data-record-test-date");
+                const firstTest = button.getAttribute("data-record-first-test");
+                const secondTest = button.getAttribute("data-record-second-test");
+                const thirdTest = button.getAttribute("data-record-third-test");
+                const average = button.getAttribute("data-record-average");
+                const rpm2500Hc = button.getAttribute("data-record-rpm-2500-hc");
+                const rpm2500Co = button.getAttribute("data-record-rpm-2500-co");
+                const idleHc = button.getAttribute("data-record-idle-hc");
+                const idleCo = button.getAttribute("data-record-idle-co");
+                const status = button.getAttribute("data-record-status");
+                const nextDueDate = button.getAttribute("data-record-next-due-date");
+                const remarks = button.getAttribute("data-record-remarks");
 
-                const statusBadge = status === 'Pass' ? 'success' :
-                                 status === 'Fail' ? 'danger' :
-                                 status === 'Not Suitable' ? 'warning' : 
-                                 status === 'Serviceable Not Done' ? 'secondary' : 'secondary';
+                const statusBadge =
+                    status === "Pass" ?
+                    "success" :
+                    status === "Fail" ?
+                    "danger" :
+                    status === "Not Suitable" ?
+                    "warning" :
+                    status === "Serviceable Not Done" ?
+                    "secondary" :
+                    "secondary";
 
                 // Determine fuel type based on test values
                 const isDiesel = firstTest || secondTest || thirdTest || average;
@@ -1780,7 +1749,9 @@ try {
 
                     <div class="section-divider">Test Results</div>
                     <table class="details-modal-table">
-                        ${isDiesel ? `
+                        ${
+                          isDiesel
+                            ? `
                         <tr>
                             <th>1st Test Result:</th>
                             <td>${formatValue(firstTest)}</td>
@@ -1797,8 +1768,12 @@ try {
                             <th>Average:</th>
                             <td><strong>${formatValue(average)}</strong></td>
                         </tr>
-                        ` : ''}
-                        ${isPetrol ? `
+                        `
+                            : ""
+                        }
+                        ${
+                          isPetrol
+                            ? `
                         <tr>
                             <th>2500 RPM HC:</th>
                             <td>${formatValue(rpm2500Hc)}</td>
@@ -1815,7 +1790,9 @@ try {
                             <th>Idle CO:</th>
                             <td>${formatValue(idleCo)}</td>
                         </tr>
-                        ` : ''}
+                        `
+                            : ""
+                        }
                     </table>
 
                     <div class="section-divider">Status Information</div>
@@ -1841,129 +1818,137 @@ try {
             }
 
             // Navigation and tab handling
-            const welcomePane = document.querySelector('#welcome');
+            const welcomePane = document.querySelector("#welcome");
             if (welcomePane) {
-                welcomePane.classList.add('show', 'active');
+                welcomePane.classList.add("show", "active");
             }
 
-            document.querySelectorAll('.nav-link, .qa-dropdown-item').forEach(item => {
-                item.classList.remove('active');
+            document.querySelectorAll(".nav-link, .qa-dropdown-item").forEach((item) => {
+                item.classList.remove("active");
             });
 
-            document.querySelectorAll('.qa-dropdown-menu').forEach(menu => {
-                menu.classList.remove('show');
+            document.querySelectorAll(".qa-dropdown-menu").forEach((menu) => {
+                menu.classList.remove("show");
             });
 
             // Dropdown toggle handling
-            const dropdownToggles = document.querySelectorAll('.qa-dropdown-toggle');
-            dropdownToggles.forEach(toggle => {
-                toggle.addEventListener('click', function(e) {
+            const dropdownToggles = document.querySelectorAll(".qa-dropdown-toggle");
+            dropdownToggles.forEach((toggle) => {
+                toggle.addEventListener("click", function(e) {
                     e.preventDefault();
                     e.stopPropagation();
 
                     const dropdownMenu = this.nextElementSibling;
                     if (!dropdownMenu) return;
 
-                    const isCurrentlyOpen = dropdownMenu.classList.contains('show');
+                    const isCurrentlyOpen = dropdownMenu.classList.contains("show");
 
-                    dropdownToggles.forEach(otherToggle => {
+                    dropdownToggles.forEach((otherToggle) => {
                         const otherMenu = otherToggle.nextElementSibling;
-                        if (otherMenu) otherMenu.classList.remove('show');
+                        if (otherMenu) otherMenu.classList.remove("show");
                     });
 
-                    if (!isCurrentlyOpen) dropdownMenu.classList.add('show');
+                    if (!isCurrentlyOpen) dropdownMenu.classList.add("show");
                 });
             });
 
             // Main nav links
-            const mainNavLinks = document.querySelectorAll('.nav-link:not(.qa-dropdown-toggle)');
-            mainNavLinks.forEach(item => {
-                item.addEventListener('click', function(e) {
+            const mainNavLinks = document.querySelectorAll(
+                ".nav-link:not(.qa-dropdown-toggle)"
+            );
+            mainNavLinks.forEach((item) => {
+                item.addEventListener("click", function(e) {
                     e.preventDefault();
-                    document.querySelectorAll('.nav-link, .qa-dropdown-item').forEach(tab => {
-                        tab.classList.remove('active');
+                    document
+                        .querySelectorAll(".nav-link, .qa-dropdown-item")
+                        .forEach((tab) => {
+                            tab.classList.remove("active");
+                        });
+                    document.querySelectorAll(".qa-dropdown-toggle").forEach((toggle) => {
+                        toggle.classList.remove("active");
                     });
-                    document.querySelectorAll('.qa-dropdown-toggle').forEach(toggle => {
-                        toggle.classList.remove('active');
-                    });
-                    this.classList.add('active');
+                    this.classList.add("active");
 
-                    const targetId = this.getAttribute('data-bs-target');
+                    const targetId = this.getAttribute("data-bs-target");
                     const targetPane = document.querySelector(targetId);
 
-                    document.querySelectorAll('.tab-pane').forEach(pane => {
-                        pane.classList.remove('show', 'active');
+                    document.querySelectorAll(".tab-pane").forEach((pane) => {
+                        pane.classList.remove("show", "active");
                     });
 
-                    if (targetPane) targetPane.classList.add('show', 'active');
-                    document.querySelectorAll('.qa-dropdown-menu').forEach(menu => {
-                        menu.classList.remove('show');
+                    if (targetPane) targetPane.classList.add("show", "active");
+                    document.querySelectorAll(".qa-dropdown-menu").forEach((menu) => {
+                        menu.classList.remove("show");
                     });
                 });
             });
 
             // Dropdown items
-            const dropdownItems = document.querySelectorAll('.qa-dropdown-item');
-            dropdownItems.forEach(item => {
-                item.addEventListener('click', function(e) {
+            const dropdownItems = document.querySelectorAll(".qa-dropdown-item");
+            dropdownItems.forEach((item) => {
+                item.addEventListener("click", function(e) {
                     e.preventDefault();
                     e.stopPropagation();
 
-                    document.querySelectorAll('.nav-link, .qa-dropdown-item').forEach(tab => {
-                        tab.classList.remove('active');
+                    document
+                        .querySelectorAll(".nav-link, .qa-dropdown-item")
+                        .forEach((tab) => {
+                            tab.classList.remove("active");
+                        });
+                    document.querySelectorAll(".qa-dropdown-toggle").forEach((toggle) => {
+                        toggle.classList.remove("active");
                     });
-                    document.querySelectorAll('.qa-dropdown-toggle').forEach(toggle => {
-                        toggle.classList.remove('active');
-                    });
-                    this.classList.add('active');
+                    this.classList.add("active");
 
-                    if (this.classList.contains('qa-dropdown-item')) {
-                        const parentDropdown = this.closest('.qa-dropdown');
+                    if (this.classList.contains("qa-dropdown-item")) {
+                        const parentDropdown = this.closest(".qa-dropdown");
                         if (parentDropdown) {
-                            const dropdownToggle = parentDropdown.querySelector('.qa-dropdown-toggle');
+                            const dropdownToggle = parentDropdown.querySelector(
+                                ".qa-dropdown-toggle"
+                            );
                             if (dropdownToggle) {
-                                dropdownToggle.classList.add('active');
+                                dropdownToggle.classList.add("active");
                                 const dropdownMenu = dropdownToggle.nextElementSibling;
-                                if (dropdownMenu) dropdownMenu.classList.add('show');
+                                if (dropdownMenu) dropdownMenu.classList.add("show");
                             }
                         }
                     }
 
-                    const targetId = this.getAttribute('data-bs-target');
+                    const targetId = this.getAttribute("data-bs-target");
                     const targetPane = document.querySelector(targetId);
 
-                    document.querySelectorAll('.tab-pane').forEach(pane => {
-                        pane.classList.remove('show', 'active');
+                    document.querySelectorAll(".tab-pane").forEach((pane) => {
+                        pane.classList.remove("show", "active");
                     });
 
-                    if (targetPane) targetPane.classList.add('show', 'active');
+                    if (targetPane) targetPane.classList.add("show", "active");
                 });
             });
 
             // Close dropdowns on outside click
-            document.addEventListener('click', function(e) {
-                if (!e.target.closest('.qa-dropdown')) {
-                    document.querySelectorAll('.qa-dropdown-menu').forEach(menu => {
-                        menu.classList.remove('show');
+            document.addEventListener("click", function(e) {
+                if (!e.target.closest(".qa-dropdown")) {
+                    document.querySelectorAll(".qa-dropdown-menu").forEach((menu) => {
+                        menu.classList.remove("show");
                     });
                 }
             });
 
-            document.querySelectorAll('.qa-dropdown-menu').forEach(menu => {
-                menu.addEventListener('click', function(e) {
+            document.querySelectorAll(".qa-dropdown-menu").forEach((menu) => {
+                menu.addEventListener("click", function(e) {
                     e.stopPropagation();
                 });
             });
 
-            document.addEventListener('keydown', function(e) {
-                if (e.key === 'Escape') {
-                    document.querySelectorAll('.qa-dropdown-menu').forEach(menu => {
-                        menu.classList.remove('show');
+            document.addEventListener("keydown", function(e) {
+                if (e.key === "Escape") {
+                    document.querySelectorAll(".qa-dropdown-menu").forEach((menu) => {
+                        menu.classList.remove("show");
                     });
                 }
             });
 
-            console.log('Initialization complete');
+            console.log("Initialization complete");
         });
     </script>
 </body>

@@ -14,7 +14,7 @@ if (!isset($_GET['id'])) {
 
 $id = intval($_GET['id']);
 
-$res = $db->query("SELECT * FROM aircraft_competency WHERE record_id = $id OR id = $id LIMIT 1");
+$res = $db->query("SELECT * FROM aircraft_competency WHERE `record_id` = $id LIMIT 1");
 if (!$res || $res->num_rows === 0) {
     header('Location: aircraft-competency.php?error=notfound');
     exit();

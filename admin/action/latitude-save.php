@@ -34,6 +34,7 @@ $ldgs = toNull($_POST['ldgs'] ?? '');
 $date = toNull($_POST['date'] ?? '');
 $present_latitude = toNull($_POST['present_latitude'] ?? '');
 $dgae_auth_ref = toNull($_POST['dgae_auth_ref'] ?? '');
+$recommend = toNull($_POST['recommend'] ?? '');
 $auth_date = toNull($_POST['auth_date'] ?? '');
 $latitude_expiry = toNull($_POST['latitude_expiry'] ?? '');
 $total_prev_latitude = toNull($_POST['total_prev_latitude'] ?? '');
@@ -47,7 +48,7 @@ if (isset($_POST['id']) && !empty($_POST['id'])) {
     $sql = "UPDATE latitude SET 
             active = ?, type = ?, formation_id = ?, aircraft_type_id = ?, tail_no = ?, 
             part_no = ?, description = ?, serial_no = ?, reason = ?, hrs = ?, ldgs = ?, 
-            date = ?, present_latitude = ?, dgae_auth_ref = ?, auth_date = ?, 
+            date = ?, present_latitude = ?, dgae_auth_ref = ?,recommend = ?, auth_date = ?, 
             latitude_expiry = ?, total_prev_latitude = ?, demand_ref = ?, status = ?,
             updated_at = CURRENT_TIMESTAMP 
             WHERE id = ?";
@@ -60,20 +61,20 @@ if (isset($_POST['id']) && !empty($_POST['id'])) {
     }
 
     $stmt->bind_param(
-        'ssiisssssiissssssssi',
+        'ssiisssssiissssssssis',
         $active, $type, $formation_id, $aircraft_type_id, $tail_no,
         $part_no, $description, $serial_no, $reason, $hrs, $ldgs,
         $date, $present_latitude, $dgae_auth_ref, $auth_date,
         $latitude_expiry, $total_prev_latitude, $demand_ref, $status,
-        $id
+        $id,$recommend
     );
 } else {
     // Insert new record
     $sql = "INSERT INTO latitude (
         active, type, formation_id, aircraft_type_id, tail_no, part_no, description,
-        serial_no, reason, hrs, ldgs, date, present_latitude, dgae_auth_ref, auth_date,
+        serial_no, reason, hrs, ldgs, date, present_latitude, dgae_auth_ref,recommend, auth_date,
         latitude_expiry, total_prev_latitude, demand_ref, status, created_by
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
     
     $stmt = $db->prepare($sql);
     if (!$stmt) {
@@ -83,10 +84,10 @@ if (isset($_POST['id']) && !empty($_POST['id'])) {
     }
 
     $stmt->bind_param(
-        'ssiisssssiissssssssi',
+        'ssiisssssiisssssssssi',
         $active, $type, $formation_id, $aircraft_type_id, $tail_no,
         $part_no, $description, $serial_no, $reason, $hrs, $ldgs,
-        $date, $present_latitude, $dgae_auth_ref, $auth_date,
+        $date, $present_latitude, $dgae_auth_ref,$recommend, $auth_date,
         $latitude_expiry, $total_prev_latitude, $demand_ref, $status,
         $created_by
     );

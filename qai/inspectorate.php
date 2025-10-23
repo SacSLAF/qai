@@ -14,23 +14,26 @@
     <!-- Custom CSS -->
     <link rel="stylesheet" href="../assets/css/styles.css">
     <style>
-        .tab-content {
+        /* .tab-content {
             padding: 20px;
             background: #fff;
             border-radius: 5px;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        }
+        } */
 
         .card {
             border: none;
             border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            transition: transform 0.3s, box-shadow 0.3s;
+            /* box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); */
+            /* transition: transform 0.3s, box-shadow 0.3s; */
+        }
+        .card-title{
+            font-size: small;
         }
 
         .card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+            /* transform: translateY(-5px); */
+            /* box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15); */
         }
 
         .shadow-card {
@@ -42,6 +45,7 @@
         }
 
         .staff-card img {
+            height: 12rem;
             border-radius: 5px;
             object-fit: cover;
         }
@@ -97,12 +101,12 @@
         }
 
         #orgImage {
-            cursor: zoom-in;
-            transition: transform 0.3s;
+            /* cursor: zoom-in; */
+            /* transition: transform 0.3s; */
         }
 
         #orgImage:hover {
-            transform: scale(1.02);
+            /* transform: scale(1.02); */
         }
 
         #swiperOverlay {
@@ -157,33 +161,7 @@
                 padding: 8px 10px;
             }
         }
-    </style>
-    <style>
-        body {
-            font-family: Verdana, sans-serif;
-            margin: 0;
-        }
 
-        * {
-            box-sizing: border-box;
-        }
-
-        /* .row > .column {
-        padding: 0 8px;
-      }
-
-      .row:after {
-        content: "";
-        display: table;
-        clear: both;
-      }
-
-      .column {
-        float: left;
-        width: 25%;
-      } */
-
-        /* The Modal (background) */
         .modal {
             display: none;
             position: fixed;
@@ -299,7 +277,8 @@
             box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2),
                 0 6px 20px 0 rgba(0, 0, 0, 0.19);
         }
-        .welcome-image{
+
+        .welcome-image {
             width: 100%;
         }
     </style>
@@ -312,7 +291,7 @@
     <?php include '../template/header.php'; ?>
 
     <!-- Main Content -->
-    <main class="container-fluid my-3 pt-3">
+    <main class="container-fluid my-3">
         <!-- <div class="page-header mb-4">
             <h3 class="colour-defult">The Inspectorate <i class="fa fa-bullhorn"></i>
                 <div class="float-end">
@@ -324,7 +303,7 @@
 
         <div class="row">
             <!-- Navigation Tabs -->
-            <div class="col-lg-3 col-xl-2 mb-4">
+            <div class="col-lg-1 col-xl-1 mb-4">
                 <div class="nav flex-column nav-pills" id="inspectorateTabs" role="tablist">
                     <!-- <a class="nav-link" href="#" data-bs-target="#welcome" role="tab">Welcome</a> -->
                     <a class="nav-link" href="#" data-bs-target="#org" role="tab">About us</a>
@@ -337,20 +316,19 @@
             </div>
 
             <!-- Tab Content -->
-            <div class="col-lg-9 col-xl-10">
+            <div class="col-lg-11 col-xl-11">
                 <div class="tab-content" id="inspectorateTabsContent">
                     <!-- Welcome Screen (shown by default) -->
                     <div class="tab-pane fade show active" id="welcome" role="tabpanel">
                         <div class="welcome-message">
-                            <img src="../assets/img/welcome.jpg" alt="Quality Assurance Inspectorate" class="welcome-image">
+                            <!-- <img src="../assets/img/welcome.jpg" alt="Quality Assurance Inspectorate" class="welcome-image"> -->
                             <!-- <h4>Welcome to Command Quality Assurance Inspectorate</h4> -->
                             <!-- <p>Please select an option from the navigation menu to view the content.</p> -->
                         </div>
                     </div>
                     <!-- About Us -->
                     <div class="tab-pane fade" id="org" role="tabpanel" style="color:#1a4f72;">
-                        <p>The Sri Lanka Air Force (SLAF), in its commitment to fulfil the aspirations of the Nation by achieving excellence in the field of aviation and in all associated functions, is continually striving to enhance customer satisfaction by exceeding stake holders' expectations whilst endeavouring to be efficient, reliable and socially responsible.</p>
-                        <p>Towards this end, the Quality Assurance Inspectorate (QAI) was established to perform Quality Assurance Functions within the SLAF. The QAI functions under supervision of the Chief of Staff of the Sri Lanka Air Force and is headed by the Director Quality Assurance (DQA) who is primarily tasked to provide advice on the Quality Assurance Services (QAS) matters such as Policy, Organization and Administration.</p>
+                        <p>The Sri Lanka Air Force (SLAF), in its commitment to fulfil the aspirations of the Nation by achieving excellence in the field of aviation and in all associated functions, is continually striving to enhance customer satisfaction by exceeding stake holders' expectations whilst endeavouring to be efficient, reliable and socially responsible.<br>Towards this end, the Quality Assurance Inspectorate (QAI) was established to perform Quality Assurance Functions within the SLAF. The QAI functions under supervision of the Chief of Staff of the Sri Lanka Air Force and is headed by the Director Quality Assurance (DQA) who is primarily tasked to provide advice on the Quality Assurance Services (QAS) matters such as Policy, Organization and Administration.</p>
 
                         <h5 class="mt-4 mb-3">Main Functions</h5>
                         <ul class="list-group list-group-flush">
@@ -375,7 +353,7 @@
                     <div class="tab-pane fade" id="structure" role="tabpanel">
                         <div class="text-center">
                             <img id="orgImage" class="img-fluid rounded shadow" src="../assets/img/about/org.jpg" alt="Organization Chart">
-                            <p class="text-muted mt-2">Click on the image to zoom</p>
+                            <!-- <p class="text-muted mt-2">Click on the image to zoom</p> -->
                         </div>
 
                         <!-- Fullscreen Swiper -->
@@ -396,69 +374,61 @@
                     <!-- Staff -->
                     <div class="tab-pane fade" id="responsibilities" role="tabpanel">
                         <!-- Director -->
-                        <div class="mb-5">
-                            <div class="alert alert-info" style="height: 40px;">
+                        <div class="">
+                            <!-- <div class="alert alert-info" style="height: 40px;">
                                 <h6 class="text-center mb-0">DIRECTOR QUALITY ASSURANCE</h6>
-                            </div>
+                            </div> -->
                             <div class="row justify-content-center">
-                                <div class="col-md-6 col-lg-3">
+                                <div class="col-md-2 col-lg-2">
                                     <div class="card staff-card text-center">
                                         <div class="card-body">
-                                            <img width="200" height="250" src="../assets/img/staff/cdr.jpg" alt="DIRECTOR QUALITY ASSURANCE" class="img-fluid mb-3">
-                                            <p class="mb-1">Air Cdre MF Jansen</p>
+                                            <h6 class="card-title">DQA</h6>
+                                            <img width="200" height="250" src="../assets/img/staff/01.png" alt="DIRECTOR QUALITY ASSURANCE" class="img-fluid mb-3">
+                                            <p class="mb-1 staff-name">Air Cdre MF Jansen</p>
                                             <p class="mb-0" style="font-size:11px"><strong>Contact:</strong> 077-2229145 / 11100 </p>
                                             <p class="mb-1" style="font-size:11px">dqa@airforce.lk</p>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                        </div>
-
-                        <!-- Quality Assurance Staff -->
-                        <div class="mb-5">
-                            <div class="alert alert-info" style="height: 40px;">
-                                <h6 class="text-center mb-0">QUALITY ASSURANCE STAFF OFFICERS</h6>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-6 col-lg-3 mb-3">
+                                <div class="col-md-2 col-lg-2">
                                     <div class="card staff-card text-center">
                                         <div class="card-body">
                                             <h6 class="card-title">SOQA(AE)</h6>
-                                            <img width="200" height="250" src="../assets/img/staff/of1.jpg" alt="SOQA(AERO ENG-FW/RW)" class="img-fluid mb-3">
-                                            <p class="mb-1">Sqn Ldr WPAC Dayaratne</p>
+                                            <img width="200" height="250" src="../assets/img/staff/of1.png" alt="SOQA(AERO ENG-FW/RW)" class="img-fluid mb-3">
+                                            <p class="mb-1 staff-name">Sqn Ldr WPAC Dayaratne</p>
                                             <p class="mb-1" style="font-size:11px"><strong>Contact:</strong>077-2229145 / 11115</p>
                                             <p class="mb-1" style="font-size:11px">soqa.ae@airforce.lk</p>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-md-6 col-lg-3 mb-3">
+                                <div class="col-md-2 col-lg-2">
                                     <div class="card staff-card text-center">
                                         <div class="card-body">
                                             <h6 class="card-title">SOQA(EE)</h6>
-                                            <img width="200" height="250" src="../assets/img/staff/of4.jpg" alt="SOQA(E/E&T ENG)" class="img-fluid mb-3">
-                                            <p class="mb-1">Sqn Ldr UJC Kumara</p>
+                                            <img width="200" height="250" src="../assets/img/staff/of4.png" alt="SOQA(E/E&T ENG)" class="img-fluid mb-3">
+                                            <p class="mb-1 staff-name">Sqn Ldr UJC Kumara</p>
                                             <p class="mb-1" style="font-size:11px"><strong>Contact:</strong> 077-2229142 / 11116</p>
                                             <p class="mb-1" style="font-size:11px">soqa.ee@airforce.lk</p>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-md-6 col-lg-3 mb-3">
+                                <div class="col-md-2 col-lg-2">
                                     <div class="card staff-card text-center">
                                         <div class="card-body">
                                             <h6 class="card-title">SOQA(GE)</h6>
-                                            <img width="200" height="250" src="../assets/img/staff/officer3.jpg" alt="SOQA(GE)" class="img-fluid mb-3">
-                                            <p class="mb-1">Sqn Ldr THDM Hettige</p>
+                                            <img width="200" height="250" src="../assets/img/staff/officer3.png" alt="SOQA(GE)" class="img-fluid mb-3">
+                                            <p class="mb-1 staff-name">Sqn Ldr THDM Hettige</p>
                                             <p class="mb-1" style="font-size:11px"><strong>Contact:</strong> 077-2229165 / 11117</p>
                                             <p class="mb-1" style="font-size:11px">soqa.ge@airforce.lk</p>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-md-6 col-lg-3 mb-3">
+                                <div class="col-md-2 col-lg-2">
                                     <div class="card staff-card text-center">
                                         <div class="card-body">
                                             <h6 class="card-title">SOQA(TRG & PUG)</h6>
-                                            <img width="200" height="250" src="../assets/img/staff/of2.jpg" alt="SOQA(TRG & PUG)" class="img-fluid mb-3">
-                                            <p class="mb-1">Sqn Ldr MMDC MORAYAS</p>
+                                            <img width="200" height="250" src="../assets/img/staff/of2.png" alt="SOQA(TRG & PUG)" class="img-fluid mb-3">
+                                            <p class="mb-1 staff-name">Sqn Ldr MMDC MORAYAS</p>
                                             <p class="mb-1" style="font-size:11px"><strong>Contact:</strong> 0778829671 / 11119</p>
                                             <p class="mb-1" style="font-size:11px">soqa.trg@airforce.lk<br>soqa.osh@airforce.lk</p>
                                         </div>
@@ -467,17 +437,27 @@
                             </div>
                         </div>
 
+                        <!-- Quality Assurance Staff -->
+                        <!-- <div class="mb-5">
+                            <div class="alert alert-info" style="height: 40px;">
+                                <h6 class="text-center mb-0">QUALITY ASSURANCE STAFF OFFICERS</h6>
+                            </div>
+                            <div class="row">
+                            </div>
+                        </div> -->
+
                         <!-- Quality Assurance WO I/C -->
                         <div>
-                            <div class="alert alert-info" style="height: 40px;">
+                            <!-- <div class="alert alert-info" style="height: 40px;">
                                 <h6 class="text-center mb-0">QUALITY ASSURANCE WO I/C</h6>
-                            </div>
+                            </div> -->
                             <div class="row justify-content-center">
-                                <div class="col-md-6 col-lg-3">
+                                <div class="col-md-2 col-lg-2">
                                     <div class="card staff-card text-center">
                                         <div class="card-body">
-                                            <img width="200" height="250" src="../assets/img/staff/of3.jpg" alt="QUALITY ASSURANCE WO I/C" class="img-fluid mb-3">
-                                            <p class="mb-1">MWO RGD ARIYARATHNA</p>
+                                            <h6 class="card-title">QUALITY ASSURANCE WO I/C</h6>
+                                            <img width="200" height="250" src="../assets/img/staff/of3.png" alt="QUALITY ASSURANCE WO I/C" class="img-fluid mb-3">
+                                            <p class="mb-1 staff-name">MWO RGD ARIYARATHNA</p>
                                             <p class="mb-1" style="font-size:11px"><strong>Contact:</strong> 0707909422 / 11151</p>
                                         </div>
                                     </div>
