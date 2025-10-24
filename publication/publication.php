@@ -50,11 +50,16 @@ try {
     $maintenance_worksheets = [];
     $maintenance_error = '';
 
+    // Fetch Technical Library data
+    $tech_library = [];
+    $tech_library_error = '';
+
     // Check database connection
     if (!isset($db) || !$db || (property_exists($db, 'connect_error') && $db->connect_error)) {
         $ad_bulletins_error = "Database connection failed: " . ($db->connect_error ?? 'Unknown error');
         $qai_newsletters_error = $ad_bulletins_error;
         $maintenance_error = $ad_bulletins_error;
+        $tech_library_error = $ad_bulletins_error;
     } else {
         // Load lookup maps (formations, types)
         $f_res = $db->query("SELECT formation_id, formation_name FROM formation");
@@ -156,6 +161,21 @@ try {
             $stmt_worksheets->close();
         } else {
             $maintenance_error = "Error preparing Worksheets query: " . $db->error;
+        }
+
+        // Fetch Technical Library records
+        $stmt_tech = $db->prepare("SELECT * FROM tech_library ORDER BY sno ASC");
+        
+        if ($stmt_tech) {
+            if ($stmt_tech->execute()) {
+                $result_tech = $stmt_tech->get_result();
+                $tech_library = $result_tech->fetch_all(MYSQLI_ASSOC);
+                $stmt_tech->close();
+            } else {
+                $tech_library_error = "Technical Library query execution failed: " . $stmt_tech->error;
+            }
+        } else {
+            $tech_library_error = "Error preparing Technical Library query: " . $db->error;
         }
     }
 
@@ -707,26 +727,71 @@ try {
 
                         <!-- Technical Library Tab -->
                         <div class="tab-pane fade" id="vehicle" role="tabpanel">
-                            <?php if ($show_pdf): ?>
-                                <div class="top-bar">
-                                    <a href="?file=<?= $default_file ?>" class="btn btn-sm btn-dark">Technical Library Document</a>
-                                </div>
-
-                                <!-- PDF.js Viewer -->
-                                <div class="pdf-viewer-container">
-                                    <iframe src="/qai/assets/pdfjs/web/viewer.html?file=<?= urlencode($pdf_web_path) ?>"
-                                        width="100%" height="100%" style="border:none;">
-                                    </iframe>
-                                </div>
-                            <?php else: ?>
-                                <?php if (isset($error)): ?>
-                                    <div class="alert alert-danger"><?= $error ?></div>
+                            <h4 class="colour-defult">Technical Library</h4>
+                            <div class="mt-4">
+                                <?php if (!empty($tech_library_error)): ?>
+                                    <div class="alert alert-danger">
+                                        <strong>Database Error:</strong> <?= htmlspecialchars($tech_library_error) ?>
+                                    </div>
+                                <?php elseif (!empty($tech_library)): ?>
+                                    <div class="card">
+                                        <div class="card-body p-0">
+                                            <div class="table-responsive">
+                                                <table class="table table-striped table-hover mb-0" id="techLibraryTable" style="font-size:x-small;">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>S.No</th>
+                                                            <th>Publication Index</th>
+                                                            <th>File</th>
+                                                            <th>View</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <?php foreach ($tech_library as $item): ?>
+                                                            <tr>
+                                                                <td><strong><?= htmlspecialchars($item['sno']) ?></strong></td>
+                                                                <td class="text-truncate-multiline" title="<?= htmlspecialchars($item['publication_index']) ?>">
+                                                                    <?= htmlspecialchars($item['publication_index']) ?>
+                                                                </td>
+                                                                <td>
+                                                                    <?php if (!empty($item['file_path'])): ?>
+                                                                        <a href="/qai/assets/pdfjs/web/viewer.html?file=<?= urlencode('/qai/admin/action/' . $item['file_path']) ?>"
+                                                                           class="btn btn-view-pdf btn-sm view-pdf-btn"
+                                                                           data-bs-toggle="modal"
+                                                                           data-bs-target="#pdfModal"
+                                                                           data-pdf-url="/qai/assets/pdfjs/web/viewer.html?file=<?= urlencode('/qai/admin/action/' . $item['file_path']) ?>">
+                                                                            <i class="fas fa-file-pdf me-1"></i>View PDF
+                                                                        </a>
+                                                                    <?php else: ?>
+                                                                        <span class="text-muted">No file</span>
+                                                                    <?php endif; ?>
+                                                                </td>
+                                                                <td>
+                                                                    <button class="btn btn-view-details btn-sm view-details-btn"
+                                                                        data-bs-toggle="modal"
+                                                                        data-bs-target="#detailsModal"
+                                                                        data-record-type="tech_library"
+                                                                        data-record-id="<?= $item['id'] ?? '' ?>"
+                                                                        data-record-sno="<?= htmlspecialchars($item['sno'] ?? '') ?>"
+                                                                        data-record-publication-index="<?= htmlspecialchars($item['publication_index'] ?? '') ?>"
+                                                                        data-record-file-path="<?= htmlspecialchars($item['file_path'] ?? '') ?>">
+                                                                        View
+                                                                    </button>
+                                                                </td>
+                                                            </tr>
+                                                        <?php endforeach; ?>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                <?php else: ?>
+                                    <div class="alert alert-info">
+                                        <i class="fas fa-info-circle me-2"></i>
+                                        No Technical Library documents found.
+                                    </div>
                                 <?php endif; ?>
-
-                                <div class="alert alert-info">
-                                    <p>No technical library document is available at the moment.</p>
-                                </div>
-                            <?php endif; ?>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -814,6 +879,11 @@ try {
                 $('#qaiNewslettersTable').DataTable(dataTableConfig);
             }
 
+            // Initialize Technical Library table
+            if ($('#techLibraryTable').length) {
+                $('#techLibraryTable').DataTable(dataTableConfig);
+            }
+
             // Initialize DataTables for maintenance tables when their tabs are shown
             $('a[data-bs-target^="#schedule_"], a[data-bs-target^="#worksheet_"]').on('click', function() {
                 const target = $(this).data('bs-target');
@@ -852,6 +922,7 @@ try {
                     switch (recordType) {
                         case 'ad_bulletin': title = 'AD Bulletin Details'; break;
                         case 'qai_newsletter': title = 'QAI Safety Newsletter Details'; break;
+                        case 'tech_library': title = 'Technical Library Document Details'; break;
                         default: title = 'Record Details';
                     }
                     detailsModalTitle.textContent = title;
@@ -863,6 +934,9 @@ try {
                             break;
                         case 'qai_newsletter':
                             content = generateQAINewsletterDetails(button);
+                            break;
+                        case 'tech_library':
+                            content = generateTechLibraryDetails(button);
                             break;
                         default:
                             content = '<p>No details available.</p>';
@@ -955,6 +1029,38 @@ try {
                         <tr>
                             <th>Description:</th>
                             <td style="white-space: pre-wrap;">${formatValue(description)}</td>
+                        </tr>
+                    </table>
+                `;
+            }
+
+            function generateTechLibraryDetails(button) {
+                const sno = button.getAttribute('data-record-sno');
+                const publicationIndex = button.getAttribute('data-record-publication-index');
+                const filePath = button.getAttribute('data-record-file-path');
+
+                return `
+                    <div class="section-divider">Technical Library Document</div>
+                    <table class="details-modal-table">
+                        <tr>
+                            <th>S.No:</th>
+                            <td><strong>${formatValue(sno)}</strong></td>
+                        </tr>
+                        <tr>
+                            <th>Publication Index:</th>
+                            <td style="white-space: pre-wrap;">${formatValue(publicationIndex)}</td>
+                        </tr>
+                        <tr>
+                            <th>File:</th>
+                            <td>
+                                ${filePath && filePath !== 'null' && filePath !== 'undefined' ? 
+                                    `<a href="/qai/assets/pdfjs/web/viewer.html?file=${encodeURIComponent('/qai/admin/action/' + filePath)}" 
+                                      class="btn btn-sm btn-outline-primary" target="_blank">
+                                        <i class="fas fa-file-pdf me-1"></i>View Document
+                                     </a>` : 
+                                    '<span class="empty-value">No file available</span>'
+                                }
+                            </td>
                         </tr>
                     </table>
                 `;
