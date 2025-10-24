@@ -769,9 +769,47 @@ CREATE TABLE `ad_bulletins`  (
 DROP TABLE IF EXISTS `qai_newsletters`;
 CREATE TABLE `qai_newsletters` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `title` varchar(255) NOT NULL,
+  `sno` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   `description` text NOT NULL,
-  `file_path` varchar(255) DEFAULT NULL,
   `issue_date` date NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- ----------------------------
+-- Table structure for tech_librarys
+-- ----------------------------
+DROP TABLE IF EXISTS `tech_library`;
+CREATE TABLE `tech_library`  (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `sno` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `publication_index` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Table structure for maintenance_documents
+-- ----------------------------
+DROP TABLE IF EXISTS `maintenance_documents`;
+CREATE TABLE `maintenance_documents`  (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `document_type` enum('worksheet','schedule') NOT NULL,
+  `document_number` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `description` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `formation_id` int NOT NULL,
+  `trade` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
+  `type_id` int NOT NULL,
+  `issue` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `revision` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
+  `revision_date` date NULL DEFAULT NULL,
+  `branch_id` int NOT NULL,
+  `file_path` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  PRIMARY KEY (`id`) USING BTREE,
+  INDEX `fk_md_formation`(`formation_id`) USING BTREE,
+  INDEX `fk_md_type`(`type_id`) USING BTREE,
+  INDEX `fk_md_branch`(`branch_id`) USING BTREE,
+  INDEX `idx_document_type`(`document_type`) USING BTREE,
+  INDEX `idx_document_number`(`document_number`) USING BTREE,
+  CONSTRAINT `fk_md_branch` FOREIGN KEY (`branch_id`) REFERENCES `branches` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
+  CONSTRAINT `fk_md_formation` FOREIGN KEY (`formation_id`) REFERENCES `formation` (`formation_id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
+  CONSTRAINT `fk_md_type` FOREIGN KEY (`type_id`) REFERENCES `type` (`type_id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;

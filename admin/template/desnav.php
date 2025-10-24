@@ -33,8 +33,8 @@
                             <li><a href="#">Online Subscription</a></li>
                             <li><a href="ad-bulletins.php">ADs & Bulletins</a></li>
                             <li><a href="qai-newsletters.php">QAI Safety Newsletters</a></li>
-							<li><a href="#">Maintenance Program</a></li>
-							<li><a href="#">Technical Library</a></li>
+							<li><a href="maintenance-program.php">Maintenance Program</a></li>
+							<li><a href="tech-library.php">Technical Library</a></li>
                         </ul>
                     </li>
                     <li>

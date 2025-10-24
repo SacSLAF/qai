@@ -1,107 +1,202 @@
 <?php
+// publication.php
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-require_once "../includes/config.php";
+// Start output buffering to catch any errors
+ob_start();
 
-// Check if a PDF file is requested
-$show_pdf = false;
-$pdf_file = '';
-$pdf_web_path = '';
-$file = 'CPD Training.pdf';
-
-// Server path to PDF - corrected relative path
-$file_path = "../admin/action/uploads/publication/tech/" . $file;
-
-// Get absolute path for file existence check
-$absolute_path = realpath($file_path);
-
-if ($absolute_path && file_exists($absolute_path)) {
-    $show_pdf = true;
-    // Web path to PDF (for PDF.js)
-    $pdf_web_path = "/qai/admin/action/uploads/publication/tech/" . $file;
-} else {
+try {
+    require_once "../includes/config.php";
+    
+    // Initialize variables to avoid undefined variable errors
     $show_pdf = false;
-    $error = "File not found. Tried path: " . htmlspecialchars($file_path);
-    if ($absolute_path === false) {
-        $error .= " (Path does not exist)";
-    }
-}
+    $pdf_file = '';
+    $pdf_web_path = '';
+    $error = '';
+    $file = 'CPD Training.pdf';
 
-// Fetch data for AD Bulletins
-$ad_bulletins = [];
-$ad_bulletins_error = '';
-$formations_map = [];
-$types_map = [];
+    // Server path to PDF - corrected relative path
+    $file_path = "../admin/action/uploads/publication/tech/" . $file;
 
-// Fetch data for QAI Newsletters
-$qai_newsletters = [];
-$qai_newsletters_error = '';
+    // Get absolute path for file existence check
+    $absolute_path = realpath($file_path);
 
-// Check database connection
-if (!isset($db) || !$db || (property_exists($db, 'connect_error') && $db->connect_error)) {
-    $ad_bulletins_error = "Database connection failed: " . ($db->connect_error ?? 'Unknown error');
-    $qai_newsletters_error = $ad_bulletins_error;
-} else {
-    // Load lookup maps (formations, types)
-    $f_res = $db->query("SELECT formation_id, formation_name FROM formation");
-    if ($f_res) {
-        foreach ($f_res->fetch_all(MYSQLI_ASSOC) as $f) {
-            $formations_map[$f['formation_id']] = $f['formation_name'];
-        }
-    }
-
-    $t_res = $db->query("SELECT type_id, type_name FROM type");
-    if ($t_res) {
-        foreach ($t_res->fetch_all(MYSQLI_ASSOC) as $t) {
-            $types_map[$t['type_id']] = $t['type_name'];
-        }
-    }
-
-    // Fetch AD Bulletins records
-    $stmt_ad = $db->prepare("
-        SELECT ab.*, f.formation_name, t.type_name 
-        FROM ad_bulletins ab 
-        LEFT JOIN formation f ON ab.formation_id = f.formation_id 
-        LEFT JOIN type t ON ab.related_aircraft_id = t.type_id 
-        ORDER BY ab.date_of_issue DESC
-    ");
-
-    if ($stmt_ad) {
-        if ($stmt_ad->execute()) {
-            $result_ad = $stmt_ad->get_result();
-            $ad_bulletins = $result_ad->fetch_all(MYSQLI_ASSOC);
-            $stmt_ad->close();
-        } else {
-            $ad_bulletins_error = "AD Bulletins query execution failed: " . $stmt_ad->error;
-        }
+    if ($absolute_path && file_exists($absolute_path)) {
+        $show_pdf = true;
+        // Web path to PDF (for PDF.js)
+        $pdf_web_path = "/qai/admin/action/uploads/publication/tech/" . $file;
     } else {
-        $ad_bulletins_error = "Error preparing AD Bulletins query: " . $db->error;
-    }
-
-    // Fetch QAI Newsletters records
-    $stmt_qai = $db->prepare("
-        SELECT qn.* 
-        FROM qai_newsletters qn 
-        ORDER BY qn.issue_date DESC, qn.qsn_no DESC
-    ");
-
-    if ($stmt_qai) {
-        if ($stmt_qai->execute()) {
-            $result_qai = $stmt_qai->get_result();
-            $qai_newsletters = $result_qai->fetch_all(MYSQLI_ASSOC);
-            $stmt_qai->close();
-        } else {
-            $qai_newsletters_error = "QAI Newsletters query execution failed: " . $stmt_qai->error;
+        $show_pdf = false;
+        $error = "File not found. Tried path: " . htmlspecialchars($file_path);
+        if ($absolute_path === false) {
+            $error .= " (Path does not exist)";
         }
-    } else {
-        $qai_newsletters_error = "Error preparing QAI Newsletters query: " . $db->error;
     }
-}
 
-include '../template/head.php';
+    // Fetch data for AD Bulletins
+    $ad_bulletins = [];
+    $ad_bulletins_error = '';
+    $formations_map = [];
+    $types_map = [];
+
+    // Fetch data for QAI Newsletters
+    $qai_newsletters = [];
+    $qai_newsletters_error = '';
+
+    // Fetch Maintenance Program data
+    $maintenance_schedules = [];
+    $maintenance_worksheets = [];
+    $maintenance_error = '';
+
+    // Check database connection
+    if (!isset($db) || !$db || (property_exists($db, 'connect_error') && $db->connect_error)) {
+        $ad_bulletins_error = "Database connection failed: " . ($db->connect_error ?? 'Unknown error');
+        $qai_newsletters_error = $ad_bulletins_error;
+        $maintenance_error = $ad_bulletins_error;
+    } else {
+        // Load lookup maps (formations, types)
+        $f_res = $db->query("SELECT formation_id, formation_name FROM formation");
+        if ($f_res) {
+            foreach ($f_res->fetch_all(MYSQLI_ASSOC) as $f) {
+                $formations_map[$f['formation_id']] = $f['formation_name'];
+            }
+        }
+
+        $t_res = $db->query("SELECT type_id, type_name FROM type");
+        if ($t_res) {
+            foreach ($t_res->fetch_all(MYSQLI_ASSOC) as $t) {
+                $types_map[$t['type_id']] = $t['type_name'];
+            }
+        }
+
+        // Fetch AD Bulletins records
+        $stmt_ad = $db->prepare("
+            SELECT ab.*, f.formation_name, t.type_name 
+            FROM ad_bulletins ab 
+            LEFT JOIN formation f ON ab.formation_id = f.formation_id 
+            LEFT JOIN type t ON ab.related_aircraft_id = t.type_id 
+            ORDER BY ab.date_of_issue DESC
+        ");
+
+        if ($stmt_ad) {
+            if ($stmt_ad->execute()) {
+                $result_ad = $stmt_ad->get_result();
+                $ad_bulletins = $result_ad->fetch_all(MYSQLI_ASSOC);
+                $stmt_ad->close();
+            } else {
+                $ad_bulletins_error = "AD Bulletins query execution failed: " . $stmt_ad->error;
+            }
+        } else {
+            $ad_bulletins_error = "Error preparing AD Bulletins query: " . $db->error;
+        }
+
+        // Fetch QAI Newsletters records
+        $stmt_qai = $db->prepare("
+            SELECT qn.* 
+            FROM qai_newsletters qn 
+            ORDER BY qn.issue_date DESC, qn.qsn_no DESC
+        ");
+
+        if ($stmt_qai) {
+            if ($stmt_qai->execute()) {
+                $result_qai = $stmt_qai->get_result();
+                $qai_newsletters = $result_qai->fetch_all(MYSQLI_ASSOC);
+                $stmt_qai->close();
+            } else {
+                $qai_newsletters_error = "QAI Newsletters query execution failed: " . $stmt_qai->error;
+            }
+        } else {
+            $qai_newsletters_error = "Error preparing QAI Newsletters query: " . $db->error;
+        }
+
+        // Fetch Maintenance Program data
+        // Fetch schedules (document_type = 'schedule')
+        $stmt_schedules = $db->prepare("
+            SELECT md.*, f.formation_name, t.type_name, b.name as branch_name 
+            FROM maintenance_documents md 
+            LEFT JOIN formation f ON md.formation_id = f.formation_id 
+            LEFT JOIN type t ON md.type_id = t.type_id 
+            LEFT JOIN branches b ON md.branch_id = b.id 
+            WHERE md.document_type = 'schedule' 
+            ORDER BY md.document_number ASC
+        ");
+
+        if ($stmt_schedules) {
+            if ($stmt_schedules->execute()) {
+                $result_schedules = $stmt_schedules->get_result();
+                $maintenance_schedules = $result_schedules->fetch_all(MYSQLI_ASSOC);
+            } else {
+                $maintenance_error = "Schedules query execution failed: " . $stmt_schedules->error;
+            }
+            $stmt_schedules->close();
+        } else {
+            $maintenance_error = "Error preparing Schedules query: " . $db->error;
+        }
+
+        // Fetch worksheets (document_type = 'worksheet')
+        $stmt_worksheets = $db->prepare("
+            SELECT md.*, f.formation_name, t.type_name, b.name as branch_name 
+            FROM maintenance_documents md 
+            LEFT JOIN formation f ON md.formation_id = f.formation_id 
+            LEFT JOIN type t ON md.type_id = t.type_id 
+            LEFT JOIN branches b ON md.branch_id = b.id 
+            WHERE md.document_type = 'worksheet' 
+            ORDER BY md.document_number ASC
+        ");
+
+        if ($stmt_worksheets) {
+            if ($stmt_worksheets->execute()) {
+                $result_worksheets = $stmt_worksheets->get_result();
+                $maintenance_worksheets = $result_worksheets->fetch_all(MYSQLI_ASSOC);
+            } else {
+                $maintenance_error = "Worksheets query execution failed: " . $stmt_worksheets->error;
+            }
+            $stmt_worksheets->close();
+        } else {
+            $maintenance_error = "Error preparing Worksheets query: " . $db->error;
+        }
+    }
+
+    // Organize maintenance data by branch for easier filtering
+    $schedules_by_branch = [];
+    $worksheets_by_branch = [];
+
+    $branch_map = [
+        1 => 'Aeronautical Engineering',
+        4 => 'Electronic Engineering', 
+        5 => 'General Engineering'
+    ];
+
+    foreach ($maintenance_schedules as $schedule) {
+        $branch_id = $schedule['branch_id'];
+        if (!isset($schedules_by_branch[$branch_id])) {
+            $schedules_by_branch[$branch_id] = [];
+        }
+        $schedules_by_branch[$branch_id][] = $schedule;
+    }
+
+    foreach ($maintenance_worksheets as $worksheet) {
+        $branch_id = $worksheet['branch_id'];
+        if (!isset($worksheets_by_branch[$branch_id])) {
+            $worksheets_by_branch[$branch_id] = [];
+        }
+        $worksheets_by_branch[$branch_id][] = $worksheet;
+    }
+
+    // Include head template after all PHP processing
+    include '../template/head.php';
+
+    // Clear any previous output
+    ob_end_clean();
+} catch (Exception $e) {
+    // Handle any exceptions
+    ob_end_clean();
+    die("Error: " . $e->getMessage());
+}
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -121,12 +216,151 @@ include '../template/head.php';
     <!-- Custom CSS -->
     <link rel="stylesheet" href="../assets/css/styles.css">
     <style>
-        /* .tab-content {
-            padding: 20px;
-            background: #fff;
-            border-radius: 5px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        } */
+        .colour-defult {
+            font-size: small;
+        }
+        
+        .text-truncate-multiline {
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            max-width: 200px;
+        }
+
+        .form-select-sm {
+            font-size: 0.875rem;
+        }
+
+        .branch-content {
+            display: none;
+        }
+        .branch-content.active {
+            display: block;
+        }
+
+        .details-modal-table {
+            width: 100%;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+        }
+        .details-modal-table th {
+            background-color: #f8f9fa;
+            width: 30%;
+            padding: 8px 12px;
+            font-weight: 600;
+            border-bottom: 1px solid #dee2e6;
+        }
+        .details-modal-table td {
+            padding: 8px 12px;
+            border-bottom: 1px solid #dee2e6;
+            word-break: break-word;
+        }
+
+        .btn-group .btn {
+            margin-right: 5px;
+        }
+
+        .btn-group .btn:last-child {
+            margin-right: 0;
+        }
+
+        .modal-xl-custom {
+            max-width: 1200px;
+        }
+
+        .section-divider {
+            border-top: 2px solid #007bff;
+            margin: 15px 0;
+            padding-top: 10px;
+            font-weight: bold;
+            color: #007bff;
+        }
+        .empty-value {
+            color: #6c757d;
+            font-style: italic;
+        }
+
+        .welcome-image {
+            width: 100%;
+        }
+
+        .table th {
+            background-color: #839abdff;
+            color: white;
+            font-weight: 600;
+            border: none;
+        }
+
+        .table td {
+            border-bottom: 1px solid #dee2e6;
+            padding: 12px 8px;
+            vertical-align: middle;
+        }
+
+        /* Dropdown styles */
+        .qa-dropdown {
+            position: relative;
+        }
+
+        .qa-dropdown-menu {
+            position: static;
+            display: none;
+            padding: 0;
+            margin: 0;
+            background-color: transparent;
+            border: none;
+            box-shadow: none;
+        }
+
+        .qa-dropdown-menu.show {
+            display: block;
+        }
+
+        .qa-dropdown-item {
+            display: block;
+            width: 100%;
+            padding: 0.5rem 1.5rem;
+            clear: both;
+            font-weight: 400;
+            color: #212529;
+            text-align: inherit;
+            text-decoration: none;
+            white-space: nowrap;
+            background-color: transparent;
+            border: 0;
+            font-size: 0.875rem;
+        }
+
+        .qa-dropdown-item:hover,
+        .qa-dropdown-item:focus {
+            color: #16181b;
+            text-decoration: none;
+            background-color: #f8f9fa;
+        }
+
+        .qa-dropdown-toggle::after {
+            float: right;
+            margin-left: 0.255em;
+            vertical-align: 0.255em;
+        }
+
+        .nav-column .nav-link {
+            border-radius: 0;
+            padding: 0.75rem 1rem;
+        }
+
+        .nav-column .qa-dropdown-item {
+            font-size:x-small;
+            padding-left: 2rem;
+            color: #212529;
+        }
+
+        .nav-column .qa-dropdown-item.qa-dropdown-subitem {
+            font-size:x-small;
+            padding-left: 3rem;
+            color: #212529;
+        }
     </style>
 </head>
 
@@ -136,31 +370,47 @@ include '../template/head.php';
 
     <!-- Main Content -->
     <main class="container-fluid">
-        <!-- <div class="main-container"> -->
-        <!-- Navigation Tabs -->
         <div class="row">
-            <div class="col-lg-1 col-xl-1 mb-4">
+            <div class="col-lg-2 col-xl-2 mb-4">
                 <div class="nav-column">
                     <div class="nav flex-column nav-pills" id="inspectorateTabs" role="tablist">
-
-                    <a class="nav-link" data-bs-target="#ac" role="tab">Online Subscription</a>
-                    <a class="nav-link" data-bs-target="#ad" role="tab">ADs & Bulletins</a>
-                    <a class="nav-link" data-bs-target="#qai_news" role="tab">QAI Safety Newsletters</a>
+                        <a class="nav-link" data-bs-target="#ac" role="tab">Online Subscription</a>
+                        <a class="nav-link" data-bs-target="#ad" role="tab">ADs & Bulletins</a>
+                        <a class="nav-link" data-bs-target="#qai_news" role="tab">QAI Safety Newsletters</a>
 
                         <!-- Maintenance Program Dropdown -->
                         <div class="qa-dropdown">
                             <a class="nav-link qa-dropdown-toggle" role="button">Maintenance Program</a>
                             <div class="qa-dropdown-menu">
-                                <a class="qa-dropdown-item " data-bs-target="#audits_plan" role="tab">Servicing Schedule</a>
-                                <a class="qa-dropdown-item" data-bs-target="#audit_check_list" role="tab">Worksheet</a>
+                                <!-- Servicing Schedule Submenu -->
+                                <div class="qa-dropdown">
+                                    <a class="qa-dropdown-item qa-dropdown-toggle" role="button" style="font-size:x-small;">Servicing Schedule</a>
+                                    <div class="qa-dropdown-menu">
+                                        <a class="qa-dropdown-item qa-dropdown-subitem" data-bs-target="#schedule_1" role="tab">Aeronautical Engineering</a>
+                                        <a class="qa-dropdown-item qa-dropdown-subitem" data-bs-target="#schedule_5" role="tab">General Engineering</a>
+                                        <a class="qa-dropdown-item qa-dropdown-subitem" data-bs-target="#schedule_4" role="tab">Electronic Engineering</a>
+                                    </div>
+                                </div>
+                                
+                                <!-- Worksheet Submenu -->
+                                <div class="qa-dropdown">
+                                    <a class="qa-dropdown-item qa-dropdown-toggle" role="button">Worksheet</a>
+                                    <div class="qa-dropdown-menu">
+                                        <a class="qa-dropdown-item qa-dropdown-subitem" data-bs-target="#worksheet_1" role="tab">Aeronautical Engineering</a>
+                                        <a class="qa-dropdown-item qa-dropdown-subitem" data-bs-target="#worksheet_5" role="tab">General Engineering</a>
+                                        <a class="qa-dropdown-item qa-dropdown-subitem" data-bs-target="#worksheet_4" role="tab">Electronic Engineering</a>
+                                    </div>
+                                </div>
                             </div>
                         </div>
+
                         <a class="nav-link" data-bs-target="#vehicle" role="tab">Technical Library</a>
                     </div>
                 </div>
             </div>
+
             <!-- Tab Content -->
-            <div class="col-lg-11 col-xl-11">
+            <div class="col-lg-10 col-xl-10">
                 <div class="content-column">
                     <div class="tab-content" id="inspectorateTabsContent">
                         <!-- Welcome Screen (shown by default) -->
@@ -169,163 +419,6 @@ include '../template/head.php';
                                 <!-- <img src="../assets/img/qai-welcome.jpg" alt="Quality Assurance Inspectorate" class="welcome-image"> -->
                             </div>
                         </div>
-
-                    <!-- Online Subscription Tab -->
-                    <div class="tab-pane fade" id="ac" role="tabpanel">
-                        <h4 class="colour-defult">Online Subscription</h4>
-                        <div>
-                            <?php include 'online_sub.php' ?>
-                        </div>
-                    </div>
-
-                    <!-- ADs & Bulletins Tab -->
-                    <div class="tab-pane fade" id="ad" role="tabpanel">
-                        <h4 class="colour-defult">ADs & Bulletins</h4>
-                        <div class="mt-4">
-                            <?php if (!empty($ad_bulletins_error)): ?>
-                                <div class="alert alert-danger">
-                                    <strong>Database Error:</strong> <?= htmlspecialchars($ad_bulletins_error) ?>
-                                </div>
-                            <?php elseif (!empty($ad_bulletins)): ?>
-                                <div class="card">
-                                    <div class="card-body p-0">
-                                        <div class="table-responsive">
-                                            <table class="table table-striped table-hover mb-0" id="adBulletinsTable">
-                                                <thead>
-                                                    <tr>
-                                                        <th>Reference No</th>
-                                                        <th>Bulletin Description</th>
-                                                        <th>Related Aircraft</th>
-                                                        <th>Formation</th>
-                                                        <th>Date of Issue</th>
-                                                        <th>Actions</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    <?php foreach ($ad_bulletins as $bulletin): ?>
-                                                        <tr>
-                                                            <td><strong><?= htmlspecialchars($bulletin['reference_no']) ?></strong></td>
-                                                            <td class="text-truncate-multiline" title="<?= htmlspecialchars($bulletin['bulletin_description']) ?>">
-                                                                <?= htmlspecialchars($bulletin['bulletin_description']) ?>
-                                                            </td>
-                                                            <td><?= htmlspecialchars($bulletin['type_name'] ?? 'N/A') ?></td>
-                                                            <td><?= htmlspecialchars($bulletin['formation_name'] ?? 'N/A') ?></td>
-                                                            <td><?= $bulletin['date_of_issue'] ? date('M d, Y', strtotime($bulletin['date_of_issue'])) : 'N/A' ?></td>
-                                                            <td>
-                                                                <button class="btn btn-view-details btn-sm view-details-btn"
-                                                                    data-bs-toggle="modal"
-                                                                    data-bs-target="#detailsModal"
-                                                                    data-record-type="ad_bulletin"
-                                                                    data-record-id="<?= $bulletin['id'] ?? '' ?>"
-                                                                    data-record-reference-no="<?= htmlspecialchars($bulletin['reference_no'] ?? '') ?>"
-                                                                    data-record-bulletin-description="<?= htmlspecialchars($bulletin['bulletin_description'] ?? '') ?>"
-                                                                    data-record-related-aircraft="<?= htmlspecialchars($bulletin['type_name'] ?? '') ?>"
-                                                                    data-record-formation="<?= htmlspecialchars($bulletin['formation_name'] ?? '') ?>"
-                                                                    data-record-date-of-issue="<?= htmlspecialchars($bulletin['date_of_issue'] ?? '') ?>">
-                                                                    View Details
-                                                                </button>
-                                                            </td>
-                                                        </tr>
-                                                    <?php endforeach; ?>
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    </div>
-                                </div>
-                            <?php else: ?>
-                                <div class="alert alert-info">
-                                    <i class="fas fa-info-circle me-2"></i>
-                                    No AD Bulletins found.
-                                </div>
-                            <?php endif; ?>
-                        </div>
-                    </div>
-
-                    <!-- QAI Safety Newsletters Tab -->
-                    <div class="tab-pane fade" id="qai_news" role="tabpanel">
-                        <h4 class="colour-defult">QAI Safety Newsletters</h4>
-                        <div class="mt-4">
-                            <?php if (!empty($qai_newsletters_error)): ?>
-                                <div class="alert alert-danger">
-                                    <strong>Database Error:</strong> <?= htmlspecialchars($qai_newsletters_error) ?>
-                                </div>
-                            <?php elseif (!empty($qai_newsletters)): ?>
-                                <div class="card">
-                                    <div class="card-body p-0">
-                                        <div class="table-responsive">
-                                            <table class="table table-striped table-hover mb-0" id="qaiNewslettersTable">
-                                                <thead>
-                                                    <tr>
-                                                        <th>QSN No</th>
-                                                        <th>Description</th>
-                                                        <th>Issue Date</th>
-                                                        <th>Actions</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    <?php foreach ($qai_newsletters as $newsletter): ?>
-                                                        <tr>
-                                                            <td><strong><?= htmlspecialchars($newsletter['qsn_no']) ?></strong></td>
-                                                            <td class="text-truncate-multiline" title="<?= htmlspecialchars($newsletter['description']) ?>">
-                                                                <?= htmlspecialchars($newsletter['description']) ?>
-                                                            </td>
-                                                            <td><?= $newsletter['issue_date'] ? date('M d, Y', strtotime($newsletter['issue_date'])) : 'N/A' ?></td>
-                                                            <td>
-                                                                <div class="btn-group" role="group">
-                                                                    <?php if (!empty($newsletter['file_path'])): ?>
-                                                                        <a href="/qai/assets/pdfjs/web/viewer.html?file=<?= urlencode('/qai/admin/action/' . $newsletter['file_path']) ?>"
-                                                                            class="btn btn-view-pdf btn-sm view-pdf-btn"
-                                                                            data-bs-toggle="modal"
-                                                                            data-bs-target="#pdfModal"
-                                                                            data-pdf-url="/qai/assets/pdfjs/web/viewer.html?file=<?= urlencode('/qai/admin/action/' . $newsletter['file_path']) ?>">
-                                                                            <i class="fas fa-file-pdf me-1"></i>View PDF
-                                                                        </a>
-                                                                    <?php endif; ?>
-                                                                    <button class="btn btn-view-details btn-sm view-details-btn"
-                                                                        data-bs-toggle="modal"
-                                                                        data-bs-target="#detailsModal"
-                                                                        data-record-type="qai_newsletter"
-                                                                        data-record-id="<?= $newsletter['id'] ?? '' ?>"
-                                                                        data-record-qsn-no="<?= htmlspecialchars($newsletter['qsn_no'] ?? '') ?>"
-                                                                        data-record-description="<?= htmlspecialchars($newsletter['description'] ?? '') ?>"
-                                                                        data-record-issue-date="<?= htmlspecialchars($newsletter['issue_date'] ?? '') ?>">
-                                                                        View Details
-                                                                    </button>
-                                                                </div>
-                                                            </td>
-                                                        </tr>
-                                                    <?php endforeach; ?>
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    </div>
-                                </div>
-                            <?php else: ?>
-                                <div class="alert alert-info">
-                                    <i class="fas fa-info-circle me-2"></i>
-                                    No QAI Safety Newsletters found.
-                                </div>
-                            <?php endif; ?>
-                        </div>
-                    </div>
-
-                    <!-- Maintenance tab panes -->
-                    <div class="tab-pane fade" id="audits_plan" role="tabpanel">
-                        <h4 class="colour-defult">Servicing Schedule</h4>
-                    </div>
-
-                    <div class="tab-pane fade" id="audit_check_list" role="tabpanel">
-                        <h4 class="colour-defult">Worksheet</h4>
-                    </div>
-
-                    <!-- Technical Library Tab -->
-                    <div class="tab-pane fade show" id="vehicle" role="tabpanel">
-                        <?php if ($show_pdf): ?>
-                            <div class="top-bar">
-                                <a href="?file=<?= $default_file ?>" class="btn btn-sm btn-dark">Technical Library Document</a>
-                            </div>
-                        <?php endif; ?>
-                    </div>
 
                         <!-- Online Subscription Tab -->
                         <div class="tab-pane fade" id="ac" role="tabpanel">
@@ -347,18 +440,18 @@ include '../template/head.php';
                                     <div class="card">
                                         <div class="card-body p-0">
                                             <div class="table-responsive">
-                                                <table class="table table-striped table-hover mb-0" id="adBulletinsTable">
-                                                    <thead style="font-size:x-small;">
+                                                <table class="table table-striped table-hover mb-0" id="adBulletinsTable" style="font-size:x-small;">
+                                                    <thead>
                                                         <tr>
                                                             <th>Reference No</th>
                                                             <th>Bulletin Description</th>
                                                             <th>Related Aircraft</th>
                                                             <th>Formation</th>
                                                             <th>Date of Issue</th>
-                                                            <!-- <th>Actions</th>-->
+                                                            <th>View</th>
                                                         </tr>
                                                     </thead>
-                                                    <tbody style="font-size:x-small;">
+                                                    <tbody>
                                                         <?php foreach ($ad_bulletins as $bulletin): ?>
                                                             <tr>
                                                                 <td><strong><?= htmlspecialchars($bulletin['reference_no']) ?></strong></td>
@@ -368,20 +461,20 @@ include '../template/head.php';
                                                                 <td><?= htmlspecialchars($bulletin['type_name'] ?? 'N/A') ?></td>
                                                                 <td><?= htmlspecialchars($bulletin['formation_name'] ?? 'N/A') ?></td>
                                                                 <td><?= $bulletin['date_of_issue'] ? date('M d, Y', strtotime($bulletin['date_of_issue'])) : 'N/A' ?></td>
-                                                                <!--<td>
-                                                                <button class="btn btn-view-details btn-sm view-details-btn"
-                                                                    data-bs-toggle="modal"
-                                                                    data-bs-target="#detailsModal"
-                                                                    data-record-type="ad_bulletin"
-                                                                    data-record-id="<?= $bulletin['id'] ?? '' ?>"
-                                                                    data-record-reference-no="<?= htmlspecialchars($bulletin['reference_no'] ?? '') ?>"
-                                                                    data-record-bulletin-description="<?= htmlspecialchars($bulletin['bulletin_description'] ?? '') ?>"
-                                                                    data-record-related-aircraft="<?= htmlspecialchars($bulletin['type_name'] ?? '') ?>"
-                                                                    data-record-formation="<?= htmlspecialchars($bulletin['formation_name'] ?? '') ?>"
-                                                                    data-record-date-of-issue="<?= htmlspecialchars($bulletin['date_of_issue'] ?? '') ?>">
-                                                                    View Details
-                                                                </button>
-                                                            </td>-->
+                                                                <td>
+                                                                    <button class="btn btn-view-details btn-sm view-details-btn"
+                                                                        data-bs-toggle="modal"
+                                                                        data-bs-target="#detailsModal"
+                                                                        data-record-type="ad_bulletin"
+                                                                        data-record-id="<?= $bulletin['id'] ?? '' ?>"
+                                                                        data-record-reference-no="<?= htmlspecialchars($bulletin['reference_no'] ?? '') ?>"
+                                                                        data-record-bulletin-description="<?= htmlspecialchars($bulletin['bulletin_description'] ?? '') ?>"
+                                                                        data-record-related-aircraft="<?= htmlspecialchars($bulletin['type_name'] ?? '') ?>"
+                                                                        data-record-formation="<?= htmlspecialchars($bulletin['formation_name'] ?? '') ?>"
+                                                                        data-record-date-of-issue="<?= htmlspecialchars($bulletin['date_of_issue'] ?? '') ?>">
+                                                                        View
+                                                                    </button>
+                                                                </td>
                                                             </tr>
                                                         <?php endforeach; ?>
                                                     </tbody>
@@ -399,24 +492,221 @@ include '../template/head.php';
                         </div>
 
                         <!-- QAI Safety Newsletters Tab -->
-                        <div class="tab-pane fade" id="latitude" role="tabpanel">
+                        <div class="tab-pane fade" id="qai_news" role="tabpanel">
                             <h4 class="colour-defult">QAI Safety Newsletters</h4>
-                            <div>
-                                <?php include 'qai_news.php' ?>
+                            <div class="mt-4">
+                                <?php if (!empty($qai_newsletters_error)): ?>
+                                    <div class="alert alert-danger">
+                                        <strong>Database Error:</strong> <?= htmlspecialchars($qai_newsletters_error) ?>
+                                    </div>
+                                <?php elseif (!empty($qai_newsletters)): ?>
+                                    <div class="card">
+                                        <div class="card-body p-0">
+                                            <div class="table-responsive">
+                                                <table class="table table-striped table-hover mb-0" id="qaiNewslettersTable" style="font-size:x-small;">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>QSN No</th>
+                                                            <th>Description</th>
+                                                            <th>Issue Date</th>
+                                                            <th>View</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <?php foreach ($qai_newsletters as $newsletter): ?>
+                                                            <tr>
+                                                                <td><strong><?= htmlspecialchars($newsletter['qsn_no']) ?></strong></td>
+                                                                <td class="text-truncate-multiline" title="<?= htmlspecialchars($newsletter['description']) ?>">
+                                                                    <?= htmlspecialchars($newsletter['description']) ?>
+                                                                </td>
+                                                                <td><?= $newsletter['issue_date'] ? date('M d, Y', strtotime($newsletter['issue_date'])) : 'N/A' ?></td>
+                                                                <td>
+                                                                    <div class="btn-group" role="group">
+                                                                        <?php if (!empty($newsletter['file_path'])): ?>
+                                                                            <a href="/qai/assets/pdfjs/web/viewer.html?file=<?= urlencode('/qai/admin/action/' . $newsletter['file_path']) ?>"
+                                                                                class="btn btn-view-pdf btn-sm view-pdf-btn"
+                                                                                data-bs-toggle="modal"
+                                                                                data-bs-target="#pdfModal"
+                                                                                data-pdf-url="/qai/assets/pdfjs/web/viewer.html?file=<?= urlencode('/qai/admin/action/' . $newsletter['file_path']) ?>">
+                                                                                <i class="fas fa-file-pdf me-1"></i>View PDF
+                                                                            </a>
+                                                                        <?php endif; ?>
+                                                                        <button class="btn btn-view-details btn-sm view-details-btn"
+                                                                            data-bs-toggle="modal"
+                                                                            data-bs-target="#detailsModal"
+                                                                            data-record-type="qai_newsletter"
+                                                                            data-record-id="<?= $newsletter['id'] ?? '' ?>"
+                                                                            data-record-qsn-no="<?= htmlspecialchars($newsletter['qsn_no'] ?? '') ?>"
+                                                                            data-record-description="<?= htmlspecialchars($newsletter['description'] ?? '') ?>"
+                                                                            data-record-issue-date="<?= htmlspecialchars($newsletter['issue_date'] ?? '') ?>">
+                                                                            View 
+                                                                        </button>
+                                                                    </div>
+                                                                </td>
+                                                            </tr>
+                                                        <?php endforeach; ?>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                <?php else: ?>
+                                    <div class="alert alert-info">
+                                        <i class="fas fa-info-circle me-2"></i>
+                                        No QAI Safety Newsletters found.
+                                    </div>
+                                <?php endif; ?>
                             </div>
                         </div>
 
-                        <!-- Maintenance tab panes -->
-                        <div class="tab-pane fade" id="audits_plan" role="tabpanel">
-                            <h4 class="colour-defult">Servicing Schedule</h4>
+                        <!-- Servicing Schedule Tab Panes for each branch -->
+                        <?php foreach ($branch_map as $branch_id => $branch_name): ?>
+                        <div class="tab-pane fade" id="schedule_<?= $branch_id ?>" role="tabpanel">
+                            <h4 class="colour-defult">Servicing Schedule - <?= htmlspecialchars($branch_name) ?></h4>
+                            <div class="mt-4">
+                                <?php if (!empty($maintenance_error)): ?>
+                                    <div class="alert alert-danger">
+                                        <strong>Database Error:</strong> <?= htmlspecialchars($maintenance_error) ?>
+                                    </div>
+                                <?php else: ?>
+                                    <?php 
+                                    $schedules_to_display = $schedules_by_branch[$branch_id] ?? [];
+                                    ?>
+                                    <?php if (empty($schedules_to_display)): ?>
+                                        <div class="alert alert-info">
+                                            <i class="fas fa-info-circle me-2"></i>
+                                            No servicing schedules found for <?= htmlspecialchars($branch_name) ?>.
+                                        </div>
+                                    <?php else: ?>
+                                        <div class="card">
+                                            <div class="card-body p-0">
+                                                <div class="table-responsive">
+                                                    <table class="table table-striped table-hover mb-0" style="font-size:x-small;">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>Document No</th>
+                                                                <th>Description</th>
+                                                                <th>Formation</th>
+                                                                <th>Aircraft Type</th>
+                                                                <th>Issue</th>
+                                                                <th>Revision</th>
+                                                                <th>Revision Date</th>
+                                                                <th>File</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            <?php foreach ($schedules_to_display as $doc): ?>
+                                                                <tr>
+                                                                    <td><strong><?= htmlspecialchars($doc['document_number']) ?></strong></td>
+                                                                    <td class="text-truncate-multiline" title="<?= htmlspecialchars($doc['description']) ?>">
+                                                                        <?= htmlspecialchars($doc['description']) ?>
+                                                                    </td>
+                                                                    <td><?= htmlspecialchars($doc['formation_name'] ?? 'N/A') ?></td>
+                                                                    <td><?= htmlspecialchars($doc['type_name'] ?? 'N/A') ?></td>
+                                                                    <td><?= htmlspecialchars($doc['issue']) ?></td>
+                                                                    <td><?= htmlspecialchars($doc['revision'] ?? 'N/A') ?></td>
+                                                                    <td><?= ($doc['revision_date'] && $doc['revision_date'] != '0000-00-00' ? date('M d, Y', strtotime($doc['revision_date'])) : 'N/A') ?></td>
+                                                                    <td>
+                                                                        <?php if (!empty($doc['file_path'])): ?>
+                                                                            <a href="/qai/assets/pdfjs/web/viewer.html?file=<?= urlencode('/qai/admin/action/' . $doc['file_path']) ?>"
+                                                                               class="btn btn-view-pdf btn-sm view-pdf-btn"
+                                                                               data-bs-toggle="modal"
+                                                                               data-bs-target="#pdfModal"
+                                                                               data-pdf-url="/qai/assets/pdfjs/web/viewer.html?file=<?= urlencode('/qai/admin/action/' . $doc['file_path']) ?>">
+                                                                                <i class="fas fa-file-pdf me-1"></i>View
+                                                                            </a>
+                                                                        <?php else: ?>
+                                                                            <span class="text-muted">No file</span>
+                                                                        <?php endif; ?>
+                                                                    </td>
+                                                                </tr>
+                                                            <?php endforeach; ?>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    <?php endif; ?>
+                                <?php endif; ?>
+                            </div>
                         </div>
+                        <?php endforeach; ?>
 
-                        <div class="tab-pane fade" id="audit_check_list" role="tabpanel">
-                            <h4 class="colour-defult">Worksheet</h4>
+                        <!-- Worksheet Tab Panes for each branch -->
+                        <?php foreach ($branch_map as $branch_id => $branch_name): ?>
+                        <div class="tab-pane fade" id="worksheet_<?= $branch_id ?>" role="tabpanel">
+                            <h4 class="colour-defult">Worksheet - <?= htmlspecialchars($branch_name) ?></h4>
+                            <div class="mt-4">
+                                <?php if (!empty($maintenance_error)): ?>
+                                    <div class="alert alert-danger">
+                                        <strong>Database Error:</strong> <?= htmlspecialchars($maintenance_error) ?>
+                                    </div>
+                                <?php else: ?>
+                                    <?php 
+                                    $worksheets_to_display = $worksheets_by_branch[$branch_id] ?? [];
+                                    ?>
+                                    <?php if (empty($worksheets_to_display)): ?>
+                                        <div class="alert alert-info">
+                                            <i class="fas fa-info-circle me-2"></i>
+                                            No worksheets found for <?= htmlspecialchars($branch_name) ?>.
+                                        </div>
+                                    <?php else: ?>
+                                        <div class="card">
+                                            <div class="card-body p-0">
+                                                <div class="table-responsive">
+                                                    <table class="table table-striped table-hover mb-0" style="font-size:x-small;">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>Document No</th>
+                                                                <th>Description</th>
+                                                                <th>Formation</th>
+                                                                <th>Aircraft Type</th>
+                                                                <th>Issue</th>
+                                                                <th>Revision</th>
+                                                                <th>Revision Date</th>
+                                                                <th>File</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            <?php foreach ($worksheets_to_display as $doc): ?>
+                                                                <tr>
+                                                                    <td><strong><?= htmlspecialchars($doc['document_number']) ?></strong></td>
+                                                                    <td class="text-truncate-multiline" title="<?= htmlspecialchars($doc['description']) ?>">
+                                                                        <?= htmlspecialchars($doc['description']) ?>
+                                                                    </td>
+                                                                    <td><?= htmlspecialchars($doc['formation_name'] ?? 'N/A') ?></td>
+                                                                    <td><?= htmlspecialchars($doc['type_name'] ?? 'N/A') ?></td>
+                                                                    <td><?= htmlspecialchars($doc['issue']) ?></td>
+                                                                    <td><?= htmlspecialchars($doc['revision'] ?? 'N/A') ?></td>
+                                                                    <td><?= ($doc['revision_date'] && $doc['revision_date'] != '0000-00-00' ? date('M d, Y', strtotime($doc['revision_date'])) : 'N/A') ?></td>
+                                                                    <td>
+                                                                        <?php if (!empty($doc['file_path'])): ?>
+                                                                            <a href="/qai/assets/pdfjs/web/viewer.html?file=<?= urlencode('/qai/admin/action/' . $doc['file_path']) ?>"
+                                                                               class="btn btn-view-pdf btn-sm view-pdf-btn"
+                                                                               data-bs-toggle="modal"
+                                                                               data-bs-target="#pdfModal"
+                                                                               data-pdf-url="/qai/assets/pdfjs/web/viewer.html?file=<?= urlencode('/qai/admin/action/' . $doc['file_path']) ?>">
+                                                                                <i class="fas fa-file-pdf me-1"></i>View
+                                                                            </a>
+                                                                        <?php else: ?>
+                                                                            <span class="text-muted">No file</span>
+                                                                        <?php endif; ?>
+                                                                    </td>
+                                                                </tr>
+                                                            <?php endforeach; ?>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    <?php endif; ?>
+                                <?php endif; ?>
+                            </div>
                         </div>
+                        <?php endforeach; ?>
 
                         <!-- Technical Library Tab -->
-                        <div class="tab-pane fade show" id="vehicle" role="tabpanel">
+                        <div class="tab-pane fade" id="vehicle" role="tabpanel">
                             <?php if ($show_pdf): ?>
                                 <div class="top-bar">
                                     <a href="?file=<?= $default_file ?>" class="btn btn-sm btn-dark">Technical Library Document</a>
@@ -442,7 +732,6 @@ include '../template/head.php';
                 </div>
             </div>
         </div>
-        <!-- </div> -->
     </main>
 
     <!-- PDF Modal -->
@@ -465,7 +754,7 @@ include '../template/head.php';
         <div class="modal-dialog modal-lg modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="detailsModalTitle">AD Bulletin Details</h5>
+                    <h5 class="modal-title" id="detailsModalTitle">Record Details</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body" id="detailsModalBody">
@@ -524,6 +813,14 @@ include '../template/head.php';
             if ($('#qaiNewslettersTable').length) {
                 $('#qaiNewslettersTable').DataTable(dataTableConfig);
             }
+
+            // Initialize DataTables for maintenance tables when their tabs are shown
+            $('a[data-bs-target^="#schedule_"], a[data-bs-target^="#worksheet_"]').on('click', function() {
+                const target = $(this).data('bs-target');
+                setTimeout(() => {
+                    $(target + ' table').DataTable(dataTableConfig);
+                }, 100);
+            });
 
             // PDF Modal functionality
             const pdfModal = document.getElementById('pdfModal');
@@ -639,9 +936,6 @@ include '../template/head.php';
                 const qsnNo = button.getAttribute('data-record-qsn-no');
                 const description = button.getAttribute('data-record-description');
                 const issueDate = button.getAttribute('data-record-issue-date');
-                const filePath = button.getAttribute('data-record-file-path');
-                const createdAt = button.getAttribute('data-record-created-at');
-                const updatedAt = button.getAttribute('data-record-updated-at');
 
                 return `
                     <div class="section-divider">Basic Information</div>
@@ -663,11 +957,10 @@ include '../template/head.php';
                             <td style="white-space: pre-wrap;">${formatValue(description)}</td>
                         </tr>
                     </table>
-                    </table>
                 `;
             }
 
-            // Navigation and tab handling
+            // Enhanced Navigation and dropdown handling for nested structure
             const welcomePane = document.querySelector('#welcome');
             if (welcomePane) {
                 welcomePane.classList.add('show', 'active');
@@ -681,7 +974,7 @@ include '../template/head.php';
                 menu.classList.remove('show');
             });
 
-            // Dropdown toggle handling
+            // Enhanced dropdown toggle handling for nested dropdowns
             const dropdownToggles = document.querySelectorAll('.qa-dropdown-toggle');
             dropdownToggles.forEach(toggle => {
                 toggle.addEventListener('click', function(e) {
@@ -693,67 +986,66 @@ include '../template/head.php';
 
                     const isCurrentlyOpen = dropdownMenu.classList.contains('show');
 
-                    dropdownToggles.forEach(otherToggle => {
-                        const otherMenu = otherToggle.nextElementSibling;
-                        if (otherMenu) otherMenu.classList.remove('show');
-                    });
+                    // Close all dropdowns at the same level
+                    const parentItem = this.parentElement;
+                    if (parentItem) {
+                        const siblings = parentItem.parentElement?.children;
+                        if (siblings) {
+                            Array.from(siblings).forEach(sibling => {
+                                if (sibling !== parentItem) {
+                                    const siblingMenu = sibling.querySelector('.qa-dropdown-menu');
+                                    if (siblingMenu) {
+                                        siblingMenu.classList.remove('show');
+                                    }
+                                    const siblingToggle = sibling.querySelector('.qa-dropdown-toggle');
+                                    if (siblingToggle) {
+                                        siblingToggle.classList.remove('active');
+                                    }
+                                }
+                            });
+                        }
+                    }
 
-                    if (!isCurrentlyOpen) dropdownMenu.classList.add('show');
+                    if (!isCurrentlyOpen) {
+                        dropdownMenu.classList.add('show');
+                        this.classList.add('active');
+                    } else {
+                        dropdownMenu.classList.remove('show');
+                        this.classList.remove('active');
+                    }
                 });
             });
 
-            // Main nav links
-            const mainNavLinks = document.querySelectorAll('.nav-link:not(.qa-dropdown-toggle)');
-            mainNavLinks.forEach(item => {
+            // Main nav links and dropdown items
+            const allNavItems = document.querySelectorAll('.nav-link:not(.qa-dropdown-toggle), .qa-dropdown-item:not(.qa-dropdown-toggle)');
+            allNavItems.forEach(item => {
                 item.addEventListener('click', function(e) {
+                    if (this.classList.contains('qa-dropdown-toggle')) {
+                        return; // Let the dropdown toggle handler deal with it
+                    }
+
                     e.preventDefault();
+                    
+                    // Remove active class from all items
                     document.querySelectorAll('.nav-link, .qa-dropdown-item').forEach(tab => {
                         tab.classList.remove('active');
                     });
-                    document.querySelectorAll('.qa-dropdown-toggle').forEach(toggle => {
-                        toggle.classList.remove('active');
-                    });
-                    this.classList.add('active');
 
-                    const targetId = this.getAttribute('data-bs-target');
-                    const targetPane = document.querySelector(targetId);
-
-                    document.querySelectorAll('.tab-pane').forEach(pane => {
-                        pane.classList.remove('show', 'active');
-                    });
-
-                    if (targetPane) targetPane.classList.add('show', 'active');
-                    document.querySelectorAll('.qa-dropdown-menu').forEach(menu => {
-                        menu.classList.remove('show');
-                    });
-                });
-            });
-
-            // Dropdown items
-            const dropdownItems = document.querySelectorAll('.qa-dropdown-item');
-            dropdownItems.forEach(item => {
-                item.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    e.stopPropagation();
-
-                    document.querySelectorAll('.nav-link, .qa-dropdown-item').forEach(tab => {
-                        tab.classList.remove('active');
-                    });
-                    document.querySelectorAll('.qa-dropdown-toggle').forEach(toggle => {
-                        toggle.classList.remove('active');
-                    });
-                    this.classList.add('active');
-
-                    if (this.classList.contains('qa-dropdown-item')) {
-                        const parentDropdown = this.closest('.qa-dropdown');
-                        if (parentDropdown) {
-                            const dropdownToggle = parentDropdown.querySelector('.qa-dropdown-toggle');
-                            if (dropdownToggle) {
-                                dropdownToggle.classList.add('active');
-                                const dropdownMenu = dropdownToggle.nextElementSibling;
-                                if (dropdownMenu) dropdownMenu.classList.add('show');
+                    // Add active class to clicked item and its parents
+                    let currentItem = this;
+                    while (currentItem) {
+                        currentItem.classList.add('active');
+                        if (currentItem.classList.contains('qa-dropdown-item')) {
+                            const parentDropdown = currentItem.closest('.qa-dropdown');
+                            if (parentDropdown) {
+                                const dropdownToggle = parentDropdown.querySelector('.qa-dropdown-toggle');
+                                if (dropdownToggle) {
+                                    dropdownToggle.classList.add('active');
+                                }
                             }
                         }
+                        currentItem = currentItem.parentElement?.closest('.qa-dropdown-item') || 
+                                     currentItem.parentElement?.closest('.nav-link');
                     }
 
                     const targetId = this.getAttribute('data-bs-target');
@@ -763,15 +1055,25 @@ include '../template/head.php';
                         pane.classList.remove('show', 'active');
                     });
 
-                    if (targetPane) targetPane.classList.add('show', 'active');
+                    if (targetPane) {
+                        targetPane.classList.add('show', 'active');
+                    }
+
+                    // Close all dropdown menus
+                    document.querySelectorAll('.qa-dropdown-menu').forEach(menu => {
+                        menu.classList.remove('show');
+                    });
                 });
             });
 
             // Close dropdowns on outside click
             document.addEventListener('click', function(e) {
-                if (!e.target.closest('.qa-dropdown')) {
+                if (!e.target.closest('.nav-column')) {
                     document.querySelectorAll('.qa-dropdown-menu').forEach(menu => {
                         menu.classList.remove('show');
+                    });
+                    document.querySelectorAll('.qa-dropdown-toggle').forEach(toggle => {
+                        toggle.classList.remove('active');
                     });
                 }
             });
@@ -787,12 +1089,14 @@ include '../template/head.php';
                     document.querySelectorAll('.qa-dropdown-menu').forEach(menu => {
                         menu.classList.remove('show');
                     });
+                    document.querySelectorAll('.qa-dropdown-toggle').forEach(toggle => {
+                        toggle.classList.remove('active');
+                    });
                 }
             });
 
             console.log('Publication page initialization complete');
         });
-
     </script>
 </body>
 </html>
