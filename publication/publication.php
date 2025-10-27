@@ -303,18 +303,7 @@ try {
             width: 100%;
         }
 
-        .table th {
-            background-color: #839abdff;
-            color: white;
-            font-weight: 600;
-            border: none;
-        }
 
-        .table td {
-            border-bottom: 1px solid #dee2e6;
-            padding: 12px 8px;
-            vertical-align: middle;
-        }
 
         /* Dropdown styles */
         .qa-dropdown {
@@ -389,7 +378,7 @@ try {
     <!-- Main Content -->
     <main class="container-fluid">
         <div class="row">
-            <div class="col-lg-2 col-xl-2 mb-4">
+            <div class="col-lg-1 col-xl-1 mb-4">
                 <div class="nav-column">
                     <div class="nav flex-column nav-pills" id="inspectorateTabs" role="tablist">
                         <a class="nav-link" data-bs-target="#ac" role="tab">Online Subscription</a>
@@ -427,7 +416,7 @@ try {
             </div>
 
             <!-- Tab Content -->
-            <div class="col-lg-10 col-xl-10">
+            <div class="col-lg-11 col-xl-11">
                 <div class="content-column">
                     <div class="tab-content" id="inspectorateTabsContent">
                         <!-- Welcome Screen (shown by default) -->
@@ -457,7 +446,7 @@ try {
                                     <div class="card">
                                         <div class="card-body p-0">
                                             <div class="table-responsive">
-                                                <table class="table table-striped table-hover mb-0" id="adBulletinsTable" style="font-size:x-small;">
+                                                <table class="table  table-hover mb-0" id="adBulletinsTable" style="font-size:x-small;">
                                                     <thead>
                                                         <tr>
                                                             <th>Reference No</th>
@@ -472,7 +461,7 @@ try {
                                                         <?php foreach ($ad_bulletins as $bulletin): ?>
                                                             <tr>
                                                                 <td><strong><?= htmlspecialchars($bulletin['reference_no']) ?></strong></td>
-                                                                <td class="text-truncate-multiline" title="<?= htmlspecialchars($bulletin['bulletin_description']) ?>">
+                                                                <td><?= htmlspecialchars($bulletin['bulletin_description']) ?></td>
                                                                     <?= htmlspecialchars($bulletin['bulletin_description']) ?>
                                                                 </td>
                                                                 <td><?= htmlspecialchars($bulletin['type_name'] ?? 'N/A') ?></td>
@@ -520,7 +509,7 @@ try {
                                     <div class="card">
                                         <div class="card-body p-0">
                                             <div class="table-responsive">
-                                                <table class="table table-striped table-hover mb-0" id="qaiNewslettersTable" style="font-size:x-small;">
+                                                <table class="table  table-hover mb-0" id="qaiNewslettersTable" style="font-size:x-small;">
                                                     <thead>
                                                         <tr>
                                                             <th>QSN No</th>
@@ -533,7 +522,7 @@ try {
                                                         <?php foreach ($qai_newsletters as $newsletter): ?>
                                                             <tr>
                                                                 <td><strong><?= htmlspecialchars($newsletter['qsn_no']) ?></strong></td>
-                                                                <td class="text-truncate-multiline" title="<?= htmlspecialchars($newsletter['description']) ?>">
+                                                                <td><?= htmlspecialchars($newsletter['description']) ?></td>
                                                                     <?= htmlspecialchars($newsletter['description']) ?>
                                                                 </td>
                                                                 <td><?= $newsletter['issue_date'] ? date('M d, Y', strtotime($newsletter['issue_date'])) : 'N/A' ?></td>
@@ -615,7 +604,7 @@ try {
                                                             <?php foreach ($schedules_to_display as $doc): ?>
                                                                 <tr>
                                                                     <td><strong><?= htmlspecialchars($doc['document_number']) ?></strong></td>
-                                                                    <td class="text-truncate-multiline" title="<?= htmlspecialchars($doc['description']) ?>">
+                                                                    <td><?= htmlspecialchars($doc['description']) ?></td>
                                                                         <?= htmlspecialchars($doc['description']) ?>
                                                                     </td>
                                                                     <td><?= htmlspecialchars($doc['formation_name'] ?? 'N/A') ?></td>
@@ -688,7 +677,7 @@ try {
                                                             <?php foreach ($worksheets_to_display as $doc): ?>
                                                                 <tr>
                                                                     <td><strong><?= htmlspecialchars($doc['document_number']) ?></strong></td>
-                                                                    <td class="text-truncate-multiline" title="<?= htmlspecialchars($doc['description']) ?>">
+                                                                    <td><?= htmlspecialchars($doc['description']) ?></td>
                                                                         <?= htmlspecialchars($doc['description']) ?>
                                                                     </td>
                                                                     <td><?= htmlspecialchars($doc['formation_name'] ?? 'N/A') ?></td>
@@ -733,7 +722,7 @@ try {
                                     <div class="card">
                                         <div class="card-body p-0">
                                             <div class="table-responsive">
-                                                <table class="table table-striped table-hover mb-0" id="techLibraryTable" style="font-size:x-small;">
+                                                <table class="table  table-hover mb-0" id="techLibraryTable" style="font-size:x-small;">
                                                     <thead>
                                                         <tr>
                                                             <th>S.No</th>
@@ -746,7 +735,7 @@ try {
                                                         <?php foreach ($tech_library as $item): ?>
                                                             <tr>
                                                                 <td><strong><?= htmlspecialchars($item['sno']) ?></strong></td>
-                                                                <td class="text-truncate-multiline" title="<?= htmlspecialchars($item['publication_index']) ?>">
+                                                                <td><?= htmlspecialchars($item['publication_index']) ?></td>
                                                                     <?= htmlspecialchars($item['publication_index']) ?>
                                                                 </td>
                                                                 <td>

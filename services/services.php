@@ -404,7 +404,7 @@ try {
 
         <!-- <div class="main-container"> -->
         <!-- Navigation Tabs -->
-        <!-- <div class="nav-column"> -->
+
         <div class="row">
             <div class="col-lg-1 col-xl-1 mb-4">
                 <div class="nav flex-column nav-pills" id="inspectorateTabs" role="tablist">
@@ -459,7 +459,6 @@ try {
             </div>
 
             <!-- Tab Content -->
-            <!-- <div class="content-column"> -->
             <div class="col-lg-11 col-xl-11">
                 <div class="tab-content" id="inspectorateTabsContent">
                     <!-- Welcome Screen (shown by default) -->

@@ -54,12 +54,6 @@ include '../template/head.php';
     <!-- Custom CSS -->
     <link rel="stylesheet" href="../assets/css/styles.css">
     <style>
-        .tab-content {
-            padding: 20px;
-            background: #fff;
-            border-radius: 5px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        }
 
         .top-bar {
             background: #007aff;
@@ -125,7 +119,7 @@ include '../template/head.php';
             text-decoration: none;
             border-radius: 4px;
             margin-bottom: 3px;
-            font-size: smaller;
+            font-size: x-small;
         }
 
         .qa-dropdown-item:hover,
@@ -141,25 +135,6 @@ include '../template/head.php';
             font-size: 0.8em;
         }
 
-
-        .main-container {
-            gap: 15px;
-        }
-
-        @media (min-width: 992px) {
-            .main-container {
-                display: grid;
-                grid-template-columns: 200px 1fr;
-            }
-
-            .nav-column {
-                padding-right: 0;
-            }
-
-            .content-column {
-                padding-left: 0;
-            }
-        }
 
         .pdf-controls {
             margin-bottom: 15px;
@@ -181,7 +156,7 @@ include '../template/head.php';
     <main class="container-fluid my-3">
         <div class="main-container">
             <!-- Navigation Tabs -->
-            <div class="nav-column">
+            <div class="col-lg-1 col-xl-1 mb-4">
                 <div class="nav flex-column nav-pills" id="inspectorateTabs" role="tablist">
 
                     <a class="nav-link" data-bs-target="#ac" role="tab">Approved Training Syllabus</a>
@@ -217,7 +192,7 @@ include '../template/head.php';
             </div>
 
             <!-- Tab Content -->
-            <div class="content-column">
+            <div class="col-lg-11 col-xl-11">
                 <div class="tab-content" id="inspectorateTabsContent">
                     <!-- Welcome Screen (shown by default) -->
                     <div class="tab-pane fade show active" id="welcome" role="tabpanel">
