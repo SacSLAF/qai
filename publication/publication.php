@@ -462,8 +462,6 @@ try {
                                                             <tr>
                                                                 <td><strong><?= htmlspecialchars($bulletin['reference_no']) ?></strong></td>
                                                                 <td><?= htmlspecialchars($bulletin['bulletin_description']) ?></td>
-                                                                    <?= htmlspecialchars($bulletin['bulletin_description']) ?>
-                                                                </td>
                                                                 <td><?= htmlspecialchars($bulletin['type_name'] ?? 'N/A') ?></td>
                                                                 <td><?= htmlspecialchars($bulletin['formation_name'] ?? 'N/A') ?></td>
                                                                 <td><?= $bulletin['date_of_issue'] ? date('M d, Y', strtotime($bulletin['date_of_issue'])) : 'N/A' ?></td>
@@ -523,8 +521,6 @@ try {
                                                             <tr>
                                                                 <td><strong><?= htmlspecialchars($newsletter['qsn_no']) ?></strong></td>
                                                                 <td><?= htmlspecialchars($newsletter['description']) ?></td>
-                                                                    <?= htmlspecialchars($newsletter['description']) ?>
-                                                                </td>
                                                                 <td><?= $newsletter['issue_date'] ? date('M d, Y', strtotime($newsletter['issue_date'])) : 'N/A' ?></td>
                                                                 <td>
                                                                     <div class="btn-group" role="group">
@@ -605,8 +601,6 @@ try {
                                                                 <tr>
                                                                     <td><strong><?= htmlspecialchars($doc['document_number']) ?></strong></td>
                                                                     <td><?= htmlspecialchars($doc['description']) ?></td>
-                                                                        <?= htmlspecialchars($doc['description']) ?>
-                                                                    </td>
                                                                     <td><?= htmlspecialchars($doc['formation_name'] ?? 'N/A') ?></td>
                                                                     <td><?= htmlspecialchars($doc['type_name'] ?? 'N/A') ?></td>
                                                                     <td><?= htmlspecialchars($doc['issue']) ?></td>
@@ -678,8 +672,6 @@ try {
                                                                 <tr>
                                                                     <td><strong><?= htmlspecialchars($doc['document_number']) ?></strong></td>
                                                                     <td><?= htmlspecialchars($doc['description']) ?></td>
-                                                                        <?= htmlspecialchars($doc['description']) ?>
-                                                                    </td>
                                                                     <td><?= htmlspecialchars($doc['formation_name'] ?? 'N/A') ?></td>
                                                                     <td><?= htmlspecialchars($doc['type_name'] ?? 'N/A') ?></td>
                                                                     <td><?= htmlspecialchars($doc['issue']) ?></td>
@@ -736,8 +728,6 @@ try {
                                                             <tr>
                                                                 <td><strong><?= htmlspecialchars($item['sno']) ?></strong></td>
                                                                 <td><?= htmlspecialchars($item['publication_index']) ?></td>
-                                                                    <?= htmlspecialchars($item['publication_index']) ?>
-                                                                </td>
                                                                 <td>
                                                                     <?php if (!empty($item['file_path'])): ?>
                                                                         <a href="/qai/assets/pdfjs/web/viewer.html?file=<?= urlencode('/qai/admin/action/' . $item['file_path']) ?>"

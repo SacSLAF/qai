@@ -94,7 +94,7 @@ include "template/head.php";
                                                 <div class="mb-3">
                                                     <label class="form-label">Document File *</label>
                                                     <input type="file" name="document_file" class="form-control" 
-                                                           accept=".pdf,.doc,.docx,.xls,.xlsx,.jpg,.jpeg,.png" 
+                                                           accept=".pdf,application/pdf" 
                                                            <?= !isset($record) ? 'required' : '' ?>>
                                                     <?php if (isset($record) && !empty($record['file_path'])): ?>
                                                         <small class="form-text text-muted">
@@ -102,7 +102,7 @@ include "template/head.php";
                                                         </small>
                                                     <?php endif; ?>
                                                     <small class="form-text text-muted">
-                                                        Allowed formats: PDF, DOC, DOCX, XLS, XLSX, JPG, JPEG, PNG (Max: 10MB)
+                                                        Allowed formats: PDF Only (Max: 10MB)
                                                     </small>
                                                 </div>
                                             </div>
