@@ -125,7 +125,7 @@ include '../template/head.php';
             text-decoration: none;
             border-radius: 4px;
             margin-bottom: 3px;
-            font-size: smaller;
+            font-size: x-small;
         }
 
         .qa-dropdown-item:hover,
@@ -180,7 +180,7 @@ include '../template/head.php';
     <main class="container-fluid my-3">
         <div class="main-container">
             <!-- Navigation Tabs -->
-            <div class="nav-column">
+            <div class="col-lg-1 col-xl-1 mb-4">
                 <div class="nav flex-column nav-pills" id="inspectorateTabs" role="tablist">
                     <!-- Productivity Dropdown -->
                     <div class="qa-dropdown">
@@ -226,7 +226,7 @@ include '../template/head.php';
             </div>
 
             <!-- Tab Content -->
-            <div class="content-column">
+            <div class="col-lg-11 col-xl-11">
                 <div class="tab-content" id="inspectorateTabsContent">
                     <!-- Welcome Screen (shown by default) -->
                     <div class="tab-pane fade show active" id="welcome" role="tabpanel">
