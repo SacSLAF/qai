@@ -17,13 +17,13 @@
 
   .logo-link {
     display: block;
-    height: 100%;
-    width: 20%;
-    transition: transform 0.3s ease;
+    height: 105%;
+    width: 25%;
+    /* transition: transform 0.3s ease; */
   }
 
   .logo-link:hover {
-    transform: scale(1.05);
+    /* transform: scale(1.05); */
   }
 
   .logo-left {
@@ -59,11 +59,22 @@
     margin: 0;
     padding: 0.3em 0;
   }
+
   .main-nav ul li:first-child {
-  padding-right: 12rem;
-}
+    padding-right: 12rem;
+  }
 
   .main-nav a {
+    text-decoration: none;
+    font-size: x-small;
+    font-weight: 400;
+    position: relative;
+    padding-bottom: 4px;
+    transition: color 0.3s ease;
+    text-shadow: 1px 1px 2px #18416e8f;
+  }
+
+  .main-nav a:not(.web-portal-text) {
     color: #222;
     text-decoration: none;
     font-size: x-small;
@@ -72,6 +83,11 @@
     padding-bottom: 4px;
     transition: color 0.3s ease;
     text-shadow: 1px 1px 2px #18416e8f;
+  }
+
+  .web-portal-text {
+    font-weight: 600 !important;
+    color: rgb(0, 102, 152) !important;
   }
 
   .main-nav a:hover {

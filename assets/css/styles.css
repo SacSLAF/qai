@@ -60,7 +60,7 @@ body {
   position: absolute;
   left: 0.6rem;
   bottom: 0.6rem;
-  height: 2px;
+  height: 1px;
   width: var(--text-width, auto);
   background-color: var(--primary-color);
 }
@@ -191,6 +191,61 @@ table.dataTable > thead > tr > td {
   padding: 0.2rem 0.4rem;
   margin: 0 0.25rem;
 }
+/* Vehicle Emission Test Tables - Smaller Font Sizes */
+#dieselTable_wrapper,
+#petrolTable_wrapper {
+  font-size: smaller !important;
+}
+
+#dieselTable,
+#petrolTable {
+  font-size: smaller !important;
+}
+
+#dieselTable th,
+#petrolTable th,
+#dieselTable td,
+#petrolTable td {
+  font-size: smaller !important;
+  padding: 0.3rem 0.5rem !important;
+}
+
+/* Make test values even smaller */
+#dieselTable .test-values,
+#petrolTable .test-values {
+  font-size: smaller !important;
+  line-height: 1.2 !important;
+}
+
+/* Make badges smaller */
+#dieselTable .badge,
+#petrolTable .badge {
+  font-size: smaller !important;
+  padding: 0.2rem 0.4rem !important;
+}
+
+/* DataTable controls for vehicle tables */
+#dieselTable_wrapper .dataTables_length,
+#petrolTable_wrapper .dataTables_length,
+#dieselTable_wrapper .dataTables_filter,
+#petrolTable_wrapper .dataTables_filter,
+#dieselTable_wrapper .dataTables_info,
+#petrolTable_wrapper .dataTables_info,
+#dieselTable_wrapper .dataTables_paginate,
+#petrolTable_wrapper .dataTables_paginate {
+  font-size: smaller !important;
+}
+
+#dieselTable_wrapper .dataTables_length select,
+#petrolTable_wrapper .dataTables_length select {
+  font-size: smaller !important;
+  padding: 0.15rem 0.3rem !important;
+  height: auto !important;
+}
+#petrolTable_wrapper table.dataTable thead th {
+  background-color: #18426e;
+  color: white;
+}
 .web-portal-text {
   font-weight: 600 !important;
   color: rgb(0, 102, 152) !important;
@@ -202,6 +257,10 @@ table.dataTable > thead > tr > td {
 table.dataTable thead th {
   background-color: #18426e;
   color: white;
+}
+table.dataTable td {
+  padding: 2px 4px !important;
+  line-height: 2;
 }
 .qa-dropdown {
   position: relative;
@@ -259,7 +318,7 @@ table.dataTable thead th {
   position: absolute;
   left: 0.4rem;
   bottom: 0;
-  height: 2px;
+  height: 1px;
   width: 70%;
   background-color: var(--primary-color);
 }
@@ -345,8 +404,8 @@ table.dataTable thead th {
   background-color: rgb(25 68 113);
   border-color: rgb(25 68 113);
   color: white;
-  padding: 4px 8px;
-  font-size: 0.875rem;
+  padding: 2px 6px;
+  font-size: x-small;
 }
 
 .btn-view-details:hover {
@@ -360,6 +419,22 @@ table.dataTable thead th {
   border-color: rgb(25 68 113);
   color: white;
 }
-.staff-name{
+.staff-name {
   font-size: small;
+}
+.staff-contact {
+  font-size: small;
+}
+/* prevent wrap  */
+/* Prevent text wrapping in sidebar navigation */
+#inspectorateTabs .nav-link,
+#inspectorateTabs .qa-dropdown-toggle,
+#inspectorateTabs .qa-dropdown-item {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.qa-dropdown-menu {
+    white-space: nowrap;
 }

@@ -9,7 +9,6 @@ ob_start();
 
 try {
     require_once "../includes/config.php";
-    
     // Initialize variables to avoid undefined variable errors
     $show_pdf = false;
     $pdf_file = '';
@@ -165,7 +164,6 @@ try {
 
         // Fetch Technical Library records
         $stmt_tech = $db->prepare("SELECT * FROM tech_library ORDER BY sno ASC");
-        
         if ($stmt_tech) {
             if ($stmt_tech->execute()) {
                 $result_tech = $stmt_tech->get_result();
@@ -185,7 +183,7 @@ try {
 
     $branch_map = [
         1 => 'Aeronautical Engineering',
-        4 => 'Electronic Engineering', 
+        4 => 'Electronic Engineering',
         5 => 'General Engineering'
     ];
 
@@ -397,7 +395,6 @@ try {
                         <a class="nav-link" data-bs-target="#ac" role="tab">Online Subscription</a>
                         <a class="nav-link" data-bs-target="#ad" role="tab">ADs & Bulletins</a>
                         <a class="nav-link" data-bs-target="#qai_news" role="tab">QAI Safety Newsletters</a>
-
                         <!-- Maintenance Program Dropdown -->
                         <div class="qa-dropdown">
                             <a class="nav-link qa-dropdown-toggle" role="button">Maintenance Program</a>
@@ -559,7 +556,7 @@ try {
                                                                             data-record-qsn-no="<?= htmlspecialchars($newsletter['qsn_no'] ?? '') ?>"
                                                                             data-record-description="<?= htmlspecialchars($newsletter['description'] ?? '') ?>"
                                                                             data-record-issue-date="<?= htmlspecialchars($newsletter['issue_date'] ?? '') ?>">
-                                                                            View 
+                                                                            View
                                                                         </button>
                                                                     </div>
                                                                 </td>
@@ -601,7 +598,7 @@ try {
                                         <div class="card">
                                             <div class="card-body p-0">
                                                 <div class="table-responsive">
-                                                    <table class="table table-striped table-hover mb-0" style="font-size:x-small;">
+                                                    <table class="table table-hover mb-0" id="servicingScheduleTable" style="font-size:x-small;">
                                                         <thead>
                                                             <tr>
                                                                 <th>Document No</th>
@@ -627,13 +624,13 @@ try {
                                                                     <td><?= htmlspecialchars($doc['revision'] ?? 'N/A') ?></td>
                                                                     <td><?= ($doc['revision_date'] && $doc['revision_date'] != '0000-00-00' ? date('M d, Y', strtotime($doc['revision_date'])) : 'N/A') ?></td>
                                                                     <td>
-                                                                        <?php if (!empty($doc['file_path'])): ?>
+                                                                        <?php
+                                                                        if (!empty($doc['file_path'])): ?>
                                                                             <a href="/qai/assets/pdfjs/web/viewer.html?file=<?= urlencode('/qai/admin/action/' . $doc['file_path']) ?>"
-                                                                               class="btn btn-view-pdf btn-sm view-pdf-btn"
-                                                                               data-bs-toggle="modal"
-                                                                               data-bs-target="#pdfModal"
-                                                                               data-pdf-url="/qai/assets/pdfjs/web/viewer.html?file=<?= urlencode('/qai/admin/action/' . $doc['file_path']) ?>">
-                                                                                <i class="fas fa-file-pdf me-1"></i>View
+                                                                                class="btn btn-view-details btn-sm view-details-btn"
+                                                                                data-bs-toggle="modal"
+                                                                                data-bs-target="#pdfModal"
+                                                                                data-pdf-url="/qai/assets/pdfjs/web/viewer.html?file=<?= urlencode('/qai/admin/action/' . $doc['file_path']) ?>">View
                                                                             </a>
                                                                         <?php else: ?>
                                                                             <span class="text-muted">No file</span>
@@ -674,7 +671,7 @@ try {
                                         <div class="card">
                                             <div class="card-body p-0">
                                                 <div class="table-responsive">
-                                                    <table class="table table-striped table-hover mb-0" style="font-size:x-small;">
+                                                    <table class="table table-hover mb-0" id="worksheetTable" style="font-size:x-small;">
                                                         <thead>
                                                             <tr>
                                                                 <th>Document No</th>
@@ -702,11 +699,10 @@ try {
                                                                     <td>
                                                                         <?php if (!empty($doc['file_path'])): ?>
                                                                             <a href="/qai/assets/pdfjs/web/viewer.html?file=<?= urlencode('/qai/admin/action/' . $doc['file_path']) ?>"
-                                                                               class="btn btn-view-pdf btn-sm view-pdf-btn"
-                                                                               data-bs-toggle="modal"
-                                                                               data-bs-target="#pdfModal"
-                                                                               data-pdf-url="/qai/assets/pdfjs/web/viewer.html?file=<?= urlencode('/qai/admin/action/' . $doc['file_path']) ?>">
-                                                                                <i class="fas fa-file-pdf me-1"></i>View
+                                                                                class="btn btn-view-details btn-sm view-details-btn"
+                                                                                data-bs-toggle="modal"
+                                                                                data-bs-target="#pdfModal"
+                                                                                data-pdf-url="/qai/assets/pdfjs/web/viewer.html?file=<?= urlencode('/qai/admin/action/' . $doc['file_path']) ?>">View
                                                                             </a>
                                                                         <?php else: ?>
                                                                             <span class="text-muted">No file</span>
@@ -798,7 +794,6 @@ try {
             </div>
         </div>
     </main>
-
     <!-- PDF Modal -->
     <div class="modal fade" id="pdfModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-xl modal-dialog-centered">
@@ -813,7 +808,6 @@ try {
             </div>
         </div>
     </div>
-
     <!-- Details Modal -->
     <div class="modal fade" id="detailsModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-lg modal-dialog-centered">
@@ -879,6 +873,14 @@ try {
                 $('#qaiNewslettersTable').DataTable(dataTableConfig);
             }
 
+            if ($('#servicingScheduleTable').length) {
+                $('#servicingScheduleTable').DataTable(dataTableConfig);
+            }
+
+            if ($('#worksheetTable').length) {
+                $('#worksheetTable').DataTable(dataTableConfig);
+            }
+
             // Initialize Technical Library table
             if ($('#techLibraryTable').length) {
                 $('#techLibraryTable').DataTable(dataTableConfig);
@@ -920,10 +922,17 @@ try {
 
                     let title = 'Record Details';
                     switch (recordType) {
-                        case 'ad_bulletin': title = 'AD Bulletin Details'; break;
-                        case 'qai_newsletter': title = 'QAI Safety Newsletter Details'; break;
-                        case 'tech_library': title = 'Technical Library Document Details'; break;
-                        default: title = 'Record Details';
+                        case 'ad_bulletin':
+                            title = 'AD Bulletin Details';
+                            break;
+                        case 'qai_newsletter':
+                            title = 'QAI Safety Newsletter Details';
+                            break;
+                        case 'tech_library':
+                            title = 'Technical Library Document Details';
+                            break;
+                        default:
+                            title = 'Record Details';
                     }
                     detailsModalTitle.textContent = title;
 
@@ -1131,7 +1140,6 @@ try {
                     }
 
                     e.preventDefault();
-                    
                     // Remove active class from all items
                     document.querySelectorAll('.nav-link, .qa-dropdown-item').forEach(tab => {
                         tab.classList.remove('active');
@@ -1150,8 +1158,8 @@ try {
                                 }
                             }
                         }
-                        currentItem = currentItem.parentElement?.closest('.qa-dropdown-item') || 
-                                     currentItem.parentElement?.closest('.nav-link');
+                        currentItem = currentItem.parentElement?.closest('.qa-dropdown-item') ||
+                            currentItem.parentElement?.closest('.nav-link');
                     }
 
                     const targetId = this.getAttribute('data-bs-target');

@@ -23,11 +23,12 @@
 
         .card {
             border: none;
-            border-radius: 8px;
+            /* border-radius: 8px; */
             /* box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); */
             /* transition: transform 0.3s, box-shadow 0.3s; */
         }
-        .card-title{
+
+        .card-title {
             font-size: small;
         }
 
@@ -45,7 +46,8 @@
         }
 
         .staff-card img {
-            height: 12rem;
+            width: 70%;
+            height: 8rem;
             border-radius: 5px;
             object-fit: cover;
         }
@@ -57,8 +59,8 @@
         .achievement-card img {
             height: 200px;
             object-fit: cover;
-            border-top-left-radius: 8px;
-            border-top-right-radius: 8px;
+            /* border-top-left-radius: 8px; */
+            /* border-top-right-radius: 8px; */
         }
 
         .history-table {
@@ -69,7 +71,7 @@
         .history-table th {
             background-color: var(--primary-color);
             color: white;
-            padding: 12px;
+            padding: 4px;
             text-align: left;
         }
 
@@ -93,11 +95,14 @@
         }
 
         .policy-statement {
-            font-style: italic;
+            /* font-style: italic; */
+            margin-top: 3rem;
             text-align: center;
             padding: 30px;
-            background-color: rgba(26, 79, 114, 0.05);
-            border-radius: 8px;
+            color: #1a4f72;
+            font-size: small;
+            /* background-color: rgba(26, 79, 114, 0.05); */
+            /* border-radius: 8px; */
         }
 
         #orgImage {
@@ -281,6 +286,19 @@
         .welcome-image {
             width: 100%;
         }
+
+        .history-table tbody tr {
+            height: 20px;
+        }
+
+        .history-table tbody td {
+            padding-top: 3px;
+            padding-bottom: 3px;
+            vertical-align: middle;
+        }
+        /* #achievements card{
+
+        } */
     </style>
 </head>
 
@@ -345,7 +363,7 @@
                     <!-- Policy -->
                     <div class="tab-pane fade" id="functions" role="tabpanel">
                         <div class="policy-statement">
-                            <p class="lead">"The Sri Lanka Air Force is committed to fulfil the aspirations of the Nation by achieving excellence in the field of aviation and in all associated functions through enhanced customer satisfaction and by exceeding stake holders' expectations, whilst endeavouring to be an efficient, reliable and socially responsible Air Force"</p>
+                            <p>"The Sri Lanka Air Force is committed to fulfil the aspirations of the Nation by achieving excellence in the field of aviation and in all associated functions through enhanced customer satisfaction and by exceeding stake holders' expectations, whilst endeavouring to be an efficient, reliable and socially responsible Air Force"</p>
                         </div>
                     </div>
 
@@ -385,52 +403,68 @@
                                             <h6 class="card-title">DQA</h6>
                                             <img width="200" height="250" src="../assets/img/staff/01.png" alt="DIRECTOR QUALITY ASSURANCE" class="img-fluid mb-3">
                                             <p class="mb-1 staff-name">Air Cdre MF Jansen</p>
-                                            <p class="mb-0" style="font-size:11px"><strong>Contact:</strong> 077-2229145 / 11100 </p>
-                                            <p class="mb-1" style="font-size:11px">dqa@airforce.lk</p>
+                                            <p class="mb-0 staff-contact">Mobile 077-2229145</p>
+                                            <p class="mb-0 staff-contact">Ext 11100</p>
+                                            <p class="mb-1 staff-contact">dqa@airforce.lk</p>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="col-md-2 col-lg-2">
                                     <div class="card staff-card text-center">
                                         <div class="card-body">
-                                            <h6 class="card-title">SOQA(AE)</h6>
+                                            <h6 class="card-title">SOQA-(AE)</h6>
                                             <img width="200" height="250" src="../assets/img/staff/of1.png" alt="SOQA(AERO ENG-FW/RW)" class="img-fluid mb-3">
                                             <p class="mb-1 staff-name">Sqn Ldr WPAC Dayaratne</p>
-                                            <p class="mb-1" style="font-size:11px"><strong>Contact:</strong>077-2229145 / 11115</p>
-                                            <p class="mb-1" style="font-size:11px">soqa.ae@airforce.lk</p>
+                                            <p class="mb-1 staff-contact">Mobile 077-2229145</p>
+                                            <p class="mb-1 staff-contact">Ext 11115</p>
+                                            <p class="mb-1 staff-contact">soqa.ae@airforce.lk</p>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="col-md-2 col-lg-2">
                                     <div class="card staff-card text-center">
                                         <div class="card-body">
-                                            <h6 class="card-title">SOQA(EE)</h6>
+                                            <h6 class="card-title">SOQA-(EE)</h6>
                                             <img width="200" height="250" src="../assets/img/staff/of4.png" alt="SOQA(E/E&T ENG)" class="img-fluid mb-3">
                                             <p class="mb-1 staff-name">Sqn Ldr UJC Kumara</p>
-                                            <p class="mb-1" style="font-size:11px"><strong>Contact:</strong> 077-2229142 / 11116</p>
-                                            <p class="mb-1" style="font-size:11px">soqa.ee@airforce.lk</p>
+                                            <p class="mb-1 staff-contact">Mobile 077-2229142</p>
+                                            <p class="mb-1 staff-contact">Ext 11116</p>
+                                            <p class="mb-1 staff-contact">soqa.ee@airforce.lk</p>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="col-md-2 col-lg-2">
                                     <div class="card staff-card text-center">
                                         <div class="card-body">
-                                            <h6 class="card-title">SOQA(GE)</h6>
+                                            <h6 class="card-title">SOQA-(GE)</h6>
                                             <img width="200" height="250" src="../assets/img/staff/officer3.png" alt="SOQA(GE)" class="img-fluid mb-3">
                                             <p class="mb-1 staff-name">Sqn Ldr THDM Hettige</p>
-                                            <p class="mb-1" style="font-size:11px"><strong>Contact:</strong> 077-2229165 / 11117</p>
-                                            <p class="mb-1" style="font-size:11px">soqa.ge@airforce.lk</p>
+                                            <p class="mb-1 staff-contact">Mobile 077-2229165</p>
+                                            <p class="mb-1 staff-contact">Ext 11117</p>
+                                            <p class="mb-1 staff-contact">soqa.ge@airforce.lk</p>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="col-md-2 col-lg-2">
                                     <div class="card staff-card text-center">
                                         <div class="card-body">
-                                            <h6 class="card-title">SOQA(TRG & PUG)</h6>
+                                            <h6 class="card-title">SOQA-(TRG & PUG)</h6>
                                             <img width="200" height="250" src="../assets/img/staff/of2.png" alt="SOQA(TRG & PUG)" class="img-fluid mb-3">
                                             <p class="mb-1 staff-name">Sqn Ldr MMDC MORAYAS</p>
-                                            <p class="mb-1" style="font-size:11px"><strong>Contact:</strong> 0778829671 / 11119</p>
-                                            <p class="mb-1" style="font-size:11px">soqa.trg@airforce.lk<br>soqa.osh@airforce.lk</p>
+                                            <p class="mb-1 staff-contact">Mobile 0778829671</p>
+                                            <p class="mb-1 staff-contact">Ext 11119</p>
+                                            <p class="mb-1 staff-contact">soqa.trg@airforce.lk<br>soqa.osh@airforce.lk</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-2 col-lg-2">
+                                    <div class="card staff-card text-center">
+                                        <div class="card-body">
+                                            <h6 class="card-title">QAI-WO I/C</h6>
+                                            <img width="200" height="250" src="../assets/img/staff/of3.png" alt="QUALITY ASSURANCE WO I/C" class="img-fluid mb-3">
+                                            <p class="mb-1 staff-name">MWO RGD ARIYARATHNA</p>
+                                            <p class="mb-1 staff-contact">Mobile 0707909422</p>
+                                            <p class="mb-1 staff-contact">Ext 11151</p>
                                         </div>
                                     </div>
                                 </div>
@@ -451,27 +485,26 @@
                             <!-- <div class="alert alert-info" style="height: 40px;">
                                 <h6 class="text-center mb-0">QUALITY ASSURANCE WO I/C</h6>
                             </div> -->
-                            <div class="row justify-content-center">
+                            <!-- <div class="row justify-content-center">
                                 <div class="col-md-2 col-lg-2">
                                     <div class="card staff-card text-center">
                                         <div class="card-body">
                                             <h6 class="card-title">QUALITY ASSURANCE WO I/C</h6>
                                             <img width="200" height="250" src="../assets/img/staff/of3.png" alt="QUALITY ASSURANCE WO I/C" class="img-fluid mb-3">
                                             <p class="mb-1 staff-name">MWO RGD ARIYARATHNA</p>
-                                            <p class="mb-1" style="font-size:11px"><strong>Contact:</strong> 0707909422 / 11151</p>
+                                            <p class="mb-1" style="font-size:x-small;"><strong>Contact:</strong> 0707909422 / 11151</p>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
+                            </div> -->
                         </div>
                     </div>
 
                     <!-- History -->
                     <div class="tab-pane fade" id="history" role="tabpanel" style="color:#1a4f72;">
-                        <p>The Quality Assurance Inspectorate (QAI) was first established at SLAF Base Rma as the Command Quality Assurance Inspectorate (CQAI) in year 1988 under the command of Wg Cdr GY De Silva on the aim of leading/guiding SLAF on Quality and Productivity.</p>
-                        <p>Subsequently the Inspectorate was shifted to the Air Force Headquarters to facilitate its effective operations throughout the full spectrum of SLAF operations and since then the QAI has been commanded by 22 Command Quality Assurance Officers (CQAOs).</p>
+                        <p>The Quality Assurance Inspectorate (QAI) was first established at SLAF Base Rma as the Command Quality Assurance Inspectorate (CQAI) in year 1988 under the command of Wg Cdr GY De Silva on the aim of leading/guiding SLAF on Quality and Productivity.<br>Subsequently the Inspectorate was shifted to the Air Force Headquarters to facilitate its effective operations throughout the full spectrum of SLAF operations and since then the QAI has been commanded by 22 Command Quality Assurance Officers (CQAOs).</p>
 
-                        <h5 class="text-center my-4">COMMAND QUALITY ASSURANCE OFFICERS</h5>
+                        <h6 class="text-center">COMMAND QUALITY ASSURANCE OFFICERS</h6>
 
                         <div class="table-responsive">
                             <table class="table table-hover history-table">
@@ -624,7 +657,7 @@
                                         <td style="color:#1a4f72;" class="text-center">04.07.2023</td>
                                     </tr>
                                     <tr class="table-primary">
-                                        <td style="color:#1a4f72;" colspan="3" class="text-center fw-bold py-2">DIRECTOR QUALITY ASSURANCE</td>
+                                        <td style="color:#1a4f72;" colspan="3" class="text-center fw-bold">DIRECTOR QUALITY ASSURANCE</td>
                                     </tr>
                                     <tr>
                                         <td style="color:#1a4f72;">Air Cdre SPS Martino</td>
@@ -650,29 +683,28 @@
                     <!-- Achievements -->
                     <div class="tab-pane fade" id="achievements" role="tabpanel">
                         <div class="row justify-content-center">
-
                             <!-- Card 1 -->
-                            <div class="col-sm-6 col-lg-4 col-xl-3 mb-4">
-                                <div class="card achievement-card" style="height: 390px;"
-                                    data-image="../assets/img/achievements/2018.jpeg"
+                            <div class="col-sm-2 col-lg-2 col-xl-2 mb-4">
+                                <div class="card achievement-card"
+                                    data-image="../assets/img/achievements/new/2018.jpg"
                                     data-title="2018 WINNER"
                                     data-description="National Productivity Award 2018">
 
-                                    <img src="../assets/img/achievements/2018.jpeg"
+                                    <img src="../assets/img/achievements/new/2018.jpg"
                                         class="card-img-top achievement-zoom cursor"
                                         alt="2018 WINNER"
-                                        style="height:350px; width: 100%"
+                                        style="height:280px; width: 100%"
                                         onclick="openModal();currentSlide(1)" />
 
                                     <div class="card-body text-center">
-                                        <p class="card-text" style="font-size:11px">National Productivity Award 2018</p>
+                                        <p class="card-text" style="font-size:x-small;">National Productivity Award <br>2018</p>
                                     </div>
                                 </div>
                             </div>
 
                             <!-- Card 2 -->
-                            <div class="col-sm-6 col-lg-4 col-xl-3 mb-4">
-                                <div class="card achievement-card" style="height: 390px;"
+                            <div class="col-sm-2 col-lg-2 col-xl-2 mb-4">
+                                <div class="card achievement-card"
                                     data-image="../assets/img/achievements/2014.jpg"
                                     data-title="2014 WINNER"
                                     data-description="Inter Departmental category Organized by national productivity secretariat">
@@ -680,17 +712,17 @@
                                     <img src="../assets/img/achievements/2014.jpg"
                                         class="card-img-top achievement-zoom cursor"
                                         alt="2014 WINNER"
-                                        style="height:350px"
+                                        style="height:280px"
                                         onclick="openModal();currentSlide(2)" />
 
                                     <div class="card-body text-center">
-                                        <p class="card-text" style="font-size:11px">National Productivity Award 2014</p>
+                                        <p class="card-text" style="font-size:x-small;">National Productivity Award <br>2014</p>
                                     </div>
                                 </div>
                             </div>
 
-                            <div class="col-sm-6 col-lg-4 col-xl-3 mb-4">
-                                <div class="card achievement-card" style="height: 390px;"
+                            <div class="col-sm-2 col-lg-2 col-xl-2 mb-4">
+                                <div class="card achievement-card"
                                     data-image="../assets/img/achievements/2008.jpeg"
                                     data-title="2008 WINNER"
                                     data-description="Provincial Productivity Award - First Place">
@@ -698,18 +730,18 @@
                                     <img src="../assets/img/achievements/2008.jpeg"
                                         class="card-img-top achievement-zoom cursor"
                                         alt="2008 WINNER"
-                                        style="height:350px"
+                                        style="height:280px"
                                         onclick="openModal();currentSlide(3)" />
 
                                     <div class="card-body text-center">
-                                        <p class="card-text" style="font-size:11px">Provincial Productivity Award 2008</p>
+                                        <p class="card-text" style="font-size:x-small;">Provincial Productivity Award <br>2008</p>
                                     </div>
                                 </div>
                             </div>
 
 
-                            <div class="col-sm-6 col-lg-4 col-xl-3 mb-4">
-                                <div class="card achievement-card" style="height: 390px;"
+                            <div class="col-sm-2 col-lg-2 col-xl-2 mb-4">
+                                <div class="card achievement-card"
                                     data-image="../assets/img/achievements/2003.jpeg"
                                     data-title="2003 WINNER"
                                     data-description="National Productivity Award">
@@ -717,17 +749,17 @@
                                     <img src="../assets/img/achievements/2003.jpeg"
                                         class="card-img-top achievement-zoom cursor"
                                         alt="2003 WINNER"
-                                        style="height:350px"
+                                        style="height:280px"
                                         onclick="openModal();currentSlide(4)" />
 
                                     <div class="card-body text-center">
-                                        <p class="card-text" style="font-size:11px">National Productivity Award 2003</p>
+                                        <p class="card-text" style="font-size:x-small;">National Productivity Award <br>2003</p>
                                     </div>
                                 </div>
                             </div>
 
-                            <div class="col-sm-6 col-lg-4 col-xl-3 mb-4">
-                                <div class="card achievement-card" style="height: 390px;"
+                            <div class="col-sm-2 col-lg-2 col-xl-2 mb-4">
+                                <div class="card achievement-card"
                                     data-image="../assets/img/achievements/1996.jpg"
                                     data-title="1996 WINNER"
                                     data-description="Excellence in Quality">
@@ -735,18 +767,18 @@
                                     <img src="../assets/img/achievements/1996.jpg"
                                         class="card-img-top achievement-zoom cursor"
                                         alt="1996 WINNER"
-                                        style="height:350px"
+                                        style="height:280px"
                                         onclick="openModal();currentSlide(5)" />
 
                                     <div class="card-body text-center">
-                                        <p class="card-text" style="font-size:11px">National Quality Award 1996</p>
+                                        <p class="card-text" style="font-size:x-small;">National Quality Award <br>1996</p>
                                     </div>
                                 </div>
                             </div>
 
 
                             <!-- <div class="col-sm-6 col-lg-4 col-xl-3 mb-4">
-                                <div class="card achievement-card" style="height: 390px;"
+                                <div class="card achievement-card"
                                     data-image="../assets/img/achievements/2024.jpg"
                                     data-title="2024 WINNER"
                                     data-description="ICQCC Awards - Gold Award">
@@ -754,17 +786,17 @@
                                     <img src="../assets/img/achievements/2024.jpg"
                                         class="card-img-top achievement-zoom cursor"
                                         alt="2024 WINNER"
-                                        style="height:350px"
+                                        style="height:280px"
                                         onclick="openModal();currentSlide(6)" />
 
                                     <div class="card-body text-center">
-                                        <p class="card-text" style="font-size:11px">ICQCC Award 2024</p>
+                                        <p class="card-text" style="font-size:x-small;">ICQCC Award 2024</p>
                                     </div>
                                 </div>
                             </div> -->
 
                             <!-- <div class="col-sm-6 col-lg-4 col-xl-3 mb-4">
-                                <div class="card achievement-card" style="height: 390px;"
+                                <div class="card achievement-card"
                                     data-image="../assets/img/achievements/2023.jpeg"
                                     data-title="2023 WINNER"
                                     data-description="National Convention on Quality & Productivity 2023">
@@ -772,11 +804,11 @@
                                     <img src="../assets/img/achievements/2023.jpeg"
                                         class="card-img-top achievement-zoom cursor"
                                         alt="2023 WINNER"
-                                        style="height:350px"
+                                        style="height:280px"
                                         onclick="openModal();currentSlide(7)" />
 
                                     <div class="card-body text-center">
-                                        <p class="card-text" style="font-size:11px">National Quality & Productivity 2023</p>
+                                        <p class="card-text" style="font-size:x-small;">National Quality & Productivity 2023</p>
                                     </div>
                                 </div>
                             </div> -->
@@ -842,7 +874,7 @@
 
                     <!-- <div class="col-sm-6 col-lg-4 col-xl-3 mb-4">
                         <div class="card achievement-card" data-image="../assets/img/achievements/2008.jpeg" data-title="2008 WINNER" data-description="Provincial Productivity Award - First Place">
-                            <img src="../assets/img/achievements/2008.jpeg" class="card-img-top achievement-zoom" alt="2008 WINNER" style="height:350px">
+                            <img src="../assets/img/achievements/2008.jpeg" class="card-img-top achievement-zoom" alt="2008 WINNER" style="height:280px">
                             <div class="card-body text-center">
                                 <h5 class="card-title">2008 WINNER</h5>
                                 <p class="card-text"><strong>Provincial Productivity Award - First Place</strong></p>
@@ -851,7 +883,7 @@
                     </div> -->
                     <!-- <div class="col-sm-6 col-lg-4 col-xl-3 mb-4">
                         <div class="card achievement-card" data-image="../assets/img/achievements/2003.jpeg" data-title="2003 WINNER" data-description="National Productivity Award">
-                            <img src="../assets/img/achievements/2003.jpeg" class="card-img-top achievement-zoom" alt="2003 WINNER" style="height:350px">
+                            <img src="../assets/img/achievements/2003.jpeg" class="card-img-top achievement-zoom" alt="2003 WINNER" style="height:280px">
                             <div class="card-body text-center">
                                 <h5 class="card-title">2003 WINNER</h5>
                                 <p class="card-text"><strong>National Productivity Award</strong></p>
@@ -860,7 +892,7 @@
                     </div> -->
                     <!-- <div class="col-sm-6 col-lg-4 col-xl-3 mb-4">
                         <div class="card achievement-card" data-image="../assets/img/achievements/1996.jpg" data-title="1996 WINNER" data-description="Excellence in Quality">
-                            <img src="../assets/img/achievements/1996.jpg" class="card-img-top achievement-zoom" alt="1996 WINNER" style="height:350px">
+                            <img src="../assets/img/achievements/1996.jpg" class="card-img-top achievement-zoom" alt="1996 WINNER" style="height:280px">
                             <div class="card-body text-center">
                                 <h5 class="card-title">1996 WINNER</h5>
                                 <p class="card-text"><strong>Excellence in Quality</strong></p>
@@ -869,7 +901,7 @@
                     </div> -->
                     <!-- <div class="col-sm-6 col-lg-4 col-xl-3 mb-4">
                         <div class="card achievement-card" data-image="../assets/img/achievements/2024.jpg" data-title="2024 Gold Award" data-description="ICQCC Awards - Gold Award">
-                            <img src="../assets/img/achievements/2024.jpg" class="card-img-top achievement-zoom" alt="2008 WINNER" style="height:350px">
+                            <img src="../assets/img/achievements/2024.jpg" class="card-img-top achievement-zoom" alt="2008 WINNER" style="height:280px">
                             <div class="card-body text-center">
                                 <h5 class="card-title">2024 Gold Award</h5>
                                 <p class="card-text"><strong>ICQCC Awards - Gold Award</strong></p>
@@ -878,7 +910,7 @@
                     </div> -->
                     <!-- <div class="col-sm-6 col-lg-4 col-xl-3 mb-4">
                         <div class="card achievement-card" data-image="../assets/img/achievements/2023.jpeg" data-title="2023 Gold Award" data-description="National Convention on Quality & Productivity 2023">
-                            <img src="../assets/img/achievements/2023.jpeg" class="card-img-top achievement-zoom" alt="1996 Merit Award" style="height:350px">
+                            <img src="../assets/img/achievements/2023.jpeg" class="card-img-top achievement-zoom" alt="1996 Merit Award" style="height:280px">
                             <div class="card-body text-center">
                                 <h5 class="card-title">2023 Gold Award</h5>
                                 <p class="card-text"><strong>National Convention on Quality & Productivity 2023</strong></p>
