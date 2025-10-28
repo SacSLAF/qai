@@ -5,12 +5,21 @@
   --dark-bg: #343a40;
   --pure-white: #ffffff;
 }
-
-body {
+/* body {
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   background-color: var(--pure-white);
   color: #333;
   line-height: 1.6;
+} */
+html,
+body {
+  margin: 0;
+  padding: 0;
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+  box-sizing: border-box;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
 }
 
 .colour-defult {
@@ -50,7 +59,7 @@ body {
   color: var(--primary-color);
   background-color: transparent;
   position: relative;
-  font-weight: 600;
+  /* font-weight: 600; */
   display: inline-block;
 }
 
@@ -179,6 +188,7 @@ table.dataTable > thead > tr > td {
   display: flex;
   align-items: center;
   gap: 0.25rem;
+  padding-bottom: 0.5rem;
 }
 .dataTables_filter label,
 .dataTables_info,
@@ -195,6 +205,7 @@ table.dataTable > thead > tr > td {
 #dieselTable_wrapper,
 #petrolTable_wrapper {
   font-size: smaller !important;
+  margin-top: 1rem !important;
 }
 
 #dieselTable,
@@ -234,6 +245,7 @@ table.dataTable > thead > tr > td {
 #dieselTable_wrapper .dataTables_paginate,
 #petrolTable_wrapper .dataTables_paginate {
   font-size: smaller !important;
+  margin-bottom: 0.5rem !important;
 }
 
 #dieselTable_wrapper .dataTables_length select,
@@ -251,8 +263,15 @@ table.dataTable > thead > tr > td {
   color: rgb(0, 102, 152) !important;
 }
 .table-responsive {
-  margin-top: -5px;
+  margin-top: -2rem;
   margin-bottom: 2rem;
+}
+.table-responsive-comp {
+  /* margin-top: -1rem; */
+  /* margin-bottom: 1rem; */
+}
+.table-responsive .dataTables_wrapper{
+  padding: 1rem 0;
 }
 table.dataTable thead th {
   background-color: #18426e;
@@ -316,7 +335,7 @@ table.dataTable td {
 .qa-dropdown-item.active::after {
   content: "";
   position: absolute;
-  left: 0.4rem;
+  left: 0.6rem;
   bottom: 0;
   height: 1px;
   width: 70%;
@@ -430,11 +449,12 @@ table.dataTable td {
 #inspectorateTabs .nav-link,
 #inspectorateTabs .qa-dropdown-toggle,
 #inspectorateTabs .qa-dropdown-item {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  cursor: pointer;
 }
 
 .qa-dropdown-menu {
-    white-space: nowrap;
+  white-space: nowrap;
 }

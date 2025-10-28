@@ -303,11 +303,11 @@ try {
             border-radius: 5px 5px 0 0;
         } */
 
-        .top-bar a {
+        /* .top-bar a {
             color: white;
             text-decoration: none;
             margin-right: 15px;
-        }
+        } */
 
         .pdf-viewer-container {
             position: relative;
@@ -614,8 +614,8 @@ try {
                                     <?php elseif (isset($aircraft_competency_data[$category_id]) && !empty($aircraft_competency_data[$category_id]['records'])): ?>
                                         <div class="card">
                                             <div class="card-body p-0">
-                                                <div class="table-responsive">
-                                                    <table class="table  table-hover mb-0 competencyTable" id="competencyTable_<?= $category_id ?>">
+                                                <div class="table-responsive-comp">
+                                                    <table class="table table-hover mb-0 competencyTable" id="competencyTable_<?= $category_id ?>">
                                                         <thead style="font-size:x-small;">
                                                             <tr>
                                                                 <th>SVC No</th>
@@ -945,7 +945,7 @@ try {
                                         <th>Vehicle Type</th>
                                         <th>Model</th>
                                         <th>Date</th>
-                                        <th>Test Values</th>
+                                        <!-- <th>Test Values</th> -->
                                         <th>Status</th>
                                         <th>Next Due Date</th>
                                         <th>Remarks</th>
@@ -979,7 +979,7 @@ try {
                                                 <td><?= htmlspecialchars($r['vehicle_type'] ?? 'N/A') ?></td>
                                                 <td><?= htmlspecialchars($r['model'] ?? 'N/A') ?></td>
                                                 <td><?= $r['test_date'] ? htmlspecialchars($r['test_date']) : 'N/A' ?></td>
-                                                <td class="test-values">
+                                                <!-- <td class="test-values">
                                                     <?php if (!empty($r['first_test'])): ?>
                                                         <small>1st: <?= $r['first_test'] ?></small><br>
                                                     <?php endif; ?>
@@ -992,7 +992,7 @@ try {
                                                     <?php if (!empty($r['average'])): ?>
                                                         <small><strong>Avg: <?= $r['average'] ?></strong></small>
                                                     <?php endif; ?>
-                                                </td>
+                                                </td> -->
                                                 <td>
                                                     <span class="badge badge-<?=
                                                                                 $r['status'] == 'Pass' ? 'success' : ($r['status'] == 'Fail' ? 'danger' : ($r['status'] == 'Not Suitable' ? 'warning' : 'secondary'))
@@ -1024,7 +1024,7 @@ try {
                                         <th>Vehicle Type</th>
                                         <th>Model</th>
                                         <th>Date</th>
-                                        <th>Test Values</th>
+                                        <!-- <th>Test Values</th> -->
                                         <th>Status</th>
                                         <th>Next Due Date</th>
                                         <th>Remarks</th>
@@ -1059,7 +1059,7 @@ try {
                                                 <td><?= htmlspecialchars($r['vehicle_type'] ?? 'N/A') ?></td>
                                                 <td><?= htmlspecialchars($r['model'] ?? 'N/A') ?></td>
                                                 <td><?= $r['test_date'] ? htmlspecialchars($r['test_date']) : 'N/A' ?></td>
-                                                <td class="test-values">
+                                                <!-- <td class="test-values">
                                                     <?php if (!empty($r['rpm_2500_hc'])): ?>
                                                         <small>2500 RPM HC: <?= $r['rpm_2500_hc'] ?></small><br>
                                                     <?php endif; ?>
@@ -1072,7 +1072,7 @@ try {
                                                     <?php if (!empty($r['idle_co'])): ?>
                                                         <small>Idle CO: <?= $r['idle_co'] ?></small>
                                                     <?php endif; ?>
-                                                </td>
+                                                </td> -->
                                                 <td>
                                                     <span class="badge badge-<?=
                                                                                 $r['status'] == 'Pass' ? 'success' : ($r['status'] == 'Fail' ? 'danger' : ($r['status'] == 'Not Suitable' ? 'warning' : 'secondary'))
