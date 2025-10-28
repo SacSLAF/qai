@@ -303,8 +303,6 @@ try {
             width: 100%;
         }
 
-
-
         /* Dropdown styles */
         .qa-dropdown {
             position: relative;
@@ -446,7 +444,7 @@ try {
                                     <div class="card">
                                         <div class="card-body p-0">
                                             <div class="table-responsive">
-                                                <table class="table  table-hover mb-0" id="adBulletinsTable" style="font-size:x-small;">
+                                                <table class="table table-hover mb-0 " id="adBulletinsTable" style="font-size:x-small;">
                                                     <thead>
                                                         <tr>
                                                             <th>Reference No</th>
@@ -507,7 +505,7 @@ try {
                                     <div class="card">
                                         <div class="card-body p-0">
                                             <div class="table-responsive">
-                                                <table class="table  table-hover mb-0" id="qaiNewslettersTable" style="font-size:x-small;">
+                                                <table class="table  table-hover mb-0 " id="qaiNewslettersTable" style="font-size:x-small;">
                                                     <thead>
                                                         <tr>
                                                             <th>QSN No</th>

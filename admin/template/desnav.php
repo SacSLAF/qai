@@ -37,11 +37,14 @@
 							<li><a href="tech-library.php">Technical Library</a></li>
                         </ul>
                     </li>
-                    <li>
-                        <a href="training-docs.php" aria-expanded="false">
+                    <li class="has-arrow">
+                        <a href="javascript:void(0)" aria-expanded="false">
                             <i class="fas fa-graduation-cap"></i>
                             <span class="nav-text">Training</span>
                         </a>
+                        <ul aria-expanded="false">
+                            <li><a href="training-syllabus.php">Training Syllabus</a></li>
+                        </ul>
                     </li>
                     <li>
                         <a href="productivity-docs.php" aria-expanded="false">

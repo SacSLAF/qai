@@ -814,3 +814,32 @@ CREATE TABLE `maintenance_documents`  (
   CONSTRAINT `fk_md_formation` FOREIGN KEY (`formation_id`) REFERENCES `formation` (`formation_id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
   CONSTRAINT `fk_md_type` FOREIGN KEY (`type_id`) REFERENCES `type` (`type_id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Table structure for training_syllabus
+-- ----------------------------
+DROP TABLE IF EXISTS `training_syllabus`;
+CREATE TABLE `training_syllabus`  (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `syllabus_no` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `formation_id` int NOT NULL,
+  `type_id` int NOT NULL,
+  `trade` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
+  `syllabus_type`varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
+  `description` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `issue` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `revision` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
+  `revision_date` date NULL DEFAULT NULL,
+  `ac_categories_id` int NOT NULL,
+  `file_path` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  PRIMARY KEY (`id`) USING BTREE,
+  UNIQUE INDEX `idx_syllabus_no`(`syllabus_no`) USING BTREE,
+  INDEX `fk_ts_formation`(`formation_id`) USING BTREE,
+  INDEX `fk_ts_type`(`type_id`) USING BTREE,
+  INDEX `ac_categories`(`ac_categories_id`) USING BTREE,
+  INDEX `idx_syllabus_type`(`syllabus_type`) USING BTREE,
+  INDEX `idx_trade`(`trade`) USING BTREE,
+  CONSTRAINT `fk_ts_ac_categories` FOREIGN KEY (`ac_categories_id`) REFERENCES `ac_categories` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
+  CONSTRAINT `fk_ts_formation` FOREIGN KEY (`formation_id`) REFERENCES `formation` (`formation_id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
+  CONSTRAINT `fk_ts_type` FOREIGN KEY (`type_id`) REFERENCES `type` (`type_id`) ON DELETE RESTRICT ON UPDATE RESTRICT
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
