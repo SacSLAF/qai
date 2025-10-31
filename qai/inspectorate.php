@@ -48,6 +48,7 @@
 
         .staff-card {
             height: 100%;
+            margin: 0 12px;
         }
 
         .staff-card img {
@@ -63,7 +64,7 @@
 
         .achievement-card img {
             height: 200px;
-            object-fit: cover;
+            object-fit: contain;
             /* border-top-left-radius: 8px; */
             /* border-top-right-radius: 8px; */
         }
@@ -177,7 +178,7 @@
             display: none;
             position: fixed;
             z-index: 1;
-            padding-top: 100px;
+            padding-top: 50px;
             left: 0;
             top: 0;
             width: 100%;
@@ -352,7 +353,7 @@
                         </div>
                     </div>
                     <!-- About Us -->
-                    <div class="tab-pane fade" id="org" role="tabpanel" style="color:#1a4f72;">
+                    <div class="tab-pane fade" id="org" role="tabpanel" style="font-size:smaller;color:#1a4f72;">
                         <p>The Sri Lanka Air Force (SLAF), in its commitment to fulfil the aspirations of the Nation by achieving excellence in the field of aviation and in all associated functions, is continually striving to enhance customer satisfaction by exceeding stake holders' expectations whilst endeavouring to be efficient, reliable and socially responsible.<br>Towards this end, the Quality Assurance Inspectorate (QAI) was established to perform Quality Assurance Functions within the SLAF. The QAI functions under supervision of the Chief of Staff of the Sri Lanka Air Force and is headed by the Director Quality Assurance (DQA) who is primarily tasked to provide advice on the Quality Assurance Services (QAS) matters such as Policy, Organization and Administration.</p>
 
                         <h5 class="mt-4 mb-3">Main Functions</h5>
@@ -403,7 +404,7 @@
                             <!-- <div class="alert alert-info" style="height: 40px;">
                                 <h6 class="text-center mb-0">DIRECTOR QUALITY ASSURANCE</h6>
                             </div> -->
-                            <div class="row justify-content-center">
+                            <div class="row justify-content-center g-1">
                                 <div class="col-md-2 col-lg-2">
                                     <div class="card staff-card text-center">
                                         <div class="card-body">
@@ -508,7 +509,7 @@
                     </div>
 
                     <!-- History -->
-                    <div class="tab-pane fade" id="history" role="tabpanel" style="color:#1a4f72;">
+                    <div class="tab-pane fade" id="history" role="tabpanel" style="font-size:small;color:#1a4f72;">
                         <p>The Quality Assurance Inspectorate (QAI) was first established at SLAF Base Rma as the Command Quality Assurance Inspectorate (CQAI) in year 1988 under the command of Wg Cdr GY De Silva with the aim of leading/guiding SLAF on Quality and Productivity. Subsequently the Inspectorate was shifted to the Air Force Headquarters Colombo to facilitate its effective operations throughout the full spectrum of SLAF operations.
                             <br>
                             In 2023, the inspectorate was renamed as the Quality Assurance Inspectorate (QAI) and simultaneously, the designation of Command Quality Assurance Officer was changed to Director Quality Assurance (DQA). In 2024, the Quality Assurance Inspectorate was relocated to the new Air Force Headquarters Sri Jayewardenepura.
@@ -523,8 +524,8 @@
                                     <thead>
                                         <tr>
                                             <th width="40%" style="padding-left:0.8rem;">Name</th>
-                                            <th width="30%" class="text-center">From</th>
-                                            <th width="30%" class="text-center">To</th>
+                                            <th width="30%" style="padding-left:0.8rem;" class="text-center">From</th>
+                                            <th width="30%" style="padding-left:0.8rem;" class="text-center">To</th>
                                         </tr>
                                     </thead>
                                     <tbody>
