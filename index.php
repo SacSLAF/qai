@@ -26,7 +26,7 @@
 
     <?php include 'template/header.php'; ?>
 
-    <main>
+    <main class="container-fluid">
       <div class="slider-wrapper">
         <div class="swiper-slide">
           <img src="assets/img/slider/bk-01.jpg" alt="Quality Inspection">

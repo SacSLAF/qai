@@ -15,16 +15,12 @@
     <!-- Custom CSS -->
     <link rel="stylesheet" href="../assets/css/styles.css">
     <style>
-        .tab-content {
-            max-height: calc(100vh - 150px);
-            overflow-y: auto;
-            scrollbar-width: none;
-            -ms-overflow-style: none;
-        }
-
-        .tab-content::-webkit-scrollbar {
-            display: none;
-        }
+        /* .tab-content {
+            padding: 20px;
+            background: #fff;
+            border-radius: 5px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        } */
 
         .card {
             border: none;
@@ -48,7 +44,6 @@
 
         .staff-card {
             height: 100%;
-            margin: 0 12px;
         }
 
         .staff-card img {
@@ -70,7 +65,6 @@
         }
 
         .history-table {
-            margin-top: 2rem;
             width: 100%;
             border-collapse: collapse;
         }
@@ -178,7 +172,7 @@
             display: none;
             position: fixed;
             z-index: 1;
-            padding-top: 50px;
+            padding-top: 100px;
             left: 0;
             top: 0;
             width: 100%;
@@ -353,7 +347,7 @@
                         </div>
                     </div>
                     <!-- About Us -->
-                    <div class="tab-pane fade" id="org" role="tabpanel" style="font-size:smaller;color:#1a4f72;">
+                    <div class="tab-pane fade" id="org" role="tabpanel" style="color:#1a4f72;">
                         <p>The Sri Lanka Air Force (SLAF), in its commitment to fulfil the aspirations of the Nation by achieving excellence in the field of aviation and in all associated functions, is continually striving to enhance customer satisfaction by exceeding stake holders' expectations whilst endeavouring to be efficient, reliable and socially responsible.<br>Towards this end, the Quality Assurance Inspectorate (QAI) was established to perform Quality Assurance Functions within the SLAF. The QAI functions under supervision of the Chief of Staff of the Sri Lanka Air Force and is headed by the Director Quality Assurance (DQA) who is primarily tasked to provide advice on the Quality Assurance Services (QAS) matters such as Policy, Organization and Administration.</p>
 
                         <h5 class="mt-4 mb-3">Main Functions</h5>
@@ -404,7 +398,7 @@
                             <!-- <div class="alert alert-info" style="height: 40px;">
                                 <h6 class="text-center mb-0">DIRECTOR QUALITY ASSURANCE</h6>
                             </div> -->
-                            <div class="row justify-content-center g-1">
+                            <div class="row justify-content-center">
                                 <div class="col-md-2 col-lg-2">
                                     <div class="card staff-card text-center">
                                         <div class="card-body">
@@ -509,7 +503,7 @@
                     </div>
 
                     <!-- History -->
-                    <div class="tab-pane fade" id="history" role="tabpanel" style="font-size:small;color:#1a4f72;">
+                    <div class="tab-pane fade" id="history" role="tabpanel" style="color:#1a4f72;">
                         <p>The Quality Assurance Inspectorate (QAI) was first established at SLAF Base Rma as the Command Quality Assurance Inspectorate (CQAI) in year 1988 under the command of Wg Cdr GY De Silva with the aim of leading/guiding SLAF on Quality and Productivity. Subsequently the Inspectorate was shifted to the Air Force Headquarters Colombo to facilitate its effective operations throughout the full spectrum of SLAF operations.
                             <br>
                             In 2023, the inspectorate was renamed as the Quality Assurance Inspectorate (QAI) and simultaneously, the designation of Command Quality Assurance Officer was changed to Director Quality Assurance (DQA). In 2024, the Quality Assurance Inspectorate was relocated to the new Air Force Headquarters Sri Jayewardenepura.
@@ -518,17 +512,19 @@
                         </p>
 
                         <h6 class="text-center">COMMAND QUALITY ASSURANCE OFFICERS</h6>
-                        <div class="d-flex justify-content-center">
-                            <div class="table-responsive" style="width: 80%;">
+
+                        <div class="table-responsive">
+                            <div class="his-table" style="max-height: 400px; overflow-y: auto;">
                                 <table class="table table-hover history-table">
-                                    <thead>
+                                    <thead style="position: sticky; top: 0; background-color: #1a4f72; z-index: 1;">
                                         <tr>
-                                            <th width="40%" style="padding-left:0.8rem;">Name</th>
-                                            <th width="30%" style="padding-left:0.8rem;" class="text-center">From</th>
-                                            <th width="30%" style="padding-left:0.8rem;" class="text-center">To</th>
+                                            <th width="40%" style="padding-left: 0.8rem;">Name</th>
+                                            <th width="30%" class="text-center">From</th>
+                                            <th width="30%" class="text-center">To</th>
                                         </tr>
                                     </thead>
                                     <tbody>
+                                        <!-- Your existing table rows here -->
                                         <tr>
                                             <td style="color:#1a4f72;">Wg Cdr GY De Silva</td>
                                             <td style="color:#1a4f72;" class="text-center">09.03.1988</td>
@@ -538,81 +534,6 @@
                                             <td style="color:#1a4f72;">Sqn Ldr PDJ Kumarasiri</td>
                                             <td style="color:#1a4f72;" class="text-center">01.01.1991</td>
                                             <td style="color:#1a4f72;" class="text-center">31.12.1991</td>
-                                        </tr>
-                                        <tr>
-                                            <td style="color:#1a4f72;">Sqn Ldr SAH Satharasinghe</td>
-                                            <td style="color:#1a4f72;" class="text-center">01.01.1992</td>
-                                            <td style="color:#1a4f72;" class="text-center">14.03.1993</td>
-                                        </tr>
-                                        <tr>
-                                            <td style="color:#1a4f72;">Sqn Ldr PDJ Kumarasiri</td>
-                                            <td style="color:#1a4f72;" class="text-center">15.03.1993</td>
-                                            <td style="color:#1a4f72;" class="text-center">08.07.1996</td>
-                                        </tr>
-                                        <tr>
-                                            <td style="color:#1a4f72;">Wg Cdr PDJ Kumarasiri</td>
-                                            <td style="color:#1a4f72;" class="text-center">09.07.1996</td>
-                                            <td style="color:#1a4f72;" class="text-center">31.12.1997</td>
-                                        </tr>
-                                        <tr>
-                                            <td style="color:#1a4f72;">Sqn Ldr DS Edirisinghe</td>
-                                            <td style="color:#1a4f72;" class="text-center">01.01.1998</td>
-                                            <td style="color:#1a4f72;" class="text-center">01.03.1998</td>
-                                        </tr>
-                                        <tr>
-                                            <td style="color:#1a4f72;">Wg Cdr KDU Chandrathilala</td>
-                                            <td style="color:#1a4f72;" class="text-center">02.03.1998</td>
-                                            <td style="color:#1a4f72;" class="text-center">01.12.2001</td>
-                                        </tr>
-                                        <tr>
-                                            <td style="color:#1a4f72;">Gp Cpt EPB Liyanage</td>
-                                            <td style="color:#1a4f72;" class="text-center">02.12.2001</td>
-                                            <td style="color:#1a4f72;" class="text-center">14.01.2003</td>
-                                        </tr>
-                                        <tr>
-                                            <td style="color:#1a4f72;">Gp Cpt EGJP De Silva</td>
-                                            <td style="color:#1a4f72;" class="text-center">15.01.2003</td>
-                                            <td style="color:#1a4f72;" class="text-center">31.09.2004</td>
-                                        </tr>
-                                        <tr>
-                                            <td style="color:#1a4f72;">Wg Cdr TKS Peiris</td>
-                                            <td style="color:#1a4f72;" class="text-center">01.10.2004</td>
-                                            <td style="color:#1a4f72;" class="text-center">10.07.2005</td>
-                                        </tr>
-                                        <tr>
-                                            <td style="color:#1a4f72;">Wg Cdr WPAK Wijesinghe</td>
-                                            <td style="color:#1a4f72;" class="text-center">11.07.2005</td>
-                                            <td style="color:#1a4f72;" class="text-center">09.08.2005</td>
-                                        </tr>
-                                        <tr>
-                                            <td style="color:#1a4f72;">Gp Cpt EPB Liyanage</td>
-                                            <td style="color:#1a4f72;" class="text-center">10.08.2005</td>
-                                            <td style="color:#1a4f72;" class="text-center">10.02.2006</td>
-                                        </tr>
-                                        <tr>
-                                            <td style="color:#1a4f72;">Gp Cpt BLW Balasuriya</td>
-                                            <td style="color:#1a4f72;" class="text-center">11.02.2006</td>
-                                            <td style="color:#1a4f72;" class="text-center">31.12.2006</td>
-                                        </tr>
-                                        <tr>
-                                            <td style="color:#1a4f72;">Air Cdre BLW Balasuriya</td>
-                                            <td style="color:#1a4f72;" class="text-center">01.01.2007</td>
-                                            <td style="color:#1a4f72;" class="text-center">02.04.2007</td>
-                                        </tr>
-                                        <tr>
-                                            <td style="color:#1a4f72;">Gp Cpt PDJ Kumarasiri</td>
-                                            <td style="color:#1a4f72;" class="text-center">03.04.2007</td>
-                                            <td style="color:#1a4f72;" class="text-center">10.09.2008</td>
-                                        </tr>
-                                        <tr>
-                                            <td style="color:#1a4f72;">Air Cdre PDJ Kumarasiri</td>
-                                            <td style="color:#1a4f72;" class="text-center">11.09.2008</td>
-                                            <td style="color:#1a4f72;" class="text-center">31.12.2009</td>
-                                        </tr>
-                                        <tr>
-                                            <td style="color:#1a4f72;">AVM PDJ Kumarasiri</td>
-                                            <td style="color:#1a4f72;" class="text-center">01.01.2010</td>
-                                            <td style="color:#1a4f72;" class="text-center">24.07.2011</td>
                                         </tr>
                                         <tr>
                                             <td style="color:#1a4f72;">Gp Cpt AH Wijesiri</td>
@@ -687,6 +608,11 @@
                                             <td style="color:#1a4f72;" class="text-center">27.07.2025</td>
                                             <td style="color:#1a4f72;" class="text-center">-</td>
                                         </tr>
+                                        <tr>
+                                            <td style="color:#1a4f72;">Air Cdre MF Jansen</td>
+                                            <td style="color:#1a4f72;" class="text-center">27.07.2025</td>
+                                            <td style="color:#1a4f72;" class="text-center">-</td>
+                                        </tr>
                                     </tbody>
                                 </table>
                             </div>
@@ -700,11 +626,11 @@
                             <!-- Card 1 -->
                             <div class="col-sm-2 col-lg-2 col-xl-2 mb-4">
                                 <div class="card achievement-card"
-                                    data-image="../assets/img/achievements/2018.jpeg"
+                                    data-image="../assets/img/achievements/new/2018.jpg"
                                     data-title="2018 WINNER"
                                     data-description="National Productivity Award 2018">
 
-                                    <img src="../assets/img/achievements/2018.jpeg"
+                                    <img src="../assets/img/achievements/new/2018.jpg"
                                         class="card-img-top achievement-zoom cursor"
                                         alt="2018 WINNER"
                                         style="height:280px; width: 100%"

@@ -5,12 +5,21 @@
   --dark-bg: #343a40;
   --pure-white: #ffffff;
 }
-
-body {
+/* body {
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   background-color: var(--pure-white);
   color: #333;
   line-height: 1.6;
+} */
+html,
+body {
+  margin: 0;
+  padding: 0;
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+  box-sizing: border-box;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
 }
 
 .colour-defult {
@@ -50,7 +59,7 @@ body {
   color: var(--primary-color);
   background-color: transparent;
   position: relative;
-  font-weight: 600;
+  /* font-weight: 600; */
   display: inline-block;
 }
 
@@ -179,6 +188,7 @@ table.dataTable > thead > tr > td {
   display: flex;
   align-items: center;
   gap: 0.25rem;
+  padding-bottom: 0.5rem;
 }
 .dataTables_filter label,
 .dataTables_info,
@@ -195,6 +205,7 @@ table.dataTable > thead > tr > td {
 #dieselTable_wrapper,
 #petrolTable_wrapper {
   font-size: smaller !important;
+  margin-top: 1rem !important;
 }
 
 #dieselTable,
@@ -234,6 +245,7 @@ table.dataTable > thead > tr > td {
 #dieselTable_wrapper .dataTables_paginate,
 #petrolTable_wrapper .dataTables_paginate {
   font-size: smaller !important;
+  margin-bottom: 0.5rem !important;
 }
 
 #dieselTable_wrapper .dataTables_length select,
@@ -251,8 +263,15 @@ table.dataTable > thead > tr > td {
   color: rgb(0, 102, 152) !important;
 }
 .table-responsive {
-  margin-top: -5px;
+  margin-top: -2rem;
   margin-bottom: 2rem;
+}
+.table-responsive-comp {
+  /* margin-top: -1rem; */
+  /* margin-bottom: 1rem; */
+}
+.table-responsive .dataTables_wrapper {
+  padding: 1rem 0;
 }
 table.dataTable thead th {
   background-color: #18426e;
@@ -316,7 +335,7 @@ table.dataTable td {
 .qa-dropdown-item.active::after {
   content: "";
   position: absolute;
-  left: 0.4rem;
+  left: 0.6rem;
   bottom: 0;
   height: 1px;
   width: 70%;
@@ -430,11 +449,141 @@ table.dataTable td {
 #inspectorateTabs .nav-link,
 #inspectorateTabs .qa-dropdown-toggle,
 #inspectorateTabs .qa-dropdown-item {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  cursor: pointer;
 }
 
 .qa-dropdown-menu {
+  white-space: nowrap;
+}
+.history-table th,
+.history-table td {
+  text-align: left !important;
+  padding-left: 0.8rem;
+}
+
+/* Common styles for ALL DataTables */
+.table.dataTable {
+    font-size: 0.8rem !important;
+    margin-top: 0.5rem !important;
+}
+
+/* Table headers - reduced height and left alignment */
+table.dataTable thead th {
+    height: 1rem !important;
+    padding: 4px 8px !important;
+    vertical-align: middle !important;
+    text-align: left !important;
+    background-color: #18426e !important;
+    color: white !important;
+    font-weight: 600;
     white-space: nowrap;
+    border: none !important;
+    font-size: x-small !important;
+}
+
+/* Table body cells - left aligned with consistent padding */
+table.dataTable tbody td {
+    text-align: left !important;
+    padding: 4px 8px !important;
+    vertical-align: middle !important;
+    line-height: 1.4 !important;
+    border-bottom: 1px solid #dee2e6 !important;
+    font-size: x-small !important;
+}
+
+/* Specific styles for competency tables */
+.competencyTable thead th,
+.competencyTable tbody td {
+    text-align: left !important;
+    padding: 4px 6px !important;
+}
+
+/* Vehicle test tables */
+.vehicle-test-table thead th,
+.vehicle-test-table tbody td {
+    text-align: left !important;
+    padding: 4px 6px !important;
+}
+
+/* Ensure all specific tables inherit common styles */
+#qaReportsTable,
+#qaCheckListTable, 
+#latitudeTable,
+#modificationTable,
+#rndTable,
+.competencyTable,
+#dieselTable,
+#petrolTable {
+    font-size: x-small !important;
+}
+
+/* DataTable wrapper adjustments */
+.dataTables_wrapper {
+    margin-top: 0.5rem !important;
+}
+
+.dataTables_wrapper .dataTables_filter input {
+    margin-left: 0.5em;
+    padding: 0.2rem 0.4rem !important;
+    font-size: x-small !important;
+    height: auto !important;
+}
+
+.dataTables_wrapper .dataTables_length select {
+    margin: 0 0.5em;
+    padding: 0.2rem 0.4rem !important;
+    font-size: x-small !important;
+    height: auto !important;
+}
+
+/* DataTable info and pagination */
+.dataTables_info,
+.dataTables_paginate .paginate_button {
+    font-size: x-small !important;
+    padding: 0.3rem 0.5rem !important;
+}
+
+/* Hover states for better interactivity */
+table.dataTable tbody tr:hover {
+    background-color: #f8f9fa !important;
+}
+
+/* Striping for better readability */
+table.dataTable.stripe tbody tr.odd {
+    background-color: #f9f9f9 !important;
+}
+
+table.dataTable.stripe tbody tr.even {
+    background-color: white !important;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    table.dataTable thead th {
+        height: 28px !important;
+        padding: 3px 6px !important;
+        font-size: xx-small !important;
+    }
+    
+    table.dataTable tbody td {
+        padding: 3px 6px !important;
+        font-size: xx-small !important;
+    }
+    
+    .table-responsive {
+        margin-top: -1rem !important;
+    }
+}
+
+/* Print styles for DataTables */
+@media print {
+    table.dataTable thead th {
+        background-color: #18426e !important;
+        color: white !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
 }
