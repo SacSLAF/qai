@@ -23,15 +23,15 @@ SET FOREIGN_KEY_CHECKS = 0;
 DROP TABLE IF EXISTS `active_qcc_registrations`;
 CREATE TABLE `active_qcc_registrations`  (
   `id` int NOT NULL AUTO_INCREMENT,
-  `title` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
-  `description` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL,
-  `qcc_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `title` varchar(255) CHARACTER SET utf8mb4  NOT NULL,
+  `description` text CHARACTER SET utf8mb4  NULL,
+  `qcc_name` varchar(255) CHARACTER SET utf8mb4  NOT NULL,
   `slaf_establishment_id` int NOT NULL,
-  `location` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
-  `team_members` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `location` varchar(255) CHARACTER SET utf8mb4  NOT NULL,
+  `team_members` text CHARACTER SET utf8mb4  NOT NULL,
   `category_id` int NOT NULL,
-  `qcc_category_id` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
-  `main_category` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT 'productivity',
+  `qcc_category_id` varchar(50) CHARACTER SET utf8mb4  NULL DEFAULT NULL,
+  `main_category` varchar(50) CHARACTER SET utf8mb4  NULL DEFAULT 'productivity',
   `is_active` tinyint(1) NULL DEFAULT 1,
   `created_by` int NULL DEFAULT NULL,
   `created_at` timestamp(0) NULL DEFAULT CURRENT_TIMESTAMP(0),
@@ -41,7 +41,7 @@ CREATE TABLE `active_qcc_registrations`  (
   INDEX `category_id`(`category_id`) USING BTREE,
   CONSTRAINT `active_qcc_registrations_ibfk_1` FOREIGN KEY (`slaf_establishment_id`) REFERENCES `slaf_establishments` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
   CONSTRAINT `active_qcc_registrations_ibfk_2` FOREIGN KEY (`category_id`) REFERENCES `productivity_categories` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT
-) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4  ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of active_qcc_registrations
@@ -55,15 +55,15 @@ INSERT INTO `active_qcc_registrations` VALUES (1, 'Test', 'Test', 'Test QCC', 8,
 DROP TABLE IF EXISTS `admins`;
 CREATE TABLE `admins`  (
   `id` int NOT NULL AUTO_INCREMENT,
-  `username` varchar(50) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL,
-  `branch` varchar(100) CHARACTER SET latin1 COLLATE latin1_swedish_ci NULL DEFAULT NULL,
-  `password` varchar(255) CHARACTER SET latin1 COLLATE latin1_swedish_ci NULL DEFAULT NULL,
+  `username` varchar(50) CHARACTER SET latin1 NOT NULL,
+  `branch` varchar(100) CHARACTER SET latin1 NULL DEFAULT NULL,
+  `password` varchar(255) CHARACTER SET latin1 NULL DEFAULT NULL,
   `created_at` timestamp(0) NULL DEFAULT CURRENT_TIMESTAMP(0),
   `last_login` timestamp(0) NULL DEFAULT NULL,
   `is_admin` tinyint(1) NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `username`(`username`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4 ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of admins
@@ -76,11 +76,11 @@ INSERT INTO `admins` VALUES (1, 'admin', 'all', '$2y$10$2knpl.JqcMC0S0CdK4fkx.ES
 DROP TABLE IF EXISTS `branches`;
 CREATE TABLE `branches`  (
   `id` int NOT NULL AUTO_INCREMENT,
-  `name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `name` varchar(100) CHARACTER SET utf8mb4 NOT NULL,
   `created_at` timestamp(0) NULL DEFAULT CURRENT_TIMESTAMP(0),
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `name`(`name`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 9 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 9 CHARACTER SET = utf8mb4 ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of branches
@@ -100,11 +100,11 @@ INSERT INTO `branches` VALUES (8, 'Training', '2025-09-09 10:14:05');
 DROP TABLE IF EXISTS `environment_categories`;
 CREATE TABLE `environment_categories`  (
   `id` int NOT NULL AUTO_INCREMENT,
-  `name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `name` varchar(100) CHARACTER SET utf8mb4 NOT NULL,
   `created_at` timestamp(0) NULL DEFAULT CURRENT_TIMESTAMP(0),
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `name`(`name`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 4 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 4 CHARACTER SET = utf8mb4 ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of environment_categories
@@ -119,13 +119,13 @@ INSERT INTO `environment_categories` VALUES (3, 'Audit Plans', '2025-09-09 10:14
 DROP TABLE IF EXISTS `latitude_extension`;
 CREATE TABLE `latitude_extension`  (
   `id` int NOT NULL AUTO_INCREMENT,
-  `title` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
-  `description` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL,
-  `latitude_description` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
-  `related_aircraft` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
-  `latitude_period` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `title` varchar(255) CHARACTER SET utf8mb4 NOT NULL,
+  `description` text CHARACTER SET utf8mb4 NULL,
+  `latitude_description` varchar(255) CHARACTER SET utf8mb4 NOT NULL,
+  `related_aircraft` varchar(100) CHARACTER SET utf8mb4 NOT NULL,
+  `latitude_period` varchar(100) CHARACTER SET utf8mb4 NOT NULL,
   `uploaded_by` int NULL DEFAULT NULL,
-  `file_path` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `file_path` varchar(255) CHARACTER SET utf8mb4 NOT NULL,
   `uploaded_at` timestamp(0) NULL DEFAULT CURRENT_TIMESTAMP(0),
   `is_active` tinyint(1) NULL DEFAULT 1,
   `branch_id` int NULL DEFAULT NULL,
@@ -134,7 +134,7 @@ CREATE TABLE `latitude_extension`  (
   INDEX `fk_le_branch`(`branch_id`) USING BTREE,
   CONSTRAINT `fk_le_branch` FOREIGN KEY (`branch_id`) REFERENCES `branches` (`id`) ON DELETE SET NULL ON UPDATE RESTRICT,
   CONSTRAINT `fk_le_uploaded_by` FOREIGN KEY (`uploaded_by`) REFERENCES `admins` (`id`) ON DELETE SET NULL ON UPDATE RESTRICT
-) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4 ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of latitude_extension
@@ -146,11 +146,11 @@ CREATE TABLE `latitude_extension`  (
 DROP TABLE IF EXISTS `maintenance_categories`;
 CREATE TABLE `maintenance_categories`  (
   `id` int NOT NULL AUTO_INCREMENT,
-  `name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `name` varchar(100) CHARACTER SET utf8mb4 NOT NULL,
   `created_at` timestamp(0) NULL DEFAULT CURRENT_TIMESTAMP(0),
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `name`(`name`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8mb4 ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of maintenance_categories
@@ -164,11 +164,11 @@ INSERT INTO `maintenance_categories` VALUES (2, 'Worksheets', '2025-09-09 10:14:
 DROP TABLE IF EXISTS `online_subscription`;
 CREATE TABLE `online_subscription`  (
   `id` int NOT NULL AUTO_INCREMENT,
-  `title` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
-  `description` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL,
-  `related_aircraft` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
-  `subscription_period` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
-  `file_path` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `title` varchar(255) CHARACTER SET utf8mb4 NOT NULL,
+  `description` text CHARACTER SET utf8mb4 NULL,
+  `related_aircraft` varchar(100) CHARACTER SET utf8mb4 NOT NULL,
+  `subscription_period` varchar(100) CHARACTER SET utf8mb4 NOT NULL,
+  `file_path` varchar(255) CHARACTER SET utf8mb4 NOT NULL,
   `uploaded_by` int NULL DEFAULT NULL,
   `uploaded_at` timestamp(0) NULL DEFAULT CURRENT_TIMESTAMP(0),
   `is_active` tinyint(1) NULL DEFAULT 1,
@@ -178,7 +178,7 @@ CREATE TABLE `online_subscription`  (
   INDEX `fk_os_branch`(`branch_id`) USING BTREE,
   CONSTRAINT `fk_os_branch` FOREIGN KEY (`branch_id`) REFERENCES `branches` (`id`) ON DELETE SET NULL ON UPDATE RESTRICT,
   CONSTRAINT `fk_os_uploaded_by` FOREIGN KEY (`uploaded_by`) REFERENCES `admins` (`id`) ON DELETE SET NULL ON UPDATE RESTRICT
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of online_subscription
@@ -190,11 +190,11 @@ CREATE TABLE `online_subscription`  (
 DROP TABLE IF EXISTS `osh_categories`;
 CREATE TABLE `osh_categories`  (
   `id` int NOT NULL AUTO_INCREMENT,
-  `name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `name` varchar(100) CHARACTER SET utf8mb4 NOT NULL,
   `created_at` timestamp(0) NULL DEFAULT CURRENT_TIMESTAMP(0),
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `name`(`name`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 5 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 5 CHARACTER SET = utf8mb4 ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of osh_categories
@@ -210,18 +210,18 @@ INSERT INTO `osh_categories` VALUES (4, 'OSH Manual', '2025-09-09 10:14:05');
 DROP TABLE IF EXISTS `productivity_categories`;
 CREATE TABLE `productivity_categories`  (
   `id` int NOT NULL AUTO_INCREMENT,
-  `name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `name` varchar(100) CHARACTER SET utf8mb4 NOT NULL,
   `created_at` timestamp(0) NULL DEFAULT CURRENT_TIMESTAMP(0),
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `name`(`name`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 5 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 5 CHARACTER SET = utf8mb4 ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of productivity_categories
 -- ----------------------------
-INSERT INTO `productivity_categories` VALUES (1, 'Occupational Health & Safety', '2025-09-09 10:14:05');
-INSERT INTO `productivity_categories` VALUES (2, 'Environment', '2025-09-09 10:14:05');
-INSERT INTO `productivity_categories` VALUES (3, 'Quality Control Circle', '2025-09-09 10:14:05');
+INSERT INTO `productivity_categories` VALUES (1, 'Productivity', '2025-09-09 10:14:05');
+INSERT INTO `productivity_categories` VALUES (2, 'Occupational Safety & Health', '2025-09-09 10:14:05');
+INSERT INTO `productivity_categories` VALUES (3, 'Environmental Mgt', '2025-09-09 10:14:05');
 INSERT INTO `productivity_categories` VALUES (4, 'Awards', '2025-09-09 10:14:05');
 
 -- ----------------------------
@@ -230,13 +230,13 @@ INSERT INTO `productivity_categories` VALUES (4, 'Awards', '2025-09-09 10:14:05'
 DROP TABLE IF EXISTS `productivity_documents`;
 CREATE TABLE `productivity_documents`  (
   `id` int NOT NULL AUTO_INCREMENT,
-  `title` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
-  `description` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL,
+  `title` varchar(255) CHARACTER SET utf8mb4 NOT NULL,
+  `description` text CHARACTER SET utf8mb4 NULL,
   `productivity_category_id` int NULL DEFAULT NULL,
   `osh_category_id` int NULL DEFAULT NULL,
   `environment_category_id` int NULL DEFAULT NULL,
   `uploaded_by` int NULL DEFAULT NULL,
-  `file_path` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `file_path` varchar(255) CHARACTER SET utf8mb4 NOT NULL,
   `uploaded_at` timestamp(0) NULL DEFAULT CURRENT_TIMESTAMP(0),
   `is_active` tinyint(1) NULL DEFAULT 1,
   `branch_id` int NULL DEFAULT NULL,
@@ -251,7 +251,7 @@ CREATE TABLE `productivity_documents`  (
   CONSTRAINT `fk_productivity_branch` FOREIGN KEY (`branch_id`) REFERENCES `branches` (`id`) ON DELETE SET NULL ON UPDATE RESTRICT,
   CONSTRAINT `fk_productivity_category` FOREIGN KEY (`productivity_category_id`) REFERENCES `productivity_categories` (`id`) ON DELETE SET NULL ON UPDATE RESTRICT,
   CONSTRAINT `productivity_documents_ibfk_1` FOREIGN KEY (`uploaded_by`) REFERENCES `admins` (`id`) ON DELETE SET NULL ON UPDATE RESTRICT
-) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4 ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of productivity_documents
@@ -264,11 +264,11 @@ INSERT INTO `productivity_documents` VALUES (1, 'QCC registration form', 'QCC', 
 DROP TABLE IF EXISTS `publication_categories`;
 CREATE TABLE `publication_categories`  (
   `id` int NOT NULL AUTO_INCREMENT,
-  `name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `name` varchar(100) CHARACTER SET utf8mb4 NOT NULL,
   `created_at` timestamp(0) NULL DEFAULT CURRENT_TIMESTAMP(0),
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `name`(`name`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 6 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 6 CHARACTER SET = utf8mb4 ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of publication_categories
@@ -285,12 +285,12 @@ INSERT INTO `publication_categories` VALUES (5, 'Technical Library', '2025-09-09
 DROP TABLE IF EXISTS `publication_documents`;
 CREATE TABLE `publication_documents`  (
   `id` int NOT NULL AUTO_INCREMENT,
-  `title` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
-  `description` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL,
+  `title` varchar(255) CHARACTER SET utf8mb4 NOT NULL,
+  `description` text CHARACTER SET utf8mb4 NULL,
   `publication_category_id` int NULL DEFAULT NULL,
   `maintenance_category_id` int NULL DEFAULT NULL,
   `uploaded_by` int NULL DEFAULT NULL,
-  `file_path` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `file_path` varchar(255) CHARACTER SET utf8mb4 NOT NULL,
   `uploaded_at` timestamp(0) NULL DEFAULT CURRENT_TIMESTAMP(0),
   `is_active` tinyint(1) NULL DEFAULT 1,
   `branch_id` int NULL DEFAULT NULL,
@@ -303,7 +303,7 @@ CREATE TABLE `publication_documents`  (
   CONSTRAINT `fk_publication_branch` FOREIGN KEY (`branch_id`) REFERENCES `branches` (`id`) ON DELETE SET NULL ON UPDATE RESTRICT,
   CONSTRAINT `fk_publication_category` FOREIGN KEY (`publication_category_id`) REFERENCES `publication_categories` (`id`) ON DELETE SET NULL ON UPDATE RESTRICT,
   CONSTRAINT `publication_documents_ibfk_1` FOREIGN KEY (`uploaded_by`) REFERENCES `admins` (`id`) ON DELETE SET NULL ON UPDATE RESTRICT
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of publication_documents
@@ -315,11 +315,11 @@ CREATE TABLE `publication_documents`  (
 DROP TABLE IF EXISTS `qa_categories`;
 CREATE TABLE `qa_categories`  (
   `id` int NOT NULL AUTO_INCREMENT,
-  `name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `name` varchar(100) CHARACTER SET utf8mb4 NOT NULL,
   `created_at` timestamp(0) NULL DEFAULT CURRENT_TIMESTAMP(0),
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `name`(`name`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 4 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 4 CHARACTER SET = utf8mb4 ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of qa_categories
@@ -334,11 +334,11 @@ INSERT INTO `qa_categories` VALUES (3, 'Audit Plans', '2025-09-09 10:14:05');
 DROP TABLE IF EXISTS `ac_categories`;
 CREATE TABLE `ac_categories`  (
   `id` int NOT NULL AUTO_INCREMENT,
-  `name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `name` varchar(100) CHARACTER SET utf8mb4 NOT NULL,
   `created_at` timestamp(0) NULL DEFAULT CURRENT_TIMESTAMP(0),
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `name`(`name`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 4 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 4 CHARACTER SET = utf8mb4 ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of ac_categories
@@ -354,11 +354,11 @@ INSERT INTO `ac_categories` VALUES (4, 'CPD', '2025-09-09 10:14:05');
 DROP TABLE IF EXISTS `sections`;
 CREATE TABLE `sections`  (
   `id` int NOT NULL AUTO_INCREMENT,
-  `name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `name` varchar(100) CHARACTER SET utf8mb4 NOT NULL,
   `created_at` timestamp(0) NULL DEFAULT CURRENT_TIMESTAMP(0),
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `name`(`name`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 6 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 6 CHARACTER SET = utf8mb4 ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of sections
@@ -375,11 +375,11 @@ INSERT INTO `sections` VALUES (5, 'productivity', '2025-09-09 10:14:05');
 DROP TABLE IF EXISTS `service_categories`;
 CREATE TABLE `service_categories`  (
   `id` int NOT NULL AUTO_INCREMENT,
-  `name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `name` varchar(100) CHARACTER SET utf8mb4 NOT NULL,
   `created_at` timestamp(0) NULL DEFAULT CURRENT_TIMESTAMP(0),
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `name`(`name`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 6 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 6 CHARACTER SET = utf8mb4 ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of service_categories
@@ -396,12 +396,12 @@ INSERT INTO `service_categories` VALUES (5, 'Vehicle Emission Test', '2025-09-09
 DROP TABLE IF EXISTS `service_documents`;
 CREATE TABLE `service_documents`  (
   `id` int NOT NULL AUTO_INCREMENT,
-  `title` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
-  `description` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL,
+  `title` varchar(255) CHARACTER SET utf8mb4 NOT NULL,
+  `description` text CHARACTER SET utf8mb4 NULL,
   `service_category_id` int NULL DEFAULT NULL,
   `qa_category_id` int NULL DEFAULT NULL,
   `uploaded_by` int NULL DEFAULT NULL,
-  `file_path` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `file_path` varchar(255) CHARACTER SET utf8mb4 NOT NULL,
   `uploaded_at` timestamp(0) NULL DEFAULT CURRENT_TIMESTAMP(0),
   `is_active` tinyint(1) NULL DEFAULT 1,
   `branch_id` int NULL DEFAULT NULL,
@@ -414,7 +414,7 @@ CREATE TABLE `service_documents`  (
   CONSTRAINT `fk_service_branch` FOREIGN KEY (`branch_id`) REFERENCES `branches` (`id`) ON DELETE SET NULL ON UPDATE RESTRICT,
   CONSTRAINT `fk_service_category` FOREIGN KEY (`service_category_id`) REFERENCES `service_categories` (`id`) ON DELETE SET NULL ON UPDATE RESTRICT,
   CONSTRAINT `service_documents_ibfk_1` FOREIGN KEY (`uploaded_by`) REFERENCES `admins` (`id`) ON DELETE SET NULL ON UPDATE RESTRICT
-) ENGINE = InnoDB AUTO_INCREMENT = 14 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 14 CHARACTER SET = utf8mb4 ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of service_documents
@@ -427,12 +427,12 @@ INSERT INTO `service_documents` VALUES (13, 'Test report one', 'Test report one 
 DROP TABLE IF EXISTS `slaf_establishments`;
 CREATE TABLE `slaf_establishments`  (
   `id` int NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
-  `code` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
+  `name` varchar(255) CHARACTER SET utf8mb4 NOT NULL,
+  `code` varchar(50) CHARACTER SET utf8mb4 NULL DEFAULT NULL,
   `is_active` tinyint(1) NULL DEFAULT 1,
   `created_at` timestamp(0) NULL DEFAULT CURRENT_TIMESTAMP(0),
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 23 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 23 CHARACTER SET = utf8mb4 ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of slaf_establishments
@@ -466,11 +466,11 @@ INSERT INTO `slaf_establishments` VALUES (22, 'SLAF TTS Eka', 'EKA', 1, '2025-10
 DROP TABLE IF EXISTS `training_categories`;
 CREATE TABLE `training_categories`  (
   `id` int NOT NULL AUTO_INCREMENT,
-  `name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `name` varchar(100) CHARACTER SET utf8mb4 NOT NULL,
   `created_at` timestamp(0) NULL DEFAULT CURRENT_TIMESTAMP(0),
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `name`(`name`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 5 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 5 CHARACTER SET = utf8mb4 ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of training_categories
@@ -486,11 +486,11 @@ INSERT INTO `training_categories` VALUES (4, 'Outside Training', '2025-09-09 10:
 DROP TABLE IF EXISTS `training_documents`;
 CREATE TABLE `training_documents`  (
   `id` int NOT NULL AUTO_INCREMENT,
-  `title` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
-  `description` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL,
+  `title` varchar(255) CHARACTER SET utf8mb4 NOT NULL,
+  `description` text CHARACTER SET utf8mb4 NULL,
   `training_category_id` int NULL DEFAULT NULL,
   `uploaded_by` int NULL DEFAULT NULL,
-  `file_path` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `file_path` varchar(255) CHARACTER SET utf8mb4 NOT NULL,
   `uploaded_at` timestamp(0) NULL DEFAULT CURRENT_TIMESTAMP(0),
   `is_active` tinyint(1) NULL DEFAULT 1,
   `branch_id` int NULL DEFAULT NULL,
@@ -501,45 +501,19 @@ CREATE TABLE `training_documents`  (
   CONSTRAINT `fk_training_branch` FOREIGN KEY (`branch_id`) REFERENCES `branches` (`id`) ON DELETE SET NULL ON UPDATE RESTRICT,
   CONSTRAINT `fk_training_category` FOREIGN KEY (`training_category_id`) REFERENCES `training_categories` (`id`) ON DELETE SET NULL ON UPDATE RESTRICT,
   CONSTRAINT `training_documents_ibfk_1` FOREIGN KEY (`uploaded_by`) REFERENCES `admins` (`id`) ON DELETE SET NULL ON UPDATE RESTRICT
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of training_documents
 -- ----------------------------
 
--- ----------------------------
--- Table structure for vehicle_emission_test
--- ----------------------------
-DROP TABLE IF EXISTS `vehicle_emission_test`;
-CREATE TABLE `vehicle_emission_test`  (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `title` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
-  `description` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL,
-  `vehicle_no` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
-  `test_performed_date` date NOT NULL,
-  `state` enum('Pass','Fail') CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
-  `remarks` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL,
-  `uploaded_by` int NULL DEFAULT NULL,
-  `file_path` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
-  `uploaded_at` timestamp(0) NULL DEFAULT CURRENT_TIMESTAMP(0),
-  `is_active` tinyint(1) NULL DEFAULT 1,
-  `branch_id` int NULL DEFAULT NULL,
-  PRIMARY KEY (`id`) USING BTREE,
-  INDEX `fk_vet_uploaded_by`(`uploaded_by`) USING BTREE,
-  INDEX `fk_vet_branch`(`branch_id`) USING BTREE,
-  CONSTRAINT `fk_vet_branch` FOREIGN KEY (`branch_id`) REFERENCES `branches` (`id`) ON DELETE SET NULL ON UPDATE RESTRICT,
-  CONSTRAINT `fk_vet_uploaded_by` FOREIGN KEY (`uploaded_by`) REFERENCES `admins` (`id`) ON DELETE SET NULL ON UPDATE RESTRICT
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
-
--- ----------------------------
--- Records of vehicle_emission_test
--- ----------------------------
 
 SET FOREIGN_KEY_CHECKS = 1;
 
 
 
 -- Create Formation table
+DROP TABLE IF EXISTS formation;
 CREATE TABLE formation (
     formation_id INT AUTO_INCREMENT PRIMARY KEY,
     formation_name VARCHAR(100) NOT NULL UNIQUE,
@@ -547,6 +521,7 @@ CREATE TABLE formation (
 );
 
 -- Create Type table
+DROP TABLE IF EXISTS type;
 CREATE TABLE type (
     type_id INT AUTO_INCREMENT PRIMARY KEY,
     type_name VARCHAR(100) NOT NULL UNIQUE,
@@ -554,6 +529,7 @@ CREATE TABLE type (
 );
 
 -- Create Aircraft Competency table
+DROP TABLE IF EXISTS aircraft_competency;
 CREATE TABLE aircraft_competency (
     record_id INT AUTO_INCREMENT PRIMARY KEY,
     svc_no VARCHAR(50),
@@ -618,7 +594,6 @@ INSERT INTO type (type_name) VALUES
 ('Tiger Month'), ('Siaimar Chetti'), ('Lihiniya MK-1& MK-1E');
 
 
-
 -- If branch contains text values like 'AE', 'GE', etc., update them to match IDs
 UPDATE aircraft_competency SET branch = 1 WHERE branch = 'AE';
 UPDATE aircraft_competency SET branch = 2 WHERE branch = 'GE';
@@ -630,6 +605,7 @@ ALTER TABLE aircraft_competency MODIFY COLUMN branch INT;
 ALTER TABLE aircraft_competency ADD FOREIGN KEY (branch) REFERENCES ac_categories(id);
 
 -- Create latitude table
+DROP TABLE IF EXISTS latitude;
 CREATE TABLE latitude (
     id INT AUTO_INCREMENT PRIMARY KEY,
     active ENUM('YES','NO') DEFAULT 'YES',
@@ -661,6 +637,7 @@ CREATE TABLE latitude (
 );
 
 -- Create modification table
+DROP TABLE IF EXISTS modification;
 CREATE TABLE modification (
     id INT AUTO_INCREMENT PRIMARY KEY,
     mod_no VARCHAR(100),
@@ -679,6 +656,7 @@ CREATE TABLE modification (
 );
 
 -- Create rnd table
+DROP TABLE IF EXISTS rnd;
 CREATE TABLE rnd (
     id INT AUTO_INCREMENT PRIMARY KEY,
     directorate VARCHAR(100),
@@ -742,7 +720,7 @@ CREATE TABLE `vehicle_emission_test` (
   KEY `idx_fuel_type` (`fuel_type`),
   CONSTRAINT `fk_vet_camp` FOREIGN KEY (`camp_id`) REFERENCES `slaf_establishments` (`id`),
   CONSTRAINT `fk_vet_created_by` FOREIGN KEY (`created_by`) REFERENCES `admins` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ;
 
 -- ----------------------------
 -- Table structure for ad_bulletins
@@ -750,8 +728,8 @@ CREATE TABLE `vehicle_emission_test` (
 DROP TABLE IF EXISTS `ad_bulletins`;
 CREATE TABLE `ad_bulletins`  (
   `id` int NOT NULL AUTO_INCREMENT,
-  `reference_no` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
-  `bulletin_description` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `reference_no` varchar(255) CHARACTER SET utf8mb4 NOT NULL,
+  `bulletin_description` text CHARACTER SET utf8mb4 NOT NULL,
   `related_aircraft_id` int NOT NULL,
   `formation_id` int NOT NULL,
   `date_of_issue` date NOT NULL,
@@ -760,8 +738,8 @@ CREATE TABLE `ad_bulletins`  (
   INDEX `related_aircraft_id`(`related_aircraft_id`) USING BTREE,
   INDEX `formation_id`(`formation_id`) USING BTREE,
   CONSTRAINT `ad_bulletins_ibfk_1` FOREIGN KEY (`related_aircraft_id`) REFERENCES `type` (`type_id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
-  CONSTRAINT `ad_bulletins_ibfk_2` FOREIGN KEY (`formation_id`) REFERENCES `formation` (`formation_id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+  CONSTRAINT `ad_bulletins_ibfk_2` FOREIGN KEY (`formation_id`) REFERENCES `formation` (`formation_id`) ON DELETE RESTRICT ON UPDATE RESTRICT
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for qai_newsletters
@@ -769,11 +747,11 @@ CREATE TABLE `ad_bulletins`  (
 DROP TABLE IF EXISTS `qai_newsletters`;
 CREATE TABLE `qai_newsletters` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `sno` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `sno` varchar(255) CHARACTER SET utf8mb4 NOT NULL,
   `description` text NOT NULL,
   `issue_date` date NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ;
 
 -- ----------------------------
 -- Table structure for tech_librarys
@@ -781,11 +759,11 @@ CREATE TABLE `qai_newsletters` (
 DROP TABLE IF EXISTS `tech_library`;
 CREATE TABLE `tech_library`  (
   `id` int NOT NULL AUTO_INCREMENT,
-  `sno` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
-  `publication_index` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
-  `file_path` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `sno` varchar(255) CHARACTER SET utf8mb4 NOT NULL,
+  `publication_index` varchar(255) CHARACTER SET utf8mb4 NOT NULL,
+  `file_path` varchar(255) CHARACTER SET utf8mb4 NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for maintenance_documents
@@ -794,16 +772,16 @@ DROP TABLE IF EXISTS `maintenance_documents`;
 CREATE TABLE `maintenance_documents`  (
   `id` int NOT NULL AUTO_INCREMENT,
   `document_type` enum('worksheet','schedule') NOT NULL,
-  `document_number` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
-  `description` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `document_number` varchar(255) CHARACTER SET utf8mb4 NOT NULL,
+  `description` text CHARACTER SET utf8mb4 NOT NULL,
   `formation_id` int NOT NULL,
-  `trade` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
+  `trade` varchar(255) CHARACTER SET utf8mb4 NULL DEFAULT NULL,
   `type_id` int NOT NULL,
-  `issue` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
-  `revision` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
+  `issue` varchar(50) CHARACTER SET utf8mb4 NOT NULL,
+  `revision` varchar(50) CHARACTER SET utf8mb4 NULL DEFAULT NULL,
   `revision_date` date NULL DEFAULT NULL,
   `branch_id` int NOT NULL,
-  `file_path` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `file_path` varchar(255) CHARACTER SET utf8mb4 NOT NULL,
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `fk_md_formation`(`formation_id`) USING BTREE,
   INDEX `fk_md_type`(`type_id`) USING BTREE,
@@ -812,8 +790,8 @@ CREATE TABLE `maintenance_documents`  (
   INDEX `idx_document_number`(`document_number`) USING BTREE,
   CONSTRAINT `fk_md_branch` FOREIGN KEY (`branch_id`) REFERENCES `branches` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
   CONSTRAINT `fk_md_formation` FOREIGN KEY (`formation_id`) REFERENCES `formation` (`formation_id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
-  CONSTRAINT `fk_md_type` FOREIGN KEY (`type_id`) REFERENCES `type` (`type_id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+  CONSTRAINT `fk_md_type` FOREIGN KEY (`type_id`) REFERENCES `type` (`type_id`) ON DELETE RESTRICT ON UPDATE RESTRICT
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for training_syllabus
@@ -821,17 +799,17 @@ CREATE TABLE `maintenance_documents`  (
 DROP TABLE IF EXISTS `training_syllabus`;
 CREATE TABLE `training_syllabus`  (
   `id` int NOT NULL AUTO_INCREMENT,
-  `syllabus_no` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `syllabus_no` varchar(255) CHARACTER SET utf8mb4 NOT NULL,
   `formation_id` int NOT NULL,
   `type_id` int NOT NULL,
-  `trade` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
-  `syllabus_type`varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
-  `description` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
-  `issue` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
-  `revision` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
+  `trade` varchar(255) CHARACTER SET utf8mb4 NULL DEFAULT NULL,
+  `syllabus_type`varchar(255) CHARACTER SET utf8mb4 NULL DEFAULT NULL,
+  `description` text CHARACTER SET utf8mb4 NOT NULL,
+  `issue` varchar(255) CHARACTER SET utf8mb4 NOT NULL,
+  `revision` varchar(50) CHARACTER SET utf8mb4 NULL DEFAULT NULL,
   `revision_date` date NULL DEFAULT NULL,
   `ac_categories_id` int NOT NULL,
-  `file_path` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `file_path` varchar(255) CHARACTER SET utf8mb4 NOT NULL,
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `idx_syllabus_no`(`syllabus_no`) USING BTREE,
   INDEX `fk_ts_formation`(`formation_id`) USING BTREE,
@@ -842,4 +820,62 @@ CREATE TABLE `training_syllabus`  (
   CONSTRAINT `fk_ts_ac_categories` FOREIGN KEY (`ac_categories_id`) REFERENCES `ac_categories` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
   CONSTRAINT `fk_ts_formation` FOREIGN KEY (`formation_id`) REFERENCES `formation` (`formation_id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
   CONSTRAINT `fk_ts_type` FOREIGN KEY (`type_id`) REFERENCES `type` (`type_id`) ON DELETE RESTRICT ON UPDATE RESTRICT
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Table structure for ranks
+-- ----------------------------
+DROP TABLE IF EXISTS `ranks`;
+CREATE TABLE `ranks`  (
+  `id` int NOT NULL,
+  `rank_name` varchar(100) CHARACTER SET utf8mb4 NOT NULL,
+  PRIMARY KEY (`id`) USING BTREE,
+  UNIQUE INDEX `rank_name`(`rank_name`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of ranks
+-- ----------------------------
+INSERT INTO `ranks` VALUES (2, 'AC');
+INSERT INTO `ranks` VALUES (29, 'ACM');
+INSERT INTO `ranks` VALUES (26, 'Air Cdre');
+INSERT INTO `ranks` VALUES (28, 'Air Marshal');
+INSERT INTO `ranks` VALUES (3, 'Aircraftman 2');
+INSERT INTO `ranks` VALUES (27, 'AVM');
+INSERT INTO `ranks` VALUES (6, 'Cpl');
+INSERT INTO `ranks` VALUES (10, 'F Sgt');
+INSERT INTO `ranks` VALUES (21, 'Fg Off');
+INSERT INTO `ranks` VALUES (22, 'Flt Lt');
+INSERT INTO `ranks` VALUES (25, 'Gp Capt');
+INSERT INTO `ranks` VALUES (4, 'LAC');
+INSERT INTO `ranks` VALUES (41, 'Miss');
+INSERT INTO `ranks` VALUES (42, 'Mr');
+INSERT INTO `ranks` VALUES (43, 'Mrs');
+INSERT INTO `ranks` VALUES (13, 'MWO');
+INSERT INTO `ranks` VALUES (20, 'Plt Off');
+INSERT INTO `ranks` VALUES (8, 'Sgt');
+INSERT INTO `ranks` VALUES (23, 'Sqn Ldr');
+INSERT INTO `ranks` VALUES (24, 'Wg Cdr');
+INSERT INTO `ranks` VALUES (12, 'WO');
+
+-- ----------------------------
+-- Table structure for active_qcc
+-- ----------------------------
+
+CREATE TABLE `active_qcc` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `sno` varchar(255) CHARACTER SET utf8mb4 NOT NULL,
+  `qcc_name` varchar(255) NOT NULL,
+  `slaf_establishment_id` int NOT NULL,
+  `location` varchar(255) NOT NULL,
+  `team_members` text NOT NULL,
+  `category_id` int NULL DEFAULT 1,
+  `section_id` int NULL DEFAULT 5,
+  `created_by` int NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  FOREIGN KEY (`slaf_establishment_id`) REFERENCES `slaf_establishments` (`id`),
+  FOREIGN KEY (`section_id`) REFERENCES `sections` (`id`),
+  FOREIGN KEY (`category_id`) REFERENCES `productivity_categories` (`id`)
+);

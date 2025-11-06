@@ -46,11 +46,14 @@
                             <li><a href="training-syllabus.php">Training Syllabus</a></li>
                         </ul>
                     </li>
-                    <li>
-                        <a href="productivity-docs.php" aria-expanded="false">
+                    <li class="has-arrow">
+                        <a href="javascript:void(0)" aria-expanded="false">
                             <i class="fas fa-tachometer-alt"></i>
                             <span class="nav-text">Productivity</span>
                         </a>
+                        <ul aria-expanded="false">
+                            <li><a href="active-qcc.php">Active QCC</a></li>
+                        </ul>
                     </li>
                 </ul>
             </div>
