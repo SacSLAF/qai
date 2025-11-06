@@ -20,29 +20,35 @@ try {
     $active_qcc = [];
     $active_qcc_error = '';
 
-    // Fetch data for Productivity Audit Plan
+    // Fetch data for Productivity Audit Plan (Category ID = 2)
     $productivity_audit_plan = [];
     $productivity_audit_plan_error = '';
 
-    // Fetch data for Productivity Audit Checklist
+    // Fetch data for Productivity Audit Checklist (Category ID = 3)
     $productivity_audit_checklist = [];
     $productivity_audit_checklist_error = '';
 
-    // Fetch data for Productivity Audit Report
+    // Fetch data for Productivity Audit Report (Category ID = 1)
     $productivity_audit_report = [];
     $productivity_audit_report_error = '';
 
-    // Fetch data for OSH
+    // Fetch data for OSH Audit Report (Category ID = 2)
+    $osh_audit_report = [];
+    $osh_audit_report_error = '';
+
+    // Fetch data for Environment Audit Report (Category ID = 3)
+    $env_audit_report = [];
+    $env_audit_report_error = '';
+
+    // Fetch other OSH data
     $osh_audit_plan = [];
     $osh_audit_checklist = [];
-    $osh_audit_report = [];
     $osh_manual = [];
     $osh_error = '';
 
-    // Fetch data for Environment
+    // Fetch other Environment data
     $env_audit_plan = [];
     $env_audit_checklist = [];
-    $env_audit_report = [];
     $env_error = '';
 
     // Fetch data for Awards
@@ -56,6 +62,8 @@ try {
         $productivity_audit_plan_error = $active_qcc_error;
         $productivity_audit_checklist_error = $active_qcc_error;
         $productivity_audit_report_error = $active_qcc_error;
+        $osh_audit_report_error = $active_qcc_error;
+        $env_audit_report_error = $active_qcc_error;
         $osh_error = $active_qcc_error;
         $env_error = $active_qcc_error;
         $awards_error = $active_qcc_error;
@@ -84,14 +92,17 @@ try {
             $active_qcc_error = "Error preparing Active QCC query: " . $db->error;
         }
 
-        // Fetch Productivity Audit Plan records
+        // Fetch Productivity Audit Plan records (Category ID = 2)
         $stmt_prod_plan = $db->prepare("
-            SELECT pd.*, pc.name as category_name, a.username as created_by_name
-            FROM productivity_documents pd 
-            LEFT JOIN productivity_categories pc ON pd.productivity_category_id = pc.id 
-            LEFT JOIN admins a ON pd.uploaded_by = a.id 
-            WHERE pd.productivity_category_id = 3 AND pd.is_active = 1
-            ORDER BY pd.title ASC
+            SELECT ar.*, se.name as establishment_name, se.code as establishment_code,
+                   pc.name as category_name, s.name as section_name, a.username as created_by_name
+            FROM audit_report ar 
+            LEFT JOIN slaf_establishments se ON ar.slaf_establishment_id = se.id 
+            LEFT JOIN productivity_categories pc ON ar.productivity_category_id = pc.id 
+            LEFT JOIN sections s ON ar.section_id = s.id 
+            LEFT JOIN admins a ON ar.uploaded_by = a.id 
+            WHERE ar.productivity_category_id = 2
+            ORDER BY ar.conducted_date DESC, ar.sno ASC
         ");
 
         if ($stmt_prod_plan) {
@@ -106,14 +117,17 @@ try {
             $productivity_audit_plan_error = "Error preparing Productivity Audit Plan query: " . $db->error;
         }
 
-        // Fetch Productivity Audit Checklist records
+        // Fetch Productivity Audit Checklist records (Category ID = 3)
         $stmt_prod_checklist = $db->prepare("
-            SELECT pd.*, pc.name as category_name, a.username as created_by_name
-            FROM productivity_documents pd 
-            LEFT JOIN productivity_categories pc ON pd.productivity_category_id = pc.id 
-            LEFT JOIN admins a ON pd.uploaded_by = a.id 
-            WHERE pd.productivity_category_id = 3 AND pd.is_active = 1
-            ORDER BY pd.title ASC
+            SELECT ar.*, se.name as establishment_name, se.code as establishment_code,
+                   pc.name as category_name, s.name as section_name, a.username as created_by_name
+            FROM audit_report ar 
+            LEFT JOIN slaf_establishments se ON ar.slaf_establishment_id = se.id 
+            LEFT JOIN productivity_categories pc ON ar.productivity_category_id = pc.id 
+            LEFT JOIN sections s ON ar.section_id = s.id 
+            LEFT JOIN admins a ON ar.uploaded_by = a.id 
+            WHERE ar.productivity_category_id = 3
+            ORDER BY ar.conducted_date DESC, ar.sno ASC
         ");
 
         if ($stmt_prod_checklist) {
@@ -128,14 +142,17 @@ try {
             $productivity_audit_checklist_error = "Error preparing Productivity Audit Checklist query: " . $db->error;
         }
 
-        // Fetch Productivity Audit Report records
+        // Fetch Productivity Audit Report records (Category ID = 1)
         $stmt_prod_report = $db->prepare("
-            SELECT pd.*, pc.name as category_name, a.username as created_by_name
-            FROM productivity_documents pd 
-            LEFT JOIN productivity_categories pc ON pd.productivity_category_id = pc.id 
-            LEFT JOIN admins a ON pd.uploaded_by = a.id 
-            WHERE pd.productivity_category_id = 3 AND pd.is_active = 1
-            ORDER BY pd.title ASC
+            SELECT ar.*, se.name as establishment_name, se.code as establishment_code,
+                   pc.name as category_name, s.name as section_name, a.username as created_by_name
+            FROM audit_report ar 
+            LEFT JOIN slaf_establishments se ON ar.slaf_establishment_id = se.id 
+            LEFT JOIN productivity_categories pc ON ar.productivity_category_id = pc.id 
+            LEFT JOIN sections s ON ar.section_id = s.id 
+            LEFT JOIN admins a ON ar.uploaded_by = a.id 
+            WHERE ar.productivity_category_id = 1
+            ORDER BY ar.conducted_date DESC, ar.sno ASC
         ");
 
         if ($stmt_prod_report) {
@@ -150,7 +167,57 @@ try {
             $productivity_audit_report_error = "Error preparing Productivity Audit Report query: " . $db->error;
         }
 
-        // Fetch OSH Audit Plan records
+        // Fetch OSH Audit Report records (Category ID = 2)
+        $stmt_osh_report = $db->prepare("
+            SELECT ar.*, se.name as establishment_name, se.code as establishment_code,
+                   pc.name as category_name, s.name as section_name, a.username as created_by_name
+            FROM audit_report ar 
+            LEFT JOIN slaf_establishments se ON ar.slaf_establishment_id = se.id 
+            LEFT JOIN productivity_categories pc ON ar.productivity_category_id = pc.id 
+            LEFT JOIN sections s ON ar.section_id = s.id 
+            LEFT JOIN admins a ON ar.uploaded_by = a.id 
+            WHERE ar.productivity_category_id = 2
+            ORDER BY ar.conducted_date DESC, ar.sno ASC
+        ");
+
+        if ($stmt_osh_report) {
+            if ($stmt_osh_report->execute()) {
+                $result_osh_report = $stmt_osh_report->get_result();
+                $osh_audit_report = $result_osh_report->fetch_all(MYSQLI_ASSOC);
+                $stmt_osh_report->close();
+            } else {
+                $osh_audit_report_error = "OSH Audit Report query execution failed: " . $stmt_osh_report->error;
+            }
+        } else {
+            $osh_audit_report_error = "Error preparing OSH Audit Report query: " . $db->error;
+        }
+
+        // Fetch Environment Audit Report records (Category ID = 3)
+        $stmt_env_report = $db->prepare("
+            SELECT ar.*, se.name as establishment_name, se.code as establishment_code,
+                   pc.name as category_name, s.name as section_name, a.username as created_by_name
+            FROM audit_report ar 
+            LEFT JOIN slaf_establishments se ON ar.slaf_establishment_id = se.id 
+            LEFT JOIN productivity_categories pc ON ar.productivity_category_id = pc.id 
+            LEFT JOIN sections s ON ar.section_id = s.id 
+            LEFT JOIN admins a ON ar.uploaded_by = a.id 
+            WHERE ar.productivity_category_id = 3
+            ORDER BY ar.conducted_date DESC, ar.sno ASC
+        ");
+
+        if ($stmt_env_report) {
+            if ($stmt_env_report->execute()) {
+                $result_env_report = $stmt_env_report->get_result();
+                $env_audit_report = $result_env_report->fetch_all(MYSQLI_ASSOC);
+                $stmt_env_report->close();
+            } else {
+                $env_audit_report_error = "Environment Audit Report query execution failed: " . $stmt_env_report->error;
+            }
+        } else {
+            $env_audit_report_error = "Error preparing Environment Audit Report query: " . $db->error;
+        }
+
+        // Fetch OSH Audit Plan records (from productivity_documents)
         $stmt_osh_plan = $db->prepare("
             SELECT pd.*, oc.name as osh_category_name, a.username as created_by_name
             FROM productivity_documents pd 
@@ -172,7 +239,7 @@ try {
             $osh_error = "Error preparing OSH Audit Plan query: " . $db->error;
         }
 
-        // Fetch OSH Audit Checklist records
+        // Fetch OSH Audit Checklist records (from productivity_documents)
         $stmt_osh_checklist = $db->prepare("
             SELECT pd.*, oc.name as osh_category_name, a.username as created_by_name
             FROM productivity_documents pd 
@@ -194,29 +261,7 @@ try {
             $osh_error = "Error preparing OSH Audit Checklist query: " . $db->error;
         }
 
-        // Fetch OSH Audit Report records
-        $stmt_osh_report = $db->prepare("
-            SELECT pd.*, oc.name as osh_category_name, a.username as created_by_name
-            FROM productivity_documents pd 
-            LEFT JOIN osh_categories oc ON pd.osh_category_id = oc.id 
-            LEFT JOIN admins a ON pd.uploaded_by = a.id 
-            WHERE pd.osh_category_id = 2 AND pd.is_active = 1
-            ORDER BY pd.title ASC
-        ");
-
-        if ($stmt_osh_report) {
-            if ($stmt_osh_report->execute()) {
-                $result_osh_report = $stmt_osh_report->get_result();
-                $osh_audit_report = $result_osh_report->fetch_all(MYSQLI_ASSOC);
-                $stmt_osh_report->close();
-            } else {
-                $osh_error = "OSH Audit Report query execution failed: " . $stmt_osh_report->error;
-            }
-        } else {
-            $osh_error = "Error preparing OSH Audit Report query: " . $db->error;
-        }
-
-        // Fetch OSH Manual records
+        // Fetch OSH Manual records (from productivity_documents)
         $stmt_osh_manual = $db->prepare("
             SELECT pd.*, oc.name as osh_category_name, a.username as created_by_name
             FROM productivity_documents pd 
@@ -238,7 +283,7 @@ try {
             $osh_error = "Error preparing OSH Manual query: " . $db->error;
         }
 
-        // Fetch Environment Audit Plan records
+        // Fetch Environment Audit Plan records (from productivity_documents)
         $stmt_env_plan = $db->prepare("
             SELECT pd.*, ec.name as env_category_name, a.username as created_by_name
             FROM productivity_documents pd 
@@ -260,7 +305,7 @@ try {
             $env_error = "Error preparing Environment Audit Plan query: " . $db->error;
         }
 
-        // Fetch Environment Audit Checklist records
+        // Fetch Environment Audit Checklist records (from productivity_documents)
         $stmt_env_checklist = $db->prepare("
             SELECT pd.*, ec.name as env_category_name, a.username as created_by_name
             FROM productivity_documents pd 
@@ -280,28 +325,6 @@ try {
             }
         } else {
             $env_error = "Error preparing Environment Audit Checklist query: " . $db->error;
-        }
-
-        // Fetch Environment Audit Report records
-        $stmt_env_report = $db->prepare("
-            SELECT pd.*, ec.name as env_category_name, a.username as created_by_name
-            FROM productivity_documents pd 
-            LEFT JOIN environment_categories ec ON pd.environment_category_id = ec.id 
-            LEFT JOIN admins a ON pd.uploaded_by = a.id 
-            WHERE pd.environment_category_id = 2 AND pd.is_active = 1
-            ORDER BY pd.title ASC
-        ");
-
-        if ($stmt_env_report) {
-            if ($stmt_env_report->execute()) {
-                $result_env_report = $stmt_env_report->get_result();
-                $env_audit_report = $result_env_report->fetch_all(MYSQLI_ASSOC);
-                $stmt_env_report->close();
-            } else {
-                $env_error = "Environment Audit Report query execution failed: " . $stmt_env_report->error;
-            }
-        } else {
-            $env_error = "Error preparing Environment Audit Report query: " . $db->error;
         }
 
         // Fetch Awards - Best QCC records
@@ -449,7 +472,6 @@ try {
             width: 100%;
         }
 
-        /* Dropdown styles
         .qa-dropdown {
             position: relative;
         }
@@ -480,7 +502,7 @@ try {
             white-space: nowrap;
             background-color: transparent;
             border: 0;
-            font-size: 0.875rem;
+            font-size:x-small;
         }
 
         .qa-dropdown-item:hover,
@@ -516,7 +538,7 @@ try {
         .table-responsive {
             max-height: 600px;
             overflow-y: auto;
-        } */
+        }
     </style>
 </head>
 
@@ -624,18 +646,6 @@ try {
                                                                         <?= htmlspecialchars(substr($qcc['team_members'], 0, 30)) . (strlen($qcc['team_members']) > 30 ? '...' : '') ?>
                                                                     </span>
                                                                 </td>
-                                                               <!-- <td>
-                                                                    <span class="badge badge-primary">
-                                                                        <?= htmlspecialchars($qcc['category_name'] ?? 'N/A') ?>
-                                                                    </span>
-                                                                </td>
-                                                                <td>
-                                                                    <span class="badge badge-info">
-                                                                        <?= htmlspecialchars($qcc['section_name'] ?? 'N/A') ?>
-                                                                    </span>
-                                                                </td>
-                                                                <td><?= htmlspecialchars($qcc['created_by_name'] ?? 'System') ?></td>
-                                                                <td><?= date('Y-m-d', strtotime($qcc['created_at'])) ?></td>-->
                                                             </tr>
                                                         <?php endforeach; ?>
                                                     </tbody>
@@ -655,6 +665,10 @@ try {
                         <!-- QCC Registration Form Tab -->
                         <div class="tab-pane fade" id="qcc_registration" role="tabpanel">
                             <h4 class="colour-defult">QCC Registration Form</h4>
+                            <div class="alert alert-info">
+                                <i class="fas fa-info-circle me-2"></i>
+                                QCC Registration Form content will be displayed here.
+                            </div>
                         </div>
 
                         <!-- Productivity Audit Plan Tab -->
@@ -670,6 +684,67 @@ try {
                         <!-- Productivity Audit Report Tab -->
                         <div class="tab-pane fade" id="prod_audit_report" role="tabpanel">
                             <h4 class="colour-defult">Productivity Audit Report</h4>
+                            <div class="mt-4">
+                                <?php if (!empty($productivity_audit_report_error)): ?>
+                                    <div class="alert alert-danger">
+                                        <strong>Database Error:</strong> <?= htmlspecialchars($productivity_audit_report_error) ?>
+                                    </div>
+                                <?php elseif (!empty($productivity_audit_report)): ?>
+                                    <div class="card">
+                                        <div class="card-body p-0">
+                                            <div class="table-responsive">
+                                                <table class="table table-hover mb-0" id="prodAuditReportTable" style="font-size:x-small;">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>S/No</th>
+                                                            <th>Establishment</th>
+                                                            <th>Conducted Date</th>
+                                                            <th>Category</th>
+                                                            <th>Section</th>
+                                                            <th>Created By</th>
+                                                            <th>File</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <?php foreach ($productivity_audit_report as $report): ?>
+                                                            <tr>
+                                                                <td><strong><?= htmlspecialchars($report['sno']) ?></strong></td>
+                                                                <td>
+                                                                    <?= htmlspecialchars($report['establishment_name']) ?>
+                                                                    <?php if (!empty($report['establishment_code'])): ?>
+                                                                        <br><small class="text-muted">(<?= htmlspecialchars($report['establishment_code']) ?>)</small>
+                                                                    <?php endif; ?>
+                                                                </td>
+                                                                <td><?= date('Y-m-d', strtotime($report['conducted_date'])) ?></td>
+                                                                <td><?= htmlspecialchars($report['category_name'] ?? 'N/A') ?></td>
+                                                                <td><?= htmlspecialchars($report['section_name'] ?? 'N/A') ?></td>
+                                                                <td><?= htmlspecialchars($report['created_by_name'] ?? 'System') ?></td>
+                                                                <td>
+                                                                    <?php if (!empty($report['file_path'])): ?>
+                                                                        <a href="/qai/assets/pdfjs/web/viewer.html?file=<?= urlencode('/qai/admin/action/' . $report['file_path']) ?>"
+                                                                            class="btn btn-view-details btn-sm view-details-btn"
+                                                                            data-bs-toggle="modal"
+                                                                            data-bs-target="#pdfModal"
+                                                                            data-pdf-url="/qai/assets/pdfjs/web/viewer.html?file=<?= urlencode('/qai/admin/action/' . $report['file_path']) ?>">View
+                                                                        </a>
+                                                                    <?php else: ?>
+                                                                        <span class="text-muted">No file</span>
+                                                                    <?php endif; ?>
+                                                                </td>
+                                                            </tr>
+                                                        <?php endforeach; ?>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                <?php else: ?>
+                                    <div class="alert alert-info">
+                                        <i class="fas fa-info-circle me-2"></i>
+                                        No Productivity Audit Report records found.
+                                    </div>
+                                <?php endif; ?>
+                            </div>
                         </div>
 
                         <!-- OSH Tab Panes -->
@@ -850,9 +925,9 @@ try {
                         <div class="tab-pane fade" id="osh_report" role="tabpanel">
                             <h4 class="colour-defult">OSH Audit Report</h4>
                             <div class="mt-4">
-                                <?php if (!empty($osh_error)): ?>
+                                <?php if (!empty($osh_audit_report_error)): ?>
                                     <div class="alert alert-danger">
-                                        <strong>Database Error:</strong> <?= htmlspecialchars($osh_error) ?>
+                                        <strong>Database Error:</strong> <?= htmlspecialchars($osh_audit_report_error) ?>
                                     </div>
                                 <?php elseif (!empty($osh_audit_report)): ?>
                                     <div class="card">
@@ -861,29 +936,36 @@ try {
                                                 <table class="table table-hover mb-0" id="oshReportTable" style="font-size:x-small;">
                                                     <thead>
                                                         <tr>
-                                                            <th>Title</th>
-                                                            <th>Description</th>
+                                                            <th>S/No</th>
+                                                            <th>Establishment</th>
+                                                            <th>Conducted Date</th>
                                                             <th>Category</th>
+                                                            <th>Section</th>
                                                             <th>Created By</th>
-                                                            <th>Upload Date</th>
                                                             <th>File</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
-                                                        <?php foreach ($osh_audit_report as $doc): ?>
+                                                        <?php foreach ($osh_audit_report as $report): ?>
                                                             <tr>
-                                                                <td><strong><?= htmlspecialchars($doc['title']) ?></strong></td>
-                                                                <td><?= htmlspecialchars($doc['description']) ?></td>
-                                                                <td><?= htmlspecialchars($doc['osh_category_name'] ?? 'N/A') ?></td>
-                                                                <td><?= htmlspecialchars($doc['created_by_name'] ?? 'System') ?></td>
-                                                                <td><?= date('Y-m-d', strtotime($doc['uploaded_at'])) ?></td>
+                                                                <td><strong><?= htmlspecialchars($report['sno']) ?></strong></td>
                                                                 <td>
-                                                                    <?php if (!empty($doc['file_path'])): ?>
-                                                                        <a href="/qai/assets/pdfjs/web/viewer.html?file=<?= urlencode('/qai/admin/action/' . $doc['file_path']) ?>"
+                                                                    <?= htmlspecialchars($report['establishment_name']) ?>
+                                                                    <?php if (!empty($report['establishment_code'])): ?>
+                                                                        <br><small class="text-muted">(<?= htmlspecialchars($report['establishment_code']) ?>)</small>
+                                                                    <?php endif; ?>
+                                                                </td>
+                                                                <td><?= date('Y-m-d', strtotime($report['conducted_date'])) ?></td>
+                                                                <td><?= htmlspecialchars($report['category_name'] ?? 'N/A') ?></td>
+                                                                <td><?= htmlspecialchars($report['section_name'] ?? 'N/A') ?></td>
+                                                                <td><?= htmlspecialchars($report['created_by_name'] ?? 'System') ?></td>
+                                                                <td>
+                                                                    <?php if (!empty($report['file_path'])): ?>
+                                                                        <a href="/qai/assets/pdfjs/web/viewer.html?file=<?= urlencode('/qai/admin/action/' . $report['file_path']) ?>"
                                                                             class="btn btn-view-details btn-sm view-details-btn"
                                                                             data-bs-toggle="modal"
                                                                             data-bs-target="#pdfModal"
-                                                                            data-pdf-url="/qai/assets/pdfjs/web/viewer.html?file=<?= urlencode('/qai/admin/action/' . $doc['file_path']) ?>">View
+                                                                            data-pdf-url="/qai/assets/pdfjs/web/viewer.html?file=<?= urlencode('/qai/admin/action/' . $report['file_path']) ?>">View
                                                                         </a>
                                                                     <?php else: ?>
                                                                         <span class="text-muted">No file</span>
@@ -899,7 +981,7 @@ try {
                                 <?php else: ?>
                                     <div class="alert alert-info">
                                         <i class="fas fa-info-circle me-2"></i>
-                                        No OSH Audit Report documents found.
+                                        No OSH Audit Report records found.
                                     </div>
                                 <?php endif; ?>
                             </div>
@@ -1025,9 +1107,9 @@ try {
                         <div class="tab-pane fade" id="env_report" role="tabpanel">
                             <h4 class="colour-defult">Environment - Audit Report</h4>
                             <div class="mt-4">
-                                <?php if (!empty($env_error)): ?>
+                                <?php if (!empty($env_audit_report_error)): ?>
                                     <div class="alert alert-danger">
-                                        <strong>Database Error:</strong> <?= htmlspecialchars($env_error) ?>
+                                        <strong>Database Error:</strong> <?= htmlspecialchars($env_audit_report_error) ?>
                                     </div>
                                 <?php elseif (!empty($env_audit_report)): ?>
                                     <div class="card">
@@ -1036,29 +1118,36 @@ try {
                                                 <table class="table table-hover mb-0" id="envReportTable" style="font-size:x-small;">
                                                     <thead>
                                                         <tr>
-                                                            <th>Title</th>
-                                                            <th>Description</th>
+                                                            <th>S/No</th>
+                                                            <th>Establishment</th>
+                                                            <th>Conducted Date</th>
                                                             <th>Category</th>
+                                                            <th>Section</th>
                                                             <th>Created By</th>
-                                                            <th>Upload Date</th>
                                                             <th>File</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
-                                                        <?php foreach ($env_audit_report as $doc): ?>
+                                                        <?php foreach ($env_audit_report as $report): ?>
                                                             <tr>
-                                                                <td><strong><?= htmlspecialchars($doc['title']) ?></strong></td>
-                                                                <td><?= htmlspecialchars($doc['description']) ?></td>
-                                                                <td><?= htmlspecialchars($doc['env_category_name'] ?? 'N/A') ?></td>
-                                                                <td><?= htmlspecialchars($doc['created_by_name'] ?? 'System') ?></td>
-                                                                <td><?= date('Y-m-d', strtotime($doc['uploaded_at'])) ?></td>
+                                                                <td><strong><?= htmlspecialchars($report['sno']) ?></strong></td>
                                                                 <td>
-                                                                    <?php if (!empty($doc['file_path'])): ?>
-                                                                        <a href="/qai/assets/pdfjs/web/viewer.html?file=<?= urlencode('/qai/admin/action/' . $doc['file_path']) ?>"
+                                                                    <?= htmlspecialchars($report['establishment_name']) ?>
+                                                                    <?php if (!empty($report['establishment_code'])): ?>
+                                                                        <br><small class="text-muted">(<?= htmlspecialchars($report['establishment_code']) ?>)</small>
+                                                                    <?php endif; ?>
+                                                                </td>
+                                                                <td><?= date('Y-m-d', strtotime($report['conducted_date'])) ?></td>
+                                                                <td><?= htmlspecialchars($report['category_name'] ?? 'N/A') ?></td>
+                                                                <td><?= htmlspecialchars($report['section_name'] ?? 'N/A') ?></td>
+                                                                <td><?= htmlspecialchars($report['created_by_name'] ?? 'System') ?></td>
+                                                                <td>
+                                                                    <?php if (!empty($report['file_path'])): ?>
+                                                                        <a href="/qai/assets/pdfjs/web/viewer.html?file=<?= urlencode('/qai/admin/action/' . $report['file_path']) ?>"
                                                                             class="btn btn-view-details btn-sm view-details-btn"
                                                                             data-bs-toggle="modal"
                                                                             data-bs-target="#pdfModal"
-                                                                            data-pdf-url="/qai/assets/pdfjs/web/viewer.html?file=<?= urlencode('/qai/admin/action/' . $doc['file_path']) ?>">View
+                                                                            data-pdf-url="/qai/assets/pdfjs/web/viewer.html?file=<?= urlencode('/qai/admin/action/' . $report['file_path']) ?>">View
                                                                         </a>
                                                                     <?php else: ?>
                                                                         <span class="text-muted">No file</span>
@@ -1074,7 +1163,7 @@ try {
                                 <?php else: ?>
                                     <div class="alert alert-info">
                                         <i class="fas fa-info-circle me-2"></i>
-                                        No Environment Audit Report documents found.
+                                        No Environment Audit Report records found.
                                     </div>
                                 <?php endif; ?>
                             </div>
@@ -1256,7 +1345,7 @@ try {
 
             // Initialize all tables
             const tableIds = [
-                'activeQccTable', 'qccRegistrationTable', 'prodAuditPlanTable', 'prodAuditChecklistTable', 'prodAuditReportTable',
+                'activeQccTable', 'prodAuditPlanTable', 'prodAuditChecklistTable', 'prodAuditReportTable',
                 'oshManualTable', 'oshChecklistTable', 'oshPlanTable', 'oshReportTable',
                 'envPlanTable', 'envChecklistTable', 'envReportTable',
                 'awardsQccTable', 'awardsEnvTable'
@@ -1390,16 +1479,16 @@ try {
             });
 
             // Close dropdowns on outside click
-           // document.addEventListener('click', function(e) {
-            //    if (!e.target.closest('.nav-column')) {
-            //        document.querySelectorAll('.qa-dropdown-menu').forEach(menu => {
-             //           menu.classList.remove('show');
-             //       });
-           //         document.querySelectorAll('.qa-dropdown-toggle').forEach(toggle => {
-           //             toggle.classList.remove('active');
-           //         });
-           //     }
-           // });
+            document.addEventListener('click', function(e) {
+                if (!e.target.closest('.nav-column')) {
+                    document.querySelectorAll('.qa-dropdown-menu').forEach(menu => {
+                        menu.classList.remove('show');
+                    });
+                    document.querySelectorAll('.qa-dropdown-toggle').forEach(toggle => {
+                        toggle.classList.remove('active');
+                    });
+                }
+            });
 
             document.querySelectorAll('.qa-dropdown-menu').forEach(menu => {
                 menu.addEventListener('click', function(e) {

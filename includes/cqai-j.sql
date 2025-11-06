@@ -879,3 +879,26 @@ CREATE TABLE `active_qcc` (
   FOREIGN KEY (`section_id`) REFERENCES `sections` (`id`),
   FOREIGN KEY (`category_id`) REFERENCES `productivity_categories` (`id`)
 );
+
+-- ----------------------------
+-- Table structure for audit_report
+-- ----------------------------
+DROP TABLE IF EXISTS audit_report;
+CREATE TABLE `audit_report` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `sno` varchar(100) NOT NULL,
+  `slaf_establishment_id` int NOT NULL,
+  `conducted_date` date NOT NULL,
+  `productivity_category_id` int NOT NULL,
+  `file_path` varchar(500) NOT NULL,
+  `section_id` int NULL DEFAULT 5,
+  `uploaded_by` int DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `sno` (`sno`),
+  FOREIGN KEY (`slaf_establishment_id`) REFERENCES `slaf_establishments` (`id`),
+  FOREIGN KEY (`productivity_category_id`) REFERENCES `productivity_categories` (`id`),
+  FOREIGN KEY (`uploaded_by`) REFERENCES `admins` (`id`),
+  FOREIGN KEY (`section_id`) REFERENCES `sections` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
