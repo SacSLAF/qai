@@ -623,7 +623,7 @@ try {
                                                             <th>Conducted Date</th>
                                                             <th>Category</th>
                                                             <th>Section</th>
-                                                            <th>Created By</th>
+                                                          <!--  <th>Created By</th>-->
                                                             <th>File</th>
                                                         </tr>
                                                     </thead>
@@ -640,7 +640,7 @@ try {
                                                                 <td><?= date('Y-m-d', strtotime($report['conducted_date'])) ?></td>
                                                                 <td><?= htmlspecialchars($report['category_name'] ?? 'N/A') ?></td>
                                                                 <td><?= htmlspecialchars($report['section_name'] ?? 'N/A') ?></td>
-                                                                <td><?= htmlspecialchars($report['created_by_name'] ?? 'System') ?></td>
+                                                               <!-- <td><?= htmlspecialchars($report['created_by_name'] ?? 'System') ?></td>-->
                                                                 <td>
                                                                     <?php if (!empty($report['file_path'])): ?>
                                                                         <a href="/qai/assets/pdfjs/web/viewer.html?file=<?= urlencode('/qai/admin/action/' . $report['file_path']) ?>"
@@ -721,10 +721,10 @@ try {
                                                             <th>Description</th>
                                                             <th>Manual No</th>
                                                             <th>Revision Status</th>
-                                                            <th>Category</th>
+                                                         <!--   <th>Category</th>
                                                             <th>Section</th>
                                                             <th>Created By</th>
-                                                            <th>Created Date</th>
+                                                            <th>Created Date</th>-->
                                                             <th>File</th>
                                                         </tr>
                                                     </thead>
@@ -742,10 +742,10 @@ try {
                                                                         <?= htmlspecialchars($manual['rev_status']) ?>
                                                                     </span>
                                                                 </td>
-                                                                <td><?= htmlspecialchars($manual['category_name'] ?? 'N/A') ?></td>
+                                                              <!--  <td><?= htmlspecialchars($manual['category_name'] ?? 'N/A') ?></td>
                                                                 <td><?= htmlspecialchars($manual['section_name'] ?? 'N/A') ?></td>
                                                                 <td><?= htmlspecialchars($manual['created_by_name'] ?? 'System') ?></td>
-                                                                <td><?= date('Y-m-d', strtotime($manual['created_at'])) ?></td>
+                                                                <td><?= date('Y-m-d', strtotime($manual['created_at'])) ?></td>-->
                                                                 <td>
                                                                     <?php if (!empty($manual['file_path'])): ?>
                                                                         <a href="/qai/assets/pdfjs/web/viewer.html?file=<?= urlencode('/qai/admin/action/' . $manual['file_path']) ?>"
@@ -791,9 +791,9 @@ try {
                                                             <th>S/No</th>
                                                             <th>Establishment</th>
                                                             <th>Conducted Date</th>
-                                                            <th>Category</th>
+                                                          <!--  <th>Category</th>
                                                             <th>Section</th>
-                                                            <th>Created By</th>
+                                                            <th>Created By</th>-->
                                                             <th>File</th>
                                                         </tr>
                                                     </thead>
@@ -808,9 +808,9 @@ try {
                                                                     <?php endif; ?>
                                                                 </td>
                                                                 <td><?= date('Y-m-d', strtotime($report['conducted_date'])) ?></td>
-                                                                <td><?= htmlspecialchars($report['category_name'] ?? 'N/A') ?></td>
+                                                             <!--   <td><?= htmlspecialchars($report['category_name'] ?? 'N/A') ?></td>
                                                                 <td><?= htmlspecialchars($report['section_name'] ?? 'N/A') ?></td>
-                                                                <td><?= htmlspecialchars($report['created_by_name'] ?? 'System') ?></td>
+                                                                <td><?= htmlspecialchars($report['created_by_name'] ?? 'System') ?></td>-->
                                                                 <td>
                                                                     <?php if (!empty($report['file_path'])): ?>
                                                                         <a href="/qai/assets/pdfjs/web/viewer.html?file=<?= urlencode('/qai/admin/action/' . $report['file_path']) ?>"
@@ -889,9 +889,9 @@ try {
                                                             <th>S/No</th>
                                                             <th>Establishment</th>
                                                             <th>Conducted Date</th>
-                                                            <th>Category</th>
+                                                           <!-- <th>Category</th>
                                                             <th>Section</th>
-                                                            <th>Created By</th>
+                                                            <th>Created By</th>-->
                                                             <th>File</th>
                                                         </tr>
                                                     </thead>
@@ -906,9 +906,9 @@ try {
                                                                     <?php endif; ?>
                                                                 </td>
                                                                 <td><?= date('Y-m-d', strtotime($report['conducted_date'])) ?></td>
-                                                                <td><?= htmlspecialchars($report['category_name'] ?? 'N/A') ?></td>
+                                                              <!--  <td><?= htmlspecialchars($report['category_name'] ?? 'N/A') ?></td>
                                                                 <td><?= htmlspecialchars($report['section_name'] ?? 'N/A') ?></td>
-                                                                <td><?= htmlspecialchars($report['created_by_name'] ?? 'System') ?></td>
+                                                                <td><?= htmlspecialchars($report['created_by_name'] ?? 'System') ?></td>-->
                                                                 <td>
                                                                     <?php if (!empty($report['file_path'])): ?>
                                                                         <a href="/qai/assets/pdfjs/web/viewer.html?file=<?= urlencode('/qai/admin/action/' . $report['file_path']) ?>"

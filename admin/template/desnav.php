@@ -43,6 +43,7 @@
                             <span class="nav-text">Training</span>
                         </a>
                         <ul aria-expanded="false">
+                            <li><a href="training-forecast-upload.php">Training Forecast</a></li>
                             <li><a href="training-syllabus.php">Training Syllabus</a></li>
                         </ul>
                     </li>

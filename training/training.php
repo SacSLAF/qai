@@ -17,6 +17,18 @@ try {
     $types_map = [];
     $ac_cat_map = [];
 
+    // Check for Training Forecast PDF files
+    $training_forecast_dir = '../admin/action/uploads/training/forecast/';
+    $forecast_2026_pdf = $training_forecast_dir . 'Forecast-2026.pdf';
+    $prospect_2026_pdf = $training_forecast_dir . 'Prospect-2026.pdf';
+
+    $forecast_2026_exists = file_exists($forecast_2026_pdf);
+    $prospect_2026_exists = file_exists($prospect_2026_pdf);
+
+    // Create web paths for PDF viewer
+    $forecast_2026_web = $forecast_2026_exists ? "/qai/admin/action/uploads/training/forecast/Forecast-2026.pdf" : '';
+    $prospect_2026_web = $prospect_2026_exists ? "/qai/admin/action/uploads/training/forecast/Prospect-2026.pdf" : '';
+
     // Check if database connection exists and is valid
     if (!isset($db) || !$db || (property_exists($db, 'connect_error') && $db->connect_error)) {
         $ts_error = "Database connection failed: " . ($db->connect_error ?? 'Unknown error');
@@ -107,14 +119,14 @@ try {
     <!-- Custom CSS -->
     <link rel="stylesheet" href="../assets/css/styles.css">
     <style>
-       /* .pdf-viewer-container {
-            position: relative;
+        .pdf-viewer-container {
+            height: calc(100vh - 200px);
             width: 100%;
-            height: 600px;
-            border: 1px solid #ddd;
+            border: 1px solid #dee2e6;
+            border-radius: 0.375rem;
         }
 
-        .details-modal-table {
+        /*.details-modal-table {
             width: 100%;
             margin-bottom: 1rem;
             font-size: 0.9rem;
@@ -316,17 +328,57 @@ try {
                     <!-- Training Forecast Content Panes -->
                     <div class="tab-pane fade" id="forecast" role="tabpanel">
                         <h4 class="colour-defult">Training Forecast 2026</h4>
-                        <div class="alert alert-info">
-                            <i class="fas fa-info-circle me-2"></i>
-                            Training forecast data will be displayed here.
+                        <div class="mt-4">
+                            <?php if (!empty($forecast_2026_web)): ?>
+                                <div class="top-bar mb-3">
+                                    <a href="<?= $forecast_2026_web ?>" target="_blank" class="btn btn-sm btn-dark">
+                                        Forecast 2026
+                                    </a>
+                                </div>
+                                <div class="pdf-viewer-container">
+                                    <iframe src="/qai/assets/pdfjs/web/viewer.html?file=<?= urlencode($forecast_2026_web) ?>"
+                                        width="100%" height="100%" style="border:none;"></iframe>
+                                </div>
+                            <?php else: ?>
+                                <div class="alert alert-info">
+                                    <div class="d-flex align-items-center">
+                                        <i class="fas fa-info-circle me-3 fa-2x"></i>
+                                        <div>
+                                            <h5 class="alert-heading">No Forecast Document Available</h5>
+                                            <p class="mb-0">The Training Forecast 2026 PDF has not been uploaded yet.</p>
+                                            <p class="mb-0"><small>Please check back later or contact the administrator.</small></p>
+                                        </div>
+                                    </div>
+                                </div>
+                            <?php endif; ?>
                         </div>
                     </div>
 
                     <div class="tab-pane fade" id="prospect" role="tabpanel">
                         <h4 class="colour-defult">Training Prospect 2026</h4>
-                        <div class="alert alert-info">
-                            <i class="fas fa-info-circle me-2"></i>
-                            Training prospect data will be displayed here.
+                        <div class="mt-4">
+                            <?php if (!empty($prospect_2026_web)): ?>
+                                <div class="top-bar mb-3">
+                                    <a href="<?= $prospect_2026_web ?>" target="_blank" class="btn btn-sm btn-dark">
+                                        <i class="fas fa-download me-1"></i> Download Prospect 2026
+                                    </a>
+                                </div>
+                                <div class="pdf-viewer-container">
+                                    <iframe src="/qai/assets/pdfjs/web/viewer.html?file=<?= urlencode($prospect_2026_web) ?>"
+                                        width="100%" height="100%" style="border:none;"></iframe>
+                                </div>
+                            <?php else: ?>
+                                <div class="alert alert-info">
+                                    <div class="d-flex align-items-center">
+                                        <i class="fas fa-info-circle me-3 fa-2x"></i>
+                                        <div>
+                                            <h5 class="alert-heading">No Prospect Document Available</h5>
+                                            <p class="mb-0">The Training Prospect 2026 PDF has not been uploaded yet.</p>
+                                            <p class="mb-0"><small>Please check back later or contact the administrator.</small></p>
+                                        </div>
+                                    </div>
+                                </div>
+                            <?php endif; ?>
                         </div>
                     </div>
 
