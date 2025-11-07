@@ -896,7 +896,6 @@ CREATE TABLE `audit_report` (
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `sno` (`sno`),
   FOREIGN KEY (`slaf_establishment_id`) REFERENCES `slaf_establishments` (`id`),
   FOREIGN KEY (`productivity_category_id`) REFERENCES `productivity_categories` (`id`),
   FOREIGN KEY (`uploaded_by`) REFERENCES `admins` (`id`),

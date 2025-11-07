@@ -20,6 +20,38 @@ try {
     $active_qcc = [];
     $active_qcc_error = '';
 
+    // Use uploaded PDFs for Audit Plan and Audit Checklist if present
+    $productivity_dir = "../admin/action/uploads/productivity/productivity/";
+    $productivity_audit_plan_pdf = $productivity_dir . "audit_plan.pdf";
+    $productivity_audit_check_pdf = $productivity_dir . "audit_checklist.pdf";
+
+    $oshy_dir = "../admin/action/uploads/productivity/occupational_safety/";
+    $osh_audit_plan_pdf = $oshy_dir . "audit_plan.pdf";
+    $osh_audit_check_pdf = $oshy_dir . "audit_checklist.pdf";
+
+    $env_dir = "../admin/action/uploads/productivity/environmental/";
+    $env_audit_plan_pdf = $env_dir . "audit_plan.pdf";
+    $env_audit_check_pdf = $env_dir . "audit_checklist.pdf";
+
+    $productivity_audit_plan_exists = file_exists($productivity_audit_plan_pdf);
+    $productivity_audit_check_exists = file_exists($productivity_audit_check_pdf);
+
+    $osh_audit_plan_exists = file_exists($osh_audit_plan_pdf);
+    $osh_audit_check_exists = file_exists($osh_audit_check_pdf);
+
+    $env_audit_plan_exists = file_exists($env_audit_plan_pdf);
+    $env_audit_check_exists = file_exists($env_audit_check_pdf);
+
+    // Fixed the variable assignments - removed colons and corrected variable names
+    $productivity_audit_plan_web = $productivity_audit_plan_exists ? "/qai/admin/action/uploads/productivity/productivity/audit_plan.pdf" : '';
+    $productivity_audit_check_web = $productivity_audit_check_exists ? "/qai/admin/action/uploads/productivity/productivity/audit_checklist.pdf" : '';
+
+    $osh_audit_plan_web = $osh_audit_plan_exists ? "/qai/admin/action/uploads/productivity/occupational_safety/audit_plan.pdf" : '';
+    $osh_audit_check_web = $osh_audit_check_exists ? "/qai/admin/action/uploads/productivity/occupational_safety/audit_checklist.pdf" : '';
+
+    $env_audit_plan_web = $env_audit_plan_exists ? "/qai/admin/action/uploads/productivity/environmental/audit_plan.pdf" : '';
+    $env_audit_check_web = $env_audit_check_exists ? "/qai/admin/action/uploads/productivity/environmental/audit_checklist.pdf" : '';
+
     // Fetch data for Productivity Audit Plan (Category ID = 2)
     $productivity_audit_plan = [];
     $productivity_audit_plan_error = '';
@@ -90,56 +122,6 @@ try {
             }
         } else {
             $active_qcc_error = "Error preparing Active QCC query: " . $db->error;
-        }
-
-        // Fetch Productivity Audit Plan records (Category ID = 2)
-        $stmt_prod_plan = $db->prepare("
-            SELECT ar.*, se.name as establishment_name, se.code as establishment_code,
-                   pc.name as category_name, s.name as section_name, a.username as created_by_name
-            FROM audit_report ar 
-            LEFT JOIN slaf_establishments se ON ar.slaf_establishment_id = se.id 
-            LEFT JOIN productivity_categories pc ON ar.productivity_category_id = pc.id 
-            LEFT JOIN sections s ON ar.section_id = s.id 
-            LEFT JOIN admins a ON ar.uploaded_by = a.id 
-            WHERE ar.productivity_category_id = 2
-            ORDER BY ar.conducted_date DESC, ar.sno ASC
-        ");
-
-        if ($stmt_prod_plan) {
-            if ($stmt_prod_plan->execute()) {
-                $result_prod_plan = $stmt_prod_plan->get_result();
-                $productivity_audit_plan = $result_prod_plan->fetch_all(MYSQLI_ASSOC);
-                $stmt_prod_plan->close();
-            } else {
-                $productivity_audit_plan_error = "Productivity Audit Plan query execution failed: " . $stmt_prod_plan->error;
-            }
-        } else {
-            $productivity_audit_plan_error = "Error preparing Productivity Audit Plan query: " . $db->error;
-        }
-
-        // Fetch Productivity Audit Checklist records (Category ID = 3)
-        $stmt_prod_checklist = $db->prepare("
-            SELECT ar.*, se.name as establishment_name, se.code as establishment_code,
-                   pc.name as category_name, s.name as section_name, a.username as created_by_name
-            FROM audit_report ar 
-            LEFT JOIN slaf_establishments se ON ar.slaf_establishment_id = se.id 
-            LEFT JOIN productivity_categories pc ON ar.productivity_category_id = pc.id 
-            LEFT JOIN sections s ON ar.section_id = s.id 
-            LEFT JOIN admins a ON ar.uploaded_by = a.id 
-            WHERE ar.productivity_category_id = 3
-            ORDER BY ar.conducted_date DESC, ar.sno ASC
-        ");
-
-        if ($stmt_prod_checklist) {
-            if ($stmt_prod_checklist->execute()) {
-                $result_prod_checklist = $stmt_prod_checklist->get_result();
-                $productivity_audit_checklist = $result_prod_checklist->fetch_all(MYSQLI_ASSOC);
-                $stmt_prod_checklist->close();
-            } else {
-                $productivity_audit_checklist_error = "Productivity Audit Checklist query execution failed: " . $stmt_prod_checklist->error;
-            }
-        } else {
-            $productivity_audit_checklist_error = "Error preparing Productivity Audit Checklist query: " . $db->error;
         }
 
         // Fetch Productivity Audit Report records (Category ID = 1)
@@ -217,50 +199,6 @@ try {
             $env_audit_report_error = "Error preparing Environment Audit Report query: " . $db->error;
         }
 
-        // Fetch OSH Audit Plan records (from productivity_documents)
-        $stmt_osh_plan = $db->prepare("
-            SELECT pd.*, oc.name as osh_category_name, a.username as created_by_name
-            FROM productivity_documents pd 
-            LEFT JOIN osh_categories oc ON pd.osh_category_id = oc.id 
-            LEFT JOIN admins a ON pd.uploaded_by = a.id 
-            WHERE pd.osh_category_id = 3 AND pd.is_active = 1
-            ORDER BY pd.title ASC
-        ");
-
-        if ($stmt_osh_plan) {
-            if ($stmt_osh_plan->execute()) {
-                $result_osh_plan = $stmt_osh_plan->get_result();
-                $osh_audit_plan = $result_osh_plan->fetch_all(MYSQLI_ASSOC);
-                $stmt_osh_plan->close();
-            } else {
-                $osh_error = "OSH Audit Plan query execution failed: " . $stmt_osh_plan->error;
-            }
-        } else {
-            $osh_error = "Error preparing OSH Audit Plan query: " . $db->error;
-        }
-
-        // Fetch OSH Audit Checklist records (from productivity_documents)
-        $stmt_osh_checklist = $db->prepare("
-            SELECT pd.*, oc.name as osh_category_name, a.username as created_by_name
-            FROM productivity_documents pd 
-            LEFT JOIN osh_categories oc ON pd.osh_category_id = oc.id 
-            LEFT JOIN admins a ON pd.uploaded_by = a.id 
-            WHERE pd.osh_category_id = 1 AND pd.is_active = 1
-            ORDER BY pd.title ASC
-        ");
-
-        if ($stmt_osh_checklist) {
-            if ($stmt_osh_checklist->execute()) {
-                $result_osh_checklist = $stmt_osh_checklist->get_result();
-                $osh_audit_checklist = $result_osh_checklist->fetch_all(MYSQLI_ASSOC);
-                $stmt_osh_checklist->close();
-            } else {
-                $osh_error = "OSH Audit Checklist query execution failed: " . $stmt_osh_checklist->error;
-            }
-        } else {
-            $osh_error = "Error preparing OSH Audit Checklist query: " . $db->error;
-        }
-
         // Fetch OSH Manual records (from productivity_documents)
         $stmt_osh_manual = $db->prepare("
             SELECT pd.*, oc.name as osh_category_name, a.username as created_by_name
@@ -281,50 +219,6 @@ try {
             }
         } else {
             $osh_error = "Error preparing OSH Manual query: " . $db->error;
-        }
-
-        // Fetch Environment Audit Plan records (from productivity_documents)
-        $stmt_env_plan = $db->prepare("
-            SELECT pd.*, ec.name as env_category_name, a.username as created_by_name
-            FROM productivity_documents pd 
-            LEFT JOIN environment_categories ec ON pd.environment_category_id = ec.id 
-            LEFT JOIN admins a ON pd.uploaded_by = a.id 
-            WHERE pd.environment_category_id = 3 AND pd.is_active = 1
-            ORDER BY pd.title ASC
-        ");
-
-        if ($stmt_env_plan) {
-            if ($stmt_env_plan->execute()) {
-                $result_env_plan = $stmt_env_plan->get_result();
-                $env_audit_plan = $result_env_plan->fetch_all(MYSQLI_ASSOC);
-                $stmt_env_plan->close();
-            } else {
-                $env_error = "Environment Audit Plan query execution failed: " . $stmt_env_plan->error;
-            }
-        } else {
-            $env_error = "Error preparing Environment Audit Plan query: " . $db->error;
-        }
-
-        // Fetch Environment Audit Checklist records (from productivity_documents)
-        $stmt_env_checklist = $db->prepare("
-            SELECT pd.*, ec.name as env_category_name, a.username as created_by_name
-            FROM productivity_documents pd 
-            LEFT JOIN environment_categories ec ON pd.environment_category_id = ec.id 
-            LEFT JOIN admins a ON pd.uploaded_by = a.id 
-            WHERE pd.environment_category_id = 1 AND pd.is_active = 1
-            ORDER BY pd.title ASC
-        ");
-
-        if ($stmt_env_checklist) {
-            if ($stmt_env_checklist->execute()) {
-                $result_env_checklist = $stmt_env_checklist->get_result();
-                $env_audit_checklist = $result_env_checklist->fetch_all(MYSQLI_ASSOC);
-                $stmt_env_checklist->close();
-            } else {
-                $env_error = "Environment Audit Checklist query execution failed: " . $stmt_env_checklist->error;
-            }
-        } else {
-            $env_error = "Error preparing Environment Audit Checklist query: " . $db->error;
         }
 
         // Fetch Awards - Best QCC records
@@ -472,7 +366,7 @@ try {
             width: 100%;
         }
 
-        .qa-dropdown {
+       /* .qa-dropdown {
             position: relative;
         }
 
@@ -533,12 +427,20 @@ try {
             font-size:x-small;
             padding-left: 3rem;
             color: #212529;
-        }
+        }*/
 
         .table-responsive {
             max-height: 600px;
             overflow-y: auto;
         }
+
+        .pdf-viewer-container {
+            height: calc(100vh - 200px);
+            width: 100%;
+            border: 1px solid #dee2e6;
+            border-radius: 0.375rem;
+        }
+
     </style>
 </head>
 
@@ -556,7 +458,6 @@ try {
                             <a class="nav-link qa-dropdown-toggle active" role="button">Productivity</a>
                             <div class="qa-dropdown-menu">
                                 <a class="qa-dropdown-item active" data-bs-target="#qcc_active" role="tab">Active QCC 2025</a>
-                                <a class="qa-dropdown-item" data-bs-target="#qcc_registration" role="tab">QCC Registration Form</a>
                                 <a class="qa-dropdown-item" data-bs-target="#prod_audit_plan" role="tab">Productivity Audit Plan</a>
                                 <a class="qa-dropdown-item" data-bs-target="#prod_audit_checklist" role="tab">Productivity Audit Check List</a>
                                 <a class="qa-dropdown-item" data-bs-target="#prod_audit_report" role="tab">Productivity Audit Report</a>
@@ -662,23 +563,38 @@ try {
                             </div>
                         </div>
 
-                        <!-- QCC Registration Form Tab -->
-                        <div class="tab-pane fade" id="qcc_registration" role="tabpanel">
-                            <h4 class="colour-defult">QCC Registration Form</h4>
-                            <div class="alert alert-info">
-                                <i class="fas fa-info-circle me-2"></i>
-                                QCC Registration Form content will be displayed here.
-                            </div>
-                        </div>
-
                         <!-- Productivity Audit Plan Tab -->
                         <div class="tab-pane fade" id="prod_audit_plan" role="tabpanel">
-                            <h4 class="colour-defult">Productivity Audit Plan</h4>
+                            <?php if (!empty($productivity_audit_plan_web)): ?>
+                                <div class="top-bar">
+                                    <a href="<?= $productivity_audit_plan_web ?>" target="_blank" class="btn btn-sm btn-dark">Audit Plan</a>
+                                </div>
+                                <div class="pdf-viewer-container">
+                                    <iframe src="/qai/assets/pdfjs/web/viewer.html?file=<?= urlencode($productivity_audit_plan_web) ?>"
+                                        width="100%" height="100%" style="border:none;"></iframe>
+                                </div>
+                            <?php else: ?>
+                                <div class="alert alert-info">
+                                    <p>No audit plan document is available at the moment.</p>
+                                </div>
+                            <?php endif; ?>
                         </div>
 
                         <!-- Productivity Audit Checklist Tab -->
                         <div class="tab-pane fade" id="prod_audit_checklist" role="tabpanel">
-                            <h4 class="colour-defult">Productivity Audit Checklist</h4>
+                            <?php if (!empty($productivity_audit_check_web)): ?>
+                                <div class="top-bar">
+                                    <a href="<?= $productivity_audit_check_web ?>" target="_blank" class="btn btn-sm btn-dark">Audit Checklist</a>
+                                </div>
+                                <div class="pdf-viewer-container">
+                                    <iframe src="/qai/assets/pdfjs/web/viewer.html?file=<?= urlencode($productivity_audit_check_web) ?>"
+                                        width="100%" height="100%" style="border:none;"></iframe>
+                                </div>
+                            <?php else: ?>
+                                <div class="alert alert-info">
+                                    <p>No audit checklist document is available at the moment.</p>
+                                </div>
+                            <?php endif; ?>
                         </div>
 
                         <!-- Productivity Audit Report Tab -->
@@ -748,178 +664,40 @@ try {
                         </div>
 
                         <!-- OSH Tab Panes -->
-                        <div class="tab-pane fade" id="osh_man" role="tabpanel">
-                            <h4 class="colour-defult">OSH Manual</h4>
-                            <div class="mt-4">
-                                <?php if (!empty($osh_error)): ?>
-                                    <div class="alert alert-danger">
-                                        <strong>Database Error:</strong> <?= htmlspecialchars($osh_error) ?>
-                                    </div>
-                                <?php elseif (!empty($osh_manual)): ?>
-                                    <div class="card">
-                                        <div class="card-body p-0">
-                                            <div class="table-responsive">
-                                                <table class="table table-hover mb-0" id="oshManualTable" style="font-size:x-small;">
-                                                    <thead>
-                                                        <tr>
-                                                            <th>Title</th>
-                                                            <th>Description</th>
-                                                            <th>Category</th>
-                                                            <th>Created By</th>
-                                                            <th>Upload Date</th>
-                                                            <th>File</th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                        <?php foreach ($osh_manual as $doc): ?>
-                                                            <tr>
-                                                                <td><strong><?= htmlspecialchars($doc['title']) ?></strong></td>
-                                                                <td><?= htmlspecialchars($doc['description']) ?></td>
-                                                                <td><?= htmlspecialchars($doc['osh_category_name'] ?? 'N/A') ?></td>
-                                                                <td><?= htmlspecialchars($doc['created_by_name'] ?? 'System') ?></td>
-                                                                <td><?= date('Y-m-d', strtotime($doc['uploaded_at'])) ?></td>
-                                                                <td>
-                                                                    <?php if (!empty($doc['file_path'])): ?>
-                                                                        <a href="/qai/assets/pdfjs/web/viewer.html?file=<?= urlencode('/qai/admin/action/' . $doc['file_path']) ?>"
-                                                                            class="btn btn-view-details btn-sm view-details-btn"
-                                                                            data-bs-toggle="modal"
-                                                                            data-bs-target="#pdfModal"
-                                                                            data-pdf-url="/qai/assets/pdfjs/web/viewer.html?file=<?= urlencode('/qai/admin/action/' . $doc['file_path']) ?>">View
-                                                                        </a>
-                                                                    <?php else: ?>
-                                                                        <span class="text-muted">No file</span>
-                                                                    <?php endif; ?>
-                                                                </td>
-                                                            </tr>
-                                                        <?php endforeach; ?>
-                                                    </tbody>
-                                                </table>
-                                            </div>
-                                        </div>
-                                    </div>
-                                <?php else: ?>
-                                    <div class="alert alert-info">
-                                        <i class="fas fa-info-circle me-2"></i>
-                                        No OSH Manual documents found.
-                                    </div>
-                                <?php endif; ?>
-                            </div>
+                        <div class="tab-pane fade" id="osh_plan" role="tabpanel">
+                            <?php if (!empty($osh_audit_plan_web)): ?>
+                                <div class="top-bar">
+                                    <a href="<?= $osh_audit_plan_web ?>" target="_blank" class="btn btn-sm btn-dark">OSH Audit Plan</a>
+                                </div>
+                                <div class="pdf-viewer-container">
+                                    <iframe src="/qai/assets/pdfjs/web/viewer.html?file=<?= urlencode($osh_audit_plan_web) ?>"
+                                        width="100%" height="100%" style="border:none;"></iframe>
+                                </div>
+                            <?php else: ?>
+                                <div class="alert alert-info">
+                                    <p>No OSH audit plan document is available at the moment.</p>
+                                </div>
+                            <?php endif; ?>
                         </div>
 
                         <div class="tab-pane fade" id="osh_checklist" role="tabpanel">
-                            <h4 class="colour-defult">OSH Audit Check List</h4>
-                            <div class="mt-4">
-                                <?php if (!empty($osh_error)): ?>
-                                    <div class="alert alert-danger">
-                                        <strong>Database Error:</strong> <?= htmlspecialchars($osh_error) ?>
-                                    </div>
-                                <?php elseif (!empty($osh_audit_checklist)): ?>
-                                    <div class="card">
-                                        <div class="card-body p-0">
-                                            <div class="table-responsive">
-                                                <table class="table table-hover mb-0" id="oshChecklistTable" style="font-size:x-small;">
-                                                    <thead>
-                                                        <tr>
-                                                            <th>Title</th>
-                                                            <th>Description</th>
-                                                            <th>Category</th>
-                                                            <th>Created By</th>
-                                                            <th>Upload Date</th>
-                                                            <th>File</th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                        <?php foreach ($osh_audit_checklist as $doc): ?>
-                                                            <tr>
-                                                                <td><strong><?= htmlspecialchars($doc['title']) ?></strong></td>
-                                                                <td><?= htmlspecialchars($doc['description']) ?></td>
-                                                                <td><?= htmlspecialchars($doc['osh_category_name'] ?? 'N/A') ?></td>
-                                                                <td><?= htmlspecialchars($doc['created_by_name'] ?? 'System') ?></td>
-                                                                <td><?= date('Y-m-d', strtotime($doc['uploaded_at'])) ?></td>
-                                                                <td>
-                                                                    <?php if (!empty($doc['file_path'])): ?>
-                                                                        <a href="/qai/assets/pdfjs/web/viewer.html?file=<?= urlencode('/qai/admin/action/' . $doc['file_path']) ?>"
-                                                                            class="btn btn-view-details btn-sm view-details-btn"
-                                                                            data-bs-toggle="modal"
-                                                                            data-bs-target="#pdfModal"
-                                                                            data-pdf-url="/qai/assets/pdfjs/web/viewer.html?file=<?= urlencode('/qai/admin/action/' . $doc['file_path']) ?>">View
-                                                                        </a>
-                                                                    <?php else: ?>
-                                                                        <span class="text-muted">No file</span>
-                                                                    <?php endif; ?>
-                                                                </td>
-                                                            </tr>
-                                                        <?php endforeach; ?>
-                                                    </tbody>
-                                                </table>
-                                            </div>
-                                        </div>
-                                    </div>
-                                <?php else: ?>
-                                    <div class="alert alert-info">
-                                        <i class="fas fa-info-circle me-2"></i>
-                                        No OSH Audit Checklist documents found.
-                                    </div>
-                                <?php endif; ?>
-                            </div>
+                            <?php if (!empty($osh_audit_check_web)): ?>
+                                <div class="top-bar">
+                                    <a href="<?= $osh_audit_check_web ?>" target="_blank" class="btn btn-sm btn-dark">OSH Audit Checklist</a>
+                                </div>
+                                <div class="pdf-viewer-container">
+                                    <iframe src="/qai/assets/pdfjs/web/viewer.html?file=<?= urlencode($osh_audit_check_web) ?>"
+                                        width="100%" height="100%" style="border:none;"></iframe>
+                                </div>
+                            <?php else: ?>
+                                <div class="alert alert-info">
+                                    <p>No OSH audit checklist document is available at the moment.</p>
+                                </div>
+                            <?php endif; ?>
                         </div>
 
-                        <div class="tab-pane fade" id="osh_plan" role="tabpanel">
-                            <h4 class="colour-defult">OSH Audit Plan</h4>
-                            <div class="mt-4">
-                                <?php if (!empty($osh_error)): ?>
-                                    <div class="alert alert-danger">
-                                        <strong>Database Error:</strong> <?= htmlspecialchars($osh_error) ?>
-                                    </div>
-                                <?php elseif (!empty($osh_audit_plan)): ?>
-                                    <div class="card">
-                                        <div class="card-body p-0">
-                                            <div class="table-responsive">
-                                                <table class="table table-hover mb-0" id="oshPlanTable" style="font-size:x-small;">
-                                                    <thead>
-                                                        <tr>
-                                                            <th>Title</th>
-                                                            <th>Description</th>
-                                                            <th>Category</th>
-                                                            <th>Created By</th>
-                                                            <th>Upload Date</th>
-                                                            <th>File</th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                        <?php foreach ($osh_audit_plan as $doc): ?>
-                                                            <tr>
-                                                                <td><strong><?= htmlspecialchars($doc['title']) ?></strong></td>
-                                                                <td><?= htmlspecialchars($doc['description']) ?></td>
-                                                                <td><?= htmlspecialchars($doc['osh_category_name'] ?? 'N/A') ?></td>
-                                                                <td><?= htmlspecialchars($doc['created_by_name'] ?? 'System') ?></td>
-                                                                <td><?= date('Y-m-d', strtotime($doc['uploaded_at'])) ?></td>
-                                                                <td>
-                                                                    <?php if (!empty($doc['file_path'])): ?>
-                                                                        <a href="/qai/assets/pdfjs/web/viewer.html?file=<?= urlencode('/qai/admin/action/' . $doc['file_path']) ?>"
-                                                                            class="btn btn-view-details btn-sm view-details-btn"
-                                                                            data-bs-toggle="modal"
-                                                                            data-bs-target="#pdfModal"
-                                                                            data-pdf-url="/qai/assets/pdfjs/web/viewer.html?file=<?= urlencode('/qai/admin/action/' . $doc['file_path']) ?>">View
-                                                                        </a>
-                                                                    <?php else: ?>
-                                                                        <span class="text-muted">No file</span>
-                                                                    <?php endif; ?>
-                                                                </td>
-                                                            </tr>
-                                                        <?php endforeach; ?>
-                                                    </tbody>
-                                                </table>
-                                            </div>
-                                        </div>
-                                    </div>
-                                <?php else: ?>
-                                    <div class="alert alert-info">
-                                        <i class="fas fa-info-circle me-2"></i>
-                                        No OSH Audit Plan documents found.
-                                    </div>
-                                <?php endif; ?>
-                            </div>
+                        <div class="tab-pane fade" id="osh_man" role="tabpanel">
+                            <h4 class="colour-defult">OSH Manual</h4>
                         </div>
 
                         <div class="tab-pane fade" id="osh_report" role="tabpanel">
@@ -989,119 +767,35 @@ try {
 
                         <!-- Environment Tab Panes -->
                         <div class="tab-pane fade" id="env_plan" role="tabpanel">
-                            <h4 class="colour-defult">Environment - Audit Plan</h4>
-                            <div class="mt-4">
-                                <?php if (!empty($env_error)): ?>
-                                    <div class="alert alert-danger">
-                                        <strong>Database Error:</strong> <?= htmlspecialchars($env_error) ?>
-                                    </div>
-                                <?php elseif (!empty($env_audit_plan)): ?>
-                                    <div class="card">
-                                        <div class="card-body p-0">
-                                            <div class="table-responsive">
-                                                <table class="table table-hover mb-0" id="envPlanTable" style="font-size:x-small;">
-                                                    <thead>
-                                                        <tr>
-                                                            <th>Title</th>
-                                                            <th>Description</th>
-                                                            <th>Category</th>
-                                                            <th>Created By</th>
-                                                            <th>Upload Date</th>
-                                                            <th>File</th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                        <?php foreach ($env_audit_plan as $doc): ?>
-                                                            <tr>
-                                                                <td><strong><?= htmlspecialchars($doc['title']) ?></strong></td>
-                                                                <td><?= htmlspecialchars($doc['description']) ?></td>
-                                                                <td><?= htmlspecialchars($doc['env_category_name'] ?? 'N/A') ?></td>
-                                                                <td><?= htmlspecialchars($doc['created_by_name'] ?? 'System') ?></td>
-                                                                <td><?= date('Y-m-d', strtotime($doc['uploaded_at'])) ?></td>
-                                                                <td>
-                                                                    <?php if (!empty($doc['file_path'])): ?>
-                                                                        <a href="/qai/assets/pdfjs/web/viewer.html?file=<?= urlencode('/qai/admin/action/' . $doc['file_path']) ?>"
-                                                                            class="btn btn-view-details btn-sm view-details-btn"
-                                                                            data-bs-toggle="modal"
-                                                                            data-bs-target="#pdfModal"
-                                                                            data-pdf-url="/qai/assets/pdfjs/web/viewer.html?file=<?= urlencode('/qai/admin/action/' . $doc['file_path']) ?>">View
-                                                                        </a>
-                                                                    <?php else: ?>
-                                                                        <span class="text-muted">No file</span>
-                                                                    <?php endif; ?>
-                                                                </td>
-                                                            </tr>
-                                                        <?php endforeach; ?>
-                                                    </tbody>
-                                                </table>
-                                            </div>
-                                        </div>
-                                    </div>
-                                <?php else: ?>
-                                    <div class="alert alert-info">
-                                        <i class="fas fa-info-circle me-2"></i>
-                                        No Environment Audit Plan documents found.
-                                    </div>
-                                <?php endif; ?>
-                            </div>
+                            <?php if (!empty($env_audit_plan_web)): ?>
+                                <div class="top-bar">
+                                    <a href="<?= $env_audit_plan_web ?>" target="_blank" class="btn btn-sm btn-dark">Environment Audit Plan</a>
+                                </div>
+                                <div class="pdf-viewer-container">
+                                    <iframe src="/qai/assets/pdfjs/web/viewer.html?file=<?= urlencode($env_audit_plan_web) ?>"
+                                        width="100%" height="100%" style="border:none;"></iframe>
+                                </div>
+                            <?php else: ?>
+                                <div class="alert alert-info">
+                                    <p>No environment audit plan document is available at the moment.</p>
+                                </div>
+                            <?php endif; ?>
                         </div>
 
                         <div class="tab-pane fade" id="env_checklist" role="tabpanel">
-                            <h4 class="colour-defult">Environment - Audit Check List</h4>
-                            <div class="mt-4">
-                                <?php if (!empty($env_error)): ?>
-                                    <div class="alert alert-danger">
-                                        <strong>Database Error:</strong> <?= htmlspecialchars($env_error) ?>
-                                    </div>
-                                <?php elseif (!empty($env_audit_checklist)): ?>
-                                    <div class="card">
-                                        <div class="card-body p-0">
-                                            <div class="table-responsive">
-                                                <table class="table table-hover mb-0" id="envChecklistTable" style="font-size:x-small;">
-                                                    <thead>
-                                                        <tr>
-                                                            <th>Title</th>
-                                                            <th>Description</th>
-                                                            <th>Category</th>
-                                                            <th>Created By</th>
-                                                            <th>Upload Date</th>
-                                                            <th>File</th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                        <?php foreach ($env_audit_checklist as $doc): ?>
-                                                            <tr>
-                                                                <td><strong><?= htmlspecialchars($doc['title']) ?></strong></td>
-                                                                <td><?= htmlspecialchars($doc['description']) ?></td>
-                                                                <td><?= htmlspecialchars($doc['env_category_name'] ?? 'N/A') ?></td>
-                                                                <td><?= htmlspecialchars($doc['created_by_name'] ?? 'System') ?></td>
-                                                                <td><?= date('Y-m-d', strtotime($doc['uploaded_at'])) ?></td>
-                                                                <td>
-                                                                    <?php if (!empty($doc['file_path'])): ?>
-                                                                        <a href="/qai/assets/pdfjs/web/viewer.html?file=<?= urlencode('/qai/admin/action/' . $doc['file_path']) ?>"
-                                                                            class="btn btn-view-details btn-sm view-details-btn"
-                                                                            data-bs-toggle="modal"
-                                                                            data-bs-target="#pdfModal"
-                                                                            data-pdf-url="/qai/assets/pdfjs/web/viewer.html?file=<?= urlencode('/qai/admin/action/' . $doc['file_path']) ?>">View
-                                                                        </a>
-                                                                    <?php else: ?>
-                                                                        <span class="text-muted">No file</span>
-                                                                    <?php endif; ?>
-                                                                </td>
-                                                            </tr>
-                                                        <?php endforeach; ?>
-                                                    </tbody>
-                                                </table>
-                                            </div>
-                                        </div>
-                                    </div>
-                                <?php else: ?>
-                                    <div class="alert alert-info">
-                                        <i class="fas fa-info-circle me-2"></i>
-                                        No Environment Audit Checklist documents found.
-                                    </div>
-                                <?php endif; ?>
-                            </div>
+                            <?php if (!empty($env_audit_check_web)): ?>
+                                <div class="top-bar">
+                                    <a href="<?= $env_audit_check_web ?>" target="_blank" class="btn btn-sm btn-dark">Environment Audit Checklist</a>
+                                </div>
+                                <div class="pdf-viewer-container">
+                                    <iframe src="/qai/assets/pdfjs/web/viewer.html?file=<?= urlencode($env_audit_check_web) ?>"
+                                        width="100%" height="100%" style="border:none;"></iframe>
+                                </div>
+                            <?php else: ?>
+                                <div class="alert alert-info">
+                                    <p>No environment audit checklist document is available at the moment.</p>
+                                </div>
+                            <?php endif; ?>
                         </div>
 
                         <div class="tab-pane fade" id="env_report" role="tabpanel">
