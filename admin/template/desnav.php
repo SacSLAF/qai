@@ -55,6 +55,7 @@
                             <li><a href="active-qcc.php">Active QCC</a></li>
                             <li><a href="audit-report.php">Audit Report</a></li>
                             <li><a href="audit_document.php">Annual Report</a></li>
+                            <li><a href="osh-manual.php">OSH Manual</a></li>
                         </ul>
                     </li>
                 </ul>

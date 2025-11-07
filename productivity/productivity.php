@@ -199,15 +199,15 @@ try {
             $env_audit_report_error = "Error preparing Environment Audit Report query: " . $db->error;
         }
 
-        // Fetch OSH Manual records (from productivity_documents)
-        $stmt_osh_manual = $db->prepare("
-            SELECT pd.*, oc.name as osh_category_name, a.username as created_by_name
-            FROM productivity_documents pd 
-            LEFT JOIN osh_categories oc ON pd.osh_category_id = oc.id 
-            LEFT JOIN admins a ON pd.uploaded_by = a.id 
-            WHERE pd.osh_category_id = 4 AND pd.is_active = 1
-            ORDER BY pd.title ASC
-        ");
+        // Fetch OSH Manual records (from osh_manual table)
+            $stmt_osh_manual = $db->prepare("
+                SELECT om.*, pc.name as category_name, s.name as section_name, a.username as created_by_name
+                FROM osh_manual om 
+                LEFT JOIN productivity_categories pc ON om.category_id = pc.id 
+                LEFT JOIN sections s ON om.section_id = s.id 
+                LEFT JOIN admins a ON om.created_by = a.id 
+                ORDER BY om.sno ASC, om.created_at DESC
+            ");
 
         if ($stmt_osh_manual) {
             if ($stmt_osh_manual->execute()) {
@@ -696,8 +696,76 @@ try {
                             <?php endif; ?>
                         </div>
 
+                        <!-- OSH Manual Tab -->
                         <div class="tab-pane fade" id="osh_man" role="tabpanel">
                             <h4 class="colour-defult">OSH Manual</h4>
+                            <div class="mt-4">
+                                <?php if (!empty($osh_error)): ?>
+                                    <div class="alert alert-danger">
+                                        <strong>Database Error:</strong> <?= htmlspecialchars($osh_error) ?>
+                                    </div>
+                                <?php elseif (!empty($osh_manual)): ?>
+                                    <div class="card">
+                                        <div class="card-body p-0">
+                                            <div class="table-responsive">
+                                                <table class="table table-hover mb-0" id="oshManualTable" style="font-size:x-small;">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>S/No</th>
+                                                            <th>Description</th>
+                                                            <th>Manual No</th>
+                                                            <th>Revision Status</th>
+                                                            <th>Category</th>
+                                                            <th>Section</th>
+                                                            <th>Created By</th>
+                                                            <th>Created Date</th>
+                                                            <th>File</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <?php foreach ($osh_manual as $manual): ?>
+                                                            <tr>
+                                                                <td><strong><?= htmlspecialchars($manual['sno']) ?></strong></td>
+                                                                <td><?= htmlspecialchars($manual['description']) ?></td>
+                                                                <td><?= htmlspecialchars($manual['manual_no']) ?></td>
+                                                                <td>
+                                                                    <span class="badge badge-<?= 
+                                                                        $manual['rev_status'] === 'Current' ? 'success' : 
+                                                                        ($manual['rev_status'] === 'Revised' ? 'warning' : 'secondary')
+                                                                    ?>">
+                                                                        <?= htmlspecialchars($manual['rev_status']) ?>
+                                                                    </span>
+                                                                </td>
+                                                                <td><?= htmlspecialchars($manual['category_name'] ?? 'N/A') ?></td>
+                                                                <td><?= htmlspecialchars($manual['section_name'] ?? 'N/A') ?></td>
+                                                                <td><?= htmlspecialchars($manual['created_by_name'] ?? 'System') ?></td>
+                                                                <td><?= date('Y-m-d', strtotime($manual['created_at'])) ?></td>
+                                                                <td>
+                                                                    <?php if (!empty($manual['file_path'])): ?>
+                                                                        <a href="/qai/assets/pdfjs/web/viewer.html?file=<?= urlencode('/qai/admin/action/' . $manual['file_path']) ?>"
+                                                                            class="btn btn-view-details btn-sm view-details-btn"
+                                                                            data-bs-toggle="modal"
+                                                                            data-bs-target="#pdfModal"
+                                                                            data-pdf-url="/qai/assets/pdfjs/web/viewer.html?file=<?= urlencode('/qai/admin/action/' . $manual['file_path']) ?>">View
+                                                                        </a>
+                                                                    <?php else: ?>
+                                                                        <span class="text-muted">No file</span>
+                                                                    <?php endif; ?>
+                                                                </td>
+                                                            </tr>
+                                                        <?php endforeach; ?>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                <?php else: ?>
+                                    <div class="alert alert-info">
+                                        <i class="fas fa-info-circle me-2"></i>
+                                        No OSH Manual records found.
+                                    </div>
+                                <?php endif; ?>
+                            </div>
                         </div>
 
                         <div class="tab-pane fade" id="osh_report" role="tabpanel">
@@ -1039,9 +1107,9 @@ try {
 
             // Initialize all tables
             const tableIds = [
-                'activeQccTable', 'prodAuditPlanTable', 'prodAuditChecklistTable', 'prodAuditReportTable',
-                'oshManualTable', 'oshChecklistTable', 'oshPlanTable', 'oshReportTable',
-                'envPlanTable', 'envChecklistTable', 'envReportTable',
+                'activeQccTable', 'prodAuditReportTable',
+                'oshManualTable', 'oshReportTable',
+                'envReportTable',
                 'awardsQccTable', 'awardsEnvTable'
             ];
 
