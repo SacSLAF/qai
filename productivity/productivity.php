@@ -83,9 +83,9 @@ try {
     $env_audit_checklist = [];
     $env_error = '';
 
-    // Fetch data for Awards
-    $awards_best_qcc = [];
-    $awards_best_env = [];
+    // Fetch Awards data
+    $awards_qcc = [];
+    $awards_env = [];
     $awards_error = '';
 
     // Check database connection
@@ -221,48 +221,54 @@ try {
             $osh_error = "Error preparing OSH Manual query: " . $db->error;
         }
 
-        // Fetch Awards - Best QCC records
+        // Fetch Best QCC Awards (award_type = 'qcc')
         $stmt_awards_qcc = $db->prepare("
-            SELECT pd.*, pc.name as category_name, a.username as created_by_name
-            FROM productivity_documents pd 
-            LEFT JOIN productivity_categories pc ON pd.productivity_category_id = pc.id 
-            LEFT JOIN admins a ON pd.uploaded_by = a.id 
-            WHERE pd.productivity_category_id = 4 AND pd.is_active = 1
-            ORDER BY pd.title ASC
+            SELECT a.*, se.name as establishment_name, se.code as establishment_code,
+                pc.name as category_name, s.name as section_name, ad.username as created_by_name
+            FROM awards a 
+            LEFT JOIN slaf_establishments se ON a.slaf_establishment_id = se.id 
+            LEFT JOIN productivity_categories pc ON a.category_id = pc.id 
+            LEFT JOIN sections s ON a.section_id = s.id 
+            LEFT JOIN admins ad ON a.created_by = ad.id 
+            WHERE a.award_type = 'qcc'
+            ORDER BY a.year DESC, a.placement ASC, a.sno ASC
         ");
 
         if ($stmt_awards_qcc) {
             if ($stmt_awards_qcc->execute()) {
                 $result_awards_qcc = $stmt_awards_qcc->get_result();
-                $awards_best_qcc = $result_awards_qcc->fetch_all(MYSQLI_ASSOC);
+                $awards_qcc = $result_awards_qcc->fetch_all(MYSQLI_ASSOC);
                 $stmt_awards_qcc->close();
             } else {
-                $awards_error = "Awards Best QCC query execution failed: " . $stmt_awards_qcc->error;
+                $awards_error = "Awards QCC query execution failed: " . $stmt_awards_qcc->error;
             }
         } else {
-            $awards_error = "Error preparing Awards Best QCC query: " . $db->error;
+            $awards_error = "Error preparing Awards QCC query: " . $db->error;
         }
 
-        // Fetch Awards - Best Environment Management Project records
+        // Fetch Best Environment Awards (award_type = 'environment')
         $stmt_awards_env = $db->prepare("
-            SELECT pd.*, pc.name as category_name, a.username as created_by_name
-            FROM productivity_documents pd 
-            LEFT JOIN productivity_categories pc ON pd.productivity_category_id = pc.id 
-            LEFT JOIN admins a ON pd.uploaded_by = a.id 
-            WHERE pd.productivity_category_id = 4 AND pd.is_active = 1
-            ORDER BY pd.title ASC
+            SELECT a.*, se.name as establishment_name, se.code as establishment_code,
+                pc.name as category_name, s.name as section_name, ad.username as created_by_name
+            FROM awards a 
+            LEFT JOIN slaf_establishments se ON a.slaf_establishment_id = se.id 
+            LEFT JOIN productivity_categories pc ON a.category_id = pc.id 
+            LEFT JOIN sections s ON a.section_id = s.id 
+            LEFT JOIN admins ad ON a.created_by = ad.id 
+            WHERE a.award_type = 'environment'
+            ORDER BY a.year DESC, a.placement ASC, a.sno ASC
         ");
 
         if ($stmt_awards_env) {
             if ($stmt_awards_env->execute()) {
                 $result_awards_env = $stmt_awards_env->get_result();
-                $awards_best_env = $result_awards_env->fetch_all(MYSQLI_ASSOC);
+                $awards_env = $result_awards_env->fetch_all(MYSQLI_ASSOC);
                 $stmt_awards_env->close();
             } else {
-                $awards_error = "Awards Best Environment query execution failed: " . $stmt_awards_env->error;
+                $awards_error = "Awards Environment query execution failed: " . $stmt_awards_env->error;
             }
         } else {
-            $awards_error = "Error preparing Awards Best Environment query: " . $db->error;
+            $awards_error = "Error preparing Awards Environment query: " . $db->error;
         }
     }
 
@@ -933,46 +939,51 @@ try {
 
                         <!-- Awards Tab Panes -->
                         <div class="tab-pane fade" id="awards_qcc" role="tabpanel">
-                            <h4 class="colour-defult">Awards - Best QCC</h4>
+                            <h4 class="colour-defult">Awards - Best Quality Control Circle</h4>
                             <div class="mt-4">
                                 <?php if (!empty($awards_error)): ?>
                                     <div class="alert alert-danger">
                                         <strong>Database Error:</strong> <?= htmlspecialchars($awards_error) ?>
                                     </div>
-                                <?php elseif (!empty($awards_best_qcc)): ?>
+                                <?php elseif (!empty($awards_qcc)): ?>
                                     <div class="card">
                                         <div class="card-body p-0">
                                             <div class="table-responsive">
                                                 <table class="table table-hover mb-0" id="awardsQccTable" style="font-size:x-small;">
                                                     <thead>
                                                         <tr>
-                                                            <th>Title</th>
-                                                            <th>Description</th>
-                                                            <th>Category</th>
-                                                            <th>Created By</th>
-                                                            <th>Upload Date</th>
-                                                            <th>File</th>
+                                                            <th>S/NO</th>
+                                                            <th>Year</th>
+                                                            <th>SLAF Establishment</th>
+                                                            <th>QCC Name</th>
+                                                            <th>Placement</th>
+                                                            <th>Team Members</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
-                                                        <?php foreach ($awards_best_qcc as $doc): ?>
+                                                        <?php foreach ($awards_qcc as $award): ?>
                                                             <tr>
-                                                                <td><strong><?= htmlspecialchars($doc['title']) ?></strong></td>
-                                                                <td><?= htmlspecialchars($doc['description']) ?></td>
-                                                                <td><?= htmlspecialchars($doc['category_name'] ?? 'N/A') ?></td>
-                                                                <td><?= htmlspecialchars($doc['created_by_name'] ?? 'System') ?></td>
-                                                                <td><?= date('Y-m-d', strtotime($doc['uploaded_at'])) ?></td>
+                                                                <td><strong><?= htmlspecialchars($award['sno']) ?></strong></td>
+                                                                <td><?= htmlspecialchars($award['year']) ?></td>
                                                                 <td>
-                                                                    <?php if (!empty($doc['file_path'])): ?>
-                                                                        <a href="/qai/assets/pdfjs/web/viewer.html?file=<?= urlencode('/qai/admin/action/' . $doc['file_path']) ?>"
-                                                                            class="btn btn-view-details btn-sm view-details-btn"
-                                                                            data-bs-toggle="modal"
-                                                                            data-bs-target="#pdfModal"
-                                                                            data-pdf-url="/qai/assets/pdfjs/web/viewer.html?file=<?= urlencode('/qai/admin/action/' . $doc['file_path']) ?>">View
-                                                                        </a>
-                                                                    <?php else: ?>
-                                                                        <span class="text-muted">No file</span>
+                                                                    <?= htmlspecialchars($award['establishment_name']) ?>
+                                                                    <?php if (!empty($award['establishment_code'])): ?>
+                                                                        <br><small class="text-muted">(<?= htmlspecialchars($award['establishment_code']) ?>)</small>
                                                                     <?php endif; ?>
+                                                                </td>
+                                                                <td><?= htmlspecialchars($award['qcc_name'] ?? 'N/A') ?></td>
+                                                                <td>
+                                                                    <span class="badge badge-<?= 
+                                                                        $award['placement'] === '1st' ? 'warning' : 
+                                                                        ($award['placement'] === '2nd' ? 'secondary' : 'info')
+                                                                    ?>">
+                                                                        <?= htmlspecialchars($award['placement']) ?>
+                                                                    </span>
+                                                                </td>
+                                                                <td>
+                                                                    <span data-bs-toggle="tooltip" title="<?= htmlspecialchars($award['team_members']) ?>">
+                                                                        <?= htmlspecialchars(substr($award['team_members'], 0, 50)) . (strlen($award['team_members']) > 50 ? '...' : '') ?>
+                                                                    </span>
                                                                 </td>
                                                             </tr>
                                                         <?php endforeach; ?>
@@ -984,7 +995,7 @@ try {
                                 <?php else: ?>
                                     <div class="alert alert-info">
                                         <i class="fas fa-info-circle me-2"></i>
-                                        No Best QCC Awards documents found.
+                                        No Best Quality Control Circle Awards records found.
                                     </div>
                                 <?php endif; ?>
                             </div>
@@ -997,42 +1008,44 @@ try {
                                     <div class="alert alert-danger">
                                         <strong>Database Error:</strong> <?= htmlspecialchars($awards_error) ?>
                                     </div>
-                                <?php elseif (!empty($awards_best_env)): ?>
+                                <?php elseif (!empty($awards_env)): ?>
                                     <div class="card">
                                         <div class="card-body p-0">
                                             <div class="table-responsive">
                                                 <table class="table table-hover mb-0" id="awardsEnvTable" style="font-size:x-small;">
                                                     <thead>
                                                         <tr>
-                                                            <th>Title</th>
-                                                            <th>Description</th>
-                                                            <th>Category</th>
-                                                            <th>Created By</th>
-                                                            <th>Upload Date</th>
-                                                            <th>File</th>
+                                                            <th>S/NO</th>
+                                                            <th>Year</th>
+                                                            <th>SLAF Establishment</th>
+                                                            <th>Placement</th>
+                                                            <th>Team Members</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
-                                                        <?php foreach ($awards_best_env as $doc): ?>
+                                                        <?php foreach ($awards_env as $award): ?>
                                                             <tr>
-                                                                <td><strong><?= htmlspecialchars($doc['title']) ?></strong></td>
-                                                                <td><?= htmlspecialchars($doc['description']) ?></td>
-                                                                <td><?= htmlspecialchars($doc['category_name'] ?? 'N/A') ?></td>
-                                                                <td><?= htmlspecialchars($doc['created_by_name'] ?? 'System') ?></td>
-                                                                <td><?= date('Y-m-d', strtotime($doc['uploaded_at'])) ?></td>
+                                                                <td><strong><?= htmlspecialchars($award['sno']) ?></strong></td>
+                                                                <td><?= htmlspecialchars($award['year']) ?></td>
                                                                 <td>
-                                                                    <?php if (!empty($doc['file_path'])): ?>
-                                                                        <a href="/qai/assets/pdfjs/web/viewer.html?file=<?= urlencode('/qai/admin/action/' . $doc['file_path']) ?>"
-                                                                            class="btn btn-view-details btn-sm view-details-btn"
-                                                                            data-bs-toggle="modal"
-                                                                            data-bs-target="#pdfModal"
-                                                                            data-pdf-url="/qai/assets/pdfjs/web/viewer.html?file=<?= urlencode('/qai/admin/action/' . $doc['file_path']) ?>">View
-                                                                        </a>
-                                                                    <?php else: ?>
-                                                                        <span class="text-muted">No file</span>
+                                                                    <?= htmlspecialchars($award['establishment_name']) ?>
+                                                                    <?php if (!empty($award['establishment_code'])): ?>
+                                                                        <br><small class="text-muted">(<?= htmlspecialchars($award['establishment_code']) ?>)</small>
                                                                     <?php endif; ?>
                                                                 </td>
-                                                            </tr>
+                                                                <td>
+                                                                    <span class="badge badge-<?= 
+                                                                        $award['placement'] === '1st' ? 'warning' : 
+                                                                        ($award['placement'] === '2nd' ? 'secondary' : 'info')
+                                                                    ?>">
+                                                                        <?= htmlspecialchars($award['placement']) ?>
+                                                                    </span>
+                                                                </td>
+                                                                <td>
+                                                                    <span data-bs-toggle="tooltip" title="<?= htmlspecialchars($award['team_members']) ?>">
+                                                                        <?= htmlspecialchars(substr($award['team_members'], 0, 50)) . (strlen($award['team_members']) > 50 ? '...' : '') ?>
+                                                                    </span>
+                                                                </td>
                                                         <?php endforeach; ?>
                                                     </tbody>
                                                 </table>
@@ -1042,7 +1055,7 @@ try {
                                 <?php else: ?>
                                     <div class="alert alert-info">
                                         <i class="fas fa-info-circle me-2"></i>
-                                        No Best Environment Management Project Awards documents found.
+                                        No Best Environment Management Project Awards records found.
                                     </div>
                                 <?php endif; ?>
                             </div>

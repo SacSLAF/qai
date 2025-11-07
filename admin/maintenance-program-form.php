@@ -220,7 +220,7 @@ include "template/head.php";
                                                            <?= !isset($record) ? 'required' : '' ?>>
                                                     <?php if (isset($record) && !empty($record['file_path'])): ?>
                                                         <small class="form-text text-muted">
-                                                            Current file: <a href="<?= htmlspecialchars($record['file_path']) ?>" target="_blank">View</a>
+                                                            Current file: <a href="<?= htmlspecialchars($record['file_path']) ?>">View</a>
                                                         </small>
                                                     <?php endif; ?>
                                                     <small class="form-text text-muted">
