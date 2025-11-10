@@ -465,8 +465,8 @@ try {
                             <div class="qa-dropdown-menu">
                                 <a class="qa-dropdown-item active" data-bs-target="#qcc_active" role="tab">Active QCC 2025</a>
                                 <a class="qa-dropdown-item" data-bs-target="#prod_audit_plan" role="tab">Productivity Audit Plan</a>
-                                <a class="qa-dropdown-item" data-bs-target="#prod_audit_checklist" role="tab">Productivity Audit Check List</a>
-                                <a class="qa-dropdown-item" data-bs-target="#prod_audit_report" role="tab">Productivity Audit Report</a>
+                                <a class="qa-dropdown-item" data-bs-target="#prod_audit_checklist" role="tab">Productivity Audit<br>Check List</a>
+                                <a class="qa-dropdown-item" data-bs-target="#prod_audit_report" role="tab">Productivity <br>Audit Report</a>
                             </div>
                         </div>
                         
@@ -496,7 +496,7 @@ try {
                             <a class="nav-link qa-dropdown-toggle" role="button">Awards</a>
                             <div class="qa-dropdown-menu">
                                 <a class="qa-dropdown-item" data-bs-target="#awards_qcc" role="tab">Best QCC</a>
-                                <a class="qa-dropdown-item" data-bs-target="#awards_env" role="tab">Best Environment Management Project</a>
+                                <a class="qa-dropdown-item" data-bs-target="#awards_env" role="tab">Best Environment <br>Management Project</a>
                             </div>
                         </div>
                     </div>
@@ -1148,136 +1148,133 @@ try {
                 });
             }
 
-            // Enhanced Navigation and dropdown handling
-            const welcomePane = document.querySelector('#welcome');
+            // Navigation and tab handling
+            const welcomePane = document.querySelector("#welcome");
             if (welcomePane) {
-                welcomePane.classList.add('show', 'active');
+                welcomePane.classList.add("show", "active");
             }
 
-            document.querySelectorAll('.nav-link, .qa-dropdown-item').forEach(item => {
-                item.classList.remove('active');
+            document.querySelectorAll(".nav-link, .qa-dropdown-item").forEach((item) => {
+                item.classList.remove("active");
             });
 
-            document.querySelectorAll('.qa-dropdown-menu').forEach(menu => {
-                menu.classList.remove('show');
+            document.querySelectorAll(".qa-dropdown-menu").forEach((menu) => {
+                menu.classList.remove("show");
             });
 
-            // Enhanced dropdown toggle handling
-            const dropdownToggles = document.querySelectorAll('.qa-dropdown-toggle');
-            dropdownToggles.forEach(toggle => {
-                toggle.addEventListener('click', function(e) {
+            // Dropdown toggle handling
+            const dropdownToggles = document.querySelectorAll(".qa-dropdown-toggle");
+            dropdownToggles.forEach((toggle) => {
+                toggle.addEventListener("click", function(e) {
                     e.preventDefault();
                     e.stopPropagation();
 
                     const dropdownMenu = this.nextElementSibling;
                     if (!dropdownMenu) return;
 
-                    const isCurrentlyOpen = dropdownMenu.classList.contains('show');
+                    const isCurrentlyOpen = dropdownMenu.classList.contains("show");
 
-                    // Close all dropdowns at the same level
-                    const parentItem = this.parentElement;
-                    if (parentItem) {
-                        const siblings = parentItem.parentElement?.children;
-                        if (siblings) {
-                            Array.from(siblings).forEach(sibling => {
-                                if (sibling !== parentItem) {
-                                    const siblingMenu = sibling.querySelector('.qa-dropdown-menu');
-                                    if (siblingMenu) {
-                                        siblingMenu.classList.remove('show');
-                                    }
-                                    const siblingToggle = sibling.querySelector('.qa-dropdown-toggle');
-                                    if (siblingToggle) {
-                                        siblingToggle.classList.remove('active');
-                                    }
-                                }
-                            });
-                        }
-                    }
+                    dropdownToggles.forEach((otherToggle) => {
+                        const otherMenu = otherToggle.nextElementSibling;
+                        if (otherMenu) otherMenu.classList.remove("show");
+                    });
 
-                    if (!isCurrentlyOpen) {
-                        dropdownMenu.classList.add('show');
-                        this.classList.add('active');
-                    } else {
-                        dropdownMenu.classList.remove('show');
-                        this.classList.remove('active');
-                    }
+                    if (!isCurrentlyOpen) dropdownMenu.classList.add("show");
                 });
             });
 
-            // Main nav links and dropdown items
-            const allNavItems = document.querySelectorAll('.nav-link:not(.qa-dropdown-toggle), .qa-dropdown-item:not(.qa-dropdown-toggle)');
-            allNavItems.forEach(item => {
-                item.addEventListener('click', function(e) {
-                    if (this.classList.contains('qa-dropdown-toggle')) {
-                        return; // Let the dropdown toggle handler deal with it
-                    }
-
+            // Main nav links
+            const mainNavLinks = document.querySelectorAll(
+                ".nav-link:not(.qa-dropdown-toggle)"
+            );
+            mainNavLinks.forEach((item) => {
+                item.addEventListener("click", function(e) {
                     e.preventDefault();
-                    // Remove active class from all items
-                    document.querySelectorAll('.nav-link, .qa-dropdown-item').forEach(tab => {
-                        tab.classList.remove('active');
+                    document
+                        .querySelectorAll(".nav-link, .qa-dropdown-item")
+                        .forEach((tab) => {
+                            tab.classList.remove("active");
+                        });
+                    document.querySelectorAll(".qa-dropdown-toggle").forEach((toggle) => {
+                        toggle.classList.remove("active");
                     });
+                    this.classList.add("active");
 
-                    // Add active class to clicked item and its parents
-                    let currentItem = this;
-                    while (currentItem) {
-                        currentItem.classList.add('active');
-                        if (currentItem.classList.contains('qa-dropdown-item')) {
-                            const parentDropdown = currentItem.closest('.qa-dropdown');
-                            if (parentDropdown) {
-                                const dropdownToggle = parentDropdown.querySelector('.qa-dropdown-toggle');
-                                if (dropdownToggle) {
-                                    dropdownToggle.classList.add('active');
-                                }
-                            }
-                        }
-                        currentItem = currentItem.parentElement?.closest('.qa-dropdown-item') ||
-                            currentItem.parentElement?.closest('.nav-link');
-                    }
-
-                    const targetId = this.getAttribute('data-bs-target');
+                    const targetId = this.getAttribute("data-bs-target");
                     const targetPane = document.querySelector(targetId);
 
-                    document.querySelectorAll('.tab-pane').forEach(pane => {
-                        pane.classList.remove('show', 'active');
+                    document.querySelectorAll(".tab-pane").forEach((pane) => {
+                        pane.classList.remove("show", "active");
                     });
 
-                    if (targetPane) {
-                        targetPane.classList.add('show', 'active');
+                    if (targetPane) targetPane.classList.add("show", "active");
+                    document.querySelectorAll(".qa-dropdown-menu").forEach((menu) => {
+                        menu.classList.remove("show");
+                    });
+                });
+            });
+
+            // Dropdown items
+            const dropdownItems = document.querySelectorAll(".qa-dropdown-item");
+            dropdownItems.forEach((item) => {
+                item.addEventListener("click", function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+
+                    document
+                        .querySelectorAll(".nav-link, .qa-dropdown-item")
+                        .forEach((tab) => {
+                            tab.classList.remove("active");
+                        });
+                    document.querySelectorAll(".qa-dropdown-toggle").forEach((toggle) => {
+                        toggle.classList.remove("active");
+                    });
+                    this.classList.add("active");
+
+                    if (this.classList.contains("qa-dropdown-item")) {
+                        const parentDropdown = this.closest(".qa-dropdown");
+                        if (parentDropdown) {
+                            const dropdownToggle = parentDropdown.querySelector(
+                                ".qa-dropdown-toggle"
+                            );
+                            if (dropdownToggle) {
+                                dropdownToggle.classList.add("active");
+                                const dropdownMenu = dropdownToggle.nextElementSibling;
+                                if (dropdownMenu) dropdownMenu.classList.add("show");
+                            }
+                        }
                     }
 
-                    // Close all dropdown menus
-                    document.querySelectorAll('.qa-dropdown-menu').forEach(menu => {
-                        menu.classList.remove('show');
+                    const targetId = this.getAttribute("data-bs-target");
+                    const targetPane = document.querySelector(targetId);
+
+                    document.querySelectorAll(".tab-pane").forEach((pane) => {
+                        pane.classList.remove("show", "active");
                     });
+
+                    if (targetPane) targetPane.classList.add("show", "active");
                 });
             });
 
             // Close dropdowns on outside click
-            document.addEventListener('click', function(e) {
-                if (!e.target.closest('.nav-column')) {
-                    document.querySelectorAll('.qa-dropdown-menu').forEach(menu => {
-                        menu.classList.remove('show');
-                    });
-                    document.querySelectorAll('.qa-dropdown-toggle').forEach(toggle => {
-                        toggle.classList.remove('active');
-                    });
-                }
-            });
+            // document.addEventListener("click", function(e) {
+            //     if (!e.target.closest(".qa-dropdown")) {
+            //         document.querySelectorAll(".qa-dropdown-menu").forEach((menu) => {
+            //             menu.classList.remove("show");
+            //         });
+            //     }
+            // });
 
-            document.querySelectorAll('.qa-dropdown-menu').forEach(menu => {
-                menu.addEventListener('click', function(e) {
+            document.querySelectorAll(".qa-dropdown-menu").forEach((menu) => {
+                menu.addEventListener("click", function(e) {
                     e.stopPropagation();
                 });
             });
 
-            document.addEventListener('keydown', function(e) {
-                if (e.key === 'Escape') {
-                    document.querySelectorAll('.qa-dropdown-menu').forEach(menu => {
-                        menu.classList.remove('show');
-                    });
-                    document.querySelectorAll('.qa-dropdown-toggle').forEach(toggle => {
-                        toggle.classList.remove('active');
+            document.addEventListener("keydown", function(e) {
+                if (e.key === "Escape") {
+                    document.querySelectorAll(".qa-dropdown-menu").forEach((menu) => {
+                        menu.classList.remove("show");
                     });
                 }
             });
