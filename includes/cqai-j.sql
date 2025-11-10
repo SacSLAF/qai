@@ -346,7 +346,6 @@ CREATE TABLE `ac_categories`  (
 INSERT INTO `ac_categories` VALUES (1, 'AE', '2025-09-09 10:14:05');
 INSERT INTO `ac_categories` VALUES (2, 'GE', '2025-09-09 10:14:05');
 INSERT INTO `ac_categories` VALUES (3, 'EE', '2025-09-09 10:14:05');
-INSERT INTO `ac_categories` VALUES (4, 'CPD', '2025-09-09 10:14:05');
 
 -- ----------------------------
 -- Table structure for sections
@@ -823,6 +822,26 @@ CREATE TABLE `training_syllabus`  (
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 ROW_FORMAT = Dynamic;
 
 -- ----------------------------
+-- Table structure for training_record_Cpd
+-- ----------------------------
+DROP TABLE IF EXISTS `training_record_cpd`;
+CREATE TABLE `training_record_cpd`  (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `sno` varchar(255) CHARACTER SET utf8mb4 NOT NULL,
+  `trade` varchar(255) CHARACTER SET utf8mb4 NULL DEFAULT NULL,
+  `description` text CHARACTER SET utf8mb4 NOT NULL,
+  `duration` varchar(255) CHARACTER SET utf8mb4 NULL DEFAULT NULL,
+  `ac_categories_id` int NOT NULL,
+  `file_path` varchar(255) CHARACTER SET utf8mb4 NOT NULL,
+  PRIMARY KEY (`id`) USING BTREE,
+  FOREIGN KEY (`ac_categories_id`) REFERENCES `ac_categories` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 ROW_FORMAT = Dynamic;
+ALTER TABLE `training_record_cpd` 
+ADD COLUMN `created_by` int NULL AFTER `file_path`,
+ADD COLUMN `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+ADD COLUMN `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+ADD FOREIGN KEY (`created_by`) REFERENCES `admins` (`id`);
+-- ----------------------------
 -- Table structure for ranks
 -- ----------------------------
 DROP TABLE IF EXISTS `ranks`;
@@ -861,7 +880,7 @@ INSERT INTO `ranks` VALUES (12, 'WO');
 -- ----------------------------
 -- Table structure for active_qcc
 -- ----------------------------
-
+DROP Table IF EXISTS active_qcc;
 CREATE TABLE `active_qcc` (
   `id` int NOT NULL AUTO_INCREMENT,
   `sno` varchar(255) CHARACTER SET utf8mb4 NOT NULL,
@@ -900,4 +919,50 @@ CREATE TABLE `audit_report` (
   FOREIGN KEY (`productivity_category_id`) REFERENCES `productivity_categories` (`id`),
   FOREIGN KEY (`uploaded_by`) REFERENCES `admins` (`id`),
   FOREIGN KEY (`section_id`) REFERENCES `sections` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- ----------------------------
+-- Table structure for osh_manual
+-- ----------------------------
+DROP Table IF EXISTS osh_manual;
+CREATE TABLE `osh_manual` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `sno` varchar(255) CHARACTER SET utf8mb4 NOT NULL,
+  `description` text CHARACTER SET utf8mb4 NOT NULL,
+  `manual_no` varchar(255) CHARACTER SET utf8mb4 NOT NULL,
+  'rev_status' varchar(255) CHARACTER SET utf8mb4 NOT NULL,
+  `file_path` varchar(500) NOT NULL,
+  `category_id` int NULL DEFAULT 3,
+  `section_id` int NULL DEFAULT 5,
+  `created_by` int NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  FOREIGN KEY (`section_id`) REFERENCES `sections` (`id`),
+  FOREIGN KEY (`category_id`) REFERENCES `productivity_categories` (`id`)
+);
+
+-- ----------------------------
+-- Table structure for awards
+-- ----------------------------
+DROP TABLE IF EXISTS `awards`;
+CREATE TABLE `awards` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `sno` varchar(100) NOT NULL,
+  `year` year NOT NULL,
+  `slaf_establishment_id` int NOT NULL,
+  `qcc_name` varchar(500) NULL,
+  `placement` enum('1st' , '2nd','3rd') NOT NULL,
+  `team_members` text NOT NULL,
+  `award_type` enum('qcc','environment') NOT NULL COMMENT 'qcc=Best Quality Control Circle, environment=Best Environment Management Project',
+  `category_id` int NULL DEFAULT 4,
+  `section_id` int NULL DEFAULT 5,
+  `created_by` int NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  FOREIGN KEY (`slaf_establishment_id`) REFERENCES `slaf_establishments` (`id`),
+  FOREIGN KEY (`section_id`) REFERENCES `sections` (`id`),
+  FOREIGN KEY (`created_by`) REFERENCES `admins` (`id`),
+  FOREIGN KEY (`category_id`) REFERENCES `productivity_categories` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
