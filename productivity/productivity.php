@@ -514,60 +514,90 @@ try {
                             </div>
                         </div>
 
-                        <!-- Active QCC Tab -->
-                        <div class="tab-pane fade" id="qcc_active" role="tabpanel">
-                            <h4 class="colour-defult">Active QCC 2025</h4>
-                            <div class="mt-4">
-                                <?php if (!empty($active_qcc_error)): ?>
-                                    <div class="alert alert-danger">
-                                        <strong>Database Error:</strong> <?= htmlspecialchars($active_qcc_error) ?>
-                                    </div>
-                                <?php elseif (!empty($active_qcc)): ?>
-                                    <div class="card">
-                                        <div class="card-body p-0">
-                                            <div class="table-responsive">
-                                                <table class="table table-hover mb-0" id="activeQccTable" style="font-size:x-small;">
-                                                    <thead>
-                                                        <tr>
-                                                            <th>S/No</th>
-                                                            <th>QCC Name</th>
-                                                            <th>SLAF Establishment</th>
-                                                            <th>Location</th>
-                                                            <th>Team Members</th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                        <?php foreach ($active_qcc as $qcc): ?>
-                                                            <tr>
-                                                                <td><strong><?= htmlspecialchars($qcc['sno']) ?></strong></td>
-                                                                <td><?= htmlspecialchars($qcc['qcc_name']) ?></td>
-                                                                <td>
-                                                                    <?= htmlspecialchars($qcc['establishment_name']) ?>
-                                                                    <?php if (!empty($qcc['establishment_code'])): ?>
-                                                                        <br><small class="text-muted">(<?= htmlspecialchars($qcc['establishment_code']) ?>)</small>
-                                                                    <?php endif; ?>
-                                                                </td>
-                                                                <td><?= htmlspecialchars($qcc['location']) ?></td>
-                                                                <td>
-                                                                    <span data-bs-toggle="tooltip" title="<?= htmlspecialchars($qcc['team_members']) ?>">
-                                                                        <?= htmlspecialchars(substr($qcc['team_members'], 0, 30)) . (strlen($qcc['team_members']) > 30 ? '...' : '') ?>
-                                                                    </span>
-                                                                </td>
-                                                            </tr>
-                                                        <?php endforeach; ?>
-                                                    </tbody>
-                                                </table>
-                                            </div>
-                                        </div>
-                                    </div>
-                                <?php else: ?>
-                                    <div class="alert alert-info">
-                                        <i class="fas fa-info-circle me-2"></i>
-                                        No Active QCC records found.
-                                    </div>
-                                <?php endif; ?>
+            <!-- Active QCC Tab -->
+            <div class="tab-pane fade" id="qcc_active" role="tabpanel">
+                <h4 class="colour-defult">Active QCC 2025</h4>
+                <div class="mt-4">
+                    <?php if (!empty($active_qcc_error)): ?>
+                        <div class="alert alert-danger">
+                            <strong>Database Error:</strong> <?= htmlspecialchars($active_qcc_error) ?>
+                        </div>
+                    <?php elseif (!empty($active_qcc)): ?>
+                        <div class="card">
+                            <div class="card-body p-0">
+                                <div class="table-responsive">
+                                    <table class="table table-hover mb-0" id="activeQccTable" style="font-size:x-small;">
+                                        <thead>
+                                            <tr>
+                                                <th>S/No</th>
+                                                <th>QCC Name</th>
+                                                <th>SLAF Establishment</th>
+                                                <th>Location</th>
+                                                <th>Team Members</th>
+                                                <th>Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <?php foreach ($active_qcc as $qcc): ?>
+                                                <tr>
+                                                    <td><strong><?= htmlspecialchars($qcc['sno']) ?></strong></td>
+                                                    <td><?= htmlspecialchars($qcc['qcc_name']) ?></td>
+                                                    <td>
+                                                        <?= htmlspecialchars($qcc['establishment_name']) ?>
+                                                        <?php if (!empty($qcc['establishment_code'])): ?>
+                                                            <br><small class="text-muted">(<?= htmlspecialchars($qcc['establishment_code']) ?>)</small>
+                                                        <?php endif; ?>
+                                                    </td>
+                                                    <td><?= htmlspecialchars($qcc['location']) ?></td>
+                                                    <td>
+                                                        <span data-bs-toggle="tooltip" title="<?= htmlspecialchars($qcc['team_members']) ?>">
+                                                            <?= htmlspecialchars(substr($qcc['team_members'], 0, 30)) . (strlen($qcc['team_members']) > 30 ? '...' : '') ?>
+                                                        </span>
+                                                    </td>
+                                                    <td>
+                                                        <button class="btn btn-view-details btn-sm view-details-btn"
+                                                                data-bs-toggle="modal"
+                                                                data-bs-target="#teamMembersModal"
+                                                                data-team-members="<?= htmlspecialchars($qcc['team_members']) ?>"
+                                                                data-qcc-name="<?= htmlspecialchars($qcc['qcc_name']) ?>">
+                                                            <i class="fas fa-users"></i> View
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                            <?php endforeach; ?>
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
                         </div>
+                    <?php else: ?>
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle me-2"></i>
+                            No Active QCC records found.
+                        </div>
+                    <?php endif; ?>
+                </div>
+            </div>
+
+            <!-- Team Members Modal -->
+            <div class="modal fade" id="teamMembersModal" tabindex="-1" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="teamMembersModalTitle">Team Members</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div id="teamMembersList">
+                                <!-- Team members will be populated here by JavaScript -->
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
                         <!-- Productivity Audit Plan Tab -->
                         <div class="tab-pane fade" id="prod_audit_plan" role="tabpanel">
@@ -1146,6 +1176,64 @@ try {
                 pdfModal.addEventListener('hidden.bs.modal', function() {
                     pdfFrame.src = "";
                 });
+            }
+
+            // Team Members Modal functionality
+            const teamMembersModal = document.getElementById('teamMembersModal');
+            const teamMembersModalTitle = document.getElementById('teamMembersModalTitle');
+            const teamMembersList = document.getElementById('teamMembersList');
+
+            if (teamMembersModal) {
+                teamMembersModal.addEventListener('show.bs.modal', function(event) {
+                    const button = event.relatedTarget;
+                    const teamMembers = button.getAttribute('data-team-members');
+                    const qccName = button.getAttribute('data-qcc-name');
+                    
+                    // Set modal title
+                    teamMembersModalTitle.textContent = `Team Members - ${qccName}`;
+                    
+                    // Process team members and create list
+                    let teamMembersHtml = '';
+                    
+                    if (teamMembers && teamMembers.trim() !== '') {
+                        // Split by comma and create list items
+                        const membersArray = teamMembers.split(',').map(member => member.trim());
+                        
+                        teamMembersHtml = '<div class="team-members-list">';
+                        membersArray.forEach((member, index) => {
+                            if (member !== '') {
+                                teamMembersHtml += `
+                                    <div class="team-member-item d-flex align-items-center mb-2">
+                                        <span class="badge badge-primary badge-circle me-2">${index + 1}</span>
+                                        <span class="team-member-name">${escapeHtml(member)}</span>
+                                    </div>
+                                `;
+                            }
+                        });
+                        teamMembersHtml += '</div>';
+                    } else {
+                        teamMembersHtml = '<p class="text-muted">No team members listed.</p>';
+                    }
+                    
+                    teamMembersList.innerHTML = teamMembersHtml;
+                });
+
+                teamMembersModal.addEventListener('hidden.bs.modal', function() {
+                    teamMembersList.innerHTML = '';
+                });
+            }
+
+            // Helper function to escape HTML
+            function escapeHtml(text) {
+                if (!text) return '';
+                const map = {
+                    '&': '&amp;',
+                    '<': '&lt;',
+                    '>': '&gt;',
+                    '"': '&quot;',
+                    "'": '&#039;'
+                };
+                return text.replace(/[&<>"']/g, function(m) { return map[m]; });
             }
 
             // Navigation and tab handling
