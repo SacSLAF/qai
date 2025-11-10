@@ -29,9 +29,14 @@ try {
     $forecast_2026_web = $forecast_2026_exists ? "/qai/admin/action/uploads/training/forecast/Forecast-2026.pdf" : '';
     $prospect_2026_web = $prospect_2026_exists ? "/qai/admin/action/uploads/training/forecast/Prospect-2026.pdf" : '';
 
+    // Fetch Training Syllabus CPD data - This will now be used in Training Record -> CPD
+    $training_cpd_data = [];
+    $cpd_error = '';
+
     // Check if database connection exists and is valid
     if (!isset($db) || !$db || (property_exists($db, 'connect_error') && $db->connect_error)) {
         $ts_error = "Database connection failed: " . ($db->connect_error ?? 'Unknown error');
+        $cpd_error = $ts_error;
     } else {
         // Load lookup maps (formations, types, ac_categories)
         $f_res = $db->query("SELECT formation_id, formation_name FROM formation");
@@ -88,7 +93,44 @@ try {
         } else {
             $ts_error = "Error preparing Training Syllabus query: " . $db->error;
         }
+
+        // Fetch Training Syllabus CPD records - This data will be shown in Training Record -> CPD
+        $stmt_cpd = $db->prepare("
+            SELECT tsc.*, ac.name as category_name
+            FROM training_record_cpd tsc 
+            LEFT JOIN ac_categories ac ON tsc.ac_categories_id = ac.id 
+            ORDER BY tsc.ac_categories_id, tsc.sno ASC
+        ");
+
+        if ($stmt_cpd) {
+            if ($stmt_cpd->execute()) {
+                $result_cpd = $stmt_cpd->get_result();
+                $all_cpd_records = $result_cpd->fetch_all(MYSQLI_ASSOC);
+
+                // Organize by ac_category
+                foreach ($all_cpd_records as $record) {
+                    $category_id = $record['ac_categories_id'] ?? 0;
+                    $category_name = $ac_cat_map[$category_id] ?? 'Uncategorized';
+
+                    if (!isset($training_cpd_data[$category_id])) {
+                        $training_cpd_data[$category_id] = [
+                            'category_name' => $category_name,
+                            'records' => []
+                        ];
+                    }
+                    $training_cpd_data[$category_id]['records'][] = $record;
+                }
+                $stmt_cpd->close();
+            } else {
+                $cpd_error = "Training Syllabus CPD query execution failed: " . $stmt_cpd->error;
+            }
+        } else {
+            $cpd_error = "Error preparing Training Syllabus CPD query: " . $db->error;
+        }
     }
+
+    // Convert PHP data to JSON for JavaScript use
+    $training_cpd_data_json = json_encode($training_cpd_data);
 
     // Include head template after all PHP processing
     include '../template/head.php';
@@ -126,24 +168,6 @@ try {
             border-radius: 0.375rem;
         }
 
-        /*.details-modal-table {
-            width: 100%;
-            margin-bottom: 1rem;
-            font-size: 0.9rem;
-        }
-        .details-modal-table th {
-            background-color: #f8f9fa;
-            width: 30%;
-            padding: 8px 12px;
-            font-weight: 600;
-            border-bottom: 1px solid #dee2e6;
-        }
-        .details-modal-table td {
-            padding: 8px 12px;
-            border-bottom: 1px solid #dee2e6;
-            word-break: break-word;
-        }
-        */
         .btn-group .btn {
             margin-right: 5px;
         }
@@ -180,17 +204,6 @@ try {
             background-color: #ffffff !important;
         }
 
-       /* .table tbody tr:hover {
-            background-color: #e3f2fd !important;
-        }
-
-        .table th {
-            background-color: #839abdff;
-            color: white;
-            font-weight: 600;
-            border: none;
-        }
-        */
         .table td {
             border-bottom: 1px solid #dee2e6;
             padding: 12px 8px;
@@ -265,6 +278,49 @@ try {
             font-size: x-small;
             padding: 4px 8px;
         }
+
+        /* CPD Category sections */
+        .category-section {
+            margin-bottom: 2rem;
+            padding: 1rem;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+        }
+
+        .cpd-category h5 {
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 0.5rem;
+            margin-bottom: 1rem;
+            color: #1a4f72;
+        }
+
+        /* Filter styling */
+        #cpdCategoryFilter {
+            max-width: 300px;
+        }
+
+        #recordCpdCategoryFilter {
+            max-width: 300px;
+        }
+
+        .details-modal-table {
+            width: 100%;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+        }
+        .details-modal-table th {
+            background-color: #f8f9fa;
+            width: 30%;
+            padding: 8px 12px;
+            font-weight: 600;
+            border-bottom: 1px solid #dee2e6;
+        }
+        .details-modal-table td {
+            padding: 8px 12px;
+            border-bottom: 1px solid #dee2e6;
+            word-break: break-word;
+        }
     </style>
 </head>
 
@@ -301,6 +357,7 @@ try {
                             <?php else: ?>
                                 <a class="qa-dropdown-item text-muted">No categories found</a>
                             <?php endif; ?>
+                            <a class="qa-dropdown-item" data-bs-target="#ts-cpd" role="tab">CPD</a>
                         </div>
                     </div>
 
@@ -360,7 +417,7 @@ try {
                             <?php if (!empty($prospect_2026_web)): ?>
                                 <div class="top-bar mb-3">
                                     <a href="<?= $prospect_2026_web ?>" target="_blank" class="btn btn-sm btn-dark">
-                                        <i class="fas fa-download me-1"></i> Download Prospect 2026
+                                     <i class="fas fa-download me-1"></i> Download Prospect 2026
                                     </a>
                                 </div>
                                 <div class="pdf-viewer-container">
@@ -484,15 +541,44 @@ try {
                         </div>
                     <?php endif; ?>
 
-                    <!-- Training Record Content Panes -->
-                    <div class="tab-pane fade" id="record_cpd" role="tabpanel">
-                        <h4 class="colour-defult">CPD Training Records</h4>
+                    <div class="tab-pane fade" id="ts-cpd" role="tabpanel">
+                        <h4 class="colour-defult">Approved Training Syllabus - CPD</h4>
                         <div class="alert alert-info">
                             <i class="fas fa-info-circle me-2"></i>
-                            CPD training records will be displayed here.
+                            Outside training records will be displayed here.
                         </div>
                     </div>
 
+                    <!-- Training Record CPD Content Pane -->
+                    <div class="tab-pane fade" id="record_cpd" role="tabpanel">
+                        <h4 class="colour-defult">CPD Training Records</h4>
+                        
+                        <!-- Category Filter Dropdown -->
+                        <div class="row mb-3">
+                            <div class="col-md-4">
+                                <label for="recordCpdCategoryFilter" class="form-label">Select Your Directorate:</label>
+                                <select class="form-select form-select-sm" id="recordCpdCategoryFilter">
+                                    <option value="">Select a category</option>
+                                    <?php if (!empty($ac_cat_map)): ?>
+                                        <?php ksort($ac_cat_map); ?>
+                                        <?php foreach ($ac_cat_map as $category_id => $category_name): ?>
+                                            <option value="<?= $category_id ?>"><?= htmlspecialchars($category_name) ?></option>
+                                        <?php endforeach; ?>
+                                    <?php endif; ?>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="mt-4" id="recordCpdTableContainer">
+                            <!-- CPD table will be displayed here based on category selection -->
+                            <div>
+                                <!--<i class="fas fa-info-circle me-2"></i>
+                                Please select a category to view CPD training records.-->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Training Record Outside Training Content Pane -->
                     <div class="tab-pane fade" id="record_ot" role="tabpanel">
                         <h4 class="colour-defult">Outside Training Records</h4>
                         <div class="alert alert-info">
@@ -549,6 +635,9 @@ try {
     <script src="../assets/js/swiper-bundle.min.js"></script>
 
     <script>
+        // Store CPD data from PHP - This will be used in Training Record -> CPD
+        const trainingCpdData = <?= $training_cpd_data_json ?>;
+
         $(document).ready(function() {
             console.log("Training page - starting initialization");
 
@@ -586,6 +675,41 @@ try {
                 ]
             };
 
+            // DataTable configuration for CPD tables
+            const cpdDataTableConfig = {
+                dom: '<"row"<"col-sm-12 col-md-6"l><"col-sm-12 col-md-6"f>>' +
+                     '<"row"<"col-sm-12"tr>>' +
+                     '<"row"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7"p>>',
+                pageLength: 10,
+                lengthMenu: [10, 25, 50, 100],
+                language: {
+                    search: "Filter:",
+                    lengthMenu: "Show _MENU_ entries",
+                    info: "Showing _START_ to _END_ of _TOTAL_ entries",
+                    infoEmpty: "Showing 0 to 0 of 0 entries",
+                    infoFiltered: "(filtered from _MAX_ total entries)",
+                    zeroRecords: "No matching records found",
+                    paginate: {
+                        first: "First",
+                        last: "Last",
+                        next: "Next",
+                        previous: "Previous"
+                    },
+                },
+                autoWidth: false,
+                responsive: true,
+                destroy: true,
+                ordering: true,
+                order: [[0, 'asc']], // Default sort by S/NO
+                stateSave: false,
+                columnDefs: [
+                    { responsivePriority: 1, targets: 0 }, // S/NO
+                    { responsivePriority: 2, targets: 2 }, // Description
+                    { responsivePriority: 3, targets: -1 }, // Actions
+                    { orderable: false, targets: -1 } // Disable sorting for Actions column
+                ]
+            };
+
             // Initialize all syllabus tables
             function initializeSyllabusTables() {
                 $('.syllabusTable').each(function() {
@@ -595,6 +719,180 @@ try {
                         $('#' + tableId).DataTable(dataTableConfig);
                     }
                 });
+            }
+
+            // Training Record CPD Category filter functionality
+            function setupRecordCpdCategoryFilter() {
+                const categoryFilter = document.getElementById('recordCpdCategoryFilter');
+                const tableContainer = document.getElementById('recordCpdTableContainer');
+                
+                if (categoryFilter) {
+                    categoryFilter.addEventListener('change', function() {
+                        const selectedCategoryId = this.value;
+                        
+                        if (!selectedCategoryId) {
+                            // Show placeholder message
+                            tableContainer.innerHTML = `
+                                <div>
+                                    <!--<i class="fas fa-info-circle me-2"></i>
+                                    Please select a category to view CPD training records.-->
+                                </div>
+                            `;
+                            return;
+                        }
+                        
+                        // Show loading state
+                        tableContainer.innerHTML = `
+                            <div class="text-center py-4">
+                                <div class="spinner-border text-primary" role="status">
+                                    <span class="visually-hidden">Loading...</span>
+                                </div>
+                                <p class="mt-2">Loading CPD records...</p>
+                            </div>
+                        `;
+                        
+                        // Load the table for selected category after a short delay
+                        setTimeout(() => {
+                            loadRecordCpdTable(selectedCategoryId);
+                        }, 300);
+                    });
+                }
+            }
+
+            // Load Training Record CPD table for selected category
+            function loadRecordCpdTable(categoryId) {
+                const tableContainer = document.getElementById('recordCpdTableContainer');
+                const categoryName = document.querySelector(`#recordCpdCategoryFilter option[value="${categoryId}"]`).textContent;
+                
+                // Check if we have data for this category
+                if (trainingCpdData[categoryId] && trainingCpdData[categoryId].records && trainingCpdData[categoryId].records.length > 0) {
+                    const records = trainingCpdData[categoryId].records;
+                    
+                    // Generate table HTML
+                    let tableHtml = `
+                        <div class="card">
+                            <div class="card-body p-0">
+                                <div class="table-responsive">
+                                    <table class="table table-striped table-hover mb-0 cpdTable" id="recordCpdTable_${categoryId}" style="width:100%">
+                                        <thead style="font-size:x-small;">
+                                            <tr>
+                                                <th>S/NO</th>
+                                                <th>Trade</th>
+                                                <th>Description</th>
+                                                <th>Duration</th>
+                                                <th>Category</th>
+                                                <th>File</th>
+                                                <th>View</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody style="font-size:x-small;">
+                    `;
+                    
+                    // Add table rows
+                    records.forEach((record, index) => {
+                        tableHtml += `
+                            <tr class="${index % 2 === 0 ? 'bg-white' : 'bg-light-blue'}">
+                                <td><strong>${escapeHtml(record.sno)}</strong></td>
+                                <td>${escapeHtml(record.trade || 'N/A')}</td>
+                                <td>
+                                    <span data-bs-toggle="tooltip" title="${escapeHtml(record.description)}">
+                                        ${escapeHtml(record.description.substring(0, 80))}${record.description.length > 80 ? '...' : ''}
+                                    </span>
+                                </td>
+                                <td>${escapeHtml(record.duration || 'N/A')}</td>
+                                <td>
+                                    <span class="badge badge-primary">
+                                        ${escapeHtml(record.category_name || 'N/A')}
+                                    </span>
+                                </td>
+                                <td>
+                                    <div class="btn-group" role="group">
+                        `;
+                        
+                        if (record.file_path) {
+                            const pdfUrl = `/qai/assets/pdfjs/web/viewer.html?file=${encodeURIComponent('/qai/admin/action/' + record.file_path)}`;
+                            tableHtml += `
+                                <a href="${pdfUrl}"
+                                    class="btn btn-view-pdf btn-sm view-pdf-btn"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#pdfModal"
+                                    data-pdf-url="${pdfUrl}">
+                                    View PDF
+                                </a>
+                            `;
+                        } else {
+                            tableHtml += `
+                                <button class="btn btn-sm btn-secondary" disabled title="No file available">
+                                    View PDF
+                                </button>
+                            `;
+                        }
+                        
+                        tableHtml += `
+                                    </div>
+                                </td>
+                                <td>
+                                    <button class="btn btn-view-details btn-sm view-details-btn"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#detailsModal"
+                                        data-record-type="training_cpd"
+                                        data-record-id="${record.id || ''}"
+                                        data-record-sno="${escapeHtml(record.sno || '')}"
+                                        data-record-trade="${escapeHtml(record.trade || '')}"
+                                        data-record-description="${escapeHtml(record.description || '')}"
+                                        data-record-duration="${escapeHtml(record.duration || '')}"
+                                        data-record-category="${escapeHtml(record.category_name || '')}"
+                                        data-record-file-path="${escapeHtml(record.file_path || '')}">
+                                        View Details
+                                    </button>
+                                </td>
+                            </tr>
+                        `;
+                    });
+                    
+                    tableHtml += `
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    
+                    tableContainer.innerHTML = tableHtml;
+                    
+                    // Initialize DataTable
+                    setTimeout(() => {
+                        const tableId = `recordCpdTable_${categoryId}`;
+                        if (!$.fn.DataTable.isDataTable('#' + tableId)) {
+                            $('#' + tableId).DataTable(cpdDataTableConfig);
+                        }
+                        
+                        // Initialize tooltips
+                        $('[data-bs-toggle="tooltip"]').tooltip();
+                    }, 100);
+                    
+                } else {
+                    // No records found for this category
+                    tableContainer.innerHTML = `
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle me-2"></i>
+                            No CPD records found for <strong>${categoryName}</strong>.
+                        </div>
+                    `;
+                }
+            }
+
+            // Helper function to escape HTML
+            function escapeHtml(text) {
+                if (!text) return '';
+                const map = {
+                    '&': '&amp;',
+                    '<': '&lt;',
+                    '>': '&gt;',
+                    '"': '&quot;',
+                    "'": '&#039;'
+                };
+                return text.replace(/[&<>"']/g, function(m) { return map[m]; });
             }
 
             // Initialize tables on page load for visible tabs
@@ -610,6 +908,11 @@ try {
                 // Small delay to ensure tab content is fully rendered
                 setTimeout(() => {
                     initializeSyllabusTables();
+                    
+                    // Initialize Training Record CPD category filter if we're in the CPD tab
+                    if (target === '#record_cpd') {
+                        setupRecordCpdCategoryFilter();
+                    }
                     
                     // Adjust DataTables after tab change
                     $.fn.dataTable.tables({ visible: true, api: true }).columns.adjust().responsive.recalc();
@@ -650,6 +953,9 @@ try {
                         case "training_syllabus":
                             title = "Training Syllabus Details";
                             break;
+                        case "training_cpd":
+                            title = "CPD Training Syllabus Details";
+                            break;
                     }
                     detailsModalTitle.textContent = title;
 
@@ -657,6 +963,9 @@ try {
                     switch (recordType) {
                         case "training_syllabus":
                             content = generateTrainingSyllabusDetails(button);
+                            break;
+                        case "training_cpd":
+                            content = generateTrainingCpdDetails(button);
                             break;
                         default:
                             content = "<p>No details available.</p>";
@@ -709,7 +1018,7 @@ try {
                 // Create file link if available
                 let fileLink = '<span class="empty-value">No file available</span>';
                 if (filePath && filePath !== 'N/A') {
-                    fileLink = `<a href="/qai/assets/pdfjs/web/viewer.html?file=${encodeURIComponent('/qai/admin/action/' + filePath)}" target="_blank" class="btn btn-sm view-pdf-btn">
+                    fileLink = `<a href="/qai/assets/pdfjs/web/viewer.html?file=${encodeURIComponent('/qai/admin/action/' + filePath)}" target="_blank" class="btn btn-sm btn-primary">
                                 <i class="fas fa-file-pdf"></i> View Document
                             </a>`;
                 }
@@ -771,6 +1080,61 @@ try {
                     </tr>
                 </table>
             `;
+            }
+
+            function generateTrainingCpdDetails(button) {
+                const sno = button.getAttribute("data-record-sno");
+                const trade = button.getAttribute("data-record-trade");
+                const description = button.getAttribute("data-record-description");
+                const duration = button.getAttribute("data-record-duration");
+                const category = button.getAttribute("data-record-category");
+                const filePath = button.getAttribute("data-record-file-path");
+
+                // Create file link if available
+                let fileLink = '<span class="empty-value">No file available</span>';
+                if (filePath && filePath !== 'N/A') {
+                    fileLink = `<a href="/qai/assets/pdfjs/web/viewer.html?file=${encodeURIComponent('/qai/admin/action/' + filePath)}" target="_blank" class="btn btn-sm btn-primary">
+                                <i class="fas fa-file-pdf"></i> View Document
+                            </a>`;
+                }
+
+                return `
+                <div class="section-divider">Basic Information</div>
+                <table class="details-modal-table">
+                    <tr>
+                        <th>Serial Number:</th>
+                        <td><strong>${formatValue(sno)}</strong></td>
+                    </tr>
+                    <tr>
+                        <th>Trade:</th>
+                        <td>${formatValue(trade)}</td>
+                    </tr>
+                    <tr>
+                        <th>Category:</th>
+                        <td>${formatValue(category)}</td>
+                    </tr>
+                </table>
+
+                <div class="section-divider">Training Details</div>
+                <table class="details-modal-table">
+                    <tr>
+                        <th>Duration:</th>
+                        <td>${formatValue(duration)}</td>
+                    </tr>
+                    <tr>
+                        <th>Description:</th>
+                        <td>${formatValue(description)}</td>
+                    </tr>
+                </table>
+
+                <div class="section-divider">Document</div>
+                <table class="details-modal-table">
+                    <tr>
+                        <th>Document:</th>
+                        <td>${fileLink}</td>
+                    </tr>
+                </table>
+                `;
             }
 
             // Navigation and tab handling
@@ -906,6 +1270,22 @@ try {
                     // Reinitialize DataTables for the new tab
                     setTimeout(() => {
                         initializeSyllabusTables();
+                        if (targetId === '#record_cpd') {
+                            setupRecordCpdCategoryFilter();
+                            
+                            // Reset category filter when switching to CPD tab
+                            const categoryFilter = document.getElementById('recordCpdCategoryFilter');
+                            if (categoryFilter) {
+                                categoryFilter.value = '';
+                                const tableContainer = document.getElementById('recordCpdTableContainer');
+                                tableContainer.innerHTML = `
+                                    <div>
+                                        <!--<i class="fas fa-info-circle me-2"></i>
+                                        Please select a category to view CPD training records.-->
+                                    </div>
+                                `;
+                            }
+                        }
                     }, 300);
                 });
             });
