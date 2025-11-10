@@ -361,9 +361,6 @@ include "template/head.php";
                                         </div>
                                     </div>
 
-                                    <!-- Continue with other sections (Training, Reference, Assessment, Certificate, etc.) -->
-                                    <!-- ... your existing form sections for other fields ... -->
-
                                     <!-- Submit Button -->
                                     <div class="col-md-12">
                                         <div class="text-end">

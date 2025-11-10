@@ -37,17 +37,29 @@
 							<li><a href="tech-library.php">Technical Library</a></li>
                         </ul>
                     </li>
-                    <li>
-                        <a href="training-docs.php" aria-expanded="false">
+                    <li class="has-arrow">
+                        <a href="javascript:void(0)" aria-expanded="false">
                             <i class="fas fa-graduation-cap"></i>
                             <span class="nav-text">Training</span>
                         </a>
+                        <ul aria-expanded="false">
+                            <li><a href="training-forecast-upload.php">Training Forecast</a></li>
+                            <li><a href="training-syllabus.php">Training Syllabus</a></li>
+                            <li><a href="training-record-cpd.php">Training Record CPD</a></li>
+                        </ul>
                     </li>
-                    <li>
-                        <a href="productivity-docs.php" aria-expanded="false">
+                    <li class="has-arrow">
+                        <a href="javascript:void(0)" aria-expanded="false">
                             <i class="fas fa-tachometer-alt"></i>
                             <span class="nav-text">Productivity</span>
                         </a>
+                        <ul aria-expanded="false">
+                            <li><a href="active-qcc.php">Active QCC</a></li>
+                            <li><a href="audit-report.php">Audit Report</a></li>
+                            <li><a href="audit_document.php">Annual Report</a></li>
+                            <li><a href="osh-manual.php">OSH Manual</a></li>
+                            <li><a href="awards.php">Awards</a></li>
+                        </ul>
                     </li>
                 </ul>
             </div>

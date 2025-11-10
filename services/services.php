@@ -1,4 +1,5 @@
 <?php
+// service.php
 // ini_set('display_errors', 1);
 // ini_set('display_startup_errors', 1);
 // error_reporting(E_ALL);
@@ -8,6 +9,7 @@ ob_start();
 
 try {
     require_once "../includes/config.php";
+    
     // Initialize variables to avoid undefined variable errors
     $show_pdf = false;
     $pdf_file = '';
@@ -24,8 +26,8 @@ try {
     $audit_plan_web = $audit_plan_exists ? "/qai/admin/action/uploads/services/annual_plan/audit_plan.pdf" : '';
     $vet_annual_web = $vet_annual_exists ? "/qai/admin/action/uploads/services/annual_plan/vet_annual.pdf" :
 
-        // Initialize arrays and error variables
-        $qa_reports = [];
+    // Initialize arrays and error variables
+    $qa_reports = [];
     $qa_check_lists = [];
     $qa_reports_error = '';
     $qa_check_lists_error = '';
@@ -42,6 +44,7 @@ try {
         $qa_reports_error = "Database connection failed: " . ($db->connect_error ?? 'Unknown error');
         $ac_error = $qa_reports_error;
         $le_error = $qa_reports_error;
+        $vehicle_emission_error = $qa_reports_error;
     } else {
         // Fetch QA Reports (qa_category_id = 2)
         $stmt1 = $db->prepare("
@@ -165,27 +168,6 @@ try {
             }
         } else {
             $le_error = "Error preparing Latitude query: " . $db->error;
-        }
-        // Fetch Vehicle Emission Test data
-        $vehicle_emission_data = [];
-        $vehicle_emission_error = '';
-        $stmt_vet = $db->prepare("
-            SELECT v.*, s.name as camp_name 
-            FROM vehicle_emission_test v 
-            LEFT JOIN slaf_establishments s ON v.camp_id = s.id 
-            ORDER BY v.fuel_type, v.test_date DESC, v.serial_no ASC
-        ");
-
-        if ($stmt_vet) {
-            if ($stmt_vet->execute()) {
-                $result_vet = $stmt_vet->get_result();
-                $vehicle_emission_data = $result_vet->fetch_all(MYSQLI_ASSOC);
-                $stmt_vet->close();
-            } else {
-                $vehicle_emission_error = "Vehicle Emission Test query execution failed: " . $stmt_vet->error;
-            }
-        } else {
-            $vehicle_emission_error = "Error preparing Vehicle Emission Test query: " . $db->error;
         }
 
         // Fetch all vehicle emission test records
@@ -323,7 +305,6 @@ try {
             margin-bottom: 1rem;
             font-size: 0.9rem;
         }
-
         .details-modal-table th {
             background-color: #f8f9fa;
             width: 30%;
@@ -331,7 +312,6 @@ try {
             font-weight: 600;
             border-bottom: 1px solid #dee2e6;
         }
-
         .details-modal-table td {
             padding: 8px 12px;
             border-bottom: 1px solid #dee2e6;
@@ -357,7 +337,6 @@ try {
             font-weight: bold;
             color: #007bff;
         }
-
         .empty-value {
             color: #6c757d;
             font-style: italic;
@@ -366,7 +345,50 @@ try {
         .welcome-image {
             width: 100%;
         }
+        
+        /* Vehicle Emission Test specific styles */
+        .fuel-type-content {
+            display: none;
+        }
+        .fuel-type-content.active {
+            display: block;
+        }
+        .fuel-type-option.active {
+            background-color: #007bff;
+            color: white;
+        }
+        .vehicle-test-table th {
+            background-color: #839abdff;
+            color: white;
+        }
+        .test-values {
+            font-size: 0.85rem;
+        }
 
+        .bg-light-blue {
+            background-color: #f0f8ff !important;
+        }
+
+        .bg-white {
+            background-color: #ffffff !important;
+        }
+
+        .table tbody tr:hover {
+            background-color: #e3f2fd !important;
+        }
+
+        .table th {
+            background-color: #839abdff;
+            color: white;
+            font-weight: 600;
+            border: none;
+        }
+
+        .table td {
+            border-bottom: 1px solid #dee2e6;
+            padding: 12px 8px;
+            vertical-align: middle;
+        }
         .colour-defult {
             font-size: small;
         }
@@ -382,7 +404,7 @@ try {
 
         <!-- <div class="main-container"> -->
         <!-- Navigation Tabs -->
-        <!-- <div class="nav-column"> -->
+
         <div class="row">
             <div class="col-lg-1 col-xl-1 mb-4">
                 <div class="nav flex-column nav-pills" id="inspectorateTabs" role="tablist">
@@ -402,8 +424,7 @@ try {
                             <?php if (!empty($ac_cat_map)): ?>
                                 <?php ksort($ac_cat_map); ?>
                                 <?php foreach ($ac_cat_map as $category_id => $category_name): ?>
-                                    <?php if ($category_id == 4) continue;
-                                    ?>
+                                    <?php if ($category_id == 4) continue; ?>
                                     <a class="qa-dropdown-item" data-bs-target="#ac_cmpt_<?= $category_id ?>" role="tab">
                                         <?= htmlspecialchars($category_name) ?>
                                     </a>
@@ -438,7 +459,6 @@ try {
             </div>
 
             <!-- Tab Content -->
-            <!-- <div class="content-column"> -->
             <div class="col-lg-11 col-xl-11">
                 <div class="tab-content" id="inspectorateTabsContent">
                     <!-- Welcome Screen (shown by default) -->
@@ -699,7 +719,6 @@ try {
                                                     </table>
                                                 </div>
                                             </div>
-
                                         </div>
                                     <?php else: ?>
                                         <div class="alert alert-info">
@@ -720,7 +739,6 @@ try {
                     <!-- Latitude & Extensions Tab -->
                     <div class="tab-pane fade" id="latitude" role="tabpanel">
                         <h4 class="colour-defult">Latitude Records</h4>
-
                         <div class="mt-4">
                             <?php if (!empty($le_error)): ?>
                                 <div class="alert alert-danger">
@@ -805,7 +823,9 @@ try {
                             <?php endif; ?>
                         </div>
                     </div>
+                    
                     <!-- Modification / R&D Tab Panes -->
+                    <!-- Modification Tab -->
                     <div class="tab-pane fade" id="modification" role="tabpanel">
                         <h4 class="colour-defult">Modification Records</h4>
 
@@ -1138,7 +1158,6 @@ try {
     <script src="../node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <!-- Swiper JS -->
     <script src="../assets/js/swiper-bundle.min.js"></script>
-
 
     <script>
         $(document).ready(function() {
@@ -1968,5 +1987,4 @@ try {
         });
     </script>
 </body>
-
 </html>

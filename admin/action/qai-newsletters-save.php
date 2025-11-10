@@ -27,7 +27,7 @@ if (empty($qsn_no) || empty($description) || empty($issue_date)) {
 
 // Check if QSN number already exists (for new records)
 if (!isset($_POST['id'])) {
-    $check_stmt = $db->prepare("SELECT id FROM qai_newsletters WHERE sno = ?");
+    $check_stmt = $db->prepare("SELECT id FROM qai_newsletters WHERE qsn_no = ?");
     $check_stmt->bind_param("s", $qsn_no);
     $check_stmt->execute();
     $check_result = $check_stmt->get_result();
@@ -43,7 +43,7 @@ if (isset($_POST['id']) && !empty($_POST['id'])) {
     $id = (int)$_POST['id'];
     
     // Check if QSN number exists for other records
-    $check_stmt = $db->prepare("SELECT id FROM qai_newsletters WHERE sno = ? AND id != ?");
+    $check_stmt = $db->prepare("SELECT id FROM qai_newsletters WHERE qsn_no = ? AND id != ?");
     $check_stmt->bind_param("si", $qsn_no, $id);
     $check_stmt->execute();
     $check_result = $check_stmt->get_result();
@@ -54,7 +54,7 @@ if (isset($_POST['id']) && !empty($_POST['id'])) {
     $check_stmt->close();
     
     $sql = "UPDATE qai_newsletters SET 
-            sno = ?, description = ?, issue_date = ?
+            qsn_no = ?, description = ?, issue_date = ?
             WHERE id = ?";
     
     $stmt = $db->prepare($sql);
@@ -71,7 +71,7 @@ if (isset($_POST['id']) && !empty($_POST['id'])) {
 } else {
     // Insert new record
     $sql = "INSERT INTO qai_newsletters (
-        sno, description, issue_date
+        qsn_no, description, issue_date
     ) VALUES (?, ?, ?)";
     
     $stmt = $db->prepare($sql);

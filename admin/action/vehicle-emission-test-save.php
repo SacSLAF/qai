@@ -58,6 +58,7 @@ $idle_hc = toNull($_POST['idle_hc'] ?? '');
 $idle_co = toNull($_POST['idle_co'] ?? '');
 
 $status = toNull($_POST['status'] ?? '');
+$next_due_date = toNull($_POST['next_due_date'] ?? '');
 $remarks = toNull($_POST['remarks'] ?? '');
 $created_by = $_SESSION['admin_id'];
 

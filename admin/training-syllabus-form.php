@@ -10,7 +10,7 @@ if (!isset($_SESSION['admin_id'])) {
 // Fetch data for dropdowns
 $formations = [];
 $types = [];
-$branches = [];
+$ac_categories = [];
 
 // Fetch formations
 $formations_result = $db->query("SELECT formation_id, formation_name FROM formation ORDER BY formation_name");
@@ -24,17 +24,17 @@ if ($types_result) {
     $types = $types_result->fetch_all(MYSQLI_ASSOC);
 }
 
-// Fetch branches
-$branches_result = $db->query("SELECT id, name FROM branches ORDER BY name");
-if ($branches_result) {
-    $branches = $branches_result->fetch_all(MYSQLI_ASSOC);
+// Fetch AC Categories
+$ac_categories_result = $db->query("SELECT id, name FROM ac_categories ORDER BY name");
+if ($ac_categories_result) {
+    $ac_categories = $ac_categories_result->fetch_all(MYSQLI_ASSOC);
 }
 
 // If editing, fetch existing record
 $record = null;
 if (isset($_GET['id'])) {
     $id = (int)$_GET['id'];
-    $stmt = $db->prepare("SELECT * FROM maintenance_documents WHERE id = ?");
+    $stmt = $db->prepare("SELECT * FROM training_syllabus WHERE id = ?");
     $stmt->bind_param("i", $id);
     $stmt->execute();
     $result = $stmt->get_result();
@@ -50,7 +50,7 @@ include "template/head.php";
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?= isset($record) ? 'Edit' : 'Add' ?> Maintenance Document</title>
+    <title><?= isset($record) ? 'Edit' : 'Add' ?> Training Syllabus</title>
 </head>
 <body>
     <!-- Include your template files -->
@@ -65,8 +65,8 @@ include "template/head.php";
                 <div class="col-12">
                     <div class="card">
                         <div class="card-header d-flex justify-content-between align-items-center">
-                            <h4 class="card-title"><?= isset($record) ? 'Edit' : 'Add' ?> Maintenance Document</h4>
-                            <a href="maintenance-program.php" class="btn btn-sm btn-outline-secondary">
+                            <h4 class="card-title"><?= isset($record) ? 'Edit' : 'Add' ?> Training Syllabus</h4>
+                            <a href="training-syllabus.php" class="btn btn-sm btn-outline-secondary">
                                 <i class="fas fa-arrow-left"></i> Back to List
                             </a>
                         </div>
@@ -86,39 +86,23 @@ include "template/head.php";
                                 <?php unset($_SESSION['error']); ?>
                             <?php endif; ?>
 
-                            <form action="action/maintenance-program-save.php" method="post" enctype="multipart/form-data">
+                            <form action="action/training-syllabus-save.php" method="post" enctype="multipart/form-data">
                                 <?php if (isset($record)): ?>
                                     <input type="hidden" name="id" value="<?= $record['id'] ?>">
                                     <input type="hidden" name="existing_file" value="<?= $record['file_path'] ?>">
                                 <?php endif; ?>
 
                                 <div class="row">
-                                    <!-- Document Details -->
+                                    <!-- Syllabus Details -->
                                     <div class="col-md-12 mb-4">
-                                        <h5 class="text-primary mb-3"><i class="fas fa-file-alt me-2"></i>Document Details</h5>
+                                        <h5 class="text-primary mb-3"><i class="fas fa-book me-2"></i>Syllabus Details</h5>
                                         <div class="row">
                                             <div class="col-md-6">
                                                 <div class="mb-3">
-                                                    <label class="form-label">Document Type *</label>
-                                                    <select name="document_type" class="form-select" required>
-                                                        <option value="">Select Type</option>
-                                                        <option value="worksheet" <?= isset($record) && $record['document_type'] == 'worksheet' ? 'selected' : '' ?>>Worksheet</option>
-                                                        <option value="schedule" <?= isset($record) && $record['document_type'] == 'schedule' ? 'selected' : '' ?>>Schedule</option>
-                                                    </select>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <div class="mb-3">
-                                                    <label class="form-label">Document Number *</label>
-                                                    <input type="text" name="document_number" class="form-control" 
-                                                           value="<?= isset($record) ? htmlspecialchars($record['document_number']) : '' ?>" 
+                                                    <label class="form-label">Syllabus Number *</label>
+                                                    <input type="text" name="syllabus_no" class="form-control" 
+                                                           value="<?= isset($record) ? htmlspecialchars($record['syllabus_no']) : '' ?>" 
                                                            required>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-12">
-                                                <div class="mb-3">
-                                                    <label class="form-label">Description *</label>
-                                                    <textarea name="description" class="form-control" rows="3" required><?= isset($record) ? htmlspecialchars($record['description']) : '' ?></textarea>
                                                 </div>
                                             </div>
                                             <div class="col-md-6">
@@ -137,23 +121,6 @@ include "template/head.php";
                                             </div>
                                             <div class="col-md-6">
                                                 <div class="mb-3">
-                                                <label class="form-label">Trade</label>
-                                                    <select name="trade" class="form-select" required>
-                                                        <option value="" selected disabled>Select Trade</option>
-                                                        <option value="Airframe">Airframe</option>
-                                                        <option value="Aero ENG">Aero ENG</option>
-                                                        <option value="Aero E&I">Aero E&I</option>
-                                                        <option value="Safety Eqpt">Safety Eqpt</option>
-                                                        <option value="Air Radio">Air Radio</option>
-                                                        <option value="AGSE">AGSE</option>
-                                                        <option value="Armament">Armament</option>
-                                                        <option value="Airframe & Power Plant">Airframe & Power Plant</option>
-                                                        <option value="None Tech">None Tech</option>
-                                                    </select>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <div class="mb-3">
                                                     <label class="form-label">Aircraft Type *</label>
                                                     <select name="type_id" class="form-select" required>
                                                         <option value="">Select Aircraft Type</option>
@@ -164,6 +131,50 @@ include "template/head.php";
                                                             </option>
                                                         <?php endforeach; ?>
                                                     </select>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="mb-3">
+                                                    <label class="form-label">Branch *</label>
+                                                    <select name="ac_categories_id" class="form-select" required>
+                                                        <option value="">Select Branch</option>
+                                                        <?php foreach ($ac_categories as $category): ?>
+                                                            <option value="<?= $category['id'] ?>" 
+                                                                <?= isset($record) && $record['ac_categories_id'] == $category['id'] ? 'selected' : '' ?>>
+                                                                <?= htmlspecialchars($category['name']) ?>
+                                                            </option>
+                                                        <?php endforeach; ?>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="mb-3">
+                                                    <label class="form-label">Trade</label>
+                                                    <select name="trade" class="form-select">
+                                                        <option value="">Select Trade</option>
+                                                        <option value="Airframe" <?= isset($record) && $record['trade'] == 'Airframe' ? 'selected' : '' ?>>Airframe</option>
+                                                        <option value="Aero ENG" <?= isset($record) && $record['trade'] == 'Aero ENG' ? 'selected' : '' ?>>Aero ENG</option>
+                                                        <option value="Aero E&I" <?= isset($record) && $record['trade'] == 'Aero E&I' ? 'selected' : '' ?>>Aero E&I</option>
+                                                        <option value="Safety Eqpt" <?= isset($record) && $record['trade'] == 'Safety Eqpt' ? 'selected' : '' ?>>Safety Eqpt</option>
+                                                        <option value="Air Radio" <?= isset($record) && $record['trade'] == 'Air Radio' ? 'selected' : '' ?>>Air Radio</option>
+                                                        <option value="AGSE" <?= isset($record) && $record['trade'] == 'AGSE' ? 'selected' : '' ?>>AGSE</option>
+                                                        <option value="Armament" <?= isset($record) && $record['trade'] == 'Armament' ? 'selected' : '' ?>>Armament</option>
+                                                        <option value="Airframe & Power Plant" <?= isset($record) && $record['trade'] == 'Airframe & Power Plant' ? 'selected' : '' ?>>Airframe & Power Plant</option>
+                                                        <option value="None Tech" <?= isset($record) && $record['trade'] == 'None Tech' ? 'selected' : '' ?>>None Tech</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="mb-3">
+                                                    <label class="form-label">Syllabus Type</label>
+                                                    <input type="text" name="syllabus_type" class="form-control" 
+                                                           value="<?= isset($record) ? htmlspecialchars($record['syllabus_type']) : '' ?>">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-12">
+                                                <div class="mb-3">
+                                                    <label class="form-label">Description *</label>
+                                                    <textarea name="description" class="form-control" rows="3" required><?= isset($record) ? htmlspecialchars($record['description']) : '' ?></textarea>
                                                 </div>
                                             </div>
                                             <div class="col-md-6">
@@ -190,37 +201,13 @@ include "template/head.php";
                                             </div>
                                             <div class="col-md-6">
                                                 <div class="mb-3">
-                                                    <label class="form-label">Branch *</label>
-                                                    <select name="branch_id" class="form-select" required>
-                                                        <option value="">Select Branch</option>
-                                                            <?php 
-                                                            // Define the allowed branch IDs
-                                                            $allowed_branch_ids = [1, 4, 5];
-
-                                                            foreach ($branches as $branch): 
-                                                                // Check if the branch ID is in the allowed list
-                                                                if (in_array($branch['id'], $allowed_branch_ids)): 
-                                                            ?>
-                                                                <option value="<?= $branch['id'] ?>" 
-                                                                    <?= isset($record) && $record['branch_id'] == $branch['id'] ? 'selected' : '' ?>>
-                                                                    <?= htmlspecialchars($branch['name']) ?>
-                                                                </option>
-                                                            <?php 
-                                                                endif;
-                                                            endforeach; 
-                                                            ?>
-                                                    </select>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <div class="mb-3">
-                                                    <label class="form-label">Document File *</label>
-                                                    <input type="file" name="document_file" class="form-control" 
+                                                    <label class="form-label">Syllabus File *</label>
+                                                    <input type="file" name="syllabus_file" class="form-control" 
                                                            accept=".pdf,application/pdf" 
                                                            <?= !isset($record) ? 'required' : '' ?>>
                                                     <?php if (isset($record) && !empty($record['file_path'])): ?>
                                                         <small class="form-text text-muted">
-                                                            Current file: <a href="<?= htmlspecialchars($record['file_path']) ?>">View</a>
+                                                            Current file: <a href="<?= htmlspecialchars($record['file_path']) ?>" target="_blank">View</a>
                                                         </small>
                                                     <?php endif; ?>
                                                     <small class="form-text text-muted">
@@ -238,7 +225,7 @@ include "template/head.php";
                                                 <i class="fas fa-redo"></i> Reset
                                             </button>
                                             <button type="submit" class="btn btn-primary">
-                                                <i class="fas fa-save"></i> <?= isset($record) ? 'Update' : 'Save' ?> Document
+                                                <i class="fas fa-save"></i> <?= isset($record) ? 'Update' : 'Save' ?> Syllabus
                                             </button>
                                         </div>
                                     </div>

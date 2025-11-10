@@ -9,7 +9,6 @@ ob_start();
 
 try {
     require_once "../includes/config.php";
-
     // Initialize variables to avoid undefined variable errors
     $show_pdf = false;
     $pdf_file = '';
@@ -101,7 +100,7 @@ try {
         $stmt_qai = $db->prepare("
             SELECT qn.* 
             FROM qai_newsletters qn 
-            ORDER BY qn.issue_date DESC, qn.sno DESC
+            ORDER BY qn.issue_date DESC, qn.qsn_no DESC
         ");
 
         if ($stmt_qai) {
@@ -165,7 +164,6 @@ try {
 
         // Fetch Technical Library records
         $stmt_tech = $db->prepare("SELECT * FROM tech_library ORDER BY sno ASC");
-
         if ($stmt_tech) {
             if ($stmt_tech->execute()) {
                 $result_tech = $stmt_tech->get_result();
@@ -216,6 +214,7 @@ try {
     die("Error: " . $e->getMessage());
 }
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -235,12 +234,138 @@ try {
     <!-- Custom CSS -->
     <link rel="stylesheet" href="../assets/css/styles.css">
     <style>
-        /* .tab-content {
-            padding: 20px;
-            background: #fff;
-            border-radius: 5px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        } */
+        .colour-defult {
+            font-size: small;
+        }
+        
+        .text-truncate-multiline {
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            max-width: 200px;
+        }
+
+        .form-select-sm {
+            font-size: 0.875rem;
+        }
+
+        .branch-content {
+            display: none;
+        }
+        .branch-content.active {
+            display: block;
+        }
+
+        .details-modal-table {
+            width: 100%;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+        }
+        .details-modal-table th {
+            background-color: #f8f9fa;
+            width: 30%;
+            padding: 8px 12px;
+            font-weight: 600;
+            border-bottom: 1px solid #dee2e6;
+        }
+        .details-modal-table td {
+            padding: 8px 12px;
+            border-bottom: 1px solid #dee2e6;
+            word-break: break-word;
+        }
+
+        .btn-group .btn {
+            margin-right: 5px;
+        }
+
+        .btn-group .btn:last-child {
+            margin-right: 0;
+        }
+
+        .modal-xl-custom {
+            max-width: 1200px;
+        }
+
+        .section-divider {
+            border-top: 2px solid #007bff;
+            margin: 15px 0;
+            padding-top: 10px;
+            font-weight: bold;
+            color: #007bff;
+        }
+        .empty-value {
+            color: #6c757d;
+            font-style: italic;
+        }
+
+        .welcome-image {
+            width: 100%;
+        }
+
+        /* Dropdown styles */
+        .qa-dropdown {
+            position: relative;
+        }
+
+        .qa-dropdown-menu {
+            position: static;
+            display: none;
+            padding: 0;
+            margin: 0;
+            background-color: transparent;
+            border: none;
+            box-shadow: none;
+        }
+
+        .qa-dropdown-menu.show {
+            display: block;
+        }
+
+        .qa-dropdown-item {
+            display: block;
+            width: 100%;
+            padding: 0.5rem 1.5rem;
+            clear: both;
+            font-weight: 400;
+            color: #212529;
+            text-align: inherit;
+            text-decoration: none;
+            white-space: nowrap;
+            background-color: transparent;
+            border: 0;
+            font-size: 0.875rem;
+        }
+
+        .qa-dropdown-item:hover,
+        .qa-dropdown-item:focus {
+            color: #16181b;
+            text-decoration: none;
+            background-color: #f8f9fa;
+        }
+
+        .qa-dropdown-toggle::after {
+            float: right;
+            margin-left: 0.255em;
+            vertical-align: 0.255em;
+        }
+
+        .nav-column .nav-link {
+            border-radius: 0;
+            padding: 0.75rem 1rem;
+        }
+
+        .nav-column .qa-dropdown-item {
+            font-size:x-small;
+            padding-left: 2rem;
+            color: #212529;
+        }
+
+        .nav-column .qa-dropdown-item.qa-dropdown-subitem {
+            font-size:x-small;
+            padding-left: 3rem;
+            color: #212529;
+        }
     </style>
 </head>
 
@@ -250,8 +375,6 @@ try {
 
     <!-- Main Content -->
     <main class="container-fluid">
-        <!-- <div class="main-container"> -->
-        <!-- Navigation Tabs -->
         <div class="row">
             <div class="col-lg-1 col-xl-1 mb-4">
                 <div class="nav-column">
@@ -263,14 +386,33 @@ try {
                         <div class="qa-dropdown">
                             <a class="nav-link qa-dropdown-toggle" role="button">Maintenance Program</a>
                             <div class="qa-dropdown-menu">
-                                <a class="qa-dropdown-item " data-bs-target="#servicing" role="tab">Servicing Schedule</a>
-                                <a class="qa-dropdown-item" data-bs-target="#worksheet" role="tab">Worksheet</a>
+                                <!-- Servicing Schedule Submenu -->
+                                <div class="qa-dropdown">
+                                    <a class="qa-dropdown-item qa-dropdown-toggle" role="button" style="font-size:x-small;">Servicing Schedule</a>
+                                    <div class="qa-dropdown-menu">
+                                        <a class="qa-dropdown-item qa-dropdown-subitem" data-bs-target="#schedule_1" role="tab">Aeronautical Engineering</a>
+                                        <a class="qa-dropdown-item qa-dropdown-subitem" data-bs-target="#schedule_5" role="tab">General Engineering</a>
+                                        <a class="qa-dropdown-item qa-dropdown-subitem" data-bs-target="#schedule_4" role="tab">Electronic Engineering</a>
+                                    </div>
+                                </div>
+                                
+                                <!-- Worksheet Submenu -->
+                                <div class="qa-dropdown">
+                                    <a class="qa-dropdown-item qa-dropdown-toggle" role="button">Worksheet</a>
+                                    <div class="qa-dropdown-menu">
+                                        <a class="qa-dropdown-item qa-dropdown-subitem" data-bs-target="#worksheet_1" role="tab">Aeronautical Engineering</a>
+                                        <a class="qa-dropdown-item qa-dropdown-subitem" data-bs-target="#worksheet_5" role="tab">General Engineering</a>
+                                        <a class="qa-dropdown-item qa-dropdown-subitem" data-bs-target="#worksheet_4" role="tab">Electronic Engineering</a>
+                                    </div>
+                                </div>
                             </div>
                         </div>
+
                         <a class="nav-link" data-bs-target="#vehicle" role="tab">Technical Library</a>
                     </div>
                 </div>
             </div>
+
             <!-- Tab Content -->
             <div class="col-lg-11 col-xl-11">
                 <div class="content-column">
@@ -302,41 +444,39 @@ try {
                                     <div class="card">
                                         <div class="card-body p-0">
                                             <div class="table-responsive">
-                                                <table class="table table-striped table-hover mb-0" id="adBulletinsTable">
-                                                    <thead style="font-size:x-small;">
+                                                <table class="table table-hover mb-0 " id="adBulletinsTable" style="font-size:x-small;">
+                                                    <thead>
                                                         <tr>
                                                             <th>Reference No</th>
                                                             <th>Bulletin Description</th>
                                                             <th>Related Aircraft</th>
                                                             <th>Formation</th>
                                                             <th>Date of Issue</th>
-                                                            <!-- <th>Actions</th>-->
+                                                            <th>View</th>
                                                         </tr>
                                                     </thead>
-                                                    <tbody style="font-size:x-small;">
+                                                    <tbody>
                                                         <?php foreach ($ad_bulletins as $bulletin): ?>
                                                             <tr>
                                                                 <td><strong><?= htmlspecialchars($bulletin['reference_no']) ?></strong></td>
-                                                                <td class="text-truncate-multiline" title="<?= htmlspecialchars($bulletin['bulletin_description']) ?>">
-                                                                    <?= htmlspecialchars($bulletin['bulletin_description']) ?>
-                                                                </td>
+                                                                <td><?= htmlspecialchars($bulletin['bulletin_description']) ?></td>
                                                                 <td><?= htmlspecialchars($bulletin['type_name'] ?? 'N/A') ?></td>
                                                                 <td><?= htmlspecialchars($bulletin['formation_name'] ?? 'N/A') ?></td>
                                                                 <td><?= $bulletin['date_of_issue'] ? date('M d, Y', strtotime($bulletin['date_of_issue'])) : 'N/A' ?></td>
-                                                                <!--<td>
-                                                                <button class="btn btn-view-details btn-sm view-details-btn"
-                                                                    data-bs-toggle="modal"
-                                                                    data-bs-target="#detailsModal"
-                                                                    data-record-type="ad_bulletin"
-                                                                    data-record-id="<?= $bulletin['id'] ?? '' ?>"
-                                                                    data-record-reference-no="<?= htmlspecialchars($bulletin['reference_no'] ?? '') ?>"
-                                                                    data-record-bulletin-description="<?= htmlspecialchars($bulletin['bulletin_description'] ?? '') ?>"
-                                                                    data-record-related-aircraft="<?= htmlspecialchars($bulletin['type_name'] ?? '') ?>"
-                                                                    data-record-formation="<?= htmlspecialchars($bulletin['formation_name'] ?? '') ?>"
-                                                                    data-record-date-of-issue="<?= htmlspecialchars($bulletin['date_of_issue'] ?? '') ?>">
-                                                                    View Details
-                                                                </button>
-                                                            </td>-->
+                                                                <td>
+                                                                    <button class="btn btn-view-details btn-sm view-details-btn"
+                                                                        data-bs-toggle="modal"
+                                                                        data-bs-target="#detailsModal"
+                                                                        data-record-type="ad_bulletin"
+                                                                        data-record-id="<?= $bulletin['id'] ?? '' ?>"
+                                                                        data-record-reference-no="<?= htmlspecialchars($bulletin['reference_no'] ?? '') ?>"
+                                                                        data-record-bulletin-description="<?= htmlspecialchars($bulletin['bulletin_description'] ?? '') ?>"
+                                                                        data-record-related-aircraft="<?= htmlspecialchars($bulletin['type_name'] ?? '') ?>"
+                                                                        data-record-formation="<?= htmlspecialchars($bulletin['formation_name'] ?? '') ?>"
+                                                                        data-record-date-of-issue="<?= htmlspecialchars($bulletin['date_of_issue'] ?? '') ?>">
+                                                                        View
+                                                                    </button>
+                                                                </td>
                                                             </tr>
                                                         <?php endforeach; ?>
                                                     </tbody>
@@ -365,7 +505,7 @@ try {
                                     <div class="card">
                                         <div class="card-body p-0">
                                             <div class="table-responsive">
-                                                <table class="table table-striped table-hover mb-0" id="qaiNewslettersTable" style="font-size:x-small;">
+                                                <table class="table  table-hover mb-0 " id="qaiNewslettersTable" style="font-size:x-small;">
                                                     <thead>
                                                         <tr>
                                                             <th>QSN No</th>
@@ -377,20 +517,18 @@ try {
                                                     <tbody>
                                                         <?php foreach ($qai_newsletters as $newsletter): ?>
                                                             <tr>
-                                                                <td><strong><?= htmlspecialchars($newsletter['sno']) ?></strong></td>
-                                                                <td class="text-truncate-multiline" title="<?= htmlspecialchars($newsletter['description']) ?>">
-                                                                    <?= htmlspecialchars($newsletter['description']) ?>
-                                                                </td>
+                                                                <td><strong><?= htmlspecialchars($newsletter['qsn_no']) ?></strong></td>
+                                                                <td><?= htmlspecialchars($newsletter['description']) ?></td>
                                                                 <td><?= $newsletter['issue_date'] ? date('M d, Y', strtotime($newsletter['issue_date'])) : 'N/A' ?></td>
                                                                 <td>
                                                                     <div class="btn-group" role="group">
                                                                         <?php if (!empty($newsletter['file_path'])): ?>
                                                                             <a href="/qai/assets/pdfjs/web/viewer.html?file=<?= urlencode('/qai/admin/action/' . $newsletter['file_path']) ?>"
-                                                                                class="btn btn-view-details btn-sm view-details-btn"
+                                                                                class="btn btn-view-pdf btn-sm view-pdf-btn"
                                                                                 data-bs-toggle="modal"
                                                                                 data-bs-target="#pdfModal"
                                                                                 data-pdf-url="/qai/assets/pdfjs/web/viewer.html?file=<?= urlencode('/qai/admin/action/' . $newsletter['file_path']) ?>">
-                                                                                View
+                                                                                <i class="fas fa-file-pdf me-1"></i>View PDF
                                                                             </a>
                                                                         <?php endif; ?>
                                                                         <button class="btn btn-view-details btn-sm view-details-btn"
@@ -421,42 +559,33 @@ try {
                             </div>
                         </div>
 
-                        <!-- Servicing Schedule Tab (All Branches Combined) -->
-                        <div class="tab-pane fade" id="servicing" role="tabpanel">
-                            <h4 class="colour-defult">Servicing Schedule - All Branches</h4>
+                        <!-- Servicing Schedule Tab Panes for each branch -->
+                        <?php foreach ($branch_map as $branch_id => $branch_name): ?>
+                        <div class="tab-pane fade" id="schedule_<?= $branch_id ?>" role="tabpanel">
+                            <h4 class="colour-defult">Servicing Schedule - <?= htmlspecialchars($branch_name) ?></h4>
                             <div class="mt-4">
                                 <?php if (!empty($maintenance_error)): ?>
                                     <div class="alert alert-danger">
                                         <strong>Database Error:</strong> <?= htmlspecialchars($maintenance_error) ?>
                                     </div>
                                 <?php else: ?>
-                                    <?php
-                                    // Combine all schedules from all branches
-                                    $all_schedules = [];
-                                    foreach ($branch_map as $branch_id => $branch_name) {
-                                        if (isset($schedules_by_branch[$branch_id])) {
-                                            foreach ($schedules_by_branch[$branch_id] as $schedule) {
-                                                $schedule['branch_name'] = $branch_name;
-                                                $all_schedules[] = $schedule;
-                                            }
-                                        }
-                                    }
+                                    <?php 
+                                    $schedules_to_display = $schedules_by_branch[$branch_id] ?? [];
                                     ?>
-                                    <?php if (empty($all_schedules)): ?>
+                                    <?php if (empty($schedules_to_display)): ?>
                                         <div class="alert alert-info">
                                             <i class="fas fa-info-circle me-2"></i>
-                                            No servicing schedules found.
+                                            No servicing schedules found for <?= htmlspecialchars($branch_name) ?>.
                                         </div>
                                     <?php else: ?>
                                         <div class="card">
                                             <div class="card-body p-0">
                                                 <div class="table-responsive">
-                                                    <table class="table table-striped table-hover mb-0" id="servicingScheduleTable" style="font-size:x-small;">
+                                                    <table class="table table-hover mb-0" id="servicingScheduleTable" style="font-size:x-small;">
                                                         <thead>
                                                             <tr>
                                                                 <th>Document No</th>
                                                                 <th>Description</th>
-                                                                <th>Branch</th>
                                                                 <th>Formation</th>
                                                                 <th>Aircraft Type</th>
                                                                 <th>Issue</th>
@@ -466,13 +595,10 @@ try {
                                                             </tr>
                                                         </thead>
                                                         <tbody>
-                                                            <?php foreach ($all_schedules as $doc): ?>
+                                                            <?php foreach ($schedules_to_display as $doc): ?>
                                                                 <tr>
                                                                     <td><strong><?= htmlspecialchars($doc['document_number']) ?></strong></td>
-                                                                    <td class="text-truncate-multiline" title="<?= htmlspecialchars($doc['description']) ?>">
-                                                                        <?= htmlspecialchars($doc['description']) ?>
-                                                                    </td>
-                                                                    <td><?= htmlspecialchars($doc['branch_name']) ?></td>
+                                                                    <td><?= htmlspecialchars($doc['description']) ?></td>
                                                                     <td><?= htmlspecialchars($doc['formation_name'] ?? 'N/A') ?></td>
                                                                     <td><?= htmlspecialchars($doc['type_name'] ?? 'N/A') ?></td>
                                                                     <td><?= htmlspecialchars($doc['issue']) ?></td>
@@ -502,43 +628,35 @@ try {
                                 <?php endif; ?>
                             </div>
                         </div>
+                        <?php endforeach; ?>
 
-                        <!-- Worksheet Tab (All Branches Combined) -->
-                        <div class="tab-pane fade" id="worksheet" role="tabpanel">
-                            <h4 class="colour-defult">Worksheet - All Branches</h4>
+                        <!-- Worksheet Tab Panes for each branch -->
+                        <?php foreach ($branch_map as $branch_id => $branch_name): ?>
+                        <div class="tab-pane fade" id="worksheet_<?= $branch_id ?>" role="tabpanel">
+                            <h4 class="colour-defult">Worksheet - <?= htmlspecialchars($branch_name) ?></h4>
                             <div class="mt-4">
                                 <?php if (!empty($maintenance_error)): ?>
                                     <div class="alert alert-danger">
                                         <strong>Database Error:</strong> <?= htmlspecialchars($maintenance_error) ?>
                                     </div>
                                 <?php else: ?>
-                                    <?php
-                                    // Combine all worksheets from all branches
-                                    $all_worksheets = [];
-                                    foreach ($branch_map as $branch_id => $branch_name) {
-                                        if (isset($worksheets_by_branch[$branch_id])) {
-                                            foreach ($worksheets_by_branch[$branch_id] as $worksheet) {
-                                                $worksheet['branch_name'] = $branch_name;
-                                                $all_worksheets[] = $worksheet;
-                                            }
-                                        }
-                                    }
+                                    <?php 
+                                    $worksheets_to_display = $worksheets_by_branch[$branch_id] ?? [];
                                     ?>
-                                    <?php if (empty($all_worksheets)): ?>
+                                    <?php if (empty($worksheets_to_display)): ?>
                                         <div class="alert alert-info">
                                             <i class="fas fa-info-circle me-2"></i>
-                                            No worksheets found.
+                                            No worksheets found for <?= htmlspecialchars($branch_name) ?>.
                                         </div>
                                     <?php else: ?>
                                         <div class="card">
                                             <div class="card-body p-0">
                                                 <div class="table-responsive">
-                                                    <table class="table table-striped table-hover mb-0" id="worksheetTable" style="font-size:x-small;">
+                                                    <table class="table table-hover mb-0" id="worksheetTable" style="font-size:x-small;">
                                                         <thead>
                                                             <tr>
                                                                 <th>Document No</th>
                                                                 <th>Description</th>
-                                                                <th>Branch</th>
                                                                 <th>Formation</th>
                                                                 <th>Aircraft Type</th>
                                                                 <th>Issue</th>
@@ -548,13 +666,10 @@ try {
                                                             </tr>
                                                         </thead>
                                                         <tbody>
-                                                            <?php foreach ($all_worksheets as $doc): ?>
+                                                            <?php foreach ($worksheets_to_display as $doc): ?>
                                                                 <tr>
                                                                     <td><strong><?= htmlspecialchars($doc['document_number']) ?></strong></td>
-                                                                    <td class="text-truncate-multiline" title="<?= htmlspecialchars($doc['description']) ?>">
-                                                                        <?= htmlspecialchars($doc['description']) ?>
-                                                                    </td>
-                                                                    <td><?= htmlspecialchars($doc['branch_name']) ?></td>
+                                                                    <td><?= htmlspecialchars($doc['description']) ?></td>
                                                                     <td><?= htmlspecialchars($doc['formation_name'] ?? 'N/A') ?></td>
                                                                     <td><?= htmlspecialchars($doc['type_name'] ?? 'N/A') ?></td>
                                                                     <td><?= htmlspecialchars($doc['issue']) ?></td>
@@ -583,6 +698,7 @@ try {
                                 <?php endif; ?>
                             </div>
                         </div>
+                        <?php endforeach; ?>
 
                         <!-- Technical Library Tab -->
                         <div class="tab-pane fade" id="vehicle" role="tabpanel">
@@ -596,7 +712,7 @@ try {
                                     <div class="card">
                                         <div class="card-body p-0">
                                             <div class="table-responsive">
-                                                <table class="table table-striped table-hover mb-0" id="techLibraryTable" style="font-size:x-small;">
+                                                <table class="table  table-hover mb-0" id="techLibraryTable" style="font-size:x-small;">
                                                     <thead>
                                                         <tr>
                                                             <th>S.No</th>
@@ -609,16 +725,15 @@ try {
                                                         <?php foreach ($tech_library as $item): ?>
                                                             <tr>
                                                                 <td><strong><?= htmlspecialchars($item['sno']) ?></strong></td>
-                                                                <td class="text-truncate-multiline" title="<?= htmlspecialchars($item['publication_index']) ?>">
-                                                                    <?= htmlspecialchars($item['publication_index']) ?>
-                                                                </td>
+                                                                <td><?= htmlspecialchars($item['publication_index']) ?></td>
                                                                 <td>
                                                                     <?php if (!empty($item['file_path'])): ?>
                                                                         <a href="/qai/assets/pdfjs/web/viewer.html?file=<?= urlencode('/qai/admin/action/' . $item['file_path']) ?>"
-                                                                            class="btn btn-view-details btn-sm view-details-btn"
-                                                                            data-bs-toggle="modal"
-                                                                            data-bs-target="#pdfModal"
-                                                                            data-pdf-url="/qai/assets/pdfjs/web/viewer.html?file=<?= urlencode('/qai/admin/action/' . $item['file_path']) ?>">View
+                                                                           class="btn btn-view-pdf btn-sm view-pdf-btn"
+                                                                           data-bs-toggle="modal"
+                                                                           data-bs-target="#pdfModal"
+                                                                           data-pdf-url="/qai/assets/pdfjs/web/viewer.html?file=<?= urlencode('/qai/admin/action/' . $item['file_path']) ?>">
+                                                                            <i class="fas fa-file-pdf me-1"></i>View PDF
                                                                         </a>
                                                                     <?php else: ?>
                                                                         <span class="text-muted">No file</span>
@@ -655,14 +770,13 @@ try {
                 </div>
             </div>
         </div>
-        <!-- </div> -->
     </main>
     <!-- PDF Modal -->
     <div class="modal fade" id="pdfModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-xl modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title"></h5>
+                    <h5 class="modal-title">View PDF</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body" style="height: 80vh;">
@@ -676,7 +790,7 @@ try {
         <div class="modal-dialog modal-lg modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="detailsModalTitle">AD Bulletin Details</h5>
+                    <h5 class="modal-title" id="detailsModalTitle">Record Details</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body" id="detailsModalBody">
@@ -1003,7 +1117,6 @@ try {
                     }
 
                     e.preventDefault();
-
                     // Remove active class from all items
                     document.querySelectorAll('.nav-link, .qa-dropdown-item').forEach(tab => {
                         tab.classList.remove('active');
@@ -1038,10 +1151,22 @@ try {
                     }
 
                     // Close all dropdown menus
-                    // document.querySelectorAll('.qa-dropdown-menu').forEach(menu => {
-                    //     menu.classList.remove('show');
-                    // });
+                    document.querySelectorAll('.qa-dropdown-menu').forEach(menu => {
+                        menu.classList.remove('show');
+                    });
                 });
+            });
+
+            // Close dropdowns on outside click
+            document.addEventListener('click', function(e) {
+                if (!e.target.closest('.nav-column')) {
+                    document.querySelectorAll('.qa-dropdown-menu').forEach(menu => {
+                        menu.classList.remove('show');
+                    });
+                    document.querySelectorAll('.qa-dropdown-toggle').forEach(toggle => {
+                        toggle.classList.remove('active');
+                    });
+                }
             });
 
             document.querySelectorAll('.qa-dropdown-menu').forEach(menu => {
@@ -1065,5 +1190,4 @@ try {
         });
     </script>
 </body>
-
 </html>

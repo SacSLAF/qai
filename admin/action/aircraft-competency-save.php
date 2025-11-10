@@ -19,6 +19,14 @@ function toNull($v) {
     return isset($v) && $v !== '' ? $v : null;
 }
 
+// Map branch_id -> ac_categories.name if provided
+$branch_name = null;
+if (!empty($_POST['branch_id'])) {
+    $branch_id = (int)$_POST['branch_id'];
+    $r = $db->query("SELECT name FROM ac_categories WHERE id = $branch_id");
+    if ($r && $row = $r->fetch_assoc()) $branch_name = $row['name'];
+}
+
 function toIntNull($v) {
     return isset($v) && $v !== '' ? (int)$v : null;
 }

@@ -7,11 +7,20 @@ if (!isset($_SESSION['admin_id'])) {
     exit();
 }
 
+// Fetch data for dropdowns
+$categories = [];
+
+// Fetch AC Categories
+$cat_result = $db->query("SELECT id, name FROM ac_categories ORDER BY name");
+if ($cat_result) {
+    $categories = $cat_result->fetch_all(MYSQLI_ASSOC);
+}
+
 // If editing, fetch existing record
 $record = null;
 if (isset($_GET['id'])) {
     $id = (int)$_GET['id'];
-    $stmt = $db->prepare("SELECT * FROM tech_library WHERE id = ?");
+    $stmt = $db->prepare("SELECT * FROM training_record_cpd WHERE id = ?");
     $stmt->bind_param("i", $id);
     $stmt->execute();
     $result = $stmt->get_result();
@@ -27,7 +36,7 @@ include "template/head.php";
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?= isset($record) ? 'Edit' : 'Add' ?> Technical Library Document</title>
+    <title><?= isset($record) ? 'Edit' : 'Add' ?> Training Record CPD</title>
 </head>
 <body>
     <!-- Include your template files -->
@@ -42,8 +51,8 @@ include "template/head.php";
                 <div class="col-12">
                     <div class="card">
                         <div class="card-header d-flex justify-content-between align-items-center">
-                            <h4 class="card-title"><?= isset($record) ? 'Edit' : 'Add' ?> Technical Library Document</h4>
-                            <a href="tech-library.php" class="btn btn-sm btn-outline-secondary">
+                            <h4 class="card-title"><?= isset($record) ? 'Edit' : 'Add' ?> Training Record CPD</h4>
+                            <a href="training-record-cpd.php" class="btn btn-sm btn-outline-secondary">
                                 <i class="fas fa-arrow-left"></i> Back to List
                             </a>
                         </div>
@@ -63,38 +72,78 @@ include "template/head.php";
                                 <?php unset($_SESSION['error']); ?>
                             <?php endif; ?>
 
-                            <form action="action/tech-library-save.php" method="post" enctype="multipart/form-data">
+                            <form action="action/training-record-cpd-save.php" method="post" enctype="multipart/form-data">
                                 <?php if (isset($record)): ?>
                                     <input type="hidden" name="id" value="<?= $record['id'] ?>">
                                     <input type="hidden" name="existing_file" value="<?= $record['file_path'] ?>">
                                 <?php endif; ?>
 
+                                <input type="hidden" name="created_by" value="<?= $_SESSION['admin_id'] ?>">
+
                                 <div class="row">
-                                    <!-- Document Details -->
+                                    <!-- CPD Record Details -->
                                     <div class="col-md-12 mb-4">
-                                        <h5 class="text-primary mb-3"><i class="fas fa-file-alt me-2"></i>Document Details</h5>
+                                        <h5 class="text-primary mb-3"><i class="fas fa-book me-2"></i>CPD Record Details</h5>
                                         <div class="row">
                                             <div class="col-md-6">
                                                 <div class="mb-3">
-                                                    <label class="form-label">S.No *</label>
+                                                    <label class="form-label">Serial Number *</label>
                                                     <input type="text" name="sno" class="form-control" 
                                                            value="<?= isset($record) ? htmlspecialchars($record['sno']) : '' ?>" 
-                                                           required placeholder="Enter serial number">
+                                                           required placeholder="e.g., CPD-001">
                                                 </div>
                                             </div>
                                             <div class="col-md-6">
                                                 <div class="mb-3">
-                                                    <label class="form-label">Publication Index *</label>
-                                                    <input type="text" name="publication_index" class="form-control" 
-                                                           value="<?= isset($record) ? htmlspecialchars($record['publication_index']) : '' ?>" 
-                                                           required placeholder="Enter publication index">
+                                                    <label class="form-label">Trade</label>
+                                                    <select name="trade" class="form-select">
+                                                        <option value="">Select Trade</option>
+                                                        <option value="Airframe" <?= isset($record) && $record['trade'] == 'Airframe' ? 'selected' : '' ?>>Airframe</option>
+                                                        <option value="Aero ENG" <?= isset($record) && $record['trade'] == 'Aero ENG' ? 'selected' : '' ?>>Aero ENG</option>
+                                                        <option value="Aero E&I" <?= isset($record) && $record['trade'] == 'Aero E&I' ? 'selected' : '' ?>>Aero E&I</option>
+                                                        <option value="Safety Eqpt" <?= isset($record) && $record['trade'] == 'Safety Eqpt' ? 'selected' : '' ?>>Safety Eqpt</option>
+                                                        <option value="Air Radio" <?= isset($record) && $record['trade'] == 'Air Radio' ? 'selected' : '' ?>>Air Radio</option>
+                                                        <option value="AGSE" <?= isset($record) && $record['trade'] == 'AGSE' ? 'selected' : '' ?>>AGSE</option>
+                                                        <option value="Armament" <?= isset($record) && $record['trade'] == 'Armament' ? 'selected' : '' ?>>Armament</option>
+                                                        <option value="Airframe & Power Plant" <?= isset($record) && $record['trade'] == 'Airframe & Power Plant' ? 'selected' : '' ?>>Airframe & Power Plant</option>
+                                                        <option value="None Tech" <?= isset($record) && $record['trade'] == 'None Tech' ? 'selected' : '' ?>>None Tech</option>
+                                                    </select>
                                                 </div>
                                             </div>
                                             <div class="col-md-12">
                                                 <div class="mb-3">
-                                                    <label class="form-label">Document File *</label>
-                                                    <input type="file" name="document_file" class="form-control" 
-                                                           accept=".pdf,application/pdf" 
+                                                    <label class="form-label">Description *</label>
+                                                    <textarea name="description" class="form-control" rows="4" 
+                                                              required placeholder="Enter record description"><?= isset($record) ? htmlspecialchars($record['description']) : '' ?></textarea>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="mb-3">
+                                                    <label class="form-label">Duration</label>
+                                                    <input type="text" name="duration" class="form-control" 
+                                                           value="<?= isset($record) ? htmlspecialchars($record['duration']) : '' ?>" 
+                                                           placeholder="e.g., 2 weeks, 6 months">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="mb-3">
+                                                    <label class="form-label">Category *</label>
+                                                    <select name="ac_categories_id" class="form-select" required>
+                                                        <option value="">Select Category</option>
+                                                        <?php foreach ($categories as $cat): ?>
+                                                            <option value="<?= $cat['id'] ?>" 
+                                                                <?= isset($record) && $record['ac_categories_id'] == $cat['id'] ? 'selected' : '' ?>>
+                                                                <?= htmlspecialchars($cat['name']) ?>
+                                                            </option>
+                                                        <?php endforeach; ?>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-12">
+                                                <div class="mb-3">
+                                                    <label class="form-label">Record File *</label>
+                                                    <input type="file" name="record_file" class="form-control" 
+                                                           accept=".pdf" 
                                                            <?= !isset($record) ? 'required' : '' ?>>
                                                     <?php if (isset($record) && !empty($record['file_path'])): ?>
                                                         <small class="form-text text-muted">
@@ -116,7 +165,7 @@ include "template/head.php";
                                                 <i class="fas fa-redo"></i> Reset
                                             </button>
                                             <button type="submit" class="btn btn-primary">
-                                                <i class="fas fa-save"></i> <?= isset($record) ? 'Update' : 'Save' ?> Document
+                                                <i class="fas fa-save"></i> <?= isset($record) ? 'Update' : 'Save' ?> CPD Record
                                             </button>
                                         </div>
                                     </div>

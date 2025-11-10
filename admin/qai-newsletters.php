@@ -9,7 +9,7 @@ if (!isset($_SESSION['admin_id'])) {
 
 // Fetch all QAI Newsletter records
 $records = [];
-$res = $db->query("SELECT * FROM qai_newsletters ORDER BY issue_date DESC, sno DESC");
+$res = $db->query("SELECT * FROM qai_newsletters ORDER BY issue_date DESC, qsn_no DESC");
 if ($res !== false) {
     $records = $res->fetch_all(MYSQLI_ASSOC);
 } else {
@@ -70,7 +70,7 @@ include "template/head.php";
                                             <?php else: ?>
                                                 <?php foreach ($records as $r): ?>
                                                     <tr>
-                                                        <td><strong><?= htmlspecialchars($r['sno']) ?></strong></td>
+                                                        <td><strong><?= htmlspecialchars($r['qsn_no']) ?></strong></td>
                                                         <td><?= htmlspecialchars(substr($r['description'], 0, 100)) . (strlen($r['description']) > 100 ? '...' : '') ?></td>
                                                         <td><?= $r['issue_date'] ? date('M d, Y', strtotime($r['issue_date'])) : 'N/A' ?></td>
                                                         <td>
