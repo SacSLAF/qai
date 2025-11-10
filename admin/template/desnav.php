@@ -45,6 +45,7 @@
                         <ul aria-expanded="false">
                             <li><a href="training-forecast-upload.php">Training Forecast</a></li>
                             <li><a href="training-syllabus.php">Training Syllabus</a></li>
+                            <li><a href="training-syllabus-cpd.php">Training Syllabus CPD</a></li>
                             <li><a href="training-record-cpd.php">Training Record CPD</a></li>
                         </ul>
                     </li>

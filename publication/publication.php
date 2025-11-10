@@ -100,7 +100,7 @@ try {
         $stmt_qai = $db->prepare("
             SELECT qn.* 
             FROM qai_newsletters qn 
-            ORDER BY qn.issue_date DESC, qn.qsn_no DESC
+            ORDER BY qn.issue_date DESC, qn.sno DESC
         ");
 
         if ($stmt_qai) {
@@ -517,18 +517,18 @@ try {
                                                     <tbody>
                                                         <?php foreach ($qai_newsletters as $newsletter): ?>
                                                             <tr>
-                                                                <td><strong><?= htmlspecialchars($newsletter['qsn_no']) ?></strong></td>
+                                                                <td><strong><?= htmlspecialchars($newsletter['sno']) ?></strong></td>
                                                                 <td><?= htmlspecialchars($newsletter['description']) ?></td>
                                                                 <td><?= $newsletter['issue_date'] ? date('M d, Y', strtotime($newsletter['issue_date'])) : 'N/A' ?></td>
                                                                 <td>
                                                                     <div class="btn-group" role="group">
                                                                         <?php if (!empty($newsletter['file_path'])): ?>
                                                                             <a href="/qai/assets/pdfjs/web/viewer.html?file=<?= urlencode('/qai/admin/action/' . $newsletter['file_path']) ?>"
-                                                                                class="btn btn-view-pdf btn-sm view-pdf-btn"
+                                                                                class="btn btn-view-details btn-sm view-details-btn"
                                                                                 data-bs-toggle="modal"
                                                                                 data-bs-target="#pdfModal"
                                                                                 data-pdf-url="/qai/assets/pdfjs/web/viewer.html?file=<?= urlencode('/qai/admin/action/' . $newsletter['file_path']) ?>">
-                                                                                <i class="fas fa-file-pdf me-1"></i>View PDF
+                                                                                <i class="fas fa-file-pdf me-1"></i>PDF
                                                                             </a>
                                                                         <?php endif; ?>
                                                                         <button class="btn btn-view-details btn-sm view-details-btn"
@@ -536,7 +536,7 @@ try {
                                                                             data-bs-target="#detailsModal"
                                                                             data-record-type="qai_newsletter"
                                                                             data-record-id="<?= $newsletter['id'] ?? '' ?>"
-                                                                            data-record-qsn-no="<?= htmlspecialchars($newsletter['qsn_no'] ?? '') ?>"
+                                                                            data-record-qsn-no="<?= htmlspecialchars($newsletter['sno'] ?? '') ?>"
                                                                             data-record-description="<?= htmlspecialchars($newsletter['description'] ?? '') ?>"
                                                                             data-record-issue-date="<?= htmlspecialchars($newsletter['issue_date'] ?? '') ?>">
                                                                             View
@@ -729,11 +729,11 @@ try {
                                                                 <td>
                                                                     <?php if (!empty($item['file_path'])): ?>
                                                                         <a href="/qai/assets/pdfjs/web/viewer.html?file=<?= urlencode('/qai/admin/action/' . $item['file_path']) ?>"
-                                                                           class="btn btn-view-pdf btn-sm view-pdf-btn"
+                                                                           class="btn btn-view-details btn-sm view-details-btn"
                                                                            data-bs-toggle="modal"
                                                                            data-bs-target="#pdfModal"
                                                                            data-pdf-url="/qai/assets/pdfjs/web/viewer.html?file=<?= urlencode('/qai/admin/action/' . $item['file_path']) ?>">
-                                                                            <i class="fas fa-file-pdf me-1"></i>View PDF
+                                                                            <i class="fas fa-file-pdf me-1"></i>PDF
                                                                         </a>
                                                                     <?php else: ?>
                                                                         <span class="text-muted">No file</span>

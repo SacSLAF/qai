@@ -18,38 +18,6 @@ SET NAMES utf8mb4;
 SET FOREIGN_KEY_CHECKS = 0;
 
 -- ----------------------------
--- Table structure for active_qcc_registrations
--- ----------------------------
-DROP TABLE IF EXISTS `active_qcc_registrations`;
-CREATE TABLE `active_qcc_registrations`  (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `title` varchar(255) CHARACTER SET utf8mb4  NOT NULL,
-  `description` text CHARACTER SET utf8mb4  NULL,
-  `qcc_name` varchar(255) CHARACTER SET utf8mb4  NOT NULL,
-  `slaf_establishment_id` int NOT NULL,
-  `location` varchar(255) CHARACTER SET utf8mb4  NOT NULL,
-  `team_members` text CHARACTER SET utf8mb4  NOT NULL,
-  `category_id` int NOT NULL,
-  `qcc_category_id` varchar(50) CHARACTER SET utf8mb4  NULL DEFAULT NULL,
-  `main_category` varchar(50) CHARACTER SET utf8mb4  NULL DEFAULT 'productivity',
-  `is_active` tinyint(1) NULL DEFAULT 1,
-  `created_by` int NULL DEFAULT NULL,
-  `created_at` timestamp(0) NULL DEFAULT CURRENT_TIMESTAMP(0),
-  `updated_at` timestamp(0) NULL DEFAULT CURRENT_TIMESTAMP(0) ON UPDATE CURRENT_TIMESTAMP(0),
-  PRIMARY KEY (`id`) USING BTREE,
-  INDEX `slaf_establishment_id`(`slaf_establishment_id`) USING BTREE,
-  INDEX `category_id`(`category_id`) USING BTREE,
-  CONSTRAINT `active_qcc_registrations_ibfk_1` FOREIGN KEY (`slaf_establishment_id`) REFERENCES `slaf_establishments` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
-  CONSTRAINT `active_qcc_registrations_ibfk_2` FOREIGN KEY (`category_id`) REFERENCES `productivity_categories` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT
-) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4  ROW_FORMAT = Dynamic;
-
--- ----------------------------
--- Records of active_qcc_registrations
--- ----------------------------
-INSERT INTO `active_qcc_registrations` VALUES (1, 'Test', 'Test', 'Test QCC', 8, 'Test', 'Test one, Test Two', 3, '0', 'productivity', 1, 1, '2025-10-09 17:40:09', '2025-10-09 17:40:09');
-
-
--- ----------------------------
 -- Table structure for admins
 -- ----------------------------
 DROP TABLE IF EXISTS `admins`;
@@ -93,25 +61,6 @@ INSERT INTO `branches` VALUES (5, 'General Engineering', '2025-09-09 10:14:05');
 INSERT INTO `branches` VALUES (6, 'Ground Operations', '2025-09-09 10:14:05');
 INSERT INTO `branches` VALUES (7, 'Productivity Management', '2025-09-09 10:14:05');
 INSERT INTO `branches` VALUES (8, 'Training', '2025-09-09 10:14:05');
-
--- ----------------------------
--- Table structure for environment_categories
--- ----------------------------
-DROP TABLE IF EXISTS `environment_categories`;
-CREATE TABLE `environment_categories`  (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `name` varchar(100) CHARACTER SET utf8mb4 NOT NULL,
-  `created_at` timestamp(0) NULL DEFAULT CURRENT_TIMESTAMP(0),
-  PRIMARY KEY (`id`) USING BTREE,
-  UNIQUE INDEX `name`(`name`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 4 CHARACTER SET = utf8mb4 ROW_FORMAT = Dynamic;
-
--- ----------------------------
--- Records of environment_categories
--- ----------------------------
-INSERT INTO `environment_categories` VALUES (1, 'Audit Checklists', '2025-09-09 10:14:05');
-INSERT INTO `environment_categories` VALUES (2, 'Audit Reports', '2025-09-09 10:14:05');
-INSERT INTO `environment_categories` VALUES (3, 'Audit Plans', '2025-09-09 10:14:05');
 
 -- ----------------------------
 -- Table structure for latitude_extension
@@ -223,40 +172,6 @@ INSERT INTO `productivity_categories` VALUES (1, 'Productivity', '2025-09-09 10:
 INSERT INTO `productivity_categories` VALUES (2, 'Occupational Safety & Health', '2025-09-09 10:14:05');
 INSERT INTO `productivity_categories` VALUES (3, 'Environmental Mgt', '2025-09-09 10:14:05');
 INSERT INTO `productivity_categories` VALUES (4, 'Awards', '2025-09-09 10:14:05');
-
--- ----------------------------
--- Table structure for productivity_documents
--- ----------------------------
-DROP TABLE IF EXISTS `productivity_documents`;
-CREATE TABLE `productivity_documents`  (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `title` varchar(255) CHARACTER SET utf8mb4 NOT NULL,
-  `description` text CHARACTER SET utf8mb4 NULL,
-  `productivity_category_id` int NULL DEFAULT NULL,
-  `osh_category_id` int NULL DEFAULT NULL,
-  `environment_category_id` int NULL DEFAULT NULL,
-  `uploaded_by` int NULL DEFAULT NULL,
-  `file_path` varchar(255) CHARACTER SET utf8mb4 NOT NULL,
-  `uploaded_at` timestamp(0) NULL DEFAULT CURRENT_TIMESTAMP(0),
-  `is_active` tinyint(1) NULL DEFAULT 1,
-  `branch_id` int NULL DEFAULT NULL,
-  PRIMARY KEY (`id`) USING BTREE,
-  INDEX `uploaded_by`(`uploaded_by`) USING BTREE,
-  INDEX `fk_productivity_category`(`productivity_category_id`) USING BTREE,
-  INDEX `fk_osh_category`(`osh_category_id`) USING BTREE,
-  INDEX `fk_environment_category`(`environment_category_id`) USING BTREE,
-  INDEX `fk_productivity_branch`(`branch_id`) USING BTREE,
-  CONSTRAINT `fk_environment_category` FOREIGN KEY (`environment_category_id`) REFERENCES `environment_categories` (`id`) ON DELETE SET NULL ON UPDATE RESTRICT,
-  CONSTRAINT `fk_osh_category` FOREIGN KEY (`osh_category_id`) REFERENCES `osh_categories` (`id`) ON DELETE SET NULL ON UPDATE RESTRICT,
-  CONSTRAINT `fk_productivity_branch` FOREIGN KEY (`branch_id`) REFERENCES `branches` (`id`) ON DELETE SET NULL ON UPDATE RESTRICT,
-  CONSTRAINT `fk_productivity_category` FOREIGN KEY (`productivity_category_id`) REFERENCES `productivity_categories` (`id`) ON DELETE SET NULL ON UPDATE RESTRICT,
-  CONSTRAINT `productivity_documents_ibfk_1` FOREIGN KEY (`uploaded_by`) REFERENCES `admins` (`id`) ON DELETE SET NULL ON UPDATE RESTRICT
-) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4 ROW_FORMAT = Dynamic;
-
--- ----------------------------
--- Records of productivity_documents
--- ----------------------------
-INSERT INTO `productivity_documents` VALUES (1, 'QCC registration form', 'QCC', 3, NULL, NULL, 1, 'uploads/productivity/doc_1.pdf', '2025-10-09 16:49:06', 1, NULL);
 
 -- ----------------------------
 -- Table structure for publication_categories
@@ -966,3 +881,46 @@ CREATE TABLE `awards` (
   FOREIGN KEY (`created_by`) REFERENCES `admins` (`id`),
   FOREIGN KEY (`category_id`) REFERENCES `productivity_categories` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+
+-- ----------------------------
+-- Table structure for training_syllabus_cpd
+-- ----------------------------
+DROP TABLE IF EXISTS `training_syllabus_cpd`;
+CREATE TABLE `training_syllabus_cpd`  (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `syllabus_no` varchar(255) CHARACTER SET utf8mb4 NOT NULL,
+  `trade` varchar(255) CHARACTER SET utf8mb4 NULL DEFAULT NULL,
+  `course_description` varchar(255) CHARACTER SET utf8mb4 NULL DEFAULT NULL,
+  `issue` varchar(255) CHARACTER SET utf8mb4 NULL DEFAULT NULL,
+  `revision` varchar(255) CHARACTER SET utf8mb4 NULL DEFAULT NULL,
+  `revised_date` date NULL DEFAULT NULL,
+  `file_path` varchar(255) CHARACTER SET utf8mb4 NOT NULL,
+  `created_by` int NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`) USING BTREE,
+  FOREIGN KEY (`created_by`) REFERENCES `admins` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Table structure for training_syllabus_cpd
+-- ----------------------------
+DROP TABLE IF EXISTS `training_syllabus_cpd`;
+CREATE TABLE `training_syllabus_cpd`  (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `syllabus_no` varchar(255) CHARACTER SET utf8mb4 NOT NULL,
+  `trade` varchar(255) CHARACTER SET utf8mb4 NULL DEFAULT NULL,
+  `course_description` varchar(255) CHARACTER SET utf8mb4 NULL DEFAULT NULL,
+  `issue` varchar(255) CHARACTER SET utf8mb4 NULL DEFAULT NULL,
+  `revision` varchar(255) CHARACTER SET utf8mb4 NULL DEFAULT NULL,
+  `revised_date` date NULL DEFAULT NULL,
+  `file_path` varchar(255) CHARACTER SET utf8mb4 NOT NULL,
+  `ac_categories_id` int NOT NULL,
+  `created_by` int NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`) USING BTREE,
+  FOREIGN KEY (`ac_categories_id`) REFERENCES `ac_categories` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
+  FOREIGN KEY (`created_by`) REFERENCES `admins` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 ROW_FORMAT = Dynamic;
