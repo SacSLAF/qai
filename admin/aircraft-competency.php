@@ -18,7 +18,7 @@ if ($res !== false) {
     $records = [];
 }
 
-// Load lookup maps (types, formations, ac_categories) to resolve ids to names if available
+// Load lookup maps (types, formations, ac_categories, ranks) to resolve ids to names if available
 $types_map = [];
 $types_res = $db->query("SELECT type_id, type_name FROM type");
 if ($types_res !== false) {
@@ -37,16 +37,30 @@ if ($ac_res !== false) {
     foreach ($ac_res->fetch_all(MYSQLI_ASSOC) as $c) $ac_cat_map[$c['id']] = $c['name'];
 }
 
+// Load ranks map
+$ranks_map = [];
+$ranks_res = $db->query("SELECT id, rank_name FROM ranks");
+if ($ranks_res !== false) {
+    foreach ($ranks_res->fetch_all(MYSQLI_ASSOC) as $r) $ranks_map[$r['id']] = $r['rank_name'];
+}
+
 include "template/head.php";
 ?>
 
 <!DOCTYPE html>
 <html lang="en">
+
+<head>
+    <!-- Add DataTable CSS -->
+    <link rel="stylesheet" href="../assets/datatable/datatable.min.css">
+</head>
+
 <body>
     <?php include "template/preloader.php"; ?>
 
     <div id="main-wrapper">
-        <?php include "template/nav.php"; include "template/header.php"; ?>
+        <?php include "template/nav.php";
+        include "template/header.php"; ?>
         <?php include "template/desnav.php"; ?>
 
         <div class="content-body">
@@ -73,7 +87,7 @@ include "template/head.php";
 
                             <div class="card-body">
                                 <div class="table-responsive">
-                                    <table id="competencyTable" class="display min-w850 table table-striped table-hover">
+                                    <table id="competencyTable" class="display table table-striped table-hover" style="width:100%">
                                         <thead>
                                             <tr>
                                                 <th>SVC No</th>
@@ -88,25 +102,58 @@ include "template/head.php";
                                         <tbody>
                                             <?php if (empty($records)): ?>
                                                 <tr>
-                                                    <td colspan="8" class="text-center py-4">No records found</td>
+                                                    <td colspan="7" class="text-center py-4">No records found</td>
                                                 </tr>
                                             <?php else: ?>
                                                 <?php foreach ($records as $r): ?>
                                                     <tr>
                                                         <td><?= htmlspecialchars($r['svc_no']) ?></td>
                                                         <td><?= htmlspecialchars($r['name']) ?></td>
-                                                        <td><?= htmlspecialchars($r['rank']) ?></td>
-                                                        <td><?= htmlspecialchars(isset($types_map[$r['type_id']]) ? $types_map[$r['type_id']] : ($r['aircraft_type'] ?? $r['type_id'] ?? '')) ?></td>
-                                                        <td><?= htmlspecialchars($r['competency_level']) ?></td>
-                                                        <td><?= htmlspecialchars(isset($ac_cat_map[$r['branch']]) ? $ac_cat_map[$r['branch']] : ($r['branch'] ?? 'N/A')) ?></td>
                                                         <td>
-                                                            <div class="d-flex">
-                                                                <a href="edit-aircraft-competency.php?id=<?= $r['record_id'] ?? $r['id'] ?>" class="btn btn-sm btn-outline-secondary">
+                                                            <?= htmlspecialchars(
+                                                                isset($ranks_map[$r['rank']])
+                                                                    ? $ranks_map[$r['rank']]
+                                                                    : ($r['rank'] ?? 'N/A')
+                                                            ) ?>
+                                                        </td>
+                                                        <td>
+                                                            <?= htmlspecialchars(
+                                                                isset($types_map[$r['type_id']])
+                                                                    ? $types_map[$r['type_id']]
+                                                                    : ($r['aircraft_type'] ?? $r['type_id'] ?? 'N/A')
+                                                            ) ?>
+                                                        </td>
+                                                        <td><?= htmlspecialchars($r['competency_level']) ?></td>
+                                                        <td>
+                                                            <?= htmlspecialchars(
+                                                                isset($ac_cat_map[$r['branch']])
+                                                                    ? $ac_cat_map[$r['branch']]
+                                                                    : ($r['branch'] ?? 'N/A')
+                                                            ) ?>
+                                                        </td>
+                                                        <td>
+                                                            <!-- <div class="d-flex">
+                                                                <a href="edit-aircraft-competency.php?id=<?= $r['record_id'] ?>" class="btn btn-sm btn-outline-secondary">
                                                                     <i class="fas fa-edit"></i> Edit
                                                                 </a>
 
                                                                 <form action="action/aircraft-competency-delete.php" method="post" style="display:inline-block;" onsubmit="return confirm('Are you sure you want to delete this record?');">
-                                                                    <input type="hidden" name="id" value="<?= $r['record_id'] ?? $r['id'] ?>">
+                                                                    <input type="hidden" name="id" value="<?= $r['record_id'] ?>">
+                                                                    <button type="submit" class="btn btn-sm btn-outline-danger ms-1">
+                                                                        <i class="fas fa-trash"></i> Delete
+                                                                    </button>
+                                                                </form>
+                                                            </div> -->
+                                                            <div class="d-flex">
+                                                                <form action="edit-aircraft-competency.php" method="get" style="display:inline-block;">
+                                                                    <input type="hidden" name="id" value="<?= $r['record_id'] ?>">
+                                                                    <button type="submit" class="btn btn-sm btn-outline-secondary">
+                                                                        <i class="fas fa-edit"></i> Edit
+                                                                    </button>
+                                                                </form>
+
+                                                                <form action="action/aircraft-competency-delete.php" method="post" style="display:inline-block;" onsubmit="return confirm('Are you sure you want to delete this record?');">
+                                                                    <input type="hidden" name="id" value="<?= $r['record_id'] ?>">
                                                                     <button type="submit" class="btn btn-sm btn-outline-danger ms-1">
                                                                         <i class="fas fa-trash"></i> Delete
                                                                     </button>
@@ -136,10 +183,43 @@ include "template/head.php";
     <!-- Required scripts -->
     <script src="assets/vendor/global/global.min.js"></script>
     <script src="assets/vendor/bootstrap-select/dist/js/bootstrap-select.min.js"></script>
-    <script src="assets/vendor/datatables/js/jquery.dataTables.min.js"></script>
-    <script src="assets/vendor/datatables/responsive/responsive.js"></script>
-    <script src="assets/js/plugins-init/datatables.init.js"></script>
     <script src="assets/js/custom.min.js"></script>
     <script src="assets/js/deznav-init.js"></script>
+
+    <!-- DataTable Scripts -->
+    <script src="../node_modules/jquery/dist/jquery.min.js"></script>
+    <script src="../assets/datatable/datatable.min.js"></script>
+
+    <!-- Initialize DataTable -->
+    <script>
+        $(document).ready(function() {
+            $('#competencyTable').DataTable({
+                "responsive": true,
+                "lengthMenu": [
+                    [10, 25, 50, 100, -1],
+                    [10, 25, 50, 100, "All"]
+                ],
+                "pageLength": 25,
+                "order": [
+                    [0, 'desc']
+                ],
+                "language": {
+                    "search": "Search:",
+                    "lengthMenu": "Show _MENU_ entries",
+                    "info": "Showing _START_ to _END_ of _TOTAL_ entries",
+                    "infoEmpty": "Showing 0 to 0 of 0 entries",
+                    "infoFiltered": "(filtered from _MAX_ total entries)",
+                    "paginate": {
+                        "first": "First",
+                        "last": "Last",
+                        "next": "Next",
+                        "previous": "Previous"
+                    }
+                },
+                "dom": '<"top"lf>rt<"bottom"ip><"clear">'
+            });
+        });
+    </script>
 </body>
+
 </html>

@@ -44,7 +44,7 @@ body {
 .nav {
   margin-top: 3rem;
 }
-/* .nav-pills .nav-link {
+.nav-pills .nav-link {
   color: #495057;
   border-radius: 0;
   padding: 10px 10px 8px 10px;
@@ -53,17 +53,18 @@ body {
   border-left: 3px solid transparent;
   font-size: x-small;
   border-bottom: none;
-} */
-/* .nav-pills .nav-link.active{
+}
+.nav-pills .nav-link.active{
   font-weight: 600;
-} */
-/* .nav-pills .nav-link.active,
+}
+.nav-pills .nav-link.active,
 .nav-pills .nav-link:hover {
   color: var(--primary-color);
   background-color: transparent;
-  font-weight: 600;
+  /* font-weight: 600; */
+  /* Remove border from main element */
   border-bottom: none;
-} */
+}
 
 /* .nav-pills .nav-link.active::after,
 .nav-pills .nav-link:hover::after {
@@ -75,7 +76,7 @@ body {
   width: var(--text-width, auto);
   background-color: var(--primary-color);
 } */
-/* .nav-pills .nav-link:active::after {
+.nav-pills .nav-link:active::after {
   content: "";
   position: absolute;
   left: 50%;
@@ -85,50 +86,11 @@ body {
   background-color: var(--primary-color);
   transform: translateX(-50%);
   transition: width 0.2s ease;
-} */
+}
 /* .nav-pills .nav-link.active::after,
 .nav-pills .nav-link:hover::after {
   content: none;
 } */
-.nav-pills .nav-link {
-  color: #495057;
-  border-radius: 0;
-  padding: 10px 10px 8px 10px;
-  margin-bottom: 4px;
-  transition: all 0.3s;
-  border-left: 3px solid transparent;
-  font-size: x-small;
-  border-bottom: none;
-  position: relative;
-}
-
-.nav-pills .nav-link.active {
-  font-weight: 600;
-}
-
-.nav-pills .nav-link.active,
-.nav-pills .nav-link:hover {
-  color: var(--primary-color);
-  background-color: transparent;
-  border-bottom: none;
-}
-
-/* Fixed: Correct nav link bottom border */
-.nav-pills .nav-link.active::after,
-.nav-pills .nav-link:hover::after {
-  content: "";
-  position: absolute;
-  left: 10px; /* Match the left padding */
-  bottom: 4px;
-  height: 1px;
-  width: calc(100% - 20px); /* Subtract left and right padding */
-  background-color: var(--primary-color);
-}
-
-/* Remove the incorrect :active selector */
-.nav-pills .nav-link:active::after {
-  content: none;
-}
 
 .tab-content {
   padding: 7px;
