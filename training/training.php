@@ -521,15 +521,15 @@ try {
                                                                         <div class="btn-group" role="group">
                                                                             <?php if (!empty($record['file_path'])): ?>
                                                                                 <a href="/qai/assets/pdfjs/web/viewer.html?file=<?= urlencode('/qai/admin/action/' . $record['file_path']) ?>"
-                                                                                    class="btn btn-view-pdf btn-sm view-pdf-btn"
+                                                                                    class="btn btn-view-details btn-sm view-details-btn"
                                                                                     data-bs-toggle="modal"
                                                                                     data-bs-target="#pdfModal"
                                                                                     data-pdf-url="/qai/assets/pdfjs/web/viewer.html?file=<?= urlencode('/qai/admin/action/' . $record['file_path']) ?>">
-                                                                                    View PDF
+                                                                                    <i class="fas fa-file-pdf me-1"></i>PDF
                                                                                 </a>
                                                                             <?php else: ?>
                                                                                 <button class="btn btn-sm btn-secondary" disabled title="No file available">
-                                                                                    View PDF
+                                                                                    <i class="fas fa-file-pdf me-1"></i>PDF
                                                                                 </button>
                                                                             <?php endif; ?>
                                                                             </div>
@@ -904,7 +904,7 @@ try {
                             `;
                         } else {
                             tableHtml += `
-                                <button class="btn btn-view-details btn-sm view-details-btn" disabled title="No file available">
+                                <button class="btn btn-sm btn-secondary" disabled title="No file available">
                                     <i class="fas fa-file-pdf me-1"></i>PDF
                                 </button>
                             `;
@@ -1023,7 +1023,7 @@ try {
                             `;
                         } else {
                             tableHtml += `
-                                <button class="btn btn-view-details btn-sm view-details-btn" disabled title="No file available">
+                                <button class="btn btn-sm btn-secondary" disabled title="No file available">
                                     <i class="fas fa-file-pdf me-1"></i>PDF
                                 </button>
                             `;
@@ -1539,7 +1539,7 @@ try {
                                    <!-- <div class="alert alert-info">
                                         <i class="fas fa-info-circle me-2"></i>
                                         Please select a directorate to view CPD training syllabus records.
-                                    </div>-->
+                                    </div>
                                 `;
                             }
                         }
