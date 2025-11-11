@@ -47,6 +47,7 @@
                             <li><a href="training-syllabus.php">Training Syllabus</a></li>
                             <li><a href="training-syllabus-cpd.php">Training Syllabus CPD</a></li>
                             <li><a href="training-record-cpd.php">Training Record CPD</a></li>
+                            <li><a href="outside-training.php">Outside Training</a></li>
                         </ul>
                     </li>
                     <li class="has-arrow">

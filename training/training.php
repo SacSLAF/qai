@@ -35,11 +35,16 @@ try {
     $syllabus_cpd_error = '';
     $record_cpd_error = '';
 
+    // Fetch Outside Training records
+    $outside_training_data = [];
+    $outside_training_error = '';
+
     // Check if database connection exists and is valid
     if (!isset($db) || !$db || (property_exists($db, 'connect_error') && $db->connect_error)) {
         $ts_error = "Database connection failed: " . ($db->connect_error ?? 'Unknown error');
         $syllabus_cpd_error = $ts_error;
         $record_cpd_error = $ts_error;
+        $outside_training_error = $ts_error;
     } else {
         // Load lookup maps (formations, types, ac_categories)
         $f_res = $db->query("SELECT formation_id, formation_name FROM formation");
@@ -164,11 +169,36 @@ try {
         } else {
             $record_cpd_error = "Error preparing Training Record CPD query: " . $db->error;
         }
+
+        // Fetch Outside Training records
+        try {
+            $stmt_outside = $db->prepare("
+                SELECT ot.*, a.username as created_by_name
+                FROM outside_training ot 
+                LEFT JOIN admins a ON ot.created_by = a.id 
+                ORDER BY ot.sno ASC
+            ");
+            
+            if ($stmt_outside) {
+                if ($stmt_outside->execute()) {
+                    $result_outside = $stmt_outside->get_result();
+                    $outside_training_data = $result_outside->fetch_all(MYSQLI_ASSOC);
+                    $stmt_outside->close();
+                } else {
+                    $outside_training_error = "Outside Training query execution failed: " . $stmt_outside->error;
+                }
+            } else {
+                $outside_training_error = "Error preparing Outside Training query: " . $db->error;
+            }
+        } catch (Exception $e) {
+            $outside_training_error = "Exception fetching outside training: " . $e->getMessage();
+        }
     }
 
     // Convert PHP data to JSON for JavaScript use
     $training_syllabus_cpd_data_json = json_encode($training_syllabus_cpd_data);
     $training_record_cpd_data_json = json_encode($training_record_cpd_data);
+    $outside_training_data_json = json_encode($outside_training_data);
 
     // Include head template after all PHP processing
     include '../template/head.php';
@@ -423,7 +453,7 @@ try {
                         <div class="mt-4">
                             <?php if (!empty($forecast_2026_web)): ?>
                                 <div class="top-bar mb-3">
-                                    <a href="<?= $forecast_2026_web ?>" target="_blank" class="btn btn-sm btn-dark">
+                                    <a href="<?= $forecast_2026_web ?>" class="btn btn-sm btn-dark">
                                         Forecast 2026
                                     </a>
                                 </div>
@@ -451,8 +481,8 @@ try {
                         <div class="mt-4">
                             <?php if (!empty($prospect_2026_web)): ?>
                                 <div class="top-bar mb-3">
-                                    <a href="<?= $prospect_2026_web ?>" target="_blank" class="btn btn-sm btn-dark">
-                                     <i class="fas fa-download me-1"></i> Download Prospect 2026
+                                    <a href="<?= $prospect_2026_web ?>" class="btn btn-sm btn-dark">
+                                     Prospect 2026
                                     </a>
                                 </div>
                                 <div class="pdf-viewer-container">
@@ -635,9 +665,78 @@ try {
                     <!-- Training Record Outside Training Content Pane -->
                     <div class="tab-pane fade" id="record_ot" role="tabpanel">
                         <h4 class="colour-defult">Outside Training Records</h4>
-                        <div class="alert alert-info">
-                            <i class="fas fa-info-circle me-2"></i>
-                            Outside training records will be displayed here.
+
+                        <div class="">
+                            <?php if (!empty($outside_training_error)): ?>
+                                <div class="alert alert-danger">
+                                    <strong>Database Error:</strong> <?= htmlspecialchars($outside_training_error) ?>
+                                </div>
+                            <?php elseif (!empty($outside_training_data)): ?>
+                                <div class="card">
+                                    <div class="card-body p-0">
+                                        <div class="table-responsive">
+                                            <table class="table table-striped table-hover mb-0 syllabusTable" id="outsideTrainingTable" style="width:100%">
+                                                <thead style="font-size:x-small;">
+                                                    <tr>
+                                                        <th>S/NO</th>
+                                                        <th>Description</th>
+                                                        <th>Conducted Institute</th>
+                                                        <th>Duration</th>
+                                                        <th>File</th>
+                                                        <!--<th>View</th>-->
+                                                    </tr>
+                                                </thead>
+                                                <tbody style="font-size:x-small;">
+                                                    <?php foreach ($outside_training_data as $index => $record): ?>
+                                                        <tr class="<?= $index % 2 === 0 ? 'bg-white' : 'bg-light-blue' ?>">
+                                                            <td><strong><?= htmlspecialchars($record['sno']) ?></strong></td>
+                                                            <td><?= htmlspecialchars(substr($record['description'], 0, 80)) . (strlen($record['description']) > 80 ? '...' : '') ?></td>
+                                                            <td><?= htmlspecialchars($record['conducted_institute'] ?? 'N/A') ?></td>
+                                                            <td><?= htmlspecialchars($record['duration'] ?? 'N/A') ?></td>
+                                                            <td>
+                                                                <div class="btn-group" role="group">
+                                                                    <?php if (!empty($record['file_path'])): ?>
+                                                                        <a href="/qai/assets/pdfjs/web/viewer.html?file=<?= urlencode('/qai/admin/action/' . $record['file_path']) ?>"
+                                                                            class="btn btn-view-details btn-sm view-details-btn"
+                                                                            data-bs-toggle="modal"
+                                                                            data-bs-target="#pdfModal"
+                                                                            data-pdf-url="/qai/assets/pdfjs/web/viewer.html?file=<?= urlencode('/qai/admin/action/' . $record['file_path']) ?>">
+                                                                            <i class="fas fa-file-pdf me-1"></i>PDF
+                                                                        </a>
+                                                                    <?php else: ?>
+                                                                        <button class="btn btn-sm btn-secondary" disabled title="No file available">
+                                                                            <i class="fas fa-file-pdf me-1"></i>PDF
+                                                                        </button>
+                                                                    <?php endif; ?>
+                                                                    </div>
+
+                                                            </td>
+                                                         <!--   <td>
+                                                                    <button class="btn btn-view-details btn-sm view-details-btn"
+                                                                        data-bs-toggle="modal"
+                                                                        data-bs-target="#detailsModal"
+                                                                        data-record-type="outside_training"
+                                                                        data-record-id="<?= $record['id'] ?? '' ?>"
+                                                                        data-record-sno="<?= htmlspecialchars($record['sno'] ?? '') ?>"
+                                                                        data-record-description="<?= htmlspecialchars($record['description'] ?? '') ?>"
+                                                                        data-record-conducted-institute="<?= htmlspecialchars($record['conducted_institute'] ?? '') ?>"
+                                                                        data-record-duration="<?= htmlspecialchars($record['duration'] ?? '') ?>"
+                                                                        data-record-file-path="<?= htmlspecialchars($record['file_path'] ?? '') ?>">
+                                                                        View
+                                                            </td>-->
+                                                        </tr>
+                                                    <?php endforeach; ?>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            <?php else: ?>
+                                <div class="alert alert-info">
+                                    <i class="fas fa-info-circle me-2"></i>
+                                    No outside training records found.
+                                </div>
+                            <?php endif; ?>
                         </div>
                     </div>
                 </div>
@@ -689,9 +788,10 @@ try {
     <script src="../assets/js/swiper-bundle.min.js"></script>
 
     <script>
-        // Store CPD data from PHP - Separate data for Training Syllabus CPD and Training Record CPD
+        // Store all data from PHP
         const trainingSyllabusCpdData = <?= $training_syllabus_cpd_data_json ?>;
         const trainingRecordCpdData = <?= $training_record_cpd_data_json ?>;
+        const outsideTrainingData = <?= $outside_training_data_json ?>;
 
         $(document).ready(function() {
             console.log("Training page - starting initialization");
@@ -982,7 +1082,6 @@ try {
                                                 <th>Trade</th>
                                                 <th>Description</th>
                                                 <th>Duration</th>
-                                                <th>Category</th>
                                                 <th>File</th>
                                                 <th>View</th>
                                             </tr>
@@ -1001,11 +1100,6 @@ try {
                                     </span>
                                 </td>
                                 <td>${escapeHtml(record.duration || 'N/A')}</td>
-                                <td>
-                                    <span class="badge badge-primary">
-                                        ${escapeHtml(record.category_name || 'N/A')}
-                                    </span>
-                                </td>
                                 <td>
                                     <div class="btn-group" role="group">
                         `;
@@ -1158,6 +1252,9 @@ try {
                         case "training_record_cpd":
                             title = "CPD Training Record Details";
                             break;
+                        case "outside_training":
+                            title = "Outside Training Details";
+                            break;
                     }
                     detailsModalTitle.textContent = title;
 
@@ -1171,6 +1268,9 @@ try {
                             break;
                         case "training_record_cpd":
                             content = generateTrainingRecordCpdDetails(button);
+                            break;
+                        case "outside_training":
+                            content = generateOutsideTrainingDetails(button);
                             break;
                         default:
                             content = "<p>No details available.</p>";
@@ -1391,6 +1491,56 @@ try {
                     <tr>
                         <th>Description:</th>
                         <td>${formatValue(description)}</td>
+                    </tr>
+                </table>
+
+                <div class="section-divider">Document</div>
+                <table class="details-modal-table">
+                    <tr>
+                        <th>Document:</th>
+                        <td>${fileLink}</td>
+                    </tr>
+                </table>
+                `;
+            }
+
+            // Add outside training details generator function
+            function generateOutsideTrainingDetails(button) {
+                const sno = button.getAttribute("data-record-sno");
+                const description = button.getAttribute("data-record-description");
+                const conductedInstitute = button.getAttribute("data-record-conducted-institute");
+                const duration = button.getAttribute("data-record-duration");
+                const filePath = button.getAttribute("data-record-file-path");
+
+                let fileLink = '<span class="empty-value">No file available</span>';
+                if (filePath && filePath !== 'N/A') {
+                    fileLink = `<a href="/qai/assets/pdfjs/web/viewer.html?file=${encodeURIComponent('/qai/admin/action/' + filePath)}" target="_blank" class="btn btn-sm btn-primary">
+                                <i class="fas fa-file-pdf"></i> View Document
+                            </a>`;
+                }
+
+                return `
+                <div class="section-divider">Basic Information</div>
+                <table class="details-modal-table">
+                    <tr>
+                        <th>Serial Number:</th>
+                        <td><strong>${formatValue(sno)}</strong></td>
+                    </tr>
+                    <tr>
+                        <th>Description:</th>
+                        <td>${formatValue(description)}</td>
+                    </tr>
+                </table>
+
+                <div class="section-divider">Training Details</div>
+                <table class="details-modal-table">
+                    <tr>
+                        <th>Conducted Institute:</th>
+                        <td>${formatValue(conductedInstitute)}</td>
+                    </tr>
+                    <tr>
+                        <th>Duration:</th>
+                        <td>${formatValue(duration)}</td>
                     </tr>
                 </table>
 

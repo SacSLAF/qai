@@ -675,15 +675,31 @@ CREATE TABLE `training_record_cpd`  (
   `duration` varchar(255) CHARACTER SET utf8mb4 NULL DEFAULT NULL,
   `ac_categories_id` int NOT NULL,
   `file_path` varchar(255) CHARACTER SET utf8mb4 NOT NULL,
+  `created_by` int NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`) USING BTREE,
-  FOREIGN KEY (`ac_categories_id`) REFERENCES `ac_categories` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT
+  FOREIGN KEY (`ac_categories_id`) REFERENCES `ac_categories` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
+  FOREIGN KEY (`created_by`) REFERENCES `admins` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 ROW_FORMAT = Dynamic;
-ALTER TABLE `training_record_cpd` 
-ADD COLUMN `created_by` int NULL AFTER `file_path`,
-ADD COLUMN `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-ADD COLUMN `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-ADD FOREIGN KEY (`created_by`) REFERENCES `admins` (`id`);
 
+-- ----------------------------
+-- Table structure for outside_training
+-- ----------------------------
+DROP TABLE IF EXISTS `outside_training`;
+CREATE TABLE `outside_training`  (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `sno` varchar(255) CHARACTER SET utf8mb4 NOT NULL,
+  `description` text CHARACTER SET utf8mb4 NOT NULL,
+  `conducted_institute` varchar(255) CHARACTER SET utf8mb4 NULL DEFAULT NULL,
+  `duration` varchar(255) CHARACTER SET utf8mb4 NULL DEFAULT NULL,
+  `file_path` varchar(255) CHARACTER SET utf8mb4 NOT NULL,
+  `created_by` int NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`) USING BTREE,
+  FOREIGN KEY (`created_by`) REFERENCES `admins` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 ROW_FORMAT = Dynamic;
 
 -- ------------------------------------------------------------------------------------------------------------------
 -- ---------------------PRODUCTIVITY & OSH
