@@ -136,69 +136,48 @@ try {
             $syllabus_cpd_error = "Error preparing Training Syllabus CPD query: " . $db->error;
         }
 
-        // Fetch Training Record CPD records
-        $stmt_record_cpd = $db->prepare("
-            SELECT trc.*, ac.name as category_name
-            FROM training_record_cpd trc 
-            LEFT JOIN ac_categories ac ON trc.ac_categories_id = ac.id 
-            ORDER BY trc.ac_categories_id, trc.sno ASC
-        ");
+        // Training Record
+        $training_records_data = [];
+        $tr_error = '';
 
-        if ($stmt_record_cpd) {
-            if ($stmt_record_cpd->execute()) {
-                $result_record_cpd = $stmt_record_cpd->get_result();
-                $all_record_cpd_records = $result_record_cpd->fetch_all(MYSQLI_ASSOC);
-
-                // Organize by ac_category
-                foreach ($all_record_cpd_records as $record) {
-                    $category_id = $record['ac_categories_id'] ?? 0;
-                    $category_name = $ac_cat_map[$category_id] ?? 'Uncategorized';
-
-                    if (!isset($training_record_cpd_data[$category_id])) {
-                        $training_record_cpd_data[$category_id] = [
-                            'category_name' => $category_name,
-                            'records' => []
-                        ];
-                    }
-                    $training_record_cpd_data[$category_id]['records'][] = $record;
-                }
-                $stmt_record_cpd->close();
-            } else {
-                $record_cpd_error = "Training Record CPD query execution failed: " . $stmt_record_cpd->error;
-            }
-        } else {
-            $record_cpd_error = "Error preparing Training Record CPD query: " . $db->error;
-        }
-
-        // Fetch Outside Training records
-        try {
-            $stmt_outside = $db->prepare("
-                SELECT ot.*, a.username as created_by_name
-                FROM outside_training ot 
-                LEFT JOIN admins a ON ot.created_by = a.id 
-                ORDER BY ot.sno ASC
+        // Fetch training records data
+        if (!empty($db) && !$db->connect_error) {
+            $stmt = $db->prepare("
+                SELECT tr.*, r.rank_name, ac.name as category_name
+                FROM training_records tr 
+                LEFT JOIN ranks r ON tr.rank_id = r.id 
+                LEFT JOIN ac_categories ac ON tr.ac_category_id = ac.id 
+                ORDER BY tr.training_type, tr.ac_category_id, tr.start_date DESC
             ");
-            
-            if ($stmt_outside) {
-                if ($stmt_outside->execute()) {
-                    $result_outside = $stmt_outside->get_result();
-                    $outside_training_data = $result_outside->fetch_all(MYSQLI_ASSOC);
-                    $stmt_outside->close();
-                } else {
-                    $outside_training_error = "Outside Training query execution failed: " . $stmt_outside->error;
+
+            if ($stmt) {
+                if ($stmt->execute()) {
+                    $result = $stmt->get_result();
+                    $all_records = $result->fetch_all(MYSQLI_ASSOC);
+
+                    // Organize by training_type only (no category grouping)
+                    foreach ($all_records as $record) {
+                        $training_type = $record['training_type'] ?? 'other';
+                        
+                        if (!isset($training_records_data[$training_type])) {
+                            $training_records_data[$training_type] = [];
+                        }
+                        
+                        $training_records_data[$training_type][] = $record;
+                    }
+                    $stmt->close();
                 }
-            } else {
-                $outside_training_error = "Error preparing Outside Training query: " . $db->error;
             }
-        } catch (Exception $e) {
-            $outside_training_error = "Exception fetching outside training: " . $e->getMessage();
         }
+
+
     }
 
     // Convert PHP data to JSON for JavaScript use
     $training_syllabus_cpd_data_json = json_encode($training_syllabus_cpd_data);
     $training_record_cpd_data_json = json_encode($training_record_cpd_data);
     $outside_training_data_json = json_encode($outside_training_data);
+    $training_records_data_json = json_encode($training_records_data);
 
     // Include head template after all PHP processing
     include '../template/head.php';
@@ -386,6 +365,21 @@ try {
             border-bottom: 1px solid #dee2e6;
             word-break: break-word;
         }
+
+        /* Nested dropdown styles */
+        .qa-dropdown-subitem {
+            padding-left: 25px !important;
+            font-size: 0.75rem !important;
+        }
+
+        .qa-dropdown .qa-dropdown-menu .qa-dropdown-menu {
+            margin-left: 10px;
+            border-left: 2px solid #dee2e6;
+        }
+
+        .qa-dropdown-subitem:hover {
+            background-color: #f8f9fa !important;
+        }
     </style>
 </head>
 
@@ -430,8 +424,20 @@ try {
                     <div class="qa-dropdown">
                         <a class="nav-link qa-dropdown-toggle" role="button">Training Record</a>
                         <div class="qa-dropdown-menu">
-                            <a class="qa-dropdown-item" data-bs-target="#record_cpd" role="tab">CPD</a>
-                            <a class="qa-dropdown-item" data-bs-target="#record_ot" role="tab">Outside Training</a>
+                            <div class="qa-dropdown">
+                                <a class="qa-dropdown-item qa-dropdown-toggle" role="button">CPD</a>
+                                <div class="qa-dropdown-menu">
+                                    <a class="qa-dropdown-item qa-dropdown-subitem" data-bs-target="#cpd_in_house" role="tab">In House</a>
+                                    <a class="qa-dropdown-item qa-dropdown-subitem" data-bs-target="#cpd_outside" role="tab">Outside</a>
+                                </div>
+                            </div>
+                            <div class="qa-dropdown">
+                                <a class="qa-dropdown-item qa-dropdown-toggle" role="button">Workshop</a>
+                                <div class="qa-dropdown-menu">
+                                    <a class="qa-dropdown-item qa-dropdown-subitem" data-bs-target="#w_in_house" role="tab">In House</a>
+                                    <a class="qa-dropdown-item qa-dropdown-subitem" data-bs-target="#w_outside" role="tab">Outside</a>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -634,111 +640,62 @@ try {
                         </div>
                     </div>
 
-                    <!-- Training Record CPD Content Pane -->
-                    <div class="tab-pane fade" id="record_cpd" role="tabpanel">
-                        <h4 class="colour-defult">CPD Training Records</h4>
+                    <!-- Training Record CPD In House -->
+                    <div class="tab-pane fade" id="cpd_in_house" role="tabpanel">
+                        <h4 class="colour-defult">CPD Training Records - In House</h4>
                         
-                        <!-- Category Filter Dropdown -->
-                        <div class="row mb-3">
-                            <div class="col-md-4">
-                                <label for="recordCpdCategoryFilter" class="form-label">Select Your Directorate:</label>
-                                <select class="form-select form-select-sm" id="recordCpdCategoryFilter">
-                                    <option value="">Select a category</option>
-                                    <?php if (!empty($ac_cat_map)): ?>
-                                        <?php ksort($ac_cat_map); ?>
-                                        <?php foreach ($ac_cat_map as $category_id => $category_name): ?>
-                                            <option value="<?= $category_id ?>"><?= htmlspecialchars($category_name) ?></option>
-                                        <?php endforeach; ?>
-                                    <?php endif; ?>
-                                </select>
-                            </div>
-                        </div>
-
-                        <div class="mt-4" id="recordCpdTableContainer">
-                            <div>
-                               <!-- <i class="fas fa-info-circle me-2"></i>
-                                Please select a directorate to view CPD training records.-->
+                        <div class="mt-4" id="cpdInhouseTableContainer">
+                            <div class="text-center py-4">
+                                <div class="spinner-border text-primary" role="status">
+                                    <span class="visually-hidden">Loading...</span>
+                                </div>
+                                <p class="mt-2">Loading CPD In House training records...</p>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Training Record Outside Training Content Pane -->
-                    <div class="tab-pane fade" id="record_ot" role="tabpanel">
-                        <h4 class="colour-defult">Outside Training Records</h4>
-
-                        <div class="">
-                            <?php if (!empty($outside_training_error)): ?>
-                                <div class="alert alert-danger">
-                                    <strong>Database Error:</strong> <?= htmlspecialchars($outside_training_error) ?>
+                    <!-- Training Record CPD Outside -->
+                    <div class="tab-pane fade" id="cpd_outside" role="tabpanel">
+                        <h4 class="colour-defult">CPD Training Records - Outside</h4>
+                        
+                        <div class="mt-4" id="cpdOutsideTableContainer">
+                            <div class="text-center py-4">
+                                <div class="spinner-border text-primary" role="status">
+                                    <span class="visually-hidden">Loading...</span>
                                 </div>
-                            <?php elseif (!empty($outside_training_data)): ?>
-                                <div class="card">
-                                    <div class="card-body p-0">
-                                        <div class="table-responsive">
-                                            <table class="table table-striped table-hover mb-0 syllabusTable" id="outsideTrainingTable" style="width:100%">
-                                                <thead style="font-size:x-small;">
-                                                    <tr>
-                                                        <th>S/NO</th>
-                                                        <th>Description</th>
-                                                        <th>Conducted Institute</th>
-                                                        <th>Duration</th>
-                                                        <th>File</th>
-                                                        <!--<th>View</th>-->
-                                                    </tr>
-                                                </thead>
-                                                <tbody style="font-size:x-small;">
-                                                    <?php foreach ($outside_training_data as $index => $record): ?>
-                                                        <tr class="<?= $index % 2 === 0 ? 'bg-white' : 'bg-light-blue' ?>">
-                                                            <td><strong><?= htmlspecialchars($record['sno']) ?></strong></td>
-                                                            <td><?= htmlspecialchars(substr($record['description'], 0, 80)) . (strlen($record['description']) > 80 ? '...' : '') ?></td>
-                                                            <td><?= htmlspecialchars($record['conducted_institute'] ?? 'N/A') ?></td>
-                                                            <td><?= htmlspecialchars($record['duration'] ?? 'N/A') ?></td>
-                                                            <td>
-                                                                <div class="btn-group" role="group">
-                                                                    <?php if (!empty($record['file_path'])): ?>
-                                                                        <a href="/qai/assets/pdfjs/web/viewer.html?file=<?= urlencode('/qai/admin/action/' . $record['file_path']) ?>"
-                                                                            class="btn btn-view-details btn-sm view-details-btn"
-                                                                            data-bs-toggle="modal"
-                                                                            data-bs-target="#pdfModal"
-                                                                            data-pdf-url="/qai/assets/pdfjs/web/viewer.html?file=<?= urlencode('/qai/admin/action/' . $record['file_path']) ?>">
-                                                                            <i class="fas fa-file-pdf me-1"></i>PDF
-                                                                        </a>
-                                                                    <?php else: ?>
-                                                                        <button class="btn btn-sm btn-secondary" disabled title="No file available">
-                                                                            <i class="fas fa-file-pdf me-1"></i>PDF
-                                                                        </button>
-                                                                    <?php endif; ?>
-                                                                    </div>
-
-                                                            </td>
-                                                         <!--   <td>
-                                                                    <button class="btn btn-view-details btn-sm view-details-btn"
-                                                                        data-bs-toggle="modal"
-                                                                        data-bs-target="#detailsModal"
-                                                                        data-record-type="outside_training"
-                                                                        data-record-id="<?= $record['id'] ?? '' ?>"
-                                                                        data-record-sno="<?= htmlspecialchars($record['sno'] ?? '') ?>"
-                                                                        data-record-description="<?= htmlspecialchars($record['description'] ?? '') ?>"
-                                                                        data-record-conducted-institute="<?= htmlspecialchars($record['conducted_institute'] ?? '') ?>"
-                                                                        data-record-duration="<?= htmlspecialchars($record['duration'] ?? '') ?>"
-                                                                        data-record-file-path="<?= htmlspecialchars($record['file_path'] ?? '') ?>">
-                                                                        View
-                                                            </td>-->
-                                                        </tr>
-                                                    <?php endforeach; ?>
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    </div>
-                                </div>
-                            <?php else: ?>
-                                <div class="alert alert-info">
-                                    <i class="fas fa-info-circle me-2"></i>
-                                    No outside training records found.
-                                </div>
-                            <?php endif; ?>
+                                <p class="mt-2">Loading CPD Outside training records...</p>
+                            </div>
                         </div>
                     </div>
+
+                    <!-- Workshop In House -->
+                    <div class="tab-pane fade" id="w_in_house" role="tabpanel">
+                        <h4 class="colour-defult">Workshop Training Records - In House</h4>
+                        
+                        <div class="mt-4" id="workshopInhouseTableContainer">
+                            <div class="text-center py-4">
+                                <div class="spinner-border text-primary" role="status">
+                                    <span class="visually-hidden">Loading...</span>
+                                </div>
+                                <p class="mt-2">Loading Workshop In House training records...</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Workshop Outside -->
+                    <div class="tab-pane fade" id="w_outside" role="tabpanel">
+                        <h4 class="colour-defult">Workshop Training Records - Outside</h4>
+                        
+                        <div class="mt-4" id="workshopOutsideTableContainer">
+                            <div class="text-center py-4">
+                                <div class="spinner-border text-primary" role="status">
+                                    <span class="visually-hidden">Loading...</span>
+                                </div>
+                                <p class="mt-2">Loading Workshop Outside training records...</p>
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
             </div>
         </div>
@@ -792,14 +749,16 @@ try {
         const trainingSyllabusCpdData = <?= $training_syllabus_cpd_data_json ?>;
         const trainingRecordCpdData = <?= $training_record_cpd_data_json ?>;
         const outsideTrainingData = <?= $outside_training_data_json ?>;
+        const trainingRecordsData = <?= $training_records_data_json ?>;
 
         $(document).ready(function() {
             console.log("Training page - starting initialization");
+            console.log("Training Records Data:", trainingRecordsData);
 
             const dataTableConfig = {
                 dom: '<"row"<"col-sm-12 col-md-6"l><"col-sm-12 col-md-6"f>>' +
-                     '<"row"<"col-sm-12"tr>>' +
-                     '<"row"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7"p>>',
+                    '<"row"<"col-sm-12"tr>>' +
+                    '<"row"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7"p>>',
                 pageLength: 10,
                 lengthMenu: [10, 25, 50, 100],
                 language: {
@@ -820,21 +779,20 @@ try {
                 responsive: true,
                 destroy: true,
                 ordering: true,
-                order: [[0, 'asc']], // Default sort by Syllabus No
+                order: [[0, 'asc']],
                 stateSave: false,
                 columnDefs: [
-                    { responsivePriority: 1, targets: 0 }, // Syllabus No
-                    { responsivePriority: 2, targets: 1 }, // Description
-                    { responsivePriority: 3, targets: -1 }, // Actions
-                    { orderable: false, targets: -1 } // Disable sorting for Actions column
+                    { responsivePriority: 1, targets: 0 },
+                    { responsivePriority: 2, targets: 1 },
+                    { responsivePriority: 3, targets: -1 },
+                    { orderable: false, targets: -1 }
                 ]
             };
 
-            // DataTable configuration for CPD tables
             const cpdDataTableConfig = {
                 dom: '<"row"<"col-sm-12 col-md-6"l><"col-sm-12 col-md-6"f>>' +
-                     '<"row"<"col-sm-12"tr>>' +
-                     '<"row"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7"p>>',
+                    '<"row"<"col-sm-12"tr>>' +
+                    '<"row"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7"p>>',
                 pageLength: 10,
                 lengthMenu: [10, 25, 50, 100],
                 language: {
@@ -855,13 +813,47 @@ try {
                 responsive: true,
                 destroy: true,
                 ordering: true,
-                order: [[0, 'asc']], // Default sort by S/NO
+                order: [[0, 'asc']],
                 stateSave: false,
                 columnDefs: [
-                    { responsivePriority: 1, targets: 0 }, // S/NO
-                    { responsivePriority: 2, targets: 2 }, // Description
-                    { responsivePriority: 3, targets: -1 }, // Actions
-                    { orderable: false, targets: -1 } // Disable sorting for Actions column
+                    { responsivePriority: 1, targets: 0 },
+                    { responsivePriority: 2, targets: 2 },
+                    { responsivePriority: 3, targets: -1 },
+                    { orderable: false, targets: -1 }
+                ]
+            };
+
+            const trainingRecordDataTableConfig = {
+                dom: '<"row"<"col-sm-12 col-md-6"l><"col-sm-12 col-md-6"f>>' +
+                    '<"row"<"col-sm-12"tr>>' +
+                    '<"row"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7"p>>',
+                pageLength: 10,
+                lengthMenu: [10, 25, 50, 100],
+                language: {
+                    search: "Filter:",
+                    lengthMenu: "Show _MENU_ entries",
+                    info: "Showing _START_ to _END_ of _TOTAL_ entries",
+                    infoEmpty: "Showing 0 to 0 of 0 entries",
+                    infoFiltered: "(filtered from _MAX_ total entries)",
+                    zeroRecords: "No matching records found",
+                    paginate: {
+                        first: "First",
+                        last: "Last",
+                        next: "Next",
+                        previous: "Previous"
+                    },
+                },
+                autoWidth: false,
+                responsive: true,
+                destroy: true,
+                ordering: true,
+                order: [[0, 'asc']],
+                stateSave: false,
+                columnDefs: [
+                    { responsivePriority: 1, targets: 0 },
+                    { responsivePriority: 2, targets: 3 },
+                    { responsivePriority: 3, targets: -1 },
+                    { orderable: false, targets: -1 }
                 ]
             };
 
@@ -887,10 +879,10 @@ try {
                         
                         if (!selectedCategoryId) {
                             tableContainer.innerHTML = `
-                                <!--<div class="alert alert-info">
+                                <div class="alert alert-info">
                                     <i class="fas fa-info-circle me-2"></i>
                                     Please select a directorate to view CPD training syllabus records.
-                                </div>-->
+                                </div>
                             `;
                             return;
                         }
@@ -911,42 +903,7 @@ try {
                 }
             }
 
-            // Training Record CPD Category filter functionality
-            function setupRecordCpdCategoryFilter() {
-                const categoryFilter = document.getElementById('recordCpdCategoryFilter');
-                const tableContainer = document.getElementById('recordCpdTableContainer');
-                
-                if (categoryFilter) {
-                    categoryFilter.addEventListener('change', function() {
-                        const selectedCategoryId = this.value;
-                        
-                        if (!selectedCategoryId) {
-                            tableContainer.innerHTML = `
-                               <!-- <div class="alert alert-info">
-                                    <i class="fas fa-info-circle me-2"></i>
-                                    Please select a directorate to view CPD training records.
-                                </div>-->
-                            `;
-                            return;
-                        }
-                        
-                        tableContainer.innerHTML = `
-                            <div class="text-center py-4">
-                                <div class="spinner-border text-primary" role="status">
-                                    <span class="visually-hidden">Loading...</span>
-                                </div>
-                                <p class="mt-2">Loading CPD records...</p>
-                            </div>
-                        `;
-                        
-                        setTimeout(() => {
-                            loadRecordCpdTable(selectedCategoryId);
-                        }, 300);
-                    });
-                }
-            }
-
-            // Load Training Schedule CPD table for selected category (using training_syllabus_cpd data)
+            // Load Training Schedule CPD table for selected category
             function loadScheduleCpdTable(categoryId) {
                 const tableContainer = document.getElementById('scheduleCpdTableContainer');
                 const categoryName = document.querySelector(`#scheduleCpdCategoryFilter option[value="${categoryId}"]`).textContent;
@@ -1063,26 +1020,36 @@ try {
                 }
             }
 
-            // Load Training Record CPD table for selected category (using training_record_cpd data)
-            function loadRecordCpdTable(categoryId) {
-                const tableContainer = document.getElementById('recordCpdTableContainer');
-                const categoryName = document.querySelector(`#recordCpdCategoryFilter option[value="${categoryId}"]`).textContent;
+            // Load CPD In House table (all data - no category filter)
+            function loadCpdInhouseTable() {
+                console.log('Loading CPD In House table...');
+                const tableContainer = document.getElementById('cpdInhouseTableContainer');
                 
-                if (trainingRecordCpdData[categoryId] && trainingRecordCpdData[categoryId].records && trainingRecordCpdData[categoryId].records.length > 0) {
-                    const records = trainingRecordCpdData[categoryId].records;
+                if (!tableContainer) {
+                    console.error('CPD In House table container not found');
+                    return;
+                }
+                
+                if (trainingRecordsData['cpd-inhouse'] && trainingRecordsData['cpd-inhouse'].length > 0) {
+                    console.log('Found', trainingRecordsData['cpd-inhouse'].length, 'CPD In House records');
+                    const records = trainingRecordsData['cpd-inhouse'];
                     
                     let tableHtml = `
                         <div class="card">
                             <div class="card-body p-0">
                                 <div class="table-responsive">
-                                    <table class="table table-striped table-hover mb-0 cpdTable" id="recordCpdTable_${categoryId}" style="width:100%">
+                                    <table class="table table-striped table-hover mb-0 trainingRecordTable" id="cpdInhouseTable" style="width:100%">
                                         <thead style="font-size:x-small;">
                                             <tr>
-                                                <th>S/NO</th>
+                                                <th>S.No</th>
+                                                <th>Service No</th>
+                                                <th>Rank</th>
+                                                <th>Name</th>
+                                                <th>Course Name</th>
                                                 <th>Trade</th>
-                                                <th>Description</th>
-                                                <th>Duration</th>
-                                                <th>File</th>
+                                                <th>Directorate</th>
+                                                <th>Start Date</th>
+                                                <th>End Date</th>
                                                 <th>View</th>
                                             </tr>
                                         </thead>
@@ -1092,52 +1059,35 @@ try {
                     records.forEach((record, index) => {
                         tableHtml += `
                             <tr class="${index % 2 === 0 ? 'bg-white' : 'bg-light-blue'}">
-                                <td><strong>${escapeHtml(record.sno)}</strong></td>
-                                <td>${escapeHtml(record.trade || 'N/A')}</td>
+                                <td>${escapeHtml(record.sno || 'N/A')}</td>
+                                <td><strong>${escapeHtml(record.svc_no || 'N/A')}</strong></td>
+                                <td>${escapeHtml(record.rank_name || 'N/A')}</td>
+                                <td>${escapeHtml(record.name)}</td>
                                 <td>
-                                    <span data-bs-toggle="tooltip" title="${escapeHtml(record.description)}">
-                                        ${escapeHtml(record.description.substring(0, 80))}${record.description.length > 80 ? '...' : ''}
+                                    <span data-bs-toggle="tooltip" title="${escapeHtml(record.course_name)}">
+                                        ${escapeHtml(record.course_name.substring(0, 50))}${record.course_name.length > 50 ? '...' : ''}
                                     </span>
                                 </td>
-                                <td>${escapeHtml(record.duration || 'N/A')}</td>
-                                <td>
-                                    <div class="btn-group" role="group">
-                        `;
-                        
-                        if (record.file_path) {
-                            const pdfUrl = `/qai/assets/pdfjs/web/viewer.html?file=${encodeURIComponent('/qai/admin/action/' + record.file_path)}`;
-                            tableHtml += `
-                                <a href="${pdfUrl}"
-                                    class="btn btn-view-details btn-sm view-details-btn"
-                                    data-bs-toggle="modal"
-                                    data-bs-target="#pdfModal"
-                                    data-pdf-url="${pdfUrl}">
-                                    <i class="fas fa-file-pdf me-1"></i>PDF
-                                </a>
-                            `;
-                        } else {
-                            tableHtml += `
-                                <button class="btn btn-sm btn-secondary" disabled title="No file available">
-                                    <i class="fas fa-file-pdf me-1"></i>PDF
-                                </button>
-                            `;
-                        }
-                        
-                        tableHtml += `
-                                    </div>
-                                </td>
+                                <td>${escapeHtml(record.trade || 'N/A')}</td>
+                                <td>${escapeHtml(record.category_name || 'N/A')}</td>
+                                <td>${record.start_date ? escapeHtml(record.start_date) : 'N/A'}</td>
+                                <td>${record.end_date ? escapeHtml(record.end_date) : 'N/A'}</td>
                                 <td>
                                     <button class="btn btn-view-details btn-sm view-details-btn"
                                         data-bs-toggle="modal"
                                         data-bs-target="#detailsModal"
-                                        data-record-type="training_record_cpd"
+                                        data-record-type="training_record"
                                         data-record-id="${record.id || ''}"
                                         data-record-sno="${escapeHtml(record.sno || '')}"
-                                        data-record-trade="${escapeHtml(record.trade || '')}"
-                                        data-record-description="${escapeHtml(record.description || '')}"
-                                        data-record-duration="${escapeHtml(record.duration || '')}"
+                                        data-record-svc-no="${escapeHtml(record.svc_no || '')}"
+                                        data-record-rank="${escapeHtml(record.rank_name || '')}"
+                                        data-record-name="${escapeHtml(record.name || '')}"
+                                        data-record-course-name="${escapeHtml(record.course_name || '')}"
+                                        data-record-training-type="${escapeHtml(record.training_type || '')}"
                                         data-record-category="${escapeHtml(record.category_name || '')}"
-                                        data-record-file-path="${escapeHtml(record.file_path || '')}">
+                                        data-record-trade="${escapeHtml(record.trade || '')}"
+                                        data-record-start-date="${escapeHtml(record.start_date || '')}"
+                                        data-record-end-date="${escapeHtml(record.end_date || '')}"
                                         View
                                     </button>
                                 </td>
@@ -1156,22 +1106,474 @@ try {
                     tableContainer.innerHTML = tableHtml;
                     
                     setTimeout(() => {
-                        const tableId = `recordCpdTable_${categoryId}`;
+                        const tableId = 'cpdInhouseTable';
                         if (!$.fn.DataTable.isDataTable('#' + tableId)) {
-                            $('#' + tableId).DataTable(cpdDataTableConfig);
+                            console.log('Initializing DataTable for CPD In House');
+                            $('#' + tableId).DataTable(trainingRecordDataTableConfig);
                         }
                         
                         $('[data-bs-toggle="tooltip"]').tooltip();
                     }, 100);
                     
                 } else {
+                    console.log('No CPD In House records found');
                     tableContainer.innerHTML = `
                         <div class="alert alert-info">
                             <i class="fas fa-info-circle me-2"></i>
-                            No CPD records found for <strong>${categoryName}</strong>.
+                            No CPD In House training records found.
                         </div>
                     `;
                 }
+            }
+
+            // Load CPD Outside table (all data - no category filter)
+            function loadCpdOutsideTable() {
+                console.log('Loading CPD Outside table...');
+                const tableContainer = document.getElementById('cpdOutsideTableContainer');
+                
+                if (!tableContainer) {
+                    console.error('CPD Outside table container not found');
+                    return;
+                }
+                
+                if (trainingRecordsData['cpd-outside'] && trainingRecordsData['cpd-outside'].length > 0) {
+                    console.log('Found', trainingRecordsData['cpd-outside'].length, 'CPD Outside records');
+                    const records = trainingRecordsData['cpd-outside'];
+                    
+                    let tableHtml = `
+                        <div class="card">
+                            <div class="card-body p-0">
+                                <div class="table-responsive">
+                                    <table class="table table-striped table-hover mb-0 trainingRecordTable" id="cpdOutsideTable" style="width:100%">
+                                        <thead style="font-size:x-small;">
+                                            <tr>
+                                                <th>S.No</th>
+                                                <th>Service No</th>
+                                                <th>Rank</th>
+                                                <th>Name</th>
+                                                <th>Course Name</th>
+                                                <th>Trade</th>
+                                                <th>Directorate</th>
+                                                <th>Start Date</th>
+                                                <th>End Date</th>
+                                                <th>View</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody style="font-size:x-small;">
+                    `;
+                    
+                    records.forEach((record, index) => {
+                        tableHtml += `
+                            <tr class="${index % 2 === 0 ? 'bg-white' : 'bg-light-blue'}">
+                                <td>${escapeHtml(record.sno || 'N/A')}</td>
+                                <td><strong>${escapeHtml(record.svc_no || 'N/A')}</strong></td>
+                                <td>${escapeHtml(record.rank_name || 'N/A')}</td>
+                                <td>${escapeHtml(record.name)}</td>
+                                <td>
+                                    <span data-bs-toggle="tooltip" title="${escapeHtml(record.course_name)}">
+                                        ${escapeHtml(record.course_name.substring(0, 50))}${record.course_name.length > 50 ? '...' : ''}
+                                    </span>
+                                </td>
+                                <td>${escapeHtml(record.trade || 'N/A')}</td>
+                                <td>${escapeHtml(record.category_name || 'N/A')}</td>
+                                <td>${record.start_date ? escapeHtml(record.start_date) : 'N/A'}</td>
+                                <td>${record.end_date ? escapeHtml(record.end_date) : 'N/A'}</td>
+                                <td>
+                                    <button class="btn btn-view-details btn-sm view-details-btn"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#detailsModal"
+                                        data-record-type="training_record"
+                                        data-record-id="${record.id || ''}"
+                                        data-record-sno="${escapeHtml(record.sno || '')}"
+                                        data-record-svc-no="${escapeHtml(record.svc_no || '')}"
+                                        data-record-rank="${escapeHtml(record.rank_name || '')}"
+                                        data-record-name="${escapeHtml(record.name || '')}"
+                                        data-record-course-name="${escapeHtml(record.course_name || '')}"
+                                        data-record-training-type="${escapeHtml(record.training_type || '')}"
+                                        data-record-category="${escapeHtml(record.category_name || '')}"
+                                        data-record-trade="${escapeHtml(record.trade || '')}"
+                                        data-record-start-date="${escapeHtml(record.start_date || '')}"
+                                        data-record-end-date="${escapeHtml(record.end_date || '')}"
+                                        View
+                                    </button>
+                                </td>
+                            </tr>
+                        `;
+                    });
+                    
+                    tableHtml += `
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    
+                    tableContainer.innerHTML = tableHtml;
+                    
+                    setTimeout(() => {
+                        const tableId = 'cpdOutsideTable';
+                        if (!$.fn.DataTable.isDataTable('#' + tableId)) {
+                            console.log('Initializing DataTable for CPD Outside');
+                            $('#' + tableId).DataTable(trainingRecordDataTableConfig);
+                        }
+                        
+                        $('[data-bs-toggle="tooltip"]').tooltip();
+                    }, 100);
+                    
+                } else {
+                    console.log('No CPD Outside records found');
+                    tableContainer.innerHTML = `
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle me-2"></i>
+                            No CPD Outside training records found.
+                        </div>
+                    `;
+                }
+            }
+
+            // Load Workshop In House table (all data - no category filter)
+            function loadWorkshopInhouseTable() {
+                console.log('Loading Workshop In House table...');
+                const tableContainer = document.getElementById('workshopInhouseTableContainer');
+                
+                if (!tableContainer) {
+                    console.error('Workshop In House table container not found');
+                    return;
+                }
+                
+                if (trainingRecordsData['workshop-inhouse'] && trainingRecordsData['workshop-inhouse'].length > 0) {
+                    console.log('Found', trainingRecordsData['workshop-inhouse'].length, 'Workshop In House records');
+                    const records = trainingRecordsData['workshop-inhouse'];
+                    
+                    let tableHtml = `
+                        <div class="card">
+                            <div class="card-body p-0">
+                                <div class="table-responsive">
+                                    <table class="table table-striped table-hover mb-0 trainingRecordTable" id="workshopInhouseTable" style="width:100%">
+                                        <thead style="font-size:x-small;">
+                                            <tr>
+                                                <th>S.No</th>
+                                                <th>Service No</th>
+                                                <th>Rank</th>
+                                                <th>Name</th>
+                                                <th>Course Name</th>
+                                                <th>Trade</th>
+                                                <th>Directorate</th>
+                                                <th>Start Date</th>
+                                                <th>End Date</th>
+                                                <th>View</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody style="font-size:x-small;">
+                    `;
+                    
+                    records.forEach((record, index) => {
+                        tableHtml += `
+                            <tr class="${index % 2 === 0 ? 'bg-white' : 'bg-light-blue'}">
+                                <td>${escapeHtml(record.sno || 'N/A')}</td>
+                                <td><strong>${escapeHtml(record.svc_no || 'N/A')}</strong></td>
+                                <td>${escapeHtml(record.rank_name || 'N/A')}</td>
+                                <td>${escapeHtml(record.name)}</td>
+                                <td>
+                                    <span data-bs-toggle="tooltip" title="${escapeHtml(record.course_name)}">
+                                        ${escapeHtml(record.course_name.substring(0, 50))}${record.course_name.length > 50 ? '...' : ''}
+                                    </span>
+                                </td>
+                                <td>${escapeHtml(record.trade || 'N/A')}</td>
+                                <td>${escapeHtml(record.category_name || 'N/A')}</td>
+                                <td>${record.start_date ? escapeHtml(record.start_date) : 'N/A'}</td>
+                                <td>${record.end_date ? escapeHtml(record.end_date) : 'N/A'}</td>
+                                <td>
+                                    <button class="btn btn-view-details btn-sm view-details-btn"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#detailsModal"
+                                        data-record-type="training_record"
+                                        data-record-id="${record.id || ''}"
+                                        data-record-sno="${escapeHtml(record.sno || '')}"
+                                        data-record-svc-no="${escapeHtml(record.svc_no || '')}"
+                                        data-record-rank="${escapeHtml(record.rank_name || '')}"
+                                        data-record-name="${escapeHtml(record.name || '')}"
+                                        data-record-course-name="${escapeHtml(record.course_name || '')}"
+                                        data-record-training-type="${escapeHtml(record.training_type || '')}"
+                                        data-record-category="${escapeHtml(record.category_name || '')}"
+                                        data-record-trade="${escapeHtml(record.trade || '')}"
+                                        data-record-start-date="${escapeHtml(record.start_date || '')}"
+                                        data-record-end-date="${escapeHtml(record.end_date || '')}"
+                                        View
+                                    </button>
+                                </td>
+                            </tr>
+                        `;
+                    });
+                    
+                    tableHtml += `
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    
+                    tableContainer.innerHTML = tableHtml;
+                    
+                    setTimeout(() => {
+                        const tableId = 'workshopInhouseTable';
+                        if (!$.fn.DataTable.isDataTable('#' + tableId)) {
+                            console.log('Initializing DataTable for Workshop In House');
+                            $('#' + tableId).DataTable(trainingRecordDataTableConfig);
+                        }
+                        
+                        $('[data-bs-toggle="tooltip"]').tooltip();
+                    }, 100);
+                    
+                } else {
+                    console.log('No Workshop In House records found');
+                    tableContainer.innerHTML = `
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle me-2"></i>
+                            No Workshop In House training records found.
+                        </div>
+                    `;
+                }
+            }
+
+            // Load Workshop Outside table (all data - no category filter)
+            function loadWorkshopOutsideTable() {
+                console.log('Loading Workshop Outside table...');
+                const tableContainer = document.getElementById('workshopOutsideTableContainer');
+                
+                if (!tableContainer) {
+                    console.error('Workshop Outside table container not found');
+                    return;
+                }
+                
+                if (trainingRecordsData['workshop-outside'] && trainingRecordsData['workshop-outside'].length > 0) {
+                    console.log('Found', trainingRecordsData['workshop-outside'].length, 'Workshop Outside records');
+                    const records = trainingRecordsData['workshop-outside'];
+                    
+                    let tableHtml = `
+                        <div class="card">
+                            <div class="card-body p-0">
+                                <div class="table-responsive">
+                                    <table class="table table-striped table-hover mb-0 trainingRecordTable" id="workshopOutsideTable" style="width:100%">
+                                        <thead style="font-size:x-small;">
+                                            <tr>
+                                                <th>S.No</th>
+                                                <th>Service No</th>
+                                                <th>Rank</th>
+                                                <th>Name</th>
+                                                <th>Course Name</th>
+                                                <th>Trade</th>
+                                                <th>Directorate</th>
+                                                <th>Start Date</th>
+                                                <th>End Date</th>
+                                                <th>View</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody style="font-size:x-small;">
+                    `;
+                    
+                    records.forEach((record, index) => {
+                        tableHtml += `
+                            <tr class="${index % 2 === 0 ? 'bg-white' : 'bg-light-blue'}">
+                                <td>${escapeHtml(record.sno || 'N/A')}</td>
+                                <td><strong>${escapeHtml(record.svc_no || 'N/A')}</strong></td>
+                                <td>${escapeHtml(record.rank_name || 'N/A')}</td>
+                                <td>${escapeHtml(record.name)}</td>
+                                <td>
+                                    <span data-bs-toggle="tooltip" title="${escapeHtml(record.course_name)}">
+                                        ${escapeHtml(record.course_name.substring(0, 50))}${record.course_name.length > 50 ? '...' : ''}
+                                    </span>
+                                </td>
+                                <td>${escapeHtml(record.trade || 'N/A')}</td>
+                                <td>${escapeHtml(record.category_name || 'N/A')}</td>
+                                <td>${record.start_date ? escapeHtml(record.start_date) : 'N/A'}</td>
+                                <td>${record.end_date ? escapeHtml(record.end_date) : 'N/A'}</td>
+                                <td>
+                                    <button class="btn btn-view-details btn-sm view-details-btn"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#detailsModal"
+                                        data-record-type="training_record"
+                                        data-record-id="${record.id || ''}"
+                                        data-record-sno="${escapeHtml(record.sno || '')}"
+                                        data-record-svc-no="${escapeHtml(record.svc_no || '')}"
+                                        data-record-rank="${escapeHtml(record.rank_name || '')}"
+                                        data-record-name="${escapeHtml(record.name || '')}"
+                                        data-record-course-name="${escapeHtml(record.course_name || '')}"
+                                        data-record-training-type="${escapeHtml(record.training_type || '')}"
+                                        data-record-category="${escapeHtml(record.category_name || '')}"
+                                        data-record-trade="${escapeHtml(record.trade || '')}"
+                                        data-record-start-date="${escapeHtml(record.start_date || '')}"
+                                        data-record-end-date="${escapeHtml(record.end_date || '')}"
+                                        View
+                                    </button>
+                                </td>
+                            </tr>
+                        `;
+                    });
+                    
+                    tableHtml += `
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    
+                    tableContainer.innerHTML = tableHtml;
+                    
+                    setTimeout(() => {
+                        const tableId = 'workshopOutsideTable';
+                        if (!$.fn.DataTable.isDataTable('#' + tableId)) {
+                            console.log('Initializing DataTable for Workshop Outside');
+                            $('#' + tableId).DataTable(trainingRecordDataTableConfig);
+                        }
+                        
+                        $('[data-bs-toggle="tooltip"]').tooltip();
+                    }, 100);
+                    
+                } else {
+                    console.log('No Workshop Outside records found');
+                    tableContainer.innerHTML = `
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle me-2"></i>
+                            No Workshop Outside training records found.
+                        </div>
+                    `;
+                }
+            }
+
+            // Initialize training record tables
+            function initializeTrainingRecordTables() {
+                $('.trainingRecordTable').each(function() {
+                    const tableId = $(this).attr('id');
+                    if (!$.fn.DataTable.isDataTable('#' + tableId)) {
+                        console.log('Initializing DataTable for:', tableId);
+                        $('#' + tableId).DataTable(trainingRecordDataTableConfig);
+                    }
+                });
+            }
+
+            // Enhanced nested dropdown functionality
+            function setupNestedDropdowns() {
+                // Handle main dropdown toggles
+                const dropdownToggles = document.querySelectorAll(".qa-dropdown-toggle");
+                
+                dropdownToggles.forEach((toggle) => {
+                    toggle.addEventListener("click", function(e) {
+                        e.preventDefault();
+                        e.stopPropagation();
+
+                        const dropdownMenu = this.nextElementSibling;
+                        if (!dropdownMenu) return;
+
+                        const isCurrentlyOpen = dropdownMenu.classList.contains("show");
+
+                        // Close all other dropdowns at the same level
+                        const parentContainer = this.closest('.qa-dropdown');
+                        if (parentContainer) {
+                            const siblingDropdowns = parentContainer.parentElement.querySelectorAll('.qa-dropdown');
+                            siblingDropdowns.forEach((sibling) => {
+                                if (sibling !== parentContainer) {
+                                    const siblingMenu = sibling.querySelector('.qa-dropdown-menu');
+                                    if (siblingMenu) siblingMenu.classList.remove("show");
+                                }
+                            });
+                        }
+
+                        if (!isCurrentlyOpen) {
+                            dropdownMenu.classList.add("show");
+                        } else {
+                            dropdownMenu.classList.remove("show");
+                        }
+                    });
+                });
+
+                // Handle nested dropdown items
+                const dropdownItems = document.querySelectorAll(".qa-dropdown-item:not(.qa-dropdown-toggle)");
+                dropdownItems.forEach((item) => {
+                    item.addEventListener("click", function(e) {
+                        e.preventDefault();
+                        e.stopPropagation();
+
+                        // Remove active class from all items
+                        document.querySelectorAll(".nav-link, .qa-dropdown-item").forEach((tab) => {
+                            tab.classList.remove("active");
+                        });
+                        
+                        // Add active class to clicked item
+                        this.classList.add("active");
+
+                        // Activate parent dropdown toggles
+                        let currentElement = this;
+                        while (currentElement) {
+                            if (currentElement.classList.contains('qa-dropdown-item')) {
+                                const parentDropdown = currentElement.closest(".qa-dropdown");
+                                if (parentDropdown) {
+                                    const dropdownToggle = parentDropdown.querySelector(".qa-dropdown-toggle");
+                                    if (dropdownToggle) {
+                                        dropdownToggle.classList.add("active");
+                                        const dropdownMenu = dropdownToggle.nextElementSibling;
+                                        if (dropdownMenu) dropdownMenu.classList.add("show");
+                                    }
+                                }
+                            }
+                            currentElement = currentElement.parentElement;
+                        }
+
+                        const targetId = this.getAttribute("data-bs-target");
+                        const targetPane = document.querySelector(targetId);
+
+                        // Hide all tab panes
+                        document.querySelectorAll(".tab-pane").forEach((pane) => {
+                            pane.classList.remove("show", "active");
+                        });
+
+                        // Show target tab pane
+                        if (targetPane) {
+                            targetPane.classList.add("show", "active");
+                        }
+                        
+                        // Initialize relevant functionality based on the tab
+                        setTimeout(() => {
+                            initializeSyllabusTables();
+                            
+                            if (targetId === '#ts-cpd') {
+                                setupScheduleCpdCategoryFilter();
+                            }
+                            
+                            // Load training record tables when their tabs are activated
+                            if (targetId === '#cpd_in_house') {
+                                loadCpdInhouseTable();
+                            } else if (targetId === '#cpd_outside') {
+                                loadCpdOutsideTable();
+                            } else if (targetId === '#w_in_house') {
+                                loadWorkshopInhouseTable();
+                            } else if (targetId === '#w_outside') {
+                                loadWorkshopOutsideTable();
+                            }
+                        }, 300);
+                    });
+                });
+
+                // Close dropdowns when clicking outside
+                document.addEventListener("click", function(e) {
+                    if (!e.target.closest(".qa-dropdown")) {
+                        document.querySelectorAll(".qa-dropdown-menu").forEach((menu) => {
+                            menu.classList.remove("show");
+                        });
+                    }
+                });
+
+                // Close dropdowns with Escape key
+                document.addEventListener("keydown", function(e) {
+                    if (e.key === "Escape") {
+                        document.querySelectorAll(".qa-dropdown-menu").forEach((menu) => {
+                            menu.classList.remove("show");
+                        });
+                    }
+                });
             }
 
             // Helper function to escape HTML
@@ -1187,30 +1589,39 @@ try {
                 return text.replace(/[&<>"']/g, function(m) { return map[m]; });
             }
 
-            // Initialize tables on page load for visible tabs
-            setTimeout(() => {
-                initializeSyllabusTables();
-            }, 500);
+            function formatValue(value) {
+                if (
+                    !value ||
+                    value === "null" ||
+                    value === "undefined" ||
+                    value === "0000-00-00" ||
+                    value === "N/A"
+                ) {
+                    return '<span class="empty-value">Not provided</span>';
+                }
+                return value;
+            }
 
-            // Reinitialize tables when tabs are shown
-            $('a[data-bs-toggle="tab"]').on('shown.bs.tab', function(e) {
-                const target = $(e.target).data('bs-target');
-                console.log('Tab shown:', target);
-                
-                setTimeout(() => {
-                    initializeSyllabusTables();
-                    
-                    if (target === '#ts-cpd') {
-                        setupScheduleCpdCategoryFilter();
-                    }
-                    
-                    if (target === '#record_cpd') {
-                        setupRecordCpdCategoryFilter();
-                    }
-                    
-                    $.fn.dataTable.tables({ visible: true, api: true }).columns.adjust().responsive.recalc();
-                }, 300);
-            });
+            function formatDate(dateString) {
+                if (!dateString || dateString === "0000-00-00" || dateString === "-") {
+                    return '<span class="empty-value">Not provided</span>';
+                }
+                try {
+                    return new Date(dateString).toLocaleDateString('en-GB');
+                } catch (e) {
+                    return dateString;
+                }
+            }
+
+            function getTrainingTypeDisplayName(trainingType) {
+                const typeMap = {
+                    'cpd-inhouse': 'CPD In House',
+                    'cpd-outside': 'CPD Outside',
+                    'workshop-inhouse': 'Workshop In House',
+                    'workshop-outside': 'Workshop Outside'
+                };
+                return typeMap[trainingType] || trainingType;
+            }
 
             // Modal functionality
             const pdfModal = document.getElementById("pdfModal");
@@ -1252,6 +1663,9 @@ try {
                         case "training_record_cpd":
                             title = "CPD Training Record Details";
                             break;
+                        case "training_record":
+                            title = "Training Record Details";
+                            break;
                         case "outside_training":
                             title = "Outside Training Details";
                             break;
@@ -1269,6 +1683,9 @@ try {
                         case "training_record_cpd":
                             content = generateTrainingRecordCpdDetails(button);
                             break;
+                        case "training_record":
+                            content = generateTrainingRecordDetails(button);
+                            break;
                         case "outside_training":
                             content = generateOutsideTrainingDetails(button);
                             break;
@@ -1281,31 +1698,6 @@ try {
                 detailsModal.addEventListener("hidden.bs.modal", function() {
                     detailsModalBody.innerHTML = "";
                 });
-            }
-
-            // Helper functions
-            function formatValue(value) {
-                if (
-                    !value ||
-                    value === "null" ||
-                    value === "undefined" ||
-                    value === "0000-00-00" ||
-                    value === "N/A"
-                ) {
-                    return '<span class="empty-value">Not provided</span>';
-                }
-                return value;
-            }
-
-            function formatDate(dateString) {
-                if (!dateString || dateString === "0000-00-00" || dateString === "-") {
-                    return '<span class="empty-value">Not provided</span>';
-                }
-                try {
-                    return new Date(dateString).toLocaleDateString('en-GB');
-                } catch (e) {
-                    return dateString;
-                }
             }
 
             function generateTrainingSyllabusDetails(button) {
@@ -1504,7 +1896,73 @@ try {
                 `;
             }
 
-            // Add outside training details generator function
+            function generateTrainingRecordDetails(button) {
+                const sno = button.getAttribute("data-record-sno");
+                const svcNo = button.getAttribute("data-record-svc-no");
+                const rank = button.getAttribute("data-record-rank");
+                const name = button.getAttribute("data-record-name");
+                const courseName = button.getAttribute("data-record-course-name");
+                const trainingType = button.getAttribute("data-record-training-type");
+                const category = button.getAttribute("data-record-category");
+                const trade = button.getAttribute("data-record-trade");
+                const startDate = button.getAttribute("data-record-start-date");
+                const endDate = button.getAttribute("data-record-end-date");
+
+                return `
+                <div class="section-divider">Personal Information</div>
+                <table class="details-modal-table">
+                    <tr>
+                        <th>Serial Number:</th>
+                        <td><strong>${formatValue(sno)}</strong></td>
+                    </tr>
+                    <tr>
+                        <th>Service Number:</th>
+                        <td><strong>${formatValue(svcNo)}</strong></td>
+                    </tr>
+                    <tr>
+                        <th>Rank:</th>
+                        <td>${formatValue(rank)}</td>
+                    </tr>
+                    <tr>
+                        <th>Name:</th>
+                        <td>${formatValue(name)}</td>
+                    </tr>
+                </table>
+
+                <div class="section-divider">Training Information</div>
+                <table class="details-modal-table">
+                    <tr>
+                        <th>Training Type:</th>
+                        <td>${formatValue(getTrainingTypeDisplayName(trainingType))}</td>
+                    </tr>
+                    <tr>
+                        <th>Directorate:</th>
+                        <td>${formatValue(category)}</td>
+                    </tr>
+                    <tr>
+                        <th>Course Name:</th>
+                        <td>${formatValue(courseName)}</td>
+                    </tr>
+                    <tr>
+                        <th>Trade:</th>
+                        <td>${formatValue(trade)}</td>
+                    </tr>
+                </table>
+
+                <div class="section-divider">Duration</div>
+                <table class="details-modal-table">
+                    <tr>
+                        <th>Start Date:</th>
+                        <td>${formatDate(startDate)}</td>
+                    </tr>
+                    <tr>
+                        <th>End Date:</th>
+                        <td>${formatDate(endDate)}</td>
+                    </tr>
+                </table>
+                `;
+            }
+
             function generateOutsideTrainingDetails(button) {
                 const sno = button.getAttribute("data-record-sno");
                 const description = button.getAttribute("data-record-description");
@@ -1554,184 +2012,31 @@ try {
                 `;
             }
 
-            // Navigation and tab handling
-            const welcomePane = document.querySelector("#welcome");
-            if (welcomePane) {
-                welcomePane.classList.add("show", "active");
-            }
-
-            document.querySelectorAll(".nav-link, .qa-dropdown-item").forEach((item) => {
-                item.classList.remove("active");
-            });
-
-            const forecastToggle = document.querySelector('.qa-dropdown-toggle[role="button"]');
-            const forecastItem = document.querySelector('.qa-dropdown-item[data-bs-target="#forecast"]');
-            
-            if (forecastToggle && forecastItem) {
-                forecastToggle.classList.add('active');
-                forecastItem.classList.add('active');
+            // Initialize everything
+            setTimeout(() => {
+                initializeSyllabusTables();
+                setupNestedDropdowns();
                 
-                const dropdownMenu = forecastToggle.nextElementSibling;
-                if (dropdownMenu) {
-                    dropdownMenu.classList.add('show');
+                // Initialize CPD tables if needed
+                if (!$.fn.DataTable.isDataTable('#cpdOutsideTable')) {
+                    $('#cpdOutsideTable').DataTable(cpdDataTableConfig);
                 }
-            }
+            }, 500);
 
-            document.querySelectorAll(".qa-dropdown-menu").forEach((menu) => {
-                menu.classList.remove("show");
-            });
-
-            const dropdownToggles = document.querySelectorAll(".qa-dropdown-toggle");
-            dropdownToggles.forEach((toggle) => {
-                toggle.addEventListener("click", function(e) {
-                    e.preventDefault();
-                    e.stopPropagation();
-
-                    const dropdownMenu = this.nextElementSibling;
-                    if (!dropdownMenu) return;
-
-                    const isCurrentlyOpen = dropdownMenu.classList.contains("show");
-
-                    dropdownToggles.forEach((otherToggle) => {
-                        if (otherToggle !== toggle) {
-                            const otherMenu = otherToggle.nextElementSibling;
-                            if (otherMenu) otherMenu.classList.remove("show");
-                        }
-                    });
-
-                    if (!isCurrentlyOpen) {
-                        dropdownMenu.classList.add("show");
-                    } else {
-                        dropdownMenu.classList.remove("show");
-                    }
-                });
-            });
-
-            const mainNavLinks = document.querySelectorAll(
-                ".nav-link:not(.qa-dropdown-toggle)"
-            );
-            mainNavLinks.forEach((item) => {
-                item.addEventListener("click", function(e) {
-                    e.preventDefault();
-                    document
-                        .querySelectorAll(".nav-link, .qa-dropdown-item")
-                        .forEach((tab) => {
-                            tab.classList.remove("active");
-                        });
-                    document.querySelectorAll(".qa-dropdown-toggle").forEach((toggle) => {
-                        toggle.classList.remove("active");
-                    });
-                    this.classList.add("active");
-
-                    const targetId = this.getAttribute("data-bs-target");
-                    const targetPane = document.querySelector(targetId);
-
-                    document.querySelectorAll(".tab-pane").forEach((pane) => {
-                        pane.classList.remove("show", "active");
-                    });
-
-                    if (targetPane) targetPane.classList.add("show", "active");
-                    document.querySelectorAll(".qa-dropdown-menu").forEach((menu) => {
-                        menu.classList.remove("show");
-                    });
-                });
-            });
-
-            const dropdownItems = document.querySelectorAll(".qa-dropdown-item");
-            dropdownItems.forEach((item) => {
-                item.addEventListener("click", function(e) {
-                    e.preventDefault();
-                    e.stopPropagation();
-
-                    document
-                        .querySelectorAll(".nav-link, .qa-dropdown-item")
-                        .forEach((tab) => {
-                            tab.classList.remove("active");
-                        });
-                    document.querySelectorAll(".qa-dropdown-toggle").forEach((toggle) => {
-                        toggle.classList.remove("active");
-                    });
-                    this.classList.add("active");
-
-                    if (this.classList.contains("qa-dropdown-item")) {
-                        const parentDropdown = this.closest(".qa-dropdown");
-                        if (parentDropdown) {
-                            const dropdownToggle = parentDropdown.querySelector(
-                                ".qa-dropdown-toggle"
-                            );
-                            if (dropdownToggle) {
-                                dropdownToggle.classList.add("active");
-                                const dropdownMenu = dropdownToggle.nextElementSibling;
-                                if (dropdownMenu) dropdownMenu.classList.add("show");
-                            }
-                        }
-                    }
-
-                    const targetId = this.getAttribute("data-bs-target");
-                    const targetPane = document.querySelector(targetId);
-
-                    document.querySelectorAll(".tab-pane").forEach((pane) => {
-                        pane.classList.remove("show", "active");
-                    });
-
-                    if (targetPane) targetPane.classList.add("show", "active");
+            // Reinitialize tables when tabs are shown
+            $('a[data-bs-toggle="tab"]').on('shown.bs.tab', function(e) {
+                const target = $(e.target).data('bs-target');
+                console.log('Tab shown:', target);
+                
+                setTimeout(() => {
+                    initializeSyllabusTables();
                     
-                    setTimeout(() => {
-                        initializeSyllabusTables();
-                        if (targetId === '#ts-cpd') {
-                            setupScheduleCpdCategoryFilter();
-                            
-                            const categoryFilter = document.getElementById('scheduleCpdCategoryFilter');
-                            if (categoryFilter) {
-                                categoryFilter.value = '';
-                                const tableContainer = document.getElementById('scheduleCpdTableContainer');
-                                tableContainer.innerHTML = `
-                                   <!-- <div class="alert alert-info">
-                                        <i class="fas fa-info-circle me-2"></i>
-                                        Please select a directorate to view CPD training syllabus records.
-                                    </div>
-                                `;
-                            }
-                        }
-                        if (targetId === '#record_cpd') {
-                            setupRecordCpdCategoryFilter();
-                            
-                            const categoryFilter = document.getElementById('recordCpdCategoryFilter');
-                            if (categoryFilter) {
-                                categoryFilter.value = '';
-                                const tableContainer = document.getElementById('recordCpdTableContainer');
-                                tableContainer.innerHTML = `
-                                    <!--<div class="alert alert-info">
-                                        <i class="fas fa-info-circle me-2"></i>
-                                        Please select a directorate to view CPD training records.
-                                    </div>-->
-                                `;
-                            }
-                        }
-                    }, 300);
-                });
-            });
-
-            document.addEventListener("click", function(e) {
-                if (!e.target.closest(".qa-dropdown")) {
-                    document.querySelectorAll(".qa-dropdown-menu").forEach((menu) => {
-                        menu.classList.remove("show");
-                    });
-                }
-            });
-
-            document.querySelectorAll(".qa-dropdown-menu").forEach((menu) => {
-                menu.addEventListener("click", function(e) {
-                    e.stopPropagation();
-                });
-            });
-
-            document.addEventListener("keydown", function(e) {
-                if (e.key === "Escape") {
-                    document.querySelectorAll(".qa-dropdown-menu").forEach((menu) => {
-                        menu.classList.remove("show");
-                    });
-                }
+                    if (target === '#ts-cpd') {
+                        setupScheduleCpdCategoryFilter();
+                    }
+                    
+                    $.fn.dataTable.tables({ visible: true, api: true }).columns.adjust().responsive.recalc();
+                }, 300);
             });
 
             $(window).on('resize', function() {

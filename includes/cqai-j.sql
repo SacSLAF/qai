@@ -325,11 +325,10 @@ CREATE TABLE aircraft_competency (
     retired_date DATE,
     remarks TEXT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (branch) REFERENCES ac_categories(id);
+    FOREIGN KEY (branch) REFERENCES ac_categories(id),
     FOREIGN KEY (formation_id) REFERENCES formation(formation_id),
     FOREIGN KEY (type_id) REFERENCES type(type_id)
 );
-
 -- ----------------------------
 -- Table structure for latitude
 -- ----------------------------
@@ -448,17 +447,11 @@ CREATE TABLE `vehicle_emission_test` (
   KEY `idx_fuel_type` (`fuel_type`),
   CONSTRAINT `fk_vet_camp` FOREIGN KEY (`camp_id`) REFERENCES `slaf_establishments` (`id`),
   CONSTRAINT `fk_vet_created_by` FOREIGN KEY (`created_by`) REFERENCES `admins` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ;
-
-
-
-
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
 -- -----------------------------------------------------------------------------------------------------
------------------------------- TECHNICAL PUBLICATION
+-- TECHNICAL PUBLICATION
 -- -----------------------------------------------------------------------------------------------------
--- ----------------------------
 -- Table structure for publication_categories
--- ----------------------------
 DROP TABLE IF EXISTS `publication_categories`;
 CREATE TABLE `publication_categories`  (
   `id` int NOT NULL AUTO_INCREMENT,
@@ -468,18 +461,14 @@ CREATE TABLE `publication_categories`  (
   UNIQUE INDEX `name`(`name`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 6 CHARACTER SET = utf8mb4 ROW_FORMAT = Dynamic;
 
--- ----------------------------
 -- Records of publication_categories
--- ----------------------------
 INSERT INTO `publication_categories` VALUES (1, 'Online Subscription', '2025-09-09 10:14:05');
 INSERT INTO `publication_categories` VALUES (2, 'Airworthiness Directives & Bulletins', '2025-09-09 10:14:05');
 INSERT INTO `publication_categories` VALUES (3, 'QAI Safety Newsletters', '2025-09-09 10:14:05');
 INSERT INTO `publication_categories` VALUES (4, 'Maintenance Programme', '2025-09-09 10:14:05');
 INSERT INTO `publication_categories` VALUES (5, 'Technical Library', '2025-09-09 10:14:05');
 
--- ----------------------------
 -- Table structure for online_subscription
--- ----------------------------
 DROP TABLE IF EXISTS `online_subscription`;
 CREATE TABLE `online_subscription`  (
   `id` int NOT NULL AUTO_INCREMENT,
@@ -499,9 +488,7 @@ CREATE TABLE `online_subscription`  (
   CONSTRAINT `fk_os_uploaded_by` FOREIGN KEY (`uploaded_by`) REFERENCES `admins` (`id`) ON DELETE SET NULL ON UPDATE RESTRICT
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 ROW_FORMAT = Dynamic;
 
--- ----------------------------
 -- Table structure for ad_bulletins
--- ----------------------------
 DROP TABLE IF EXISTS `ad_bulletins`;
 CREATE TABLE `ad_bulletins`  (
   `id` int NOT NULL AUTO_INCREMENT,
@@ -518,9 +505,7 @@ CREATE TABLE `ad_bulletins`  (
   CONSTRAINT `ad_bulletins_ibfk_2` FOREIGN KEY (`formation_id`) REFERENCES `formation` (`formation_id`) ON DELETE RESTRICT ON UPDATE RESTRICT
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 ROW_FORMAT = Dynamic;
 
--- ----------------------------
 -- Table structure for qai_newsletters
--- ----------------------------
 DROP TABLE IF EXISTS `qai_newsletters`;
 CREATE TABLE `qai_newsletters` (
   `id` int NOT NULL AUTO_INCREMENT,
@@ -528,10 +513,9 @@ CREATE TABLE `qai_newsletters` (
   `description` text NOT NULL,
   `issue_date` date NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ;
--- ----------------------------
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
 -- Table structure for maintenance_categories
--- ----------------------------
 DROP TABLE IF EXISTS `maintenance_categories`;
 CREATE TABLE `maintenance_categories`  (
   `id` int NOT NULL AUTO_INCREMENT,
@@ -541,15 +525,11 @@ CREATE TABLE `maintenance_categories`  (
   UNIQUE INDEX `name`(`name`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8mb4 ROW_FORMAT = Dynamic;
 
--- ----------------------------
 -- Records of maintenance_categories
--- ----------------------------
 INSERT INTO `maintenance_categories` VALUES (1, 'Servicing Schedule', '2025-09-09 10:14:05');
 INSERT INTO `maintenance_categories` VALUES (2, 'Worksheets', '2025-09-09 10:14:05');
 
--- ----------------------------
 -- Table structure for maintenance_documents
--- ----------------------------
 DROP TABLE IF EXISTS `maintenance_documents`;
 CREATE TABLE `maintenance_documents`  (
   `id` int NOT NULL AUTO_INCREMENT,
@@ -575,9 +555,7 @@ CREATE TABLE `maintenance_documents`  (
   CONSTRAINT `fk_md_type` FOREIGN KEY (`type_id`) REFERENCES `type` (`type_id`) ON DELETE RESTRICT ON UPDATE RESTRICT
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 ROW_FORMAT = Dynamic;
 
--- ----------------------------
--- Table structure for tech_librarys
--- ----------------------------
+-- Table structure for tech_library
 DROP TABLE IF EXISTS `tech_library`;
 CREATE TABLE `tech_library`  (
   `id` int NOT NULL AUTO_INCREMENT,
@@ -586,7 +564,6 @@ CREATE TABLE `tech_library`  (
   `file_path` varchar(255) CHARACTER SET utf8mb4 NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 ROW_FORMAT = Dynamic;
-
 
 
 -- --------------------------------------------------------------------------------------------
@@ -684,21 +661,37 @@ CREATE TABLE `training_record_cpd`  (
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 ROW_FORMAT = Dynamic;
 
 -- ----------------------------
--- Table structure for outside_training
+-- Table structure for training_records (Combined approach)
 -- ----------------------------
-DROP TABLE IF EXISTS `outside_training`;
-CREATE TABLE `outside_training`  (
+DROP TABLE IF EXISTS `training_records`;
+CREATE TABLE `training_records`  (
   `id` int NOT NULL AUTO_INCREMENT,
-  `sno` varchar(255) CHARACTER SET utf8mb4 NOT NULL,
-  `description` text CHARACTER SET utf8mb4 NOT NULL,
-  `conducted_institute` varchar(255) CHARACTER SET utf8mb4 NULL DEFAULT NULL,
-  `duration` varchar(255) CHARACTER SET utf8mb4 NULL DEFAULT NULL,
-  `file_path` varchar(255) CHARACTER SET utf8mb4 NOT NULL,
-  `created_by` int NULL,
+  `training_type` enum('cpd-inhouse','cpd-outside','workshop-inhouse','workshop-outside') NOT NULL,
+  `sno` varchar(50) CHARACTER SET utf8mb4 NULL DEFAULT NULL,
+  `svc_no` varchar(50) CHARACTER SET utf8mb4 NULL DEFAULT NULL,
+  `rank_id` int NULL DEFAULT NULL,
+  `name` varchar(255) CHARACTER SET utf8mb4 NOT NULL,
+  `course_name` varchar(500) CHARACTER SET utf8mb4 NOT NULL,
+  `ac_category_id` int NULL DEFAULT NULL,
+  `trade` varchar(255) CHARACTER SET utf8mb4 NULL DEFAULT NULL,
+  `start_date` date NULL DEFAULT NULL,
+  `end_date` date NULL DEFAULT NULL,
+  `cert_number` varchar(255) CHARACTER SET utf8mb4 NULL DEFAULT NULL,
+  `created_by` int NULL DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`) USING BTREE,
-  FOREIGN KEY (`created_by`) REFERENCES `admins` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT
+  INDEX `fk_tr_rank`(`rank_id`) USING BTREE,
+  INDEX `fk_tr_created_by`(`created_by`) USING BTREE,
+  INDEX `fk_tr_ac_category`(`ac_category_id`) USING BTREE,
+  INDEX `idx_training_type`(`training_type`) USING BTREE,
+  INDEX `idx_svc_no`(`svc_no`) USING BTREE,
+  INDEX `idx_course_name`(`course_name`) USING BTREE,
+  INDEX `idx_trade`(`trade`) USING BTREE,
+  INDEX `idx_dates`(`start_date`, `end_date`) USING BTREE,
+  CONSTRAINT `fk_tr_ac_category` FOREIGN KEY (`ac_category_id`) REFERENCES `ac_categories` (`id`) ON DELETE SET NULL ON UPDATE RESTRICT,
+  CONSTRAINT `fk_tr_created_by` FOREIGN KEY (`created_by`) REFERENCES `admins` (`id`) ON DELETE SET NULL ON UPDATE RESTRICT,
+  CONSTRAINT `fk_tr_rank` FOREIGN KEY (`rank_id`) REFERENCES `ranks` (`id`) ON DELETE SET NULL ON UPDATE RESTRICT
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 ROW_FORMAT = Dynamic;
 
 -- ------------------------------------------------------------------------------------------------------------------
@@ -745,6 +738,7 @@ CREATE TABLE `active_qcc` (
   FOREIGN KEY (`section_id`) REFERENCES `sections` (`id`),
   FOREIGN KEY (`category_id`) REFERENCES `productivity_categories` (`id`)
 );
+ALTER TABLE active_qcc ADD FOREIGN KEY (`created_by`) REFERENCES `admins` (`id`);
 
 -- ----------------------------
 -- Table structure for audit_report
@@ -771,13 +765,13 @@ CREATE TABLE `audit_report` (
 -- ----------------------------
 -- Table structure for osh_manual
 -- ----------------------------
-DROP Table IF EXISTS osh_manual;
+DROP TABLE IF EXISTS osh_manual;
 CREATE TABLE `osh_manual` (
   `id` int NOT NULL AUTO_INCREMENT,
   `sno` varchar(255) CHARACTER SET utf8mb4 NOT NULL,
   `description` text CHARACTER SET utf8mb4 NOT NULL,
   `manual_no` varchar(255) CHARACTER SET utf8mb4 NOT NULL,
-  'rev_status' varchar(255) CHARACTER SET utf8mb4 NOT NULL,
+  `rev_status` varchar(255) CHARACTER SET utf8mb4 NOT NULL,
   `file_path` varchar(500) NOT NULL,
   `category_id` int NULL DEFAULT 3,
   `section_id` int NULL DEFAULT 5,
@@ -788,6 +782,7 @@ CREATE TABLE `osh_manual` (
   FOREIGN KEY (`section_id`) REFERENCES `sections` (`id`),
   FOREIGN KEY (`category_id`) REFERENCES `productivity_categories` (`id`)
 );
+ALTER TABLE osh_manual ADD FOREIGN KEY (`created_by`) REFERENCES `admins` (`id`);
 
 -- ----------------------------
 -- Table structure for awards
